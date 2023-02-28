@@ -818,7 +818,8 @@ OnChangeEvent = {
                             // $(data.data).each(function () {
                             $.each(data.data, function (index, value) {
                                 var option = $("<option />");
-                                option.attr("value", this.id).text(this["name_" + APP_LANGUAGE]);
+                                // option.attr("value", this.id).text(this["name_" + APP_LANGUAGE]);
+                                option.attr('value', this.id).text(this['index'] +'.'+' '+this["name_"+APP_LANGUAGE]+' '+'('+this['id']+')');
                                 $("#learning_tutor_learning_unit").append(option);
                             });
                         } else {
@@ -866,7 +867,8 @@ OnChangeEvent = {
                                 // $(data.data).each(function () {
                                 $.each(data.data, function (index, value) {
                                     var option = $("<option />");
-                                    option.attr("value", this.id).text(this.foci_number +" " +this["title_" + APP_LANGUAGE]);
+                                    // option.attr("value", this.id).text(this.foci_number +" " +this["title_" + APP_LANGUAGE]);
+                                    option.attr("value", this.id).text(this.index +" " +this["title_" + APP_LANGUAGE] +" ("+this.foci_number+")");
                                     $("#learning_tutor_learning_objectives").append(option);
                                 });
                             } else {
@@ -6608,6 +6610,81 @@ Validation = {
                 } else if (element.attr("name") == "grade_id") {
                     error.appendTo("#error-grade");
                 } else {
+                    error.insertAfter(element);
+                }
+            },
+        });
+
+        // Add School Users form
+        $("#add-school-user-form").validate({
+            rules: {
+                role: {
+                    required: true,
+                },
+                school: {
+                    required: true,
+                },
+                name_en: {
+                    required: true,
+                },
+                name_ch: {
+                    required: true,
+                },
+                email: {
+                    required: true,
+                    email: true,
+                    checkValidEmail: true,
+                },
+                mobile_no: {
+                    number: true,
+                    minlength: 8,
+                },
+                password: {
+                    required: true,
+                    minlength: 6,
+                },
+                confirm_password: {
+                    required: true,
+                    minlength: 6,
+                    equalTo: "#password",
+                },
+            },
+            messages: {
+                role: {
+                    required: VALIDATIONS.SELECT_ROLE,
+                },
+                school: {
+                    required: VALIDATIONS.PLEASE_SELECT_SCHOOL,
+                },
+                name_en: {
+                    required: VALIDATIONS.PLEASE_ENTER_ENGLISH_NAME,
+                },
+                name_ch: {
+                    required: VALIDATIONS.PLEASE_ENTER_CHINESE_NAME,
+                },
+                email: {
+                    required: VALIDATIONS.PLEASE_ENTER_EMAIL,
+                    email: VALIDATIONS.PLEASE_ENTER_VALID_EMAIL,
+                },
+                mobile_no: {
+                    number: VALIDATIONS.PLEASE_ENTER_VALID_MOBILE_NO,
+                    minlength: VALIDATIONS.PLEASE_ENTER_MINIMUM_EIGHT_DIGIT,
+                },
+                password: {
+                    required: VALIDATIONS.PLEASE_ENTER_PASSWORD,
+                },
+                confirm_password: {
+                    required: VALIDATIONS.PLEASE_ENTER_CONFIRM_PASSWORD,
+                    minlength: VALIDATIONS.MINIMUM_SIX_CHARACTER_REQUIRED,
+                    equalTo: VALIDATIONS.NEW_PASSWORD_CONFIRM_PASSWORD_NOT_MATCH,
+                },
+            },
+            errorPlacement: function (error, element) {
+                if(element.attr("name") == "role"){
+                    error.appendTo("#error-role");
+                }else if(element.attr("name") == "school"){
+                    error.appendTo("#error-school");
+                }else{
                     error.insertAfter(element);
                 }
             },
