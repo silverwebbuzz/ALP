@@ -29,7 +29,6 @@
                             {{ session()->get('error_msg') }}
                         </div>
                         @endif
-                        
 							<form method="post" id="addSchoolsForm"  action="{{ route('schoolmanagement.store') }}">
 							@csrf()
                                 <div class="form-row select-data">
@@ -100,7 +99,7 @@
                                         @if($errors->has('status'))<span class="validation_error">{{ $errors->first('status') }}</span>@endif
                                     </div>
                                 </div>
-                                <div class="form-row select-data add-sub-admin-row">
+                                <!-- <div class="form-row select-data add-sub-admin-row">
                                     <input type="checkbox" id="addAdmins" name="addAdmins" value="Add Admin">
                                     <label for="addAdmins">{{__('languages.school_management.add_more_admins')}}</label>
                                 </div>
@@ -140,8 +139,7 @@
                                             </div>
                                         </div>
                                     </fieldset>
-                                </div>
-                                
+                                </div> -->
                                 <div class="form-row select-data">
                                     <div class="sm-btn-sec form-row">
                                         <div class="form-group col-md-6 mb-50 btn-sec">

@@ -189,6 +189,7 @@
                                         </div>
                                         @endif
 
+                                        @if($ExamData->exam_type != 1)
                                         <div class="sm-ans pl-2 pb-2">
                                             <input type="radio" name="ans_que_{{$question->id}}" value="5" class="radio mr-2" <?php if(isset($AnswerNumber[key($AnswerNumber)]) && $AnswerNumber[key($AnswerNumber)]->answer == 5){ echo 'checked';} ?> disabled>
                                             <div class="answer-title mr-2 incorrect-answer" style="{{$bg_incorrect_color}}">N</div>
@@ -204,6 +205,7 @@
                                                 <p class="progress-percentage">{{$percentageOfAnswer[$question->id][5]}}%</p>
                                             </div>
                                         </div>
+                                        @endif
                                     </div>
                                     
                                     @if($ExamData->exam_type != 1)
@@ -281,6 +283,7 @@
                                                 </div>
                                             @endif
 
+                                            @if($ExamData->exam_type != 1)
                                             <div class="sm-ans pl-2 pb-2">
                                                 <div class="answer-title mr-2 incorrect-answer" style="{{$bg_incorrect_color}}">N</div>
                                                 <div class="progress">
@@ -295,6 +298,7 @@
                                                     <p class="progress-percentage">{{$percentageOfAnswerSchool[$question->id][5]}}%</p>
                                                 </div>
                                             </div>
+                                            @endif
 
                                         </div>
                                     @endif
@@ -368,6 +372,7 @@
                                             </div>
                                         @endif
 
+                                        @if($ExamData->exam_type != 1)
                                         <div class="sm-ans pl-2 pb-2">
                                             <div class="answer-title mr-2 incorrect-answer" style="{{$bg_incorrect_color}}">N</div>
                                             <div class="progress">
@@ -382,6 +387,7 @@
                                                 <p class="progress-percentage">{{$percentageOfAnswerAllSchool[$question->id][5]}}%</p>
                                             </div>
                                         </div>
+                                        @endif
                                     </div>
                                     @endif
                                 </div>

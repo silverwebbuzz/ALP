@@ -32,10 +32,11 @@
 					</div>
 					@endif
 					<div class="row">
-                        <form method="post" action="{{route('save-objectives-ordering')}}">
+                        <form method="post" id="ordering-learning-objective" action="{{route('save-objectives-ordering')}}">
                             @csrf
                             @method("post")
                             <input type="hidden" value="" name="finalOrdering" id="finalOrdering"/>
+                            <input type="hidden" value="" name="SelectedIndex" id="SelectedIndex"/>
                             <div class="col-md-12">
                                 <div class="col-md-3 mb-2">
                                     <select name="learningUnit" class="form-control select-option" id="ordering_leraningUnit_id">
@@ -72,7 +73,7 @@
                             <div class="form-row select-data float-left">
                                 <div class="sm-btn-sec form-row">
                                     <div class="form-group mb-50 btn-sec">
-                                        <button type="submit" name="save" value="save" class="blue-btn btn btn-primary"  value="save" id="save">{{__('languages.save')}}</button>                                                
+                                        <button type="button" name="save" value="save" class="blue-btn btn btn-primary"  value="save" id="save">{{__('languages.save')}}</button>                                                
                                     </div>
                                 </div>
                             </div>
@@ -244,5 +245,11 @@
         };
     });
    
+</script>
+<script>
+    $(document).on('click','#save',function (){
+        $("#SelectedIndex").val($("#ordering_leraningUnit_id option:selected").text().substr(0,1));
+        $('#ordering-learning-objective')[0].submit();
+    })
 </script>
 @endsection

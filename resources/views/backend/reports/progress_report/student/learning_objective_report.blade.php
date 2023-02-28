@@ -74,7 +74,7 @@
 													@elseif($loop->index==0)
 													selected 
 													@endif
-												>{{ $learningUnit['name_'.app()->getLocale()] }}</option>
+												>{{$learningUnit['index']}}. {{ $learningUnit['name_'.app()->getLocale()] }} ({{$learningUnit['id']}})</option>
 	                                        @endforeach
 	                                    @else
 	                                        <option value="">{{__('languages.no_learning_units_available')}}</option>
@@ -143,7 +143,7 @@
 													</tr>
 														@foreach($learningObjectivesList as  $learningObjectives)
 														<tr>
-															<th style="width: 10% !important;min-width: 10% !important;">{{ $learningObjectives['foci_number'] }}</th>
+															<th style="width: 10% !important;min-width: 10% !important;">{{ $learningObjectives['index'] }} {{ $learningObjectives['title_'.app()->getLocale()] }} ({{ $learningObjectives['foci_number'] }})</th>
 															<td style="width: 10% !important;min-width: 10% !important;">
 																@php
 																	$normalizedAbility = 0;

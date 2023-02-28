@@ -82,7 +82,6 @@ class IntelligentTutorController extends Controller
             $languages = Languages::all();
             $Grades = Grades::whereIn('id',$this->GetRoleBasedGrades(Auth::user()->role_id))->get();//Grades::all();
             $StrandList = Strands::all();
-            $LearningUnit = LearningsUnits::where('stage_id','<>',3)->get();
             $LearningUnit = collect($this->GetLearningUnits($StrandList[0]->{cn::STRANDS_ID_COL}));
 
             $GradeID = [];

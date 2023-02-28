@@ -28,10 +28,9 @@
                 @endphp
                 @if(isset($question_position) && !empty($question_position) && isset($question_position[$question->id]))
                     @php
-                        if($question_position[$question->id]!="")
-                        {
-                            $random_number_array=json_decode($question_position[$question->id]);
-                        }
+                    if($question_position[$question->id]!=""){
+                        $random_number_array=json_decode($question_position[$question->id]);
+                    }
                     @endphp
                 @endif
                 @if(isset($question->answers->{'answer'.$random_number_array[0].'_'.$examLanguage}))

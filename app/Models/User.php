@@ -202,7 +202,7 @@ class User extends Authenticatable
      ** Validation Rules for users
     **/
     public static function rules($request = null, $action = '', $id = null){
-        switch ($action) {
+        switch($action){
             case 'create':
                 $rules = [
                     cn::USERS_NAME_EN_COL => ['required'],
@@ -298,6 +298,20 @@ class User extends Authenticatable
                     }
                 }
                 break;
+            case 'School_Users_Create':
+                $rules = [
+                    cn::USERS_NAME_EN_COL   => ['required'],
+                    cn::USERS_NAME_CH_COL   => ['required'],
+                    cn::USERS_EMAIL_COL     => ['required', Rule::unique(cn::USERS_TABLE_NAME)->whereNull(cn::USERS_DELETED_AT_COL)],
+                    cn::USERS_PASSWORD_COL  => ['required'],
+                    'role'                  => ['required'],
+                ];
+                if(auth()->user()->{cn::USERS_ROLE_ID_COL} == cn::SUPERADMIN_ROLE_ID){
+                    if($request->role == ''){
+                        $rules = ['school' => ['required']];
+                    }
+                }
+                break;
             default:
                 break;
         }
@@ -326,6 +340,16 @@ class User extends Authenticatable
                     cn::USERS_EMAIL_COL.'.required' => __('validation.please_enter_email'),
                     cn::USERS_EMAIL_COL.'.unique' => __('validation.email_already_exists'),
                     cn::USERS_PASSWORD_COL.'.required' => __('validation.please_enter_password')
+                ];
+                break;
+            case 'School_Users_Create':
+                $messages = [
+                    cn::USERS_NAME_EN_COL.'.required' => __('validation.please_enter_english_name'),
+                    cn::USERS_NAME_CH_COL.'.required' => __('validation.please_enter_chinese_name'),
+                    cn::USERS_EMAIL_COL.'.required' => __('validation.please_enter_email'),
+                    cn::USERS_EMAIL_COL.'.unique' => __('validation.email_already_exists'),
+                    cn::USERS_PASSWORD_COL.'.required' => __('validation.please_enter_password'),
+                    'role.required' => 'Role field is required',
                 ];
                 break;
         }

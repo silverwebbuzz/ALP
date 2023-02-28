@@ -95,7 +95,7 @@
                                     </div>
                                 </div>
 
-                                <div class="form-row select-data add-sub-admin-row">
+                                <!-- <div class="form-row select-data add-sub-admin-row">
                                     <input type="checkbox" id="addAdmins" name="addAdmins" value="Add Admin" @if(isset($UserOtherData) && !empty($UserOtherData) && sizeof($UserOtherData)>=2) checked="checked" @endif>
                                     <label for="addAdmins">{{__('languages.school_management.add_more_admins')}}</label>
                                 </div>
@@ -138,7 +138,7 @@
                                             </div>
                                         </div>
                                     </fieldset>
-                                </div>
+                                </div> -->
                                 
                                 <div class="form-row select-data">
                                     <div class="sm-btn-sec form-row">

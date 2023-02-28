@@ -133,6 +133,9 @@ Route::group(['middleware'=>['auth']], function () {
     Route::get('super-admin', 'AdminDashboardController@index')->middleware(['admin'])->name('superadmin');
     Route::get('super-admin/dashboard', 'AdminDashboardController@index')->middleware(['admin'])->name('superadmin.dashboard');
 
+    // Module for School User Management
+    Route::resource('school-users','SchoolUsersController');
+
     /** Start Questions Module Route **/
     Route::get('question/calibration-log/{id}','QuestionController@CalibrationLog')->name('question.calibration-log');
     

@@ -276,17 +276,18 @@
 														@endif
 														</span>
 													</th>
-													<th class="selec-opt sorting_column" data-sort-type="ability_rank" data-sort="<?php if(isset($_GET['sort_by_type']) && $_GET['sort_by_type'] == 'ability_rank'){ echo $_GET['sort_by_value'];}?>">
-														<span>{{__('languages.overall_percentile')}}</span>
-														<span class="student-ability-rank-sorting-icon">
-														@if(isset($_GET['sort_by_type']) && $_GET['sort_by_type'] == 'ability_rank')
-														<i class="fa fa-sort-{{$_GET['sort_by_value']}}"></i>
-														@else
-															<i class="fa fa-sort"></i>
-														@endif
-														</span>
-													</th>
-													
+													@if($ExamData->exam_type != 1)
+														<th class="selec-opt sorting_column" data-sort-type="ability_rank" data-sort="<?php if(isset($_GET['sort_by_type']) && $_GET['sort_by_type'] == 'ability_rank'){ echo $_GET['sort_by_value'];}?>">
+															<span>{{__('languages.overall_percentile')}}</span>
+															<span class="student-ability-rank-sorting-icon">
+															@if(isset($_GET['sort_by_type']) && $_GET['sort_by_type'] == 'ability_rank')
+															<i class="fa fa-sort-{{$_GET['sort_by_value']}}"></i>
+															@else
+																<i class="fa fa-sort"></i>
+															@endif
+															</span>
+														</th>
+													@endif
 													<?php
 													$data = $ResultList[array_key_first($ResultList)];
 													for($i=1; $i <= $data['countQuestions']; $i++){
@@ -321,7 +322,9 @@
 													<td>{{$result['accuracy_ranking']}}</td>
 													<td>{{$result['ability_ranking']}}</td>
 													{{-- overall percentile --}}
-													<td>{{$result['overall_ranking']}}%</td>
+													@if($ExamData->exam_type != 1)
+														<td>{{$result['overall_ranking']}}%</td>
+													@endif
 													@for($i=0; $i < $result['countQuestions']; ++$i)
 														@if(isset($result[$i]['answer']) && $result[$i]['answer'] == 'true')
 														@php  $CorrectAnswer[$i] = isset($CorrectAnswer[$i]) ? ($CorrectAnswer[$i] + 1) : 1; @endphp

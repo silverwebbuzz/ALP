@@ -1543,4 +1543,10 @@ return [
     'stage'                                     => 'Stage',
     'select_stage'                              => 'Select Stage',
     'learning_objectives_skill_deleted_successfully' => 'Learning objectives skill deleted successfully',
+    'ordering_sorted'                           => 'Ordering Sorted...',
+    'remaining_time'                            => 'Remaining Time',
+    'school_user_management' => [
+        'title'                                 => 'School Users List',
+        'school_admin_privilege'                => 'School Admin Privilege',
+    ]
 ];

@@ -1543,4 +1543,6 @@ return [
     'stage'                                             => '階段',
     'select_stage'                                      => '選擇階段',
     'learning_objectives_skill_deleted_successfully'    => '學習目標技能刪除成功',
+    'ordering_sorted'                                   => '排序...',
+    'remaining_time'                                    => '剩餘時間',
 ];

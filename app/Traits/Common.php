@@ -84,41 +84,81 @@ trait Common {
         $learningUnitIds = is_array($learningUnitId) ? $learningUnitId : [$learningUnitId];
         $learningObjectiveData = '';
         if(LearningUnitOrdering::where('school_id',Auth::user()->school_id)->exists()){
-            $learningObjectiveData = $this->OrderingObjectiveData($learningUnitIds);
+            $learningObjectiveData = $this->OrderingObjectiveData($learningUnitIds,true);
         }else{
-            $learningObjectiveData = $this->OrderingObjectiveData($learningUnitIds);
+            $learningObjectiveData = $this->OrderingObjectiveData($learningUnitIds,false);
             
         }
         return $learningObjectiveData;
     }
 
     // Ordering Objective Data
-    public function OrderingObjectiveData($learningUnitId){
+    public function OrderingObjectiveData($learningUnitId,$learningUnitExists){
         $finalArray = [];
+        $learningObjectiveData = [];
         $learningUnitId = (is_array($learningUnitId)) ? $learningUnitId : [$learningUnitId];
-        if(LearningObjectiveOrdering::where('school_id',Auth::user()->school_id)->exists()){
-            $positionArray = LearningObjectiveOrdering::where('school_id',Auth::user()->school_id)
+        if(LearningObjectiveOrdering::where('school_id',Auth::user()->school_id)->exists() && ($learningUnitExists==false || $learningUnitExists == 0)){
+            $learningObjectiveOrdering = LearningObjectiveOrdering::where('school_id',Auth::user()->school_id)
                                 ->whereIn('learning_unit_id',$learningUnitId)
-                                ->pluck('position')
-                                ->toArray();
+                                ->get();
+            $positionArray = $learningObjectiveOrdering->pluck('position')->toArray();
+            $IndexArray = $learningObjectiveOrdering->pluck('index')->toArray();
             foreach($positionArray as $positionKey => $position){
-                $finalArray[$positionKey] = LearningsObjectives::where('id',$position)->where('stage_id','<>',3)->first()->toArray();
-                $finalArray[$positionKey]['position'] = $position;
+                $LearningsObjectives =   LearningsObjectives::where('id',$position)->where('stage_id','<>',3)->first();
+                if(isset($LearningsObjectives) && !empty($LearningsObjectives)){
+                    $FindLearningObjectiveIndex = $learningObjectiveOrdering->where('learning_objective_id',$LearningsObjectives->id)->first();
+                    $finalArray[$positionKey] = $LearningsObjectives->toArray();
+                    $finalArray[$positionKey]['position'] = $position;
+                    $finalArray[$positionKey]['index'] = $FindLearningObjectiveIndex->index; //$IndexArray[$position - 1];
+                }
             }
-            $learningObjectiveData = $finalArray;
+            return $finalArray;
+        }elseif(LearningObjectiveOrdering::where('school_id',Auth::user()->school_id)->exists() && ($learningUnitExists == true || $learningUnitExists == 1)){
+            foreach($learningUnitId as $unitKey => $unitId){
+                $learningObjectiveOrdering = LearningObjectiveOrdering::where('school_id',Auth::user()->school_id)
+                                ->where('learning_unit_id',$unitId)
+                                ->get();
+                $positionArray = $learningObjectiveOrdering->pluck('position')->toArray();
+                foreach($positionArray as $positionKey => $position){
+                    $LearningsObjectives =   LearningsObjectives::where('id',$position)->where('stage_id','<>',3)->first();
+                    if(isset($LearningsObjectives) && !empty($LearningsObjectives)){
+                        $FindLearningObjectiveIndex = $learningObjectiveOrdering->where('learning_objective_id',$LearningsObjectives['id'])->first();
+                        $finalArray[$unitKey][$positionKey] = $LearningsObjectives->toArray();
+                        $finalArray[$unitKey][$positionKey]['position'] = $position;
+                        $finalArray[$unitKey][$positionKey]['index'] = $FindLearningObjectiveIndex->index; //$IndexArray[$position - 1];
+                    }
+                }
+            }
+            $learningObjectiveData = array_merge(...$finalArray);
+            return $learningObjectiveData;
+        }elseif(LearningObjectiveOrdering::where('school_id',Auth::user()->school_id)->doesntExist() && ($learningUnitExists == true || $learningUnitExists == 1)){
+            $orderingLearningUnit = LearningUnitOrdering::where('school_id',Auth::user()->school_id)->whereIn('learning_unit_id',$learningUnitId)->get();
+            foreach($learningUnitId as $unitKey => $unitId){
+                $learningObjectiveOrdering = LearningsObjectives::where('learning_unit_id',$unitId)
+                                ->get()->toArray();
+                foreach($learningObjectiveOrdering as $learningObjectiveOrderingKey => $learningObjective){
+                    $finalArray[$unitKey][$learningObjectiveOrderingKey] = $learningObjective;
+                    // $finalArray[$unitKey][$learningObjectiveOrderingKey]['index'] =  $orderingLearningUnit[$unitKey]['index'].'.'.($learningObjectiveOrderingKey + 1); 
+                    $finalArray[$unitKey][$learningObjectiveOrderingKey]['index'] =  ($unitKey + 1).'.'.($learningObjectiveOrderingKey + 1); 
+                }                 
+            }
+            $learningObjectiveData = array_merge(...$finalArray);
+            return $learningObjectiveData;
         }else{
+            $indexingArray = [];
             foreach($learningUnitId as $unitKey => $unitIds){
-                $ObjectiveData = LearningsObjectives::where('learning_unit_id',$unitIds)->where('stage_id','<>',3)->get()->toArray();                
-                $LearningUnitObjectiveData[] = array_values($ObjectiveData);
+                $ObjectiveData = LearningsObjectives::where('learning_unit_id',$unitIds)->where('stage_id','<>',3)->get()->toArray();
+                
+                foreach($ObjectiveData as $objectiveKey => $objectiveData){
+                    $indexingArray[$objectiveKey] = $objectiveData;
+                    $indexingArray[$objectiveKey]['index'] = ($unitKey+1).'.'.($objectiveKey+1);
+                    array_push($learningObjectiveData,$indexingArray[$objectiveKey]);
+                }
             }
-            $finalArray = array_merge(...$LearningUnitObjectiveData);
-            //$learningObjectiveData = LearningsObjectives::whereIn('learning_unit_id',$learningUnitId)->where('stage_id','<>',3)->get();
+            return $learningObjectiveData;
         }
-        $learningObjectiveData = $finalArray;
-        return $learningObjectiveData;
     }
     
-
     /**
      * USE : Get current adjusted calibration id
      */
@@ -707,16 +747,16 @@ trait Common {
     public static function setOptionBasedAlphabet($option){
         switch($option){
             case 1:
-                return 'A';
+                return '1';
                 break;
             case 2:
-                return 'B';
+                return '2';
                 break;
             case 3:
-                return 'C';
+                return '3';
                 break;
             case 4: 
-                return 'D';
+                return '4';
                 break;
             case 5: 
                 return 'N';
@@ -2407,12 +2447,10 @@ trait Common {
         }else{
             $GetStudentIds = ($request->studentIds) ? explode(',',$request->studentIds) : [];
         }
-       
-        //$GetStudentIds = ($request->studentIds) ? explode(',',$request->studentIds) : [];
         $classIds = $request->classIds;
         $groupIds = $request->groupIds;
 
-        // //Set Main Header Row
+        //Set Main Header Row
         $header = [
             'Class',
             'Student No. Within Class'
@@ -2431,11 +2469,9 @@ trait Common {
         ];
         $ExamData = Exam::find($examId);
         if(!empty($ExamData)){
-            // if($ExamData->exam_type == 1){
             if($ExamData->exam_type == 1 || empty($request->classIds)){
-                // $userData = User::find($request->studentIds[0]);
                 $userData = User::find($request->studentIds);
-                if (array_key_exists(0, $userData->toArray())) {
+                if(array_key_exists(0, $userData->toArray())){
                     $classIds = array($userData[0]->CurriculumYearClassId);
                 }else{
                     $classIds = array($userData->CurriculumYearClassId);
@@ -2456,7 +2492,11 @@ trait Common {
                 $header[] = 'Q'.($questionKey + 1);
                 $QuestionHeaders[] = ($questionKey + 1);
                 $correctAnswerArray[] = SELF::setOptionBasedAlphabet($question->answers->correct_answer_en);
-            }           
+            }
+            if($ExamData->exam_type != 1){
+                $header[] = 'Overall Percentile'; 
+            }
+                      
             //Set Heading
             $records['heading'] = $header;
             // Store in first row headings
@@ -2504,11 +2544,6 @@ trait Common {
                             if(!empty($TeachersGradeClass->pluck(cn::TEACHER_CLASS_SUBJECT_CLASS_NAME_ID_COL)->toArray())){
                                 $assignTeacherClass = explode(',',implode(',',$TeachersGradeClass->pluck(cn::TEACHER_CLASS_SUBJECT_CLASS_NAME_ID_COL)->toArray()));
                                 $AttemptExamData = $Query->whereHas('user',function($q) use($assignTeacherGrades,$assignTeacherClass, $classIds){
-                                    // $q->where(cn::USERS_SCHOOL_ID_COL, Auth::user()->{cn::USERS_SCHOOL_ID_COL})
-                                    //     ->where(cn::USERS_ROLE_ID_COL,cn::STUDENT_ROLE_ID)
-                                    //     ->whereIn(cn::USERS_CLASS_ID_COL,$classIds)
-                                    //     ->whereIn(cn::USERS_GRADE_ID_COL,$assignTeacherGrades);
-
                                     $q->where(cn::USERS_SCHOOL_ID_COL, Auth::user()->{cn::USERS_SCHOOL_ID_COL})
                                         ->where(cn::USERS_ROLE_ID_COL,cn::STUDENT_ROLE_ID)
                                         ->get()
@@ -2577,13 +2612,8 @@ trait Common {
                 $totalStudent = count($AttemptExamData);
                 foreach($AttemptExamData as $attemptedExamKey => $attemptedExam){
                     $rowArray = [];
-                    //$rowArray[] = Helper::GetCurriculumDataById($attemptedExam->user->id,Self::GetCurriculumYear(),'class');
                     $rowArray[] = $attemptedExam->user->CurriculumYearData[cn::CURRICULUM_YEAR_STUDENT_CLASS] ?? '';
-                    //$rowArray[] = $attemptedExam->user->class;
-                    //$rowArray[] = ($attemptedExam->user->class_student_number!='') ? $attemptedExam->user->class_student_number : SELF::decrypt($attemptedExam->user->name_en);
-                    //$ClassStudentNumber = Helper::GetCurriculumDataById($attemptedExam->user->id,Self::GetCurriculumYear(),'class_student_number');
                     $rowArray[] = ($attemptedExam->user->CurriculumYearData[cn::CURRICULUM_YEAR_CLASS_STUDENT_NUMBER]!='') ? $attemptedExam->user->CurriculumYearData[cn::CURRICULUM_YEAR_CLASS_STUDENT_NUMBER] : Self::decrypt($attemptedExam->user->name_en);
-                    
                     foreach($QuestionList as $questionKey => $questions){
                     // get Selected Answer
                         if(isset($attemptedExam->question_answers)){
@@ -2598,32 +2628,32 @@ trait Common {
                                     $objToArrayConvert = get_object_vars($fanswer);
                                     $rowArray[] = SELF::setOptionBasedAlphabet($objToArrayConvert['answer']);
                                     if($fanswer->answer==1){
-                                        if(isset($QuestionAnswerData[$questionKey]['A'])){
-                                            $QuestionAnswerData[$questionKey]['A'] = $QuestionAnswerData[$questionKey]['A'] + 1;
+                                        if(isset($QuestionAnswerData[$questionKey]['1'])){
+                                            $QuestionAnswerData[$questionKey]['1'] = $QuestionAnswerData[$questionKey]['1'] + 1;
 
                                         }else{
-                                            $QuestionAnswerData[$questionKey]['A'] = 1;
+                                            $QuestionAnswerData[$questionKey]['1'] = 1;
                                         }
                                     }
                                     if($fanswer->answer==2){
-                                        if(isset($QuestionAnswerData[$questionKey]['B'])){
-                                            $QuestionAnswerData[$questionKey]['B'] = $QuestionAnswerData[$questionKey]['B'] + 1;
+                                        if(isset($QuestionAnswerData[$questionKey]['2'])){
+                                            $QuestionAnswerData[$questionKey]['2'] = $QuestionAnswerData[$questionKey]['2'] + 1;
                                         }else{
-                                            $QuestionAnswerData[$questionKey]['B'] = 1;
+                                            $QuestionAnswerData[$questionKey]['2'] = 1;
                                         }
                                     }
                                     if($fanswer->answer==3){
-                                        if(isset($QuestionAnswerData[$questionKey]['C'])){
-                                            $QuestionAnswerData[$questionKey]['C'] = $QuestionAnswerData[$questionKey]['C'] + 1;
+                                        if(isset($QuestionAnswerData[$questionKey]['3'])){
+                                            $QuestionAnswerData[$questionKey]['3'] = $QuestionAnswerData[$questionKey]['3'] + 1;
                                         }else{
-                                            $QuestionAnswerData[$questionKey]['C'] = 1;
+                                            $QuestionAnswerData[$questionKey]['3'] = 1;
                                         }
                                     }
                                     if($fanswer->answer==4){
-                                        if(isset($QuestionAnswerData[$questionKey]['D'])){
-                                            $QuestionAnswerData[$questionKey]['D'] = $QuestionAnswerData[$questionKey]['D'] + 1;
+                                        if(isset($QuestionAnswerData[$questionKey]['4'])){
+                                            $QuestionAnswerData[$questionKey]['4'] = $QuestionAnswerData[$questionKey]['4'] + 1;
                                         }else{
-                                            $QuestionAnswerData[$questionKey]['D'] = 1;
+                                            $QuestionAnswerData[$questionKey]['4'] = 1;
                                         }
                                     }
                                     if($fanswer->answer==5){
@@ -2637,11 +2667,14 @@ trait Common {
                             }
                         }
                     }
+                    if($ExamData->exam_type != 1){
+                        $rowArray[] = self::GetStudentPercentileRank($examId,$attemptedExam->user->id).'%';
+                    }
                     $records[] = $rowArray;
                 }
                 
                 //Set Selected Answers Row On Based Question
-                $HeadingIndexArray = ['A','B','C','D','N','A%','B%','C%','D%','N%','Correct %'];
+                $HeadingIndexArray = ['1','2','3','4','N','1%','2%','3%','4%','N%','Correct %'];
                 for($row = 1;$row <= count($HeadingIndexArray);$row++){
                     $rowArray = [];
                     if($row == 1){
@@ -2652,70 +2685,36 @@ trait Common {
                         $rowArray[] = ($HeadingIndexArray[$row-1]);
                     }
                     foreach($QuestionList as $questionKey => $question){
-                        // switch($row){
-                        //     case 1 :    //Case 1 : is used For Display Row  of A = No. of Student Selected Answer A
-                        //         $rowArray[] = ($QuestionAnswerData[$questionKey]['A']) ?? 0;
-                        //         break;
-                        //     case 2:     //Case 2 : is used For Display Row  of B = No. of Student Selected Answer B
-                        //         $rowArray[] = ($QuestionAnswerData[$questionKey]['B']) ?? 0;
-                        //         break;
-                        //     case 3:     //Case 3 : is used For Display Row  of C = No. of Student Selected Answer C
-                        //         $rowArray[] = ($QuestionAnswerData[$questionKey]['C']) ?? 0;
-                        //         break;
-                        //     case 4:     //Case 4 : is used For Display Row  of D = No. of Student Selected Answer D
-                        //         $rowArray[] = ($QuestionAnswerData[$questionKey]['D']) ?? 0;
-                        //         break;
-                        //     case 5:     //Case 5 : is used For Display Row  of A(%) = Average of Student Selected Answer A(%)
-                        //         $value = ($QuestionAnswerData[$questionKey]['A']) ?? 0;
-                        //         $rowArray[] = round((($value * 100) / $totalStudent),2);
-                        //         break;
-                        //     case 6:     //Case 5 : is used For Display Row  of B(%) = Average of Student Selected Answer B(%)
-                        //         $value = ($QuestionAnswerData[$questionKey]['B']) ?? 0;
-                        //         $rowArray[] =  round((($value * 100) / $totalStudent),2);
-                        //         break;
-                        //     case 7:     //Case 5 : is used For Display Row  of C(%) = Average of Student Selected Answer C(%)
-                        //         $value = ($QuestionAnswerData[$questionKey]['C']) ?? 0;
-                        //         $rowArray[] =  round((($value * 100) / $totalStudent),2);
-                        //         break;
-                        //     case 8:     //Case 5 : is used For Display Row  of D(%) = Average of Student Selected Answer D(%)
-                        //         $value = ($QuestionAnswerData[$questionKey]['D']) ?? 0;
-                        //         $rowArray[] =  round((($value * 100) / $totalStudent),2);
-                        //         break;
-                        //     case 9://Average of Student Selected  Correct Answer(%)
-                        //         $value = ($QuestionAnswerData[$questionKey]['A']) ?? 0;
-                        //         $rowArray[] =  round((($value * 100) / $totalStudent),2);
-                        //         break;
-                        // }
                         switch($row){
-                            case 1 :    //Case 1 : is used For Display Row  of A = No. of Student Selected Answer A
-                                $rowArray[] = ($QuestionAnswerData[$questionKey]['A']) ?? 0;
+                            case 1 :    //Case 1 : is used For Display Row  of 1 = No. of Student Selected Answer 1
+                                $rowArray[] = ($QuestionAnswerData[$questionKey]['1']) ?? 0;
                                 break;
-                            case 2:     //Case 2 : is used For Display Row  of B = No. of Student Selected Answer B
-                                $rowArray[] = ($QuestionAnswerData[$questionKey]['B']) ?? 0;
+                            case 2:     //Case 2 : is used For Display Row  of 2 = No. of Student Selected Answer 2
+                                $rowArray[] = ($QuestionAnswerData[$questionKey]['2']) ?? 0;
                                 break;
-                            case 3:     //Case 3 : is used For Display Row  of C = No. of Student Selected Answer C
-                                $rowArray[] = ($QuestionAnswerData[$questionKey]['C']) ?? 0;
+                            case 3:     //Case 3 : is used For Display Row  of 3 = No. of Student Selected Answer 3
+                                $rowArray[] = ($QuestionAnswerData[$questionKey]['3']) ?? 0;
                                 break;
-                            case 4:     //Case 4 : is used For Display Row  of D = No. of Student Selected Answer D
-                                $rowArray[] = ($QuestionAnswerData[$questionKey]['D']) ?? 0;
+                            case 4:     //Case 4 : is used For Display Row  of 4 = No. of Student Selected Answer 4
+                                $rowArray[] = ($QuestionAnswerData[$questionKey]['4']) ?? 0;
                                 break;
                             case 5:     //Case 4 : is used For Display Row  of N = No. of Student Selected Answer N
                                 $rowArray[] = ($QuestionAnswerData[$questionKey]['N']) ?? 0;
                                 break;
-                            case 6:     //Case 5 : is used For Display Row  of A(%) = Average of Student Selected Answer A(%)
-                                $value = ($QuestionAnswerData[$questionKey]['A']) ?? 0;
+                            case 6:     //Case 5 : is used For Display Row  of 1(%) = Average of Student Selected Answer 1(%)
+                                $value = ($QuestionAnswerData[$questionKey]['1']) ?? 0;
                                 $rowArray[] = round((($value * 100) / $totalStudent),2);
                                 break;
-                            case 7:     //Case 5 : is used For Display Row  of B(%) = Average of Student Selected Answer B(%)
-                                $value = ($QuestionAnswerData[$questionKey]['B']) ?? 0;
+                            case 7:     //Case 5 : is used For Display Row  of 2(%) = Average of Student Selected Answer 2(%)
+                                $value = ($QuestionAnswerData[$questionKey]['2']) ?? 0;
                                 $rowArray[] =  round((($value * 100) / $totalStudent),2);
                                 break;
-                            case 8:     //Case 5 : is used For Display Row  of C(%) = Average of Student Selected Answer C(%)
-                                $value = ($QuestionAnswerData[$questionKey]['C']) ?? 0;
+                            case 8:     //Case 5 : is used For Display Row  of 3(%) = Average of Student Selected Answer 3(%)
+                                $value = ($QuestionAnswerData[$questionKey]['3']) ?? 0;
                                 $rowArray[] =  round((($value * 100) / $totalStudent),2);
                                 break;
-                            case 9:     //Case 5 : is used For Display Row  of D(%) = Average of Student Selected Answer D(%)
-                                $value = ($QuestionAnswerData[$questionKey]['D']) ?? 0;
+                            case 9:     //Case 5 : is used For Display Row  of 4(%) = Average of Student Selected Answer 4(%)
+                                $value = ($QuestionAnswerData[$questionKey]['4']) ?? 0;
                                 $rowArray[] =  round((($value * 100) / $totalStudent),2);
                                 break;
                             case 10:     //Case 5 : is used For Display Row  of N(%) = Average of Student Selected Answer N(%)
@@ -2723,7 +2722,7 @@ trait Common {
                                 $rowArray[] =  round((($value * 100) / $totalStudent),2);
                                 break;
                             case 11://Average of Student Selected  Correct Answer(%)
-                                $value = ($QuestionAnswerData[$questionKey]['A']) ?? 0;
+                                $value = ($QuestionAnswerData[$questionKey]['1']) ?? 0;
                                 $rowArray[] =  round((($value * 100) / $totalStudent),2);
                                 break;
                         }
@@ -3105,4 +3104,27 @@ trait Common {
         }
         return [];
     }
+
+    /**
+     * USE: Get Overall Percentile
+     */
+    public static function GetStudentPercentileRank($examId,$studentId){
+        $PercentileRankValue = 0;
+        $overAllExamData = AttemptExams::where(cn::ATTEMPT_EXAMS_EXAM_ID,$examId)->get();
+        if(isset($overAllExamData) && !empty($overAllExamData)){
+            $overAllExamData = $overAllExamData->toArray();
+        }
+        $OverAllStudentAnswerCorrectInCorrectRank = array_column($overAllExamData,'student_ability'); 
+        $overAllNormalizeArray = [];
+        foreach($OverAllStudentAnswerCorrectInCorrectRank as $NormalizeAbility){
+            array_push($overAllNormalizeArray,Helper::getNormalizedAbility($NormalizeAbility));
+        }                
+        array_multisort($overAllNormalizeArray, SORT_ASC, $overAllExamData);
+        if(isset($overAllNormalizeArray) && !empty($overAllNormalizeArray)){
+            $self = new Self();
+            $PercentileRankValue = $self->getStudentPercentile(($overAllNormalizeArray[array_search($studentId, array_column($overAllExamData,'student_id'))]),count($overAllExamData),array_unique($overAllNormalizeArray));
+        }
+        return $PercentileRankValue;
+    }
+
 }

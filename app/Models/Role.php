@@ -6,11 +6,11 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Kyslik\ColumnSortable\Sortable;
 use App\Constants\DbConstant as cn;
-
+use Illuminate\Database\Eloquent\SoftDeletes;
 
 class Role extends Model
 {
-    use HasFactory,Sortable;
+    use HasFactory, Sortable, SoftDeletes;
 
     protected $table = cn::ROLES_TABLE_NAME;
 

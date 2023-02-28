@@ -871,7 +871,7 @@ class ExamController extends Controller
      * USE : View attemped exams related students
      */
     public function getListAttemptedExamsStudents(Request $request, $id){
-        // try{
+        try{
             $studentList = [];
             $attemptedExamStudentIds = [];
             $items = $request->items ?? 10;
@@ -927,16 +927,16 @@ class ExamController extends Controller
             }
             $Grades = Grades::all();
             return view('backend/exams/list_attemped_exams_student',compact('studentList','Grades','attemptedExamStudentIds','examsData','countStudentData','items'));
-        // }catch(Exception $exception){
-        //     return back()->withError($exception->getMessage());
-        // }
+        }catch(Exception $exception){
+            return back()->withError($exception->getMessage());
+        }
     }
 
     /**
      * USE : Get using AjaxResult for exams
      */
     public function getAjaxExamResult(Request $request, $examId, $studentId = 0){
-        // try {
+        try {
             $isGroupId = (isset($request->isGroupId) && !empty($request->isGroupId)) ? $request->isGroupId : '';
 
             ini_set('max_execution_time', -1);
@@ -997,10 +997,6 @@ class ExamController extends Controller
                                             if(isset($question)){
                                                 // Store question natural ability and normalized ability
                                                 $difficultiesValue = $this->GetDifficultiesValueByCalibrationId($ExamData->{cn::EXAM_CALIBRATION_ID_COL},$question->id);
-                                                // $difficultValue = [
-                                                //     'natural_difficulty' => $question->PreConfigurationDifficultyLevel->title ?? '',
-                                                //     'normalized_difficulty' => $this->getNormalizedAbility($question->PreConfigurationDifficultyLevel->title)
-                                                // ];
                                                 $difficultValue = [
                                                     'natural_difficulty' => $difficultiesValue ?? '',
                                                     'normalized_difficulty' => $this->getNormalizedAbility($difficultiesValue)
@@ -1126,9 +1122,9 @@ class ExamController extends Controller
                 $result['html'] = (string)View::make('backend.reports.admin_report_result_show',compact('difficultyLevels','examType','nodeWeaknessList','nodeWeaknessListCh','Questions','AttemptExamData','ExamData','percentageOfAnswer','AllWeakness','questionDifficultyGraph','PerQuestionSpeed','percentageOfAnswerSchool','percentageOfAnswerAllSchool','studentId'));
                 return $this->sendResponse($result);
             }
-        // } catch (Exception $ex) {
-        //     return back()->withError($ex->getMessage());
-        // }
+        } catch (Exception $ex) {
+            return back()->withError($ex->getMessage());
+        }
     }
 
     /**
@@ -1189,10 +1185,6 @@ class ExamController extends Controller
                                         $countanswer = [];
                                         if(isset($question)){
                                             $difficultiesValue = $this->GetDifficultiesValueByCalibrationId($ExamData->{cn::EXAM_CALIBRATION_ID_COL},$question->id);
-                                            // $difficultValue = [
-                                            //     'natural_difficulty' => $question->PreConfigurationDifficultyLevel->title ?? '',
-                                            //     'normalized_difficulty' => $this->getNormalizedAbility($question->PreConfigurationDifficultyLevel->title)
-                                            // ];
                                             $difficultValue = [
                                                 'natural_difficulty' => $difficultiesValue ?? '',
                                                 'normalized_difficulty' => $this->getNormalizedAbility($difficultiesValue)
@@ -1325,8 +1317,8 @@ class ExamController extends Controller
     public function getExamResult(Request $request, $examId, $studentId = 0){
         // try {
             $totalQuestionDifficulty = ['Level1' => 0,'Level2' => 0,'Level3' => 0,'Level4' => 0,'Level5' => 0,'correct_Level1' => 0,'correct_Level2' => 0,'correct_Level3' => 0,'correct_Level4' => 0,'correct_Level5' => 0];
-            $difficultyLevels = PreConfigurationDiffiltyLevel::all();
-            //$difficultyLevels = PreConfigurationDiffiltyLevel::get();
+            //$difficultyLevels = PreConfigurationDiffiltyLevel::all();
+            $difficultyLevels = PreConfigurationDiffiltyLevel::get();
             $speed = 0;
             $arrayOfExams = explode(',',$examId);
             $studentId = ($studentId) ? $studentId : Auth::user()->{cn::USERS_ID_COL};
@@ -1337,10 +1329,6 @@ class ExamController extends Controller
             $isSelfLearningExercise = ($ExamData->{cn::EXAM_TYPE_COLS} == 1 && $ExamData->{cn::EXAM_TABLE_SELF_LEARNING_TEST_TYPE_COL} == 1) ? true : false;
             $isSelfLearningTestingZone = ($ExamData->{cn::EXAM_TYPE_COLS} == 1 && $ExamData->{cn::EXAM_TABLE_SELF_LEARNING_TEST_TYPE_COL} == 2) ? true : false;
             if(isset($ExamData)){
-                // $Questions = Question::with(['answers','PreConfigurationDifficultyLevel'])
-                //             ->whereIn(cn::QUESTION_TABLE_ID_COL,explode(',',$ExamData->{cn::EXAM_TABLE_QUESTION_IDS_COL}))
-                //             ->orderByRaw('FIELD(id,'.$ExamData->question_ids.')')
-                //             ->get();
                 $Questions = Question::with(['answers'])
                             ->whereIn(cn::QUESTION_TABLE_ID_COL,explode(',',$ExamData->{cn::EXAM_TABLE_QUESTION_IDS_COL}))
                             ->orderByRaw('FIELD(id,'.$ExamData->question_ids.')')
@@ -1348,10 +1336,6 @@ class ExamController extends Controller
                 if(isset($Questions) && !empty($Questions)){
                     foreach($Questions as $QueKey => $QuestionsVal){
                         $difficultiesValue = $this->GetDifficultiesValueByCalibrationId($ExamData->{cn::EXAM_CALIBRATION_ID_COL},$QuestionsVal->id);
-                        // $difficultValue = [
-                        //     'natural_difficulty' => $QuestionsVal->PreConfigurationDifficultyLevel->title ?? '',
-                        //     'normalized_difficulty' => $this->getNormalizedAbility($QuestionsVal->PreConfigurationDifficultyLevel->title)
-                        // ];
                         $difficultValue = [
                             'natural_difficulty' => $difficultiesValue ?? '',
                             'normalized_difficulty' => $this->getNormalizedAbility($difficultiesValue)
@@ -1372,6 +1356,7 @@ class ExamController extends Controller
             $AllWeakness = [];
             $apiData = [];
             /*****************************/
+            $studentOverAllPercentile = $this->GetStudentPercentileRank($examId, $studentId);
             if(!empty($ExamData)){
                 $ResultList['examDetails'] = $ExamData->toArray();
                 if(!empty($ExamData->{cn::EXAM_TABLE_STUDENT_IDS_COL})){
@@ -1513,7 +1498,9 @@ class ExamController extends Controller
             if(!empty($AttemptExamData)){
                 // Get Percentage of difficulty level
                 $questionDifficultyGraph = $this->GetPercentageQuestionDifficultyLevel($totalQuestionDifficulty);
-                return view('backend.exams.exams_result',compact('isExerciseExam','isTestExam','difficultyLevels','isSelfLearningExam','isSelfLearningExercise','isSelfLearningTestingZone','studentId','nodeWeaknessList','nodeWeaknessListCh','Questions','AttemptExamData','ExamData','percentageOfAnswer','AllWeakness','questionDifficultyGraph'));
+                return view('backend.exams.exams_result',compact('studentOverAllPercentile','isExerciseExam','isTestExam','difficultyLevels','isSelfLearningExam','isSelfLearningExercise',
+                'isSelfLearningTestingZone','studentId','nodeWeaknessList','nodeWeaknessListCh','Questions','AttemptExamData','ExamData','percentageOfAnswer',
+                'AllWeakness','questionDifficultyGraph'));
             }
         // } catch (Exception $ex) {
         //     return back()->withError($ex->getMessage());
@@ -1524,7 +1511,7 @@ class ExamController extends Controller
      * USE : Get Admin Result for exams
      */
     public function getAdminExamResult(Request $request, $examId, $studentId = 0){ 
-        // try {
+        try {
             $totalQuestionDifficulty = ['Level1' => 0,'Level2' => 0,'Level3' => 0,'Level4' => 0,'Level5' => 0,'correct_Level1' => 0,'correct_Level2' => 0,'correct_Level3' => 0,'correct_Level4' => 0,'correct_Level5' => 0];
             // $difficultyLevels = PreConfigurationDiffiltyLevel::all();
             $difficultyLevels = PreConfigurationDiffiltyLevel::get();
@@ -1536,10 +1523,6 @@ class ExamController extends Controller
                 $Questions = Question::with(['answers'])->whereIn(cn::QUESTION_TABLE_ID_COL,explode(',',$ExamData->{cn::EXAM_TABLE_QUESTION_IDS_COL}))->get();
                 if(isset($Questions) && !empty($Questions)){
                     foreach($Questions as $QueKey => $QuestionsVal){
-                        // $difficultValue = [
-                        //     'natural_difficulty' => $QuestionsVal->PreConfigurationDifficultyLevel->title ?? '',
-                        //     'normalized_difficulty' => $this->getNormalizedAbility($QuestionsVal->PreConfigurationDifficultyLevel->title)
-                        // ];
                         $difficultiesValue = $this->GetDifficultiesValueByCalibrationId($ExamData->{cn::EXAM_CALIBRATION_ID_COL},$QuestionsVal->id);
                         $difficultValue = [
                             'natural_difficulty' => $difficultiesValue ?? '',
@@ -1701,9 +1684,9 @@ class ExamController extends Controller
                 $questionDifficultyGraph = $this->GetPercentageQuestionDifficultyLevel($totalQuestionDifficulty);
                 return view('backend.exams.admin_exams_result',compact('difficultyLevels','isSelfLearningExam','studentId','nodeWeaknessList','nodeWeaknessListCh','Questions','AttemptExamData','ExamData','percentageOfAnswer','AllWeakness','questionDifficultyGraph'));
             }
-        // } catch (Exception $ex) {
-        //     return back()->withError($ex->getMessage());
-        // }
+        } catch (Exception $ex) {
+            return back()->withError($ex->getMessage());
+        }
     }
 
     /***
@@ -2008,8 +1991,6 @@ class ExamController extends Controller
                 }
             }
         }
-
-        //echo '<pre>';print_r($data);die;
         $percentage = [];
         if(!empty($data)){
             foreach($data as $quesKey => $questionArray){

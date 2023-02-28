@@ -472,7 +472,7 @@
                                             <select name="learning_unit_id[]" class="form-control select-option" id="learning_unit" multiple >
                                                 @if(isset($LearningUnits) && !empty($LearningUnits))
                                                     @foreach ($LearningUnits as $learningUnitKey => $learningUnit)
-                                                        <option value="{{$learningUnit->id}}" @if(in_array($learningUnit->id,$SelectedLearningUnit)) selected @endif>{{ $learningUnit->{'name_'.app()->getLocale()} }}</option>
+                                                        <option value="{{$learningUnit['id']}}" @if(in_array($learningUnit['id'],$SelectedLearningUnit)) selected @endif>{{ $learningUnit['index'] }}. {{ $learningUnit['name_'.app()->getLocale()] }} {{ $learningUnit['id'] }}</option>
                                                     @endforeach
                                                 @else
                                                     <option value="">{{__('languages.no_learning_units_available')}}</option>
@@ -504,28 +504,28 @@
                                         </div>
                                         @foreach ($LearningObjectives as $learningObjectivesKey => $learningObjectives)
                                         @php
-                                            $noOfQuestionPerLearningObjective=App\Helpers\Helper::getNoOfQuestionPerLearningObjective($learningObjectives->learning_unit_id,$learningObjectives->id);
+                                            $noOfQuestionPerLearningObjective=App\Helpers\Helper::getNoOfQuestionPerLearningObjective($learningObjectives['learning_unit_id'],$learningObjectives['id']);
                                             $existingDifficultySelectd = ($exam->difficulty_levels) ? explode(',',$exam->difficulty_levels) : [];
-                                            if(isset($learningObjectivesConfiguration[$learningObjectives->learning_unit_id]['learning_objective'][$learningObjectives->id]['learning_objectives_difficulty_level'])) {
-                                                $existingDifficultySelectd = $learningObjectivesConfiguration[$learningObjectives->learning_unit_id]['learning_objective'][$learningObjectives->id]['learning_objectives_difficulty_level'];
+                                            if(isset($learningObjectivesConfiguration[$learningObjectives['learning_unit_id']]['learning_objective'][$learningObjectives['id']]['learning_objectives_difficulty_level'])) {
+                                                $existingDifficultySelectd = $learningObjectivesConfiguration[$learningObjectives['learning_unit_id']]['learning_objective'][$learningObjectives['id']]['learning_objectives_difficulty_level'];
                                             }
                                             $get_no_of_question_learning_objectives=$noOfQuestionPerLearningObjective;
-                                            if(isset($learningObjectivesConfiguration[$learningObjectives->learning_unit_id]['learning_objective'][$learningObjectives->id]['get_no_of_question_learning_objectives'])) {
-                                                $get_no_of_question_learning_objectives = $learningObjectivesConfiguration[$learningObjectives->learning_unit_id]['learning_objective'][$learningObjectives->id]['get_no_of_question_learning_objectives'];
+                                            if(isset($learningObjectivesConfiguration[$learningObjectives['learning_unit_id']]['learning_objective'][$learningObjectives['id']]['get_no_of_question_learning_objectives'])) {
+                                                $get_no_of_question_learning_objectives = $learningObjectivesConfiguration[$learningObjectives['learning_unit_id']]['learning_objective'][$learningObjectives['id']]['get_no_of_question_learning_objectives'];
                                             }
                                         @endphp
-                                        @if(isset($learningObjectivesConfiguration[$learningObjectives->learning_unit_id]['learning_objective'][$learningObjectives->id]))
+                                        @if(isset($learningObjectivesConfiguration[$learningObjectives['learning_unit_id']]['learning_objective'][$learningObjectives['id']]))
                                         <div class="selected-learning-objectives-difficulty">
-                                            <input type="checkbox" name="learning_unit[{{$learningObjectives->learning_unit_id}}][learning_objective][{{ $learningObjectives->id }}]" value="{{ $learningObjectives->id }}" class="learning_objective_checkbox" @if(isset($learningObjectivesConfiguration[$learningObjectives->learning_unit_id]['learning_objective'][$learningObjectives->id])) checked @endif  {{ $fieldDisabled }} >
-                                            <label>{{ $learningObjectives->foci_number }} {{ $learningObjectives->{'title_'.app()->getLocale()} }}</label>
-                                            <select name="learning_unit[{{$learningObjectives->learning_unit_id}}][learning_objective][{{ $learningObjectives->id }}][learning_objectives_difficulty_level][]" class="form-control select-option learning_objectives_difficulty_level" multiple  {{ $fieldDisabled }} {{ ($exam->difficulty_mode=='auto' ? 'disabled' : '') }}>
+                                            <input type="checkbox" name="learning_unit[{{$learningObjectives['learning_unit_id']}}][learning_objective][{{ $learningObjectives['id'] }}]" value="{{ $learningObjectives['id'] }}" class="learning_objective_checkbox" @if(isset($learningObjectivesConfiguration[$learningObjectives['learning_unit_id']]['learning_objective'][$learningObjectives['id']])) checked @endif  {{ $fieldDisabled }} >
+                                            <label> {{ $learningObjectives['index'] }} {{ $learningObjectives['title_'.app()->getLocale()] }} ({{ $learningObjectives['foci_number'] }})</label>
+                                            <select name="learning_unit[{{$learningObjectives['learning_unit_id']}}][learning_objective][{{ $learningObjectives['id'] }}][learning_objectives_difficulty_level][]" class="form-control select-option learning_objectives_difficulty_level" multiple  {{ $fieldDisabled }} {{ ($exam->difficulty_mode=='auto' ? 'disabled' : '') }}>
                                                 <option value="1" @if(in_array(1,$existingDifficultySelectd)) selected @endif >1</option>
                                                 <option value="2" @if(in_array(2,$existingDifficultySelectd)) selected @endif >2</option>
                                                 <option value="3" @if(in_array(3,$existingDifficultySelectd)) selected @endif >3</option>
                                                 <option value="4" @if(in_array(4,$existingDifficultySelectd)) selected @endif >4</option>
                                                 <option value="5" @if(in_array(5,$existingDifficultySelectd)) selected @endif >5</option>
                                             </select>
-                                            <input type="text" name="learning_unit[{{$learningObjectives->learning_unit_id}}][learning_objective][{{ $learningObjectives->id }}][get_no_of_question_learning_objectives]" value="{{ $get_no_of_question_learning_objectives }}" class="get_no_of_question_learning_objectives"  min="{{ $noOfQuestionPerLearningObjective }}" max="{{$RequiredQuestionPerSkill['maximum_question_per_skill']}}" {{ $fieldDisabled }} >
+                                            <input type="text" name="learning_unit[{{$learningObjectives['learning_unit_id']}}][learning_objective][{{ $learningObjectives['id'] }}][get_no_of_question_learning_objectives]" value="{{ $get_no_of_question_learning_objectives }}" class="get_no_of_question_learning_objectives"  min="{{ $noOfQuestionPerLearningObjective }}" max="{{$RequiredQuestionPerSkill['maximum_question_per_skill']}}" {{ $fieldDisabled }} >
                                         </div>
                                         @endif
                                         @endforeach
@@ -828,7 +828,8 @@ $(function (){
 							// $(data.data).each(function() {
                             $.each(data.data,function(index,value) {
 								var option = $('<option />');
-								option.attr('value', this.id).text(this["name_"+APP_LANGUAGE]);
+								// option.attr('value', this.id).text(this["name_"+APP_LANGUAGE]);
+                                option.attr('value', this.id).text(this['index'] +'.'+' '+this["name_"+APP_LANGUAGE]+' '+'('+this['id']+')');
 								option.attr('selected', 'selected');
 								$(classNameLearningUnit).append(option);
 							});

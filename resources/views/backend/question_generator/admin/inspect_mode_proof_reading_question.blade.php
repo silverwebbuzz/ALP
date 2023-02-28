@@ -310,7 +310,8 @@ $(function (){
 						if(data.data){
 							$(data.data).each(function() {
 								var option = $('<option />');
-								option.attr('value', this.id).text(this["name_"+APP_LANGUAGE]);
+								// option.attr('value', this.id).text(this["name_"+APP_LANGUAGE]);
+                                option.attr('value', this.id).text(this['index'] +'.'+' '+this["name_"+APP_LANGUAGE]+' '+'('+this['id']+')');
 								option.attr('selected', 'selected');
 								$(classNameLearningUnit).append(option);
 							});

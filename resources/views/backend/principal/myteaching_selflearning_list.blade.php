@@ -756,7 +756,8 @@ $(function() {
 							// $(data.data).each(function() {
 							$.each(data.data,function(index,value) {
 								var option = $('<option />');
-								option.attr('value', this.id).text(this["name_"+APP_LANGUAGE]);
+								// option.attr('value', this.id).text(this["name_"+APP_LANGUAGE]);
+								option.attr('value', this.id).text(this['index'] +'.'+' '+this["name_"+APP_LANGUAGE]+' '+'('+this['id']+')');
 								option.attr('selected', 'selected');
 								$('#learning_unit').append(option);
 							});

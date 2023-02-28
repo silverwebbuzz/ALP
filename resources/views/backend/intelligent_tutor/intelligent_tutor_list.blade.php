@@ -184,10 +184,10 @@
                                                         @foreach ($LearningUnit as $learningUnitKey => $learning_unit)
                                                             @if(isset($requestData['learning_tutor_learning_unit']))
                                                                 {{-- <option value="{{$learning_unit->id}}" {{(in_array($learning_unit->id,$requestData['learning_tutor_learning_unit'])) ? 'selected' : ''}}>{{$learning_unit->{'name_'.app()->getLocale()} }}</option> --}}
-                                                                <option value="{{$learning_unit['id']}}" {{(in_array($learning_unit['id'],$requestData['learning_tutor_learning_unit'])) ? 'selected' : ''}}>{{$learning_unit['name_'.app()->getLocale()] }}</option>
+                                                                <option value="{{$learning_unit['id']}}" {{(in_array($learning_unit['id'],$requestData['learning_tutor_learning_unit'])) ? 'selected' : ''}}>{{$learning_unit['index'] }}. {{$learning_unit['name_'.app()->getLocale()] }} ({{$learning_unit['id'] }})</option>
                                                             @else
                                                             {{-- <option value="{{$learning_unit->id}}" selected>{{$learning_unit->{'name_'.app()->getLocale()} }}</option> --}}
-                                                            <option value="{{$learning_unit['id']}}" selected>{{$learning_unit['name_'.app()->getLocale()] }}</option>
+                                                            <option value="{{$learning_unit['id']}}" selected>{{$learning_unit['index'] }}. {{$learning_unit['name_'.app()->getLocale()] }} ({{$learning_unit['id'] }})</option>
                                                             @endif
                                                         @endforeach
                                                     @else
@@ -202,10 +202,10 @@
                                                         @foreach ($LearningObjective as $learningObjectiveKey => $learning_objective)
                                                             @if(isset($requestData['learning_tutor_learning_objectives']))
                                                                 {{-- <option value="{{$learning_objective->id}}" {{(in_array($learning_objective->id,$requestData['learning_tutor_learning_objectives'])) ? 'selected' : ''}}>{{$learning_objective->foci_number }} {{$learning_objective->{'title_'.app()->getLocale()} }}</option> --}}
-                                                                <option value="{{$learning_objective['id']}}" {{(in_array($learning_objective['id'],$requestData['learning_tutor_learning_objectives'])) ? 'selected' : ''}}>{{$learning_objective['foci_number'] }} {{$learning_objective['title_'.app()->getLocale()] }}</option>
+                                                                <option value="{{$learning_objective['id']}}" {{(in_array($learning_objective['id'],$requestData['learning_tutor_learning_objectives'])) ? 'selected' : ''}}>{{$learning_objective['index'] }} {{$learning_objective['title_'.app()->getLocale()] }} ({{$learning_objective['foci_number'] }})</option>
                                                             @else
                                                                 {{-- <option value="{{$learning_objective->id}}" selected>{{$learning_objective->foci_number }} {{$learning_objective->{'title_'.app()->getLocale()} }}</option> --}}
-                                                                <option value="{{$learning_objective['id']}}" selected>{{$learning_objective['foci_number'] }} {{$learning_objective['title_'.app()->getLocale()] }}</option>
+                                                                <option value="{{$learning_objective['id']}}" selected>{{$learning_objective['index'] }} {{$learning_objective['title_'.app()->getLocale()] }} ({{$learning_objective['foci_number'] }})</option>
                                                             @endif
                                                         @endforeach
                                                     @else

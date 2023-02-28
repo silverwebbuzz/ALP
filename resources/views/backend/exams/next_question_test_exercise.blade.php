@@ -15,11 +15,6 @@
         </div>
 
         <div class="attmp-main-answer">
-            @php
-            $random_number_array = range(1,4);
-            shuffle($random_number_array );
-            $random_number_array = array_slice($random_number_array ,0,4);
-            @endphp
             @if(isset($question_position) && !empty($question_position) && isset($question_position[$Question->id]))
                 @php
                 if($question_position[$Question->id]!=""){
@@ -151,7 +146,7 @@
         @endif
         @if($Questionslastid == $Question->id)
         <div class="attmp-submit-btn attmp-butns">
-            <button type="submit" class="btn btn-success mr-2" id="submitquestion" @if($Questionslastid == $Question->id) submit-id="1" @endif>
+            <button type="button" class="btn btn-success mr-2" id="submitquestion" @if($Questionslastid == $Question->id) submit-id="1" @endif>
             @if($examLanguage == 'en')
             {{__('languages.submit')}}
             @else

@@ -976,5 +976,4 @@ class Helper{
         $LearningUnitsList = LearningsUnits::where('strand_id',$strandId)->where('stage_id','<>',3)->get();
         return $LearningUnitsList;
     }
-
 }

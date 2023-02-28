@@ -411,7 +411,7 @@
                                                 @if(isset($LearningUnits) && !empty($LearningUnits))
                                                     @foreach ($LearningUnits as $learningUnitKey => $learningUnit)
                                                         {{-- <option value="{{ $learningUnit->id }}" selected>{{ $learningUnit->{'name_'.app()->getLocale()} }}</option> --}}
-                                                        <option value="{{ $learningUnit['id'] }}" selected>{{ $learningUnit['name_en'] }}</option>
+                                                        <option value="{{ $learningUnit['id'] }}" selected>{{$learningUnit['index']}}. {{ $learningUnit['name_en'] }} ({{$learningUnit['id']}})</option>
                                                     @endforeach
                                                 @else
                                                     <option value="">{{__('languages.no_learning_units_available')}}</option>
@@ -462,7 +462,8 @@
                                     </div> --}}
                                     <div class="selected-learning-objectives-difficulty">
                                         <input type="checkbox" name="learning_unit[{{$learningObjectives['learning_unit_id']}}][learning_objective][{{ $learningObjectives['id'] }}]" value="{{ $learningObjectives['id'] }}" class="learning_objective_checkbox" checked>
-                                        <label>{{ $learningObjectives['foci_number'] }} {{ $learningObjectives['title_'.app()->getLocale()] }}</label>
+                                        {{-- <label>{{ $learningObjectives['foci_number'] }} {{ $learningObjectives['title_'.app()->getLocale()] }}</label> --}}
+                                        <label>{{$learningObjectives['index']}} {{ $learningObjectives['title_'.app()->getLocale()] }} ({{ $learningObjectives['foci_number'] }})</label>
                                         <select name="learning_unit[{{$learningObjectives['learning_unit_id']}}][learning_objective][{{ $learningObjectives['id'] }}][learning_objectives_difficulty_level][]" class="form-control select-option learning_objectives_difficulty_level" multiple>
                                             <option value="1">1</option>
                                             <option value="2">2</option>
@@ -582,7 +583,7 @@
                                                         @if(isset($LearningUnits) && !empty($LearningUnits))
                                                             @foreach ($LearningUnits as $learningUnitKey => $learningUnit)
                                                                 {{-- <option value="{{$learningUnit->id}}" @if($learningUnitKey == 0) selected @endif>{{ $learningUnit->{'name_'.app()->getLocale()} }}</option> --}}
-                                                                <option value="{{ $learningUnit['id'] }}"  @if($learningUnitKey == 0) selected @endif>{{ $learningUnit['name_en'] }}</option>
+                                                                <option value="{{ $learningUnit['id'] }}"  @if($learningUnitKey == 0) selected @endif>{{ $learningUnit['index'] }}. {{ $learningUnit['name_'.app()->getLocale()] }} ({{ $learningUnit['id']}})</option>
                                                             @endforeach
                                                         @else
                                                             <option value="">{{__('languages.no_learning_units_available')}}</option>
@@ -595,7 +596,7 @@
                                                         @if(isset($LearningObjectives) && !empty($LearningObjectives))
                                                             @foreach ($LearningObjectives as $learningObjectivesKey => $learningObjectives)
                                                                 {{-- <option value="{{ $learningObjectives->id }}" @if($learningObjectivesKey == 0) selected @endif>{{ $learningObjectives->foci_number }} {{ $learningObjectives->{'title_'.app()->getLocale()} }}</option> --}}
-                                                                <option value="{{ $learningObjectives['id'] }}" @if($learningObjectivesKey == 0) selected @endif>{{ $learningObjectives['foci_number'] }} {{ $learningObjectives['title_'.app()->getLocale()] }}</option>
+                                                                <option value="{{ $learningObjectives['id'] }}" @if($learningObjectivesKey == 0) selected @endif>{{ $learningObjectives['index'] }} {{ $learningObjectives['title_'.app()->getLocale()] }} ({{ $learningObjectives['foci_number'] }})</option>
                                                             @endforeach
                                                         @else
                                                             <option value="">{{__('languages.no_learning_objectives_available')}}</option>
@@ -914,7 +915,7 @@ $(function (){
 							// $(data.data).each(function() {
                             $.each(data.data,function(index,value) {
 								var option = $('<option />');
-								option.attr('value', this.id).text(this["name_"+APP_LANGUAGE]);
+								option.attr('value', this.id).text(this['index'] +'.'+' '+this["name_"+APP_LANGUAGE]+' '+'('+this['id']+')');
 								option.attr('selected', 'selected');
 								$(classNameLearningUnit).append(option);
 							});
@@ -982,7 +983,7 @@ $(function (){
                                 var learningObjectivesTitle=eval('this.title_'+currentLanguage);
                                 html += '<div class="selected-learning-objectives-difficulty">\
                                             <input type="checkbox" name="learning_unit['+this.learning_unit_id+'][learning_objective]['+this.id+']" value="'+this.learning_unit_id+'" class="learning_objective_checkbox" checked>\
-                                            <label>'+this.foci_number+' '+learningObjectivesTitle+'</label>';
+                                            <label>'+ this.index+' '+learningObjectivesTitle+' ('+this.foci_number+ ')</label>';
                                             if($('#difficulty_mode').val() == 'manual'){
                                             html += '<select name="learning_unit['+this.learning_unit_id+'][learning_objective]['+this.id+'][learning_objectives_difficulty_level][]" class="form-control select-option learning_objectives_difficulty_level" multiple>\
                                                         <option value="1">1</option>\
@@ -1187,7 +1188,6 @@ function setDefaultDifficultyLevels(){
             // }
             if(response.data){
                 var qLength=Object.keys(response.data.questionIds).length;
-                console.log(qLength);
                 var total_no_of_questions=parseInt($("#total_no_of_questions").val());
                 if(qLength < total_no_of_questions){
                     toastr.warning(NOT_ENOUGH_QUESTIONS_INTO_SOME_OBJECTIVES);

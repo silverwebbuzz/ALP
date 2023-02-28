@@ -43,13 +43,13 @@ class OrderingLearningObjectives extends Controller
                                             ->where('learning_objective_id',$objectiveData['id'])
                                             ->update([
                                                 'position'=>$orderingFinalArray[$orderObjectiveKey],
-                                                'index'    => (array_search($objectiveData['id'],$orderingFinalArray) + 1 )
+                                                'index'  =>  $request->SelectedIndex.'.'.(array_search($orderingFinalArray[$orderObjectiveKey],$orderingFinalArray) + 1)
                                             ]);
                 }
             }                           
         }else{
             $LearningsUnits =  LearningsUnits::where('status',1)->where('stage_id','<>',3)->get();
-            foreach($LearningsUnits as $learningUnit){
+            foreach($LearningsUnits as $learningUnitKey => $learningUnit){
                 $LearningsObjectivesData = LearningsObjectives::where('status',1)->where('stage_id','<>',3)->where('learning_unit_id',$learningUnit->id)->get();
                 foreach($LearningsObjectivesData as $learningObjectiveKey => $learningObjective){
                     $postData = [
@@ -57,12 +57,12 @@ class OrderingLearningObjectives extends Controller
                                     'learning_unit_id'          => $learningObjective->learning_unit_id,
                                     'learning_objective_id'     => $learningObjective->id,
                                     'position'                  => $learningObjective->id,
-                                    'index'                     => ($learningObjectiveKey + 1) 
+                                    'index'                     => ($learningUnitKey + 1).'.'.($learningObjectiveKey + 1)
                                 ];
                     LearningObjectiveOrdering::create($postData);
                 }
             }
-            // update
+            // update selected objective
             if(isset($request->finalOrdering) && !empty($request->finalOrdering)){
                 $orderingObjectiveData = LearningObjectiveOrdering::where('school_id',Auth::user()->school_id)
                                             ->where('learning_unit_id',$request->learningUnit)
@@ -73,11 +73,23 @@ class OrderingLearningObjectives extends Controller
                                             ->where('learning_objective_id',$objectiveData['id'])
                                             ->update([
                                                 'position'=>$orderingFinalArray[$orderObjectiveKey],
-                                                'index'  =>  (array_search($objectiveData['id'],$orderingFinalArray) +1 )
+                                                'index'  =>  $request->SelectedIndex.'.'.(array_search($objectiveData['id'],$orderingFinalArray) + 1)
                                             ]);
+                }
+                // Update old objective value
+                $orderingObjectiveData = LearningObjectiveOrdering::where('school_id',Auth::user()->school_id)
+                                            ->where('learning_unit_id',$request->SelectedIndex)
+                                            ->get()->toArray();
+                foreach($orderingObjectiveData as $orderObjectiveKey => $objectiveData){
+                    LearningObjectiveOrdering::where('school_id',Auth::user()->school_id)
+                    ->where('learning_unit_id',$request->SelectedIndex)
+                    ->where('learning_objective_id',$objectiveData['id'])
+                    ->update([
+                        'index'  =>  $request->learningUnit.'.'.( $orderObjectiveKey + 1)
+                    ]);
                 }
             }  
         }
-        return back()->with('success_msg', __('Ordering Sorted...'));
+        return back()->with('success_msg', __('languages.ordering_sorted'));
     }
 }

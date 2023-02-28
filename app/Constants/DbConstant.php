@@ -10,8 +10,10 @@ class DbConstant {
     const PARENT_ROLE_ID            = 4;
     const SCHOOL_ROLE_ID            = 5;
     const EXTERNAL_RESOURCE_ROLE_ID = 6;
-    const PRINCIPAL_ROLE_ID = 7;
-    const SUB_ADMIN_ROLE_ID = 8;
+    const PRINCIPAL_ROLE_ID         = 7;
+    const SUB_ADMIN_ROLE_ID         = 8;  // SUB_ADMIN_ROLE = Panel Head
+    const PANEL_HEAD_ROLE_ID        = 8;
+    const CO_ORDINATOR_ROLE_ID      = 9;
 
     //Default Grade 
     const DEFAULT_GRADE_NAME = '4';
@@ -47,6 +49,7 @@ class DbConstant {
     const USERS_DATE_OF_BIRTH_COL ='dob';
     const USERS_PASSWORD_COL = 'password';
     const USERS_PROFILE_PHOTO_COL = 'profile_photo';
+    const USERS_IS_SCHOOL_ADMIN_PRIVILEGE_ACCESS_COL = 'is_school_admin_privilege_access';
     const USERS_ROLE_ID_COL = 'role_id';
     const USERS_GRADE_ID_COL ='grade_id';
     const USERS_CLASS_ID_COL = 'class_id';
@@ -1003,6 +1006,7 @@ class DbConstant {
     const HISTORY_STUDENT_QUESTION_ANSWER_EXAM_ID_COL = "exam_id";
     const HISTORY_STUDENT_QUESTION_ANSWER_QUESTION_ID_COL = "question_id";
     const HISTORY_STUDENT_QUESTION_ANSWER_SELECTED_ANSWER_ID_COL = "selected_answer_id";
+    const HISTORY_STUDENT_QUESTION_ANSWER_ANSWER_ORDERING_COL = 'answer_ordering';
     const HISTORY_STUDENT_QUESTION_ANSWER_NO_OF_SECOND_COL = "no_of_second";
     const HISTORY_STUDENT_QUESTION_ANSWER_IS_TRIAL_NO_COL = "is_trial_no";
     const HISTORY_STUDENT_QUESTION_ANSWER_IS_ANSWERED_FLAG_COL = "is_answered_flag";

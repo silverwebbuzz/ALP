@@ -189,11 +189,6 @@
 												@endphp
 												<td>{{date('d/m/Y',strtotime($exam->to_date))}} {{!empty($exam->end_time) ? $exam->end_time.':00' : '00:00:00'}}
 													@if(($exam->ExamSchoolMapping[0]['status'] == 'publish') && ($exam->created_by == Auth::user()->id || (!empty($AllTeachers) && in_array($exam->created_by,$AllTeachers))))
-													<!-- <span class="badge badge-info end_date_pointer change_end_date_of_exam" data-examid="{{$exam->id}}" 
-														examEndDate="{{date('d/m/Y',strtotime($exam->to_date))}}" refrence_no="{{$exam->reference_no}}"
-														title="{{$exam->title}}" dateType="EndDate"
-														>{{__('languages.change_exam_date')}}
-													</span> -->
 													<span class="badge badge-info end_date_pointer school_extend_exam_end_date" data-examid="{{$exam->id}}" 
 														examEndDate="{{date('d/m/Y',strtotime($exam->to_date))}}" refrence_no="{{$exam->reference_no}}"
 														title="{{$exam->title}}" dateType="EndDate"
@@ -202,7 +197,6 @@
 													@endif
 												</td>
 												{{-- <td>{{!empty($exam->result_date) ? date('d/m/Y',strtotime($exam->result_date)) : 'After Submit'}}</td> --}}
-												
 												<td>
 													{{ date('d/m/Y',strtotime($exam->result_date))}}
 													@if(($exam->ExamSchoolMapping[0]['status'] == 'publish') && ($exam->created_by == Auth::user()->id || (!empty($AllTeachers) && in_array($exam->created_by,$AllTeachers))))
@@ -231,7 +225,7 @@
 													@endif
 												</td>
 												<td>
-													@if($exam->created_by_user == 'super_admin' || $exam->created_by_user == 'school_admin' || $exam->created_by_user == 'principal')
+													@if($exam->created_by_user == 'super_admin' || $exam->created_by_user == 'school_admin' || $exam->created_by_user == 'principal' || $exam->created_by_user == 'teacher' || $exam->created_by_user == 'sub_admin')
 													<select name="exam_status" id="update_exam_status" class="update_exam_status" data-examid="{{$exam->id}}"  {{ $exam->exam_type == 1 ? 'disabled' : ''}} >
 														<option value="">{{__('languages.select_status')}}</option>
 														<option value="publish" {{$exam->ExamSchoolMapping[0]['status'] == 'publish' ? 'selected' : ''}}>{{__('languages.publish')}}</option>
@@ -257,7 +251,7 @@
 
 												<!-- If Exams Is Publish then display view student result icon -->
 												@if($exam->ExamSchoolMapping[0]['status'] == 'publish')
-													@if($exam->created_by_user == 'super_admin' || $exam->created_by_user == 'school_admin' || $exam->created_by_user == 'principal')
+													@if($exam->created_by_user == 'super_admin' || $exam->created_by_user == 'school_admin' || $exam->created_by_user == 'principal' || $exam->created_by_user == 'teacher' || $exam->created_by_user == 'sub_admin')
 														<span>
 															<i class="fa fa-user add-peer-group" aria-hidden="true" title="{{__('languages.add_students')}}" data-id={{$exam->id}}></i>
 														</span>

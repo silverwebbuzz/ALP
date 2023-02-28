@@ -65,7 +65,6 @@ class UsersController extends Controller
                return  redirect(Helper::redirectRoleBasedDashboard(Auth::user()->{cn::USERS_ID_COL}));
             }
             $items = $request->items ?? 10;
-            
             $UsersList = $this->UsersRepository->getAllUsersList($items);
             $schoolList = School::all();
             $gradeList = Grades::all();

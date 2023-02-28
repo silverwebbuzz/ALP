@@ -181,7 +181,8 @@ $(function (){
 							// $(data.data).each(function() {
                             $.each(data.data,function(index,value) {
 								var option = $('<option />');
-								option.attr('value', this.id).text(this["name_"+APP_LANGUAGE]);
+								// option.attr('value', this.id).text(this["name_"+APP_LANGUAGE]);
+                                option.attr('value', this.id).text(this['index'] +'.'+' '+this["name_"+APP_LANGUAGE]+' '+'('+this['id']+')');
 								option.attr('selected', 'selected');
 								$(classNameLearningUnit).append(option);
 							});
@@ -247,8 +248,9 @@ $(function (){
 							$(data.data.LearningObjectives).each(function() {
                                 var learningObjectivesTitle=eval('this.title_'+currentLanguage);
                                 html += '<div class="selected-learning-objectives-difficulty">\
-                                            <input type="checkbox" name="learning_unit['+this.learning_unit_id+'][learning_objective]['+this.id+']" value="'+this.learning_unit_id+'" class="learning_objective_checkbox" checked>\
-                                            <label>'+this.foci_number+' '+learningObjectivesTitle+'</label>';
+                                            <input type="checkbox" name="learning_unit['+this.learning_unit_id+'][learning_objective]['+this.id+']" value="'+this.learning_unit_id+'" class="learning_objective_checkbox" checked>';
+                                            // <label>'+this.foci_number+' '+learningObjectivesTitle+'</label>';
+                                            '<label>'+ this.index+' '+learningObjectivesTitle+' ('+this.foci_number+ ')</label>';
                                             if($('#difficulty_mode').val() == 'manual'){
                                             html += '<select name="learning_unit['+this.learning_unit_id+'][learning_objective]['+this.id+'][learning_objectives_difficulty_level][]" class="form-control select-option learning_objectives_difficulty_level" multiple>\
                                                         <option value="1">1</option>\

@@ -95,7 +95,8 @@ $(function (){
 							// $(data.data).each(function() {
                             $.each(data.data,function(index,value) {
 								var option = $('<option />');
-								option.attr('value', this.id).text(this["name_"+APP_LANGUAGE]);
+								// option.attr('value', this.id).text(this["name_"+APP_LANGUAGE]);
+                                option.attr('value', this.id).text(this['index'] +'.'+' '+this["name_"+APP_LANGUAGE]+' '+'('+this['id']+')');
 								option.attr('selected', 'selected');
 								$(classNameLearningUnit).append(option);
 							});
@@ -152,8 +153,9 @@ $(function (){
 							$(data.data.LearningObjectives).each(function() {
                                 var learningObjectivesTitle=eval('this.title_'+currentLanguage);
                                 html += '<div class="selected-learning-objectives-difficulty">\
-                                            <input type="checkbox" name="learning_unit['+this.learning_unit_id+'][learning_objective]['+this.id+']" value="'+this.learning_unit_id+'" class="learning_objective_checkbox" checked>\
-                                            <label>'+this.foci_number+' '+learningObjectivesTitle+'</label>';
+                                            <input type="checkbox" name="learning_unit['+this.learning_unit_id+'][learning_objective]['+this.id+']" value="'+this.learning_unit_id+'" class="learning_objective_checkbox" checked>';
+                                            // <label>'+this.foci_number+' '+learningObjectivesTitle+'</label>';
+                                            html+= '<label>'+ this.index+' '+learningObjectivesTitle+' ('+this.foci_number+ ')</label>';
                                             html += '<input type="text" name="learning_unit['+this.learning_unit_id+'][learning_objective]['+this.id+'][get_no_of_question_learning_objectives]" value="'+data.data.getNoOfQuestionPerLearningObjective[this.id]+'" class="get_no_of_question_learning_objectives" min="'+data.data.getNoOfQuestionPerLearningObjective[this.id]+'" max="'+maximum_question_per_skill+'">\
                                         </div>';
 							});
@@ -406,10 +408,6 @@ $(function (){
                     QuestionSecondInterval = setInterval(function (){
                         PerQuestionTimer = secondsTimeSpanToHMS(++PerQuestionSecond);
                     }, 1000);
-
-                    //$("#question-generator button[type=submit]").prop('disabled',true);
-                    //toastr.success(SELF_LEARNING_CREATED_SUCCESSFULLY);
-                    //window.location.replace(BASE_URL+'/'+response.data.redirectUrl);
                 }else{
                     $("#cover-spin").hide();
                     toastr.error(response.message);

@@ -123,24 +123,6 @@ class UpdateStudentOverAllAbility implements ShouldQueue
                                                 if(in_array($filterattempQuestionAnswervalue['question_id'],$QuestionsDataList)){
                                                     $QuestionsDataListFinal[] = $filterattempQuestionAnswervalue['question_id'];
                                                     $QuestionList = Question::with('answers')->where(cn::QUESTION_TABLE_ID_COL,$filterattempQuestionAnswervalue['question_id'])->get()->toArray();
-                                                    // if(isset($PreConfigurationDifficultyLevel) && !empty($PreConfigurationDifficultyLevel) && isset($PreConfigurationDifficultyLevel[$QuestionList[0][cn::QUESTION_DIFFICULTY_LEVEL_COL]]) && !empty($PreConfigurationDifficultyLevel[$QuestionList[0][cn::QUESTION_DIFFICULTY_LEVEL_COL]])){
-                                                    //     $exmdata['difficulty_list'][] = number_format($PreConfigurationDifficultyLevel[$QuestionList[0][cn::QUESTION_DIFFICULTY_LEVEL_COL]], 4, '.', '');
-                                                    //     //$exmdata['difficulty_list'][] = number_format($QuestionList[0]['PreConfigurationDifficultyLevel']->title, 4, '.', '');
-                                                    // }else{
-                                                    //     $exmdata['difficulty_list'][] = 0;
-                                                    // }
-                                                    
-                                                    // Calibration changes
-                                                    // if($SelectedGlobalConfigDifficultyType == 2){
-                                                    //     if(isset($CalibrationId) && !empty($CalibrationId)){
-                                                    //         $exmdata['difficulty_list'][] = number_format($this->GetDifficultiesValueByCalibrationId($CalibrationId,$QuestionList[0][cn::QUESTION_TABLE_ID_COL]), 4, '.', '');
-                                                    //     }else{
-                                                    //         $exmdata['difficulty_list'][] = number_format($QuestionList[0]['PreConfigurationDifficultyLevel']->title, 4, '.', '');
-                                                    //     }
-                                                    // }else{
-                                                    //     $exmdata['difficulty_list'][] = number_format($QuestionList[0]['PreConfigurationDifficultyLevel']->title, 4, '.', '');
-                                                    // }
-
                                                     if(isset($CalibrationId) && !empty($CalibrationId)){
                                                         $exmdata['difficulty_list'][] = number_format($this->GetDifficultiesValueByCalibrationId($CalibrationId,$QuestionList[0][cn::QUESTION_TABLE_ID_COL]), 4, '.', '');
                                                     }else{

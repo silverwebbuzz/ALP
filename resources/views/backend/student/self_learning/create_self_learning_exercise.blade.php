@@ -200,7 +200,7 @@
                                             <select name="learning_unit_id[]" class="form-control select-option" id="learning_unit" multiple>
                                                 @if(isset($LearningUnits) && !empty($LearningUnits))
                                                     @foreach ($LearningUnits as $learningUnitKey => $learningUnit)
-                                                        <option value="{{ $learningUnit['id'] }}" selected>{{ $learningUnit['name_'.app()->getLocale()] }}</option>
+                                                        <option value="{{ $learningUnit['id'] }}" selected>{{ $learningUnit['index'] }}. {{ $learningUnit['name_'.app()->getLocale()] }} ({{ $learningUnit['id'] }})</option>
                                                     @endforeach
                                                 @else
                                                     <option value="">{{__('languages.no_learning_units_available')}}</option>
@@ -236,7 +236,7 @@
                                         @endphp
                                         <div class="selected-learning-objectives-difficulty">
                                             <input type="checkbox" name="learning_unit[{{$learningObjectives['learning_unit_id']}}][learning_objective][{{ $learningObjectives['id'] }}]" value="{{ $learningObjectives['id'] }}" class="learning_objective_checkbox" checked>
-                                            <label>{{ $learningObjectives['foci_number'] }} {{ $learningObjectives['title_'.app()->getLocale()] }}</label>
+                                            <label>{{ $learningObjectives['index'] }} {{ $learningObjectives['title_'.app()->getLocale()] }} ({{ $learningObjectives['foci_number'] }})</label>
                                             <select name="learning_unit[{{$learningObjectives['learning_unit_id']}}][learning_objective][{{ $learningObjectives['id'] }}][learning_objectives_difficulty_level][]" class="form-control select-option learning_objectives_difficulty_level" multiple>
                                                 <option value="1">1</option>
                                                 <option value="2">2</option>

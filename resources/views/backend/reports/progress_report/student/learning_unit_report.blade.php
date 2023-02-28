@@ -53,7 +53,7 @@
 											<thead>
                                                 @foreach($LearningUnitsList as $learninKey => $learningUnit)
                                                     <tr>
-                                                        <th>{{$learningUnit['name_'.app()->getLocale()]}}</th> 
+                                                        <th>{{$learningUnit['index']}}. {{$learningUnit['name_'.app()->getLocale()]}} ({{$learningUnit['id']}})</th> 
                                                         <td>
                                                             <div class="progress" style="height:1rem">
                                                                 <div class="progress-bar p-1" data-toggle="tooltip" data-placement="top" title="{{$progressReportArray[$studentId]['report_data'][$learninKey]['accomplished_percentage']}}% ({{$progressReportArray[$studentId]['report_data'][$learninKey]['count_accomplished_learning_objectives']}}/{{$progressReportArray[$studentId]['report_data'][$learninKey]['no_of_learning_objectives']}})" style="width:{{$progressReportArray[$studentId]['report_data'][$learninKey]['accomplished_percentage']}}%;background-color:{{$ColorCodes['accomplished_color']}};">

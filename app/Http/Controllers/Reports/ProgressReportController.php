@@ -515,7 +515,8 @@ class ProgressReportController extends Controller
                     $progressReportArray[$student->id]['no_of_learning_unit'] = $no_of_learning_unit;
                     foreach($StrandList as $strand){
                         $strandId = $strand->id;
-                        $LearningUnits = LearningsUnits::where(cn::LEARNING_UNITS_STRANDID_COL, $strand->id)->where('stage_id','<>',3)->get();
+                        // $LearningUnits = LearningsUnits::where(cn::LEARNING_UNITS_STRANDID_COL, $strand->id)->where('stage_id','<>',3)->get();
+                        $LearningUnits = $this->GetLearningUnits($strandId);
                         $learningUnitsIds = LearningsUnits::where(cn::LEARNING_UNITS_STRANDID_COL, $strand->id)->where('stage_id','<>',3)->pluck(cn::LEARNING_UNITS_ID_COL)->toArray();
                         $LearningsUnitsLbl = LearningsUnits::where('stage_id','<>',3)->pluck('name_'.app()->getLocale(),cn::LEARNING_UNITS_ID_COL)->toArray();
                        
@@ -1600,6 +1601,7 @@ class ProgressReportController extends Controller
                     }
                 }
             }
+            // echo "<pre>";print_r($learningObjectivesList);die;
             return view('backend.reports.progress_report.student.learning_objective_report',compact('studentData','strandData','strandDataLbl',
             'reportDataArray','LearningsUnitsLbl','LearningsObjectivesLbl','reportDataAbilityArray','learningObjectivesList','LearningUnits',
             'showMenu','ColorCodes','studentId'));
@@ -1674,7 +1676,8 @@ class ProgressReportController extends Controller
                 $progressReportArray[$studentData->id]['no_of_learning_unit'] = $no_of_learning_unit;
                 foreach($StrandList as $strand){
                     $strandId = $strand->id;
-                    $LearningUnits = LearningsUnits::where(cn::LEARNING_UNITS_STRANDID_COL, $strand->id)->where('stage_id','<>',3)->get();
+                    // $LearningUnits = LearningsUnits::where(cn::LEARNING_UNITS_STRANDID_COL, $strand->id)->where('stage_id','<>',3)->get();
+                    $LearningUnits = $this->GetLearningUnits($StrandList[0]->id);
                     $learningUnitsIds = LearningsUnits::where(cn::LEARNING_UNITS_STRANDID_COL, $strand->id)->where('stage_id','<>',3)->pluck(cn::LEARNING_UNITS_ID_COL)->toArray();
                     if(!empty($learningUnitsIds)){
                         if(!empty($learningUnitsIds)){

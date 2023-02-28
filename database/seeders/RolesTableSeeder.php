@@ -61,9 +61,15 @@ class RolesTableSeeder extends Seeder
                     ],
                     [
                         'id'            => 8,
-                        'role_name' => 'Sub Admin',
-                        'role_slug' => 'sub_admin',
+                        'role_name' => 'Panel Head',
+                        'role_slug' => 'panel_head',
                         'permission'=> 'question_bank_create,question_bank_read,question_bank_update,question_bank_delete,user_management_create,user_management_read,user_management_update,user_management_delete,group_management_create,group_management_read,group_management_update,group_management_delete,exam_management_create,exam_management_read,exam_management_update,exam_management_delete,reports_create,reports_read,reports_update,reports_delete,result_management_create,result_management_read,result_management_update,result_management_delete,profile_management_create,profile_management_read,teacher_management_create,teacher_management_read,teacher_management_update,teacher_management_delete,grade_management_create,grade_management_read,grade_management_update,grade_management_delete,subject_management_create,subject_management_read,subject_management_update,subject_management_delete,student_management_create,student_management_read,student_management_update,student_management_delete,assign_test_question_create,assign_test_question_read,assign_test_question_update,assign_test_question_delete,assign_test_user_create,assign_test_user_read,assign_test_user_update,assign_test_user_delete,assign_test_group_create,assign_test_group_read,assign_test_group_update,assign_test_group_delete,result_management_create,result_management_read,result_management_update,result_management_delete,teacher_class_and_subject_assign_create,teacher_class_and_subject_assign_read,teacher_class_and_subject_assign_update,teacher_class_and_subject_assign_delete,sub_admin_management_create,sub_admin_management_read,sub_admin_management_update,sub_admin_management_delete,my_account_read,change_password_read,change_password_update,principal_management_create,principal_management_read,principal_management_update,principal_management_delete,peer_group_read,peer_group_create,peer_group_update,peer_group_delete,leaderboard_read,intelligent_tutor_read'
+                    ],
+                    [
+                        'id'            => 9,
+                        'role_name' => 'Co-ordinator',
+                        'role_slug' => 'co-ordinator',
+                        'permission'=> ''
                     ],
                 ];
 

@@ -88,7 +88,7 @@
                                                     @endforeach
 													@endforeach --}}
 													@foreach($LearningUnitsList as $learningUnit)
-														<th>{{$learningUnit['name_'.app()->getLocale()]}}</th>
+														<th>{{$learningUnit['index']}} {{$learningUnit['name_'.app()->getLocale()]}} ({{$learningUnit['id']}})</th>
 													@endforeach
 												</tr>
 											</thead>

@@ -66,7 +66,7 @@ class ExportController extends Controller
     }
 
     public function exportQuestions(Request $request){
-        // try{
+        try{
             // $questionList = Question::with('schools')->get();
             $questionList = Question::get();
             $csvExporter = new \Laracsv\Export();
@@ -124,9 +124,9 @@ class ExportController extends Controller
                 'status'                => "Status",
                 'created_at'            => "Created Date"
             ])->download('Questions.CSV');
-        // }catch(Exception $exception){
-        //     return back()->withError($exception->getMessage());
-        // }
+        }catch(Exception $exception){
+            return back()->withError($exception->getMessage());
+        }
         
     }
 
@@ -187,7 +187,9 @@ class ExportController extends Controller
                 $QuestionHeaders[] = ($questionKey + 1);
                 $correctAnswerArray[] = $this->setOptionBasedAlphabet($question->answers->correct_answer_en);
             }
-
+            if($ExamData->exam_type != 1){
+                $header[] = 'Overall Percentile';
+            }
             // Store in first row headings
             $records[] = $correctAnswerArray;
             $Query = AttemptExams::with('user')->where(cn::ATTEMPT_EXAMS_EXAM_ID,$examId);
@@ -203,7 +205,6 @@ class ExportController extends Controller
                         })->get();
                 }else{
                     if(!empty($classIds)){
-                        //$getStudentsFromClassIds = User::whereIn(cn::USERS_CLASS_ID_COL,$classIds)->pluck(cn::USERS_ID_COL)->toArray();
                         $getStudentsFromClassIds = User::get()->whereIn('CurriculumYearClassId',$classIds)->pluck(cn::USERS_ID_COL)->toArray();
                     }
                     if(!empty($groupIds)){
@@ -238,14 +239,10 @@ class ExportController extends Controller
                         if(!empty($TeachersGradeClass->pluck(cn::TEACHER_CLASS_SUBJECT_CLASS_NAME_ID_COL)->toArray())){
                             $assignTeacherClass = explode(',',implode(',',$TeachersGradeClass->pluck(cn::TEACHER_CLASS_SUBJECT_CLASS_NAME_ID_COL)->toArray()));
                             $AttemptExamData = $Query->whereHas('user',function($q) use($assignTeacherGrades,$assignTeacherClass, $classIds){
-                                // $q->where(cn::USERS_SCHOOL_ID_COL, Auth::user()->{cn::USERS_SCHOOL_ID_COL})
-                                //     ->where(cn::USERS_ROLE_ID_COL,cn::STUDENT_ROLE_ID)
-                                //     ->whereIn(cn::USERS_CLASS_ID_COL,$classIds)
-                                //     ->whereIn(cn::USERS_GRADE_ID_COL,$assignTeacherGrades);
-                                    $q->where(cn::USERS_SCHOOL_ID_COL, Auth::user()->{cn::USERS_SCHOOL_ID_COL})
-                                    ->where(cn::USERS_ROLE_ID_COL,cn::STUDENT_ROLE_ID)
-                                    ->whereIn('id',$this->curriculum_year_mapping_student_ids($assignTeacherGrades,$classIds));
-                                })->get();
+                                $q->where(cn::USERS_SCHOOL_ID_COL, Auth::user()->{cn::USERS_SCHOOL_ID_COL})
+                                ->where(cn::USERS_ROLE_ID_COL,cn::STUDENT_ROLE_ID)
+                                ->whereIn('id',$this->curriculum_year_mapping_student_ids($assignTeacherGrades,$classIds));
+                            })->get();
                         }
                     }
                 }else{
@@ -279,8 +276,6 @@ class ExportController extends Controller
                 }elseif(empty($groupIds)){
                     
                     $AttemptExamData = $Query->whereHas('user',function($q) use($classIds){
-                        // $q->where(cn::USERS_SCHOOL_ID_COL,Auth::user()->{cn::USERS_SCHOOL_ID_COL})->where(cn::USERS_ROLE_ID_COL,cn::STUDENT_ROLE_ID)
-                        //     ->whereIn(cn::USERS_CLASS_ID_COL, $classIds);
                         $q->where(cn::USERS_SCHOOL_ID_COL,Auth::user()->{cn::USERS_SCHOOL_ID_COL})
                         ->where(cn::USERS_ROLE_ID_COL,cn::STUDENT_ROLE_ID)
                         ->whereIn('id',$this->curriculum_year_mapping_student_ids('',$classIds));
@@ -321,38 +316,38 @@ class ExportController extends Controller
                                 foreach($filterAttemptQuestionAnswer as $fanswer){
                                     $objToArrayConvert = get_object_vars($fanswer);
                                     $rowArray[] = $this->setOptionBasedAlphabet($objToArrayConvert['answer']);
-                                    if($fanswer->answer==1){
-                                        if(isset($QuestionAnswerData[$questionKey]['A'])){
-                                            $QuestionAnswerData[$questionKey]['A']=$QuestionAnswerData[$questionKey]['A'] + 1;
+                                    if($fanswer->answer == 1){
+                                        if(isset($QuestionAnswerData[$questionKey]['1'])){
+                                            $QuestionAnswerData[$questionKey]['1'] = $QuestionAnswerData[$questionKey]['1'] + 1;
 
                                         }else{
-                                            $QuestionAnswerData[$questionKey]['A'] = 1;
+                                            $QuestionAnswerData[$questionKey]['1'] = 1;
                                         }
                                     }
-                                    if($fanswer->answer==2){
-                                        if(isset($QuestionAnswerData[$questionKey]['B'])){
-                                            $QuestionAnswerData[$questionKey]['B']=$QuestionAnswerData[$questionKey]['B'] + 1;
+                                    if($fanswer->answer == 2){
+                                        if(isset($QuestionAnswerData[$questionKey]['2'])){
+                                            $QuestionAnswerData[$questionKey]['2'] = $QuestionAnswerData[$questionKey]['2'] + 1;
                                         }else{
-                                            $QuestionAnswerData[$questionKey]['B'] = 1;
+                                            $QuestionAnswerData[$questionKey]['2'] = 1;
                                         }
                                     }
-                                    if($fanswer->answer==3){
-                                        if(isset($QuestionAnswerData[$questionKey]['C'])){
-                                            $QuestionAnswerData[$questionKey]['C']=$QuestionAnswerData[$questionKey]['C'] + 1;
+                                    if($fanswer->answer == 3){
+                                        if(isset($QuestionAnswerData[$questionKey]['3'])){
+                                            $QuestionAnswerData[$questionKey]['3'] = $QuestionAnswerData[$questionKey]['3'] + 1;
                                         }else{
-                                            $QuestionAnswerData[$questionKey]['C'] = 1;
+                                            $QuestionAnswerData[$questionKey]['3'] = 1;
                                         }
                                     }
-                                    if($fanswer->answer==4){
-                                        if(isset($QuestionAnswerData[$questionKey]['D'])){
-                                            $QuestionAnswerData[$questionKey]['D']=$QuestionAnswerData[$questionKey]['D'] + 1;
+                                    if($fanswer->answer == 4){
+                                        if(isset($QuestionAnswerData[$questionKey]['4'])){
+                                            $QuestionAnswerData[$questionKey]['4'] = $QuestionAnswerData[$questionKey]['4'] + 1;
                                         }else{
-                                            $QuestionAnswerData[$questionKey]['D'] = 1;
+                                            $QuestionAnswerData[$questionKey]['4'] = 1;
                                         }
                                     }
-                                    if($fanswer->answer==5){
+                                    if($fanswer->answer == 5){
                                         if(isset($QuestionAnswerData[$questionKey]['N'])){
-                                            $QuestionAnswerData[$questionKey]['N']=$QuestionAnswerData[$questionKey]['N'] + 1;
+                                            $QuestionAnswerData[$questionKey]['N'] = $QuestionAnswerData[$questionKey]['N'] + 1;
                                         }else{
                                             $QuestionAnswerData[$questionKey]['N'] = 1;
                                         }
@@ -361,6 +356,9 @@ class ExportController extends Controller
                             }
                         }
                     }
+                    if($ExamData->exam_type != 1){
+                        $rowArray[] = $this->GetStudentPercentileRank($examId,$attemptedExam->user->id).'%';
+                    }
                     $records[] = $rowArray;
                 }
                 // Question headings
@@ -368,7 +366,7 @@ class ExportController extends Controller
 
                 
                 //Set Selected Answers Row On Based Question
-                $HeadingIndexArray = ['A','B','C','D','N','A%','B%','C%','D%','N%','Correct %'];
+                $HeadingIndexArray = ['1','2','3','4','N','1%','2%','3%','4%','N%','Correct %'];
                 for($row = 1;$row <= count($HeadingIndexArray);$row++){
                     $rowArray = [];
                     if($row == 1){
@@ -380,71 +378,36 @@ class ExportController extends Controller
                     }
 
                     foreach($QuestionList as $questionKey => $question){
-                        // switch($row){
-                        //     case 1 :    //Case 1 : is used For Display Row  of A = No. of Student Selected Answer A
-                        //         $rowArray[] = ($QuestionAnswerData[$questionKey]['A']) ?? 0;
-                        //         break;
-                        //     case 2:     //Case 2 : is used For Display Row  of B = No. of Student Selected Answer B
-                        //         $rowArray[] = ($QuestionAnswerData[$questionKey]['B']) ?? 0;
-                        //         break;
-                        //     case 3:     //Case 3 : is used For Display Row  of C = No. of Student Selected Answer C
-                        //         $rowArray[] = ($QuestionAnswerData[$questionKey]['C']) ?? 0;
-                        //         break;
-                        //     case 4:     //Case 4 : is used For Display Row  of D = No. of Student Selected Answer D
-                        //         $rowArray[] = ($QuestionAnswerData[$questionKey]['D']) ?? 0;
-                        //         break;
-                        //     case 5:     //Case 5 : is used For Display Row  of A(%) = Average of Student Selected Answer A(%)
-                        //         $value = ($QuestionAnswerData[$questionKey]['A']) ?? 0;
-                        //         $rowArray[] = round((($value * 100) / $totalStudent),2);
-                        //         break;
-                        //     case 6:     //Case 5 : is used For Display Row  of B(%) = Average of Student Selected Answer B(%)
-                        //         $value = ($QuestionAnswerData[$questionKey]['B']) ?? 0;
-                        //         $rowArray[] =  round((($value * 100) / $totalStudent),2);
-                        //         break;
-                        //     case 7:     //Case 5 : is used For Display Row  of C(%) = Average of Student Selected Answer C(%)
-                        //         $value = ($QuestionAnswerData[$questionKey]['C']) ?? 0;
-                        //         $rowArray[] =  round((($value * 100) / $totalStudent),2);
-                        //         break;
-                        //     case 8:     //Case 5 : is used For Display Row  of D(%) = Average of Student Selected Answer D(%)
-                        //         $value = ($QuestionAnswerData[$questionKey]['D']) ?? 0;
-                        //         $rowArray[] =  round((($value * 100) / $totalStudent),2);
-                        //         break;
-                        //     case 9://Average of Student Selected  Correct Answer(%)
-                        //         $value = ($QuestionAnswerData[$questionKey]['A']) ?? 0;
-                        //         $rowArray[] =  round((($value * 100) / $totalStudent),2);
-                        //         break;
-                        // }
-
                         switch($row){
-                            case 1 :    //Case 1 : is used For Display Row  of A = No. of Student Selected Answer A
-                                $rowArray[] = ($QuestionAnswerData[$questionKey]['A']) ?? 0;
+                            case 1 :    //Case 1 : is used For Display Row  of 1 = No. of Student Selected Answer 1
+                                $rowArray[] = ($QuestionAnswerData[$questionKey]['1']) ?? 0;
                                 break;
-                            case 2:     //Case 2 : is used For Display Row  of B = No. of Student Selected Answer B
-                                $rowArray[] = ($QuestionAnswerData[$questionKey]['B']) ?? 0;
+                            case 2:     //Case 2 : is used For Display Row  of 2 = No. of Student Selected Answer 2
+                                $rowArray[] = ($QuestionAnswerData[$questionKey]['2']) ?? 0;
                                 break;
-                            case 3:     //Case 3 : is used For Display Row  of C = No. of Student Selected Answer C
-                                $rowArray[] = ($QuestionAnswerData[$questionKey]['C']) ?? 0;
+                            case 3:     //Case 3 : is used For Display Row  of 3 = No. of Student Selected Answer 3
+                                $rowArray[] = ($QuestionAnswerData[$questionKey]['3']) ?? 0;
                                 break;
-                            case 4:     //Case 4 : is used For Display Row  of D = No. of Student Selected Answer D
-                                $rowArray[] = ($QuestionAnswerData[$questionKey]['D']) ?? 0;
+                            case 4:     //Case 4 : is used For Display Row  of 4 = No. of Student Selected Answer 4
+                                $rowArray[] = ($QuestionAnswerData[$questionKey]['4']) ?? 0;
                                 break;
                             case 5:     //Case 4 : is used For Display Row  of N = No. of Student Selected Answer N
                                 $rowArray[] = ($QuestionAnswerData[$questionKey]['N']) ?? 0;
                                 break;
-                            case 6:     //Case 5 : is used For Display Row  of A(%) = Average of Student Selected Answer A(%)
-                                $value = ($QuestionAnswerData[$questionKey]['A']) ?? 0;
+                            case 6:     //Case 5 : is used For Display Row  of 1(%) = Average of Student Selected Answer 1(%)
+                                $value = ($QuestionAnswerData[$questionKey]['1']) ?? 0;
                                 $rowArray[] = round((($value * 100) / $totalStudent),2);
                                 break;
-                            case 7:     //Case 5 : is used For Display Row  of B(%) = Average of Student Selected Answer B(%)
-                                $value = ($QuestionAnswerData[$questionKey]['B']) ?? 0;
+                            case 7:     //Case 5 : is used For Display Row  of 2(%) = Average of Student Selected Answer 2(%)
+                                $value = ($QuestionAnswerData[$questionKey]['2']) ?? 0;
                                 $rowArray[] =  round((($value * 100) / $totalStudent),2);
                                 break;
-                            case 8:     //Case 5 : is used For Display Row  of C(%) = Average of Student Selected Answer C(%)
-                                $value = ($QuestionAnswerData[$questionKey]['C']) ?? 0;
+                            case 8:     //Case 5 : is used For Display Row  of 3(%) = Average of Student Selected Answer 3(%)
+                                $value = ($QuestionAnswerData[$questionKey]['3']) ?? 0;
                                 $rowArray[] =  round((($value * 100) / $totalStudent),2);
                                 break;
-                            case 9:     //Case 5 : is used For Display Row  of D(%) = Average of Student Selected Answer D(%)
-                                $value = ($QuestionAnswerData[$questionKey]['D']) ?? 0;
+                            case 9:     //Case 5 : is used For Display Row  of 4(%) = Average of Student Selected Answer 4(%)
+                                $value = ($QuestionAnswerData[$questionKey]['4']) ?? 0;
                                 $rowArray[] =  round((($value * 100) / $totalStudent),2);
                                 break;
                             case 10:     //Case 5 : is used For Display Row  of N(%) = Average of Student Selected Answer N(%)
@@ -452,7 +415,7 @@ class ExportController extends Controller
                                 $rowArray[] =  round((($value * 100) / $totalStudent),2);
                                 break;
                             case 11://Average of Student Selected  Correct Answer(%)
-                                $value = ($QuestionAnswerData[$questionKey]['A']) ?? 0;
+                                $value = ($QuestionAnswerData[$questionKey]['1']) ?? 0;
                                 $rowArray[] =  round((($value * 100) / $totalStudent),2);
                                 break;
                         }

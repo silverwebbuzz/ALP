@@ -32,14 +32,11 @@ class OrderingLearningUnit extends Controller{
         $schoolId = Auth::user()->school_id;
        
         if(LearningUnitOrdering::where('school_id',Auth::user()->school_id)->exists()){
-            // echo "<pre>";print_r($orderingFinalArray);die;
             if(isset($request->finalOrdering) && !empty($request->finalOrdering)){
                 $orderingUnitData = LearningUnitOrdering::where('school_id',Auth::user()->school_id)
                                     ->where('strand_id',$request->strand)
                                     ->get()->toArray();
                 foreach($orderingUnitData as $orderUnitKey => $unitData){
-                    // echo '<pre>' .$unitData['id'] . ' '.array_search($unitData['id'],$orderingFinalArray) +1;
-                    // echo "<pre>";print_r(array_search($unitData['id'],$orderingFinalArray) +1 );
                     LearningUnitOrdering::where('school_id',Auth::user()->school_id)
                                             ->where('strand_id',$request->strand)
                                             ->where('learning_unit_id',$unitData['id'])
@@ -48,7 +45,6 @@ class OrderingLearningUnit extends Controller{
                                                 'index'    => (array_search($unitData['id'],$orderingFinalArray) + 1 )
                                             ]);
                 }
-                // die;
             }
         }else{
             $strandData =  Strands::where('status',1)->get();
@@ -81,6 +77,6 @@ class OrderingLearningUnit extends Controller{
                 }
             }
         }
-        return back()->with('success_msg', __('Ordering Sorted...'));
+        return back()->with('success_msg', __('languages.ordering_sorted'));
     }
 }

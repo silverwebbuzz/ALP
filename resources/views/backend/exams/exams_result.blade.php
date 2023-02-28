@@ -111,6 +111,13 @@
                                         {{App\Helpers\Helper::GetCountCrediPointsStudent($AttemptExamData->exam_id,Auth::user()->id)}}
                                     </label>
                                 </div>
+                                @if($isSelfLearningExam != true)
+                                <div class="col-lg-3 col-md-4 col-sm-12">
+                                    <label>{{__('languages.overall_percentile')}} : 
+                                        {{$studentOverAllPercentile}}%
+                                    </label>
+                                </div>
+                                @endif
                             </div>
                             <div class="row">
                                 @if($ExamData->exam_type == 1)
@@ -232,7 +239,7 @@
                                             @if(isset($question->answers->{'answer1_'.$AttemptExamData->language}))
                                             <div class="sm-ans pl-2 pb-2">
                                                 <input type="radio" name="ans_que_{{$question->id}}" value="1" class="radio mr-2" <?php if(isset($AnswerNumber[key($AnswerNumber)]) && $AnswerNumber[key($AnswerNumber)]->answer == 1){ echo 'checked';} ?> disabled>
-                                                <div class="answer-title mr-2 <?php if($question->answers->{'correct_answer_'.$AttemptExamData->language} == 1){ echo 'correct-answer';}else{ echo 'incorrect-answer';} ?>" style="@if($question->answers->{'correct_answer_'.$AttemptExamData->language} == 1){{$bg_correct_color}}@else{{$bg_incorrect_color}} @endif" >A</div>
+                                                <div class="answer-title mr-2 <?php if($question->answers->{'correct_answer_'.$AttemptExamData->language} == 1){ echo 'correct-answer';}else{ echo 'incorrect-answer';} ?>" style="@if($question->answers->{'correct_answer_'.$AttemptExamData->language} == 1){{$bg_correct_color}}@else{{$bg_incorrect_color}} @endif" >1</div>
                                                 <div class="progress">
                                                     <div class="progress-bar @if($question->answers->{'correct_answer_'.$AttemptExamData->language} === 1) ans-correct @else ans-incorrect @endif" role="progressbar"  aria-valuenow="{{$percentageOfAnswer[$question->id][1]}}" aria-valuemin="0" aria-valuemax="100" style="@if($question->answers->{'correct_answer_'.$AttemptExamData->language} == 1){{$bg_correct_color}}@else{{$bg_incorrect_color}} @endif;width:{{$percentageOfAnswer[$question->id][1]}}%">
                                                         <div class="anser-detail pl-2">
@@ -251,7 +258,7 @@
                                             @if(isset($question->answers->{'answer2_'.$AttemptExamData->language}))
                                             <div class="sm-ans pl-2 pb-2">
                                                 <input type="radio" name="ans_que_{{$question->id}}" value="2" class="radio mr-2" <?php if(isset($AnswerNumber[key($AnswerNumber)]) && $AnswerNumber[key($AnswerNumber)]->answer == 2){ echo 'checked';} ?> disabled>
-                                                <div class="answer-title mr-2 @if($question->answers->{'correct_answer_'.$AttemptExamData->language} === 2) correct-answer @else incorrect-answer @endif" style="@if($question->answers->{'correct_answer_'.$AttemptExamData->language} == 2){{$bg_correct_color}}@else{{$bg_incorrect_color}} @endif">B</div>
+                                                <div class="answer-title mr-2 @if($question->answers->{'correct_answer_'.$AttemptExamData->language} === 2) correct-answer @else incorrect-answer @endif" style="@if($question->answers->{'correct_answer_'.$AttemptExamData->language} == 2){{$bg_correct_color}}@else{{$bg_incorrect_color}} @endif">2</div>
                                                 <div class="progress">
                                                     <div class="progress-bar @if($question->answers->{'correct_answer_'.$AttemptExamData->language} === 2) ans-correct @else ans-incorrect @endif" role="progressbar"  aria-valuenow="{{$percentageOfAnswer[$question->id][2]}}" aria-valuemin="0" aria-valuemax="100" style="@if($question->answers->{'correct_answer_'.$AttemptExamData->language} == 2){{$bg_correct_color}}@else{{$bg_incorrect_color}} @endif;width:{{$percentageOfAnswer[$question->id][2]}}%">
                                                         <div class="anser-detail pl-2">
@@ -270,7 +277,7 @@
                                             @if(isset($question->answers->{'answer3_'.$AttemptExamData->language}))
                                             <div class="sm-ans pl-2 pb-2">
                                                 <input type="radio" name="ans_que_{{$question->id}}" value="3" class="radio mr-2" <?php if(isset($AnswerNumber[key($AnswerNumber)]) && $AnswerNumber[key($AnswerNumber)]->answer == 3){ echo 'checked';} ?> disabled>
-                                                <div class="answer-title mr-2 @if($question->answers->{'correct_answer_'.$AttemptExamData->language} === 3) correct-answer @else incorrect-answer @endif" style="@if($question->answers->{'correct_answer_'.$AttemptExamData->language} == 3){{$bg_correct_color}}@else{{$bg_incorrect_color}} @endif">C</div>
+                                                <div class="answer-title mr-2 @if($question->answers->{'correct_answer_'.$AttemptExamData->language} === 3) correct-answer @else incorrect-answer @endif" style="@if($question->answers->{'correct_answer_'.$AttemptExamData->language} == 3){{$bg_correct_color}}@else{{$bg_incorrect_color}} @endif">3</div>
                                                 <div class="progress">
                                                     <div class="progress-bar @if($question->answers->{'correct_answer_'.$AttemptExamData->language} === 3) ans-correct @else ans-incorrect @endif" role="progressbar"  aria-valuenow="{{$percentageOfAnswer[$question->id][3]}}" aria-valuemin="0" aria-valuemax="100" style="@if($question->answers->{'correct_answer_'.$AttemptExamData->language} == 3){{$bg_correct_color}}@else{{$bg_incorrect_color}} @endif;width:{{$percentageOfAnswer[$question->id][3]}}%">
                                                         <div class="anser-detail pl-2">
@@ -289,7 +296,7 @@
                                             @if(isset($question->answers->{'answer4_'.$AttemptExamData->language}))
                                             <div class="sm-ans pl-2 pb-2">
                                                 <input type="radio" name="ans_que_{{$question->id}}" value="4" class="radio mr-2" <?php if(isset($AnswerNumber[key($AnswerNumber)]) && $AnswerNumber[key($AnswerNumber)]->answer == 4){ echo 'checked';} ?> disabled>
-                                                <div class="answer-title mr-2 @if($question->answers->{'correct_answer_'.$AttemptExamData->language} === 4) correct-answer @else incorrect-answer @endif" style="@if($question->answers->{'correct_answer_'.$AttemptExamData->language} == 4){{$bg_correct_color}}@else{{$bg_incorrect_color}} @endif">D</div>
+                                                <div class="answer-title mr-2 @if($question->answers->{'correct_answer_'.$AttemptExamData->language} === 4) correct-answer @else incorrect-answer @endif" style="@if($question->answers->{'correct_answer_'.$AttemptExamData->language} == 4){{$bg_correct_color}}@else{{$bg_incorrect_color}} @endif">4</div>
                                                 <div class="progress">
                                                     <div class="progress-bar @if($question->answers->{'correct_answer_'.$AttemptExamData->language} === 4) ans-correct @else ans-incorrect @endif" role="progressbar"  aria-valuemin="0" aria-valuemax="100" style="@if($question->answers->{'correct_answer_'.$AttemptExamData->language} == 4){{$bg_correct_color}}@else{{$bg_incorrect_color}} @endif;width:{{$percentageOfAnswer[$question->id][4]}}%">
                                                         <div class="anser-detail pl-2">
@@ -305,7 +312,8 @@
                                                 </div>
                                             </div>
                                             @endif
-
+                                            
+                                            @if($ExamData->exam_type != 1)
                                             <div class="sm-ans pl-2 pb-2">
                                                 <input type="radio" name="ans_que_{{$question->id}}" value="5" class="radio mr-2" <?php if(isset($AnswerNumber[key($AnswerNumber)]) && $AnswerNumber[key($AnswerNumber)]->answer == 5){ echo 'checked';} ?> disabled>
                                                 <div class="answer-title mr-2 incorrect-answer" style="{{$bg_incorrect_color}}">N</div>
@@ -321,7 +329,7 @@
                                                     <p class="progress-percentage">{{$percentageOfAnswer[$question->id][5]}}%</p>
                                                 </div>
                                             </div>
-                                            
+                                            @endif
                                         </div>
                                         <div class="sm-answer pl-5 pt-2"><span class="badge badge-success getSolutionQuestionImage" data-question-code="{{$question->naming_structure_code}}">{{__('languages.full_question_solution')}}</span>                                            
                                                 <?php if(isset($AnswerNumber[key($AnswerNumber)]) && $AnswerNumber[key($AnswerNumber)]->answer == $question->answers->{'correct_answer_'.$AttemptExamData->language}){ ?>
@@ -340,23 +348,23 @@
                                                 }
                                             ?>
 
-                                            <h6 class="mt-3"><b>{{__('languages.report.weakness')}}:</b>
-                                                {{--@if($AttemptExamData->language=='ch')--}}
+                                            <h6 class="mt-3">
+                                                <b>{{__('languages.report.weakness')}}:</b>
                                                 @if(app()->getLocale() == 'ch')
                                                     @if($nodeId!=0 && isset($nodeWeaknessListCh[$nodeId]))
                                                         @php
-                                                        $WeaknessList[]=$nodeWeaknessListCh[$nodeId];
-                                                        $WeaknessListWithId[$nodeId]=$nodeWeaknessListCh[$nodeId];
+                                                        $WeaknessList[] = $nodeWeaknessListCh[$nodeId];
+                                                        $WeaknessListWithId[$nodeId] = $nodeWeaknessListCh[$nodeId];
                                                         @endphp
-                                                        {{-- <span class="getIntelligentTutorVideos pointer-event" data-question-node ="{{\App\Helpers\Helper::getNodeNameById($nodeId)}}">{{$nodeWeaknessListCh[$nodeId]}}</span> --}}
+                                                        <span class="getIntelligentTutorVideos pointer-event" data-question-node ="{{\App\Helpers\Helper::getNodeNameById($nodeId)}}">{{$nodeWeaknessListCh[$nodeId]}}</span>
                                                     @endif
                                                 @else
                                                     @if($nodeId!=0 && isset($nodeWeaknessList[$nodeId]))
                                                         @php
-                                                        $WeaknessList[]=$nodeWeaknessList[$nodeId];
-                                                        $WeaknessListWithId[$nodeId]=$nodeWeaknessList[$nodeId];
+                                                        $WeaknessList[] = $nodeWeaknessList[$nodeId];
+                                                        $WeaknessListWithId[$nodeId] = $nodeWeaknessList[$nodeId];
                                                         @endphp                                    
-                                                        {{-- <span class="getIntelligentTutorVideos pointer-event" data-question-node ="{{\App\Helpers\Helper::getNodeNameById($nodeId)}}">{{$nodeWeaknessList[$nodeId]}}</span> --}}
+                                                        <span class="getIntelligentTutorVideos pointer-event" data-question-node ="{{\App\Helpers\Helper::getNodeNameById($nodeId)}}">{{$nodeWeaknessList[$nodeId]}}</span>
                                                     @endif
                                                 @endif
                                             </h6>

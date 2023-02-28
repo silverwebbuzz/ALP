@@ -29,6 +29,16 @@ class AttemptExamTestExerciseController extends Controller
         $this->CronJobController = new CronJobController;
     }
 
+    /**
+     * USE : Get Random array position for question answer
+     */
+    public function GetRandomAnswerOrdering(){
+        $random_number_array = range(1,4);
+        shuffle($random_number_array );
+        $random_number_array = array_slice($random_number_array ,0,4);
+        return $random_number_array;
+    }
+
     /** USE : Student will attempt test and exercise */
     public function StudentAttemptTestExercise($exam_id, Request $request){
         if(isset($exam_id) && !empty($exam_id)){
@@ -92,7 +102,8 @@ class AttemptExamTestExerciseController extends Controller
     
                 // Get the question number value
                 if($question_ids){
-                    $QuestionNumber = (array_search($QuestionId, $question_ids) + 1);
+                    //$QuestionNumber = (array_search($QuestionId, $question_ids) + 1);
+                    $QuestionNumber = (array_search($QuestionId, explode(',',$examDetail->question_ids)) + 1);
                 }
                 $questionSize = sizeof($question_ids);
                 $Question = Question::with('answers')
@@ -106,19 +117,56 @@ class AttemptExamTestExerciseController extends Controller
                         cn::HISTORY_STUDENT_QUESTION_ANSWER_QUESTION_ID_COL => $QuestionId,
                         cn::HISTORY_STUDENT_QUESTION_ANSWER_IS_TRIAL_NO_COL => 2
                     ])->exists()){
+                        if(HistoryStudentQuestionAnswer::where([
+                            cn::HISTORY_STUDENT_QUESTION_ANSWER_STUDENT_ID_COL  => Auth::user()->id,
+                            cn::HISTORY_STUDENT_QUESTION_ANSWER_EXAM_ID_COL     => $exam_id,
+                            cn::HISTORY_STUDENT_QUESTION_ANSWER_QUESTION_ID_COL => $QuestionId,
+                            cn::HISTORY_STUDENT_QUESTION_ANSWER_IS_TRIAL_NO_COL => 2
+                        ])                        
+                        ->doesntExist()){
+                            $RandomAnswerOrdering = $this->GetRandomAnswerOrdering();
+                            HistoryStudentQuestionAnswer::updateOrCreate([
+                                cn::HISTORY_STUDENT_QUESTION_ANSWER_STUDENT_ID_COL  => Auth::user()->id,
+                                cn::HISTORY_STUDENT_QUESTION_ANSWER_EXAM_ID_COL     => $exam_id,
+                                cn::HISTORY_STUDENT_QUESTION_ANSWER_QUESTION_ID_COL => $QuestionId,
+                                cn::HISTORY_STUDENT_QUESTION_ANSWER_IS_TRIAL_NO_COL => 2,
+                                cn::HISTORY_STUDENT_QUESTION_ANSWER_ANSWER_ORDERING_COL => implode(',',$RandomAnswerOrdering)
+                            ]);
+                        }
+                        
                         $HistoryStudentQuestionAnswer = HistoryStudentQuestionAnswer::where([
                             cn::HISTORY_STUDENT_QUESTION_ANSWER_STUDENT_ID_COL  => Auth::user()->id,
                             cn::HISTORY_STUDENT_QUESTION_ANSWER_EXAM_ID_COL     => $exam_id,
                             cn::HISTORY_STUDENT_QUESTION_ANSWER_QUESTION_ID_COL => $QuestionId,
                             cn::HISTORY_STUDENT_QUESTION_ANSWER_IS_TRIAL_NO_COL => 2
                         ])->first();
+
+                        $random_number_array = explode(',',$HistoryStudentQuestionAnswer->answer_ordering);
                     }else{
+                        if(HistoryStudentQuestionAnswer::where([
+                            cn::HISTORY_STUDENT_QUESTION_ANSWER_STUDENT_ID_COL  => Auth::user()->id,
+                            cn::HISTORY_STUDENT_QUESTION_ANSWER_EXAM_ID_COL     => $exam_id,
+                            cn::HISTORY_STUDENT_QUESTION_ANSWER_QUESTION_ID_COL => $QuestionId,
+                            cn::HISTORY_STUDENT_QUESTION_ANSWER_IS_TRIAL_NO_COL => 1
+                        ])
+                        ->doesntExist()){
+                            $RandomAnswerOrdering = $this->GetRandomAnswerOrdering();
+                            HistoryStudentQuestionAnswer::updateOrCreate([
+                                cn::HISTORY_STUDENT_QUESTION_ANSWER_STUDENT_ID_COL  => Auth::user()->id,
+                                cn::HISTORY_STUDENT_QUESTION_ANSWER_EXAM_ID_COL     => $exam_id,
+                                cn::HISTORY_STUDENT_QUESTION_ANSWER_QUESTION_ID_COL => $QuestionId,
+                                cn::HISTORY_STUDENT_QUESTION_ANSWER_IS_TRIAL_NO_COL => 1,
+                                cn::HISTORY_STUDENT_QUESTION_ANSWER_ANSWER_ORDERING_COL => implode(',',$RandomAnswerOrdering)
+                            ]);
+                        }
                         $HistoryStudentQuestionAnswer = HistoryStudentQuestionAnswer::where([
                             cn::HISTORY_STUDENT_QUESTION_ANSWER_STUDENT_ID_COL  => Auth::user()->id,
                             cn::HISTORY_STUDENT_QUESTION_ANSWER_EXAM_ID_COL     => $exam_id,
                             cn::HISTORY_STUDENT_QUESTION_ANSWER_QUESTION_ID_COL => $QuestionId,
                             cn::HISTORY_STUDENT_QUESTION_ANSWER_IS_TRIAL_NO_COL => 1
                         ])->first();
+
+                        $random_number_array = explode(',',$HistoryStudentQuestionAnswer->answer_ordering);
                     }
                 }
             }
@@ -126,7 +174,10 @@ class AttemptExamTestExerciseController extends Controller
                 // This exam is personal then 1
                 $testType = 1;
             }
-            return view('backend/exams/student_attempt_test_exercise',compact('exam_id','Question','QuestionNumber','QuestionsFirstId','QuestionsLastId','examLanguage','examDetail','taking_exam_timing','testType','questionSize','question_ids','ExamMaximumSeconds','IsAttemptTrialNo','answered_flag_question_ids','not_attempted_flag_question_ids','HistoryStudentQuestionAnswer','second','RemainingSeconds','HistoryStudentExamsData'));
+            return view('backend/exams/student_attempt_test_exercise',compact('exam_id','Question','QuestionNumber','QuestionsFirstId','QuestionsLastId',
+            'examLanguage','examDetail','taking_exam_timing','testType','questionSize','question_ids','ExamMaximumSeconds','IsAttemptTrialNo',
+            'answered_flag_question_ids','not_attempted_flag_question_ids','HistoryStudentQuestionAnswer','second','RemainingSeconds','HistoryStudentExamsData',
+            'random_number_array'));
         }
     }
 
@@ -214,7 +265,8 @@ class AttemptExamTestExerciseController extends Controller
 
             // Get the question number value
             if($question_ids){
-                $QuestionNumber = (array_search($NewQuestionId, $question_ids) + 1);
+                //$QuestionNumber = (array_search($NewQuestionId, $question_ids) + 1);
+                $QuestionNumber = (array_search($NewQuestionId, explode(',',$examDetail->question_ids)) + 1);
             }
             
             $this->UpdateQuestionPosition($examId,$NewQuestionId);
@@ -228,19 +280,54 @@ class AttemptExamTestExerciseController extends Controller
                     cn::HISTORY_STUDENT_QUESTION_ANSWER_QUESTION_ID_COL => $NewQuestionId,
                     cn::HISTORY_STUDENT_QUESTION_ANSWER_IS_TRIAL_NO_COL => 2
                 ])->exists()){
+                    $FirstTrailHistoryStudentQuestionAnswer = HistoryStudentQuestionAnswer::where([
+                        cn::HISTORY_STUDENT_QUESTION_ANSWER_STUDENT_ID_COL => Auth::user()->id,
+                        cn::HISTORY_STUDENT_QUESTION_ANSWER_EXAM_ID_COL => $examId,
+                        cn::HISTORY_STUDENT_QUESTION_ANSWER_QUESTION_ID_COL => $NewQuestionId,
+                        cn::HISTORY_STUDENT_QUESTION_ANSWER_IS_TRIAL_NO_COL => 1
+                    ])->first();
+
+                    HistoryStudentQuestionAnswer::where([
+                        cn::HISTORY_STUDENT_QUESTION_ANSWER_STUDENT_ID_COL  => Auth::user()->id,
+                        cn::HISTORY_STUDENT_QUESTION_ANSWER_EXAM_ID_COL     => $examId,
+                        cn::HISTORY_STUDENT_QUESTION_ANSWER_QUESTION_ID_COL => $NewQuestionId,
+                        cn::HISTORY_STUDENT_QUESTION_ANSWER_IS_TRIAL_NO_COL => 2
+                    ])
+                    ->Update([
+                        cn::HISTORY_STUDENT_QUESTION_ANSWER_ANSWER_ORDERING_COL => $FirstTrailHistoryStudentQuestionAnswer->answer_ordering
+                    ]);
+
                     $HistoryStudentQuestionAnswer = HistoryStudentQuestionAnswer::where([
                         cn::HISTORY_STUDENT_QUESTION_ANSWER_STUDENT_ID_COL => Auth::user()->id,
                         cn::HISTORY_STUDENT_QUESTION_ANSWER_EXAM_ID_COL => $examId,
                         cn::HISTORY_STUDENT_QUESTION_ANSWER_QUESTION_ID_COL => $NewQuestionId,
                         cn::HISTORY_STUDENT_QUESTION_ANSWER_IS_TRIAL_NO_COL => 2
                     ])->first();
+                    $random_number_array = explode(',',$HistoryStudentQuestionAnswer->answer_ordering);
                 }else{
+                    if(HistoryStudentQuestionAnswer::where([
+                        cn::HISTORY_STUDENT_QUESTION_ANSWER_STUDENT_ID_COL  => Auth::user()->id,
+                        cn::HISTORY_STUDENT_QUESTION_ANSWER_EXAM_ID_COL     => $examId,
+                        cn::HISTORY_STUDENT_QUESTION_ANSWER_QUESTION_ID_COL => $NewQuestionId,
+                        cn::HISTORY_STUDENT_QUESTION_ANSWER_IS_TRIAL_NO_COL => 1
+                    ])
+                    ->doesntExist()){
+                        $RandomAnswerOrdering = $this->GetRandomAnswerOrdering();
+                        HistoryStudentQuestionAnswer::updateOrCreate([
+                            cn::HISTORY_STUDENT_QUESTION_ANSWER_STUDENT_ID_COL  => Auth::user()->id,
+                            cn::HISTORY_STUDENT_QUESTION_ANSWER_EXAM_ID_COL     => $examId,
+                            cn::HISTORY_STUDENT_QUESTION_ANSWER_QUESTION_ID_COL => $NewQuestionId,
+                            cn::HISTORY_STUDENT_QUESTION_ANSWER_IS_TRIAL_NO_COL => 1,
+                            cn::HISTORY_STUDENT_QUESTION_ANSWER_ANSWER_ORDERING_COL => implode(',',$RandomAnswerOrdering)
+                        ]);
+                    }
                     $HistoryStudentQuestionAnswer = HistoryStudentQuestionAnswer::where([
                         cn::HISTORY_STUDENT_QUESTION_ANSWER_STUDENT_ID_COL => Auth::user()->id,
                         cn::HISTORY_STUDENT_QUESTION_ANSWER_EXAM_ID_COL => $examId,
                         cn::HISTORY_STUDENT_QUESTION_ANSWER_QUESTION_ID_COL => $NewQuestionId,
                         cn::HISTORY_STUDENT_QUESTION_ANSWER_IS_TRIAL_NO_COL => 1
                     ])->first();
+                    $random_number_array = explode(',',$HistoryStudentQuestionAnswer->answer_ordering);
                 }
             }
             
@@ -293,7 +380,8 @@ class AttemptExamTestExerciseController extends Controller
                 $TotalNoOfQuestions = count(explode(',',$HistoryStudentExamsData->{cn::HISTORY_STUDENT_EXAMS_EXAM_FIRST_TRIAL_WRONG_QUESTION_IDS_COL}));
                 $RemainingQuestionCount = count(array_diff(explode(',',$HistoryStudentExamsData->{cn::HISTORY_STUDENT_EXAMS_EXAM_FIRST_TRIAL_WRONG_QUESTION_IDS_COL}),$AttemptedQuestionIds));
             }
-            $html = (string)View::make('backend/exams/next_question_test_exercise',compact('examId','Question','QuestionNumber','examLanguage','examDetail','questionNo','Questionsfirstid','Questionslastid','RemainingQuestionCount','UploadDocumentsData','HistoryStudentQuestionAnswer'));
+            $html = (string)View::make('backend/exams/next_question_test_exercise',compact('examId','Question','QuestionNumber','examLanguage','examDetail','questionNo',
+            'Questionsfirstid','Questionslastid','RemainingQuestionCount','UploadDocumentsData','HistoryStudentQuestionAnswer','random_number_array'));
             return $this->sendResponse(['html' => $html,'question_id' => $NewQuestionId]);
         }catch(Exception $exception){
             return back()->withError($exception->getMessage());
@@ -443,7 +531,6 @@ class AttemptExamTestExerciseController extends Controller
                 ]);
             }
         }
-
         $AttemptedQuestionIds =     HistoryStudentQuestionAnswer::where([
                                         cn::HISTORY_STUDENT_QUESTION_ANSWER_STUDENT_ID_COL => Auth::user()->id,
                                         cn::HISTORY_STUDENT_QUESTION_ANSWER_EXAM_ID_COL => $request->exam_id,
@@ -585,6 +672,7 @@ class AttemptExamTestExerciseController extends Controller
                                                         cn::HISTORY_STUDENT_QUESTION_ANSWER_QUESTION_ID_COL => $NewQuestionId,
                                                         cn::HISTORY_STUDENT_QUESTION_ANSWER_IS_TRIAL_NO_COL => 1
                                                     ])->first();
+                    $random_number_array = explode(',',$HistoryStudentQuestionAnswer->answer_ordering);
                 }
             }
 
@@ -632,8 +720,9 @@ class AttemptExamTestExerciseController extends Controller
             }
 
             // Get The new Indexing html
-            $IndexingHtml = $this->IndexingHtml($question_ids,$answered_flag_question_ids,$not_attempted_flag_question_ids,$CurrentQuestionId);
-            $html = (string)View::make('backend/exams/next_question_test_exercise',compact('examId','Question','QuestionNumber','examLanguage','examDetail','Questionsfirstid','Questionslastid','RemainingQuestionCount','UploadDocumentsData','HistoryStudentQuestionAnswer'));
+            $IndexingHtml = $this->IndexingHtml($question_ids,$answered_flag_question_ids,$not_attempted_flag_question_ids,$CurrentQuestionId,$examDetail);
+            $html = (string)View::make('backend/exams/next_question_test_exercise',compact('examId','Question','QuestionNumber','examLanguage','examDetail','Questionsfirstid',
+            'Questionslastid','RemainingQuestionCount','UploadDocumentsData','HistoryStudentQuestionAnswer','random_number_array'));
             return $this->sendResponse([
                 'html' => $html,
                 'question_id' => $NewQuestionId,
@@ -643,10 +732,11 @@ class AttemptExamTestExerciseController extends Controller
         }
     }
 
-    public function IndexingHtml($question_ids,$answered_flag_question_ids,$not_attempted_flag_question_ids,$CurrentQuestionId){
+    public function IndexingHtml($question_ids,$answered_flag_question_ids,$not_attempted_flag_question_ids,$CurrentQuestionId,$examDetail){
         $IndexingHtml = '';
         $IndexingHtml .= '<ol>';
         if($question_ids){
+            $ExamsQuestionIds = explode(',',$examDetail->question_ids);
             foreach($question_ids as $QuestionIndex => $QuestionId){
                 $IndexingHtml .= '<li class="test-navigation-item test-navigation-item-'.$QuestionId;
                                 if(in_array($QuestionId,$answered_flag_question_ids)){
@@ -661,7 +751,7 @@ class AttemptExamTestExerciseController extends Controller
                                 $IndexingHtml .= '"
                                 data-index="'.$QuestionId.' " 
                                 question-id-next="'.$QuestionId.' " 
-                                data-text="QuestionNavigation">'.($QuestionIndex+1).'</li>';
+                                data-text="QuestionNavigation">'.(array_search($QuestionId,$ExamsQuestionIds)+1).'</li>';
                 }
             }
         $IndexingHtml .= '</ol>';

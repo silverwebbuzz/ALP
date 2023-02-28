@@ -766,9 +766,6 @@ function Emoji() {
                             }
                         }
                     }
-                    //updateMathHtml();
-                    //updateMathHtmlById("nextquestionarea");
-
                     MathJax.Hub.Queue(["Typeset", MathJax.Hub]);
                     $("#cover-spin").hide();
                 },
@@ -808,6 +805,7 @@ function Emoji() {
             $(this).closest(".attmp-main-answer").find(".checkanswer").each(function () {
                 question_position_number.push($(this).val());
             });
+
             var questionPositionNumberJson = JSON.stringify(question_position_number);
             if(question_position.length != 0){
                 checkarnsPo = 0;
@@ -836,7 +834,6 @@ function Emoji() {
                 question_position.push(question_position_arr);
             }
             // Set Question Position End
-
             if(question_old_data_new.length != 0){
                 for(var ic = 0; ic < question_old_data_new.length; ic++){
                     if(question_old_data_new[ic]["question_id"] == questionid){
@@ -863,83 +860,84 @@ function Emoji() {
          * USE : Use Next or Previous Question in Personal Exam
          */
         $(document).on("click",".test-personal #nextquestion,.test-personal #prevquestion",function (e) {
-                $("#cover-spin").show();
-                var is_err = 0;
-                var examaction = $(this).attr("data-text");
-                if(examaction == "Next"){
-                    questiontype = $(".checkanswer:checked").attr("question-type");
-                    if(questiontype == 2 || questiontype == 1){
-                        var is_err = $(this).attr("iserr");
-                    }
-                    var currentid = $(this).attr("question-id-next");
-                    questionNo = questionNo + 1;
-                }else{
-                    var currentid = $(this).attr("question-id-prev");
-                    questionNo = questionNo - 1;
+            $("#cover-spin").show();
+            $(".test-personal .checkanswer:checked").trigger('change');
+            var is_err = 0;
+            var examaction = $(this).attr("data-text");
+            if(examaction == "Next"){
+                questiontype = $(".checkanswer:checked").attr("question-type");
+                if(questiontype == 2 || questiontype == 1){
+                    var is_err = $(this).attr("iserr");
                 }
-                var wrong_old_data_new = $("#wrong_ans_id").val();
-                var examid = $("input[name=exam_id]").val();
-                var language = $("input[name=language]").val();
-                // set question duration in second start
-                if(examaction == "Next"){
-                    var answer = $(".checkanswer:checked").val();
-                    var questionid = $(".checkanswer:checked").attr("question-id");
-                    var submitid = $("#submitquestion").attr("submit-id");
-                    var language = $("#attempt-exams input[name=language]").val();
-                    if(question_old_data_new.length != 0){
-                        for(var ics = 0;ics < question_old_data_new.length;ics++){
-                            if(question_old_data_new[ics]["question_id"] == questionid && question_old_data_new[ics]["duration_second"] == 0){
-                                question_arr = {
-                                    question_id: questionid,
-                                    answer: answer,
-                                    language: language,
-                                    duration_second: $QuestionTimer,
-                                };
-                                question_old_data_new[ics] = question_arr;
-                            }
+                var currentid = $(this).attr("question-id-next");
+                questionNo = questionNo + 1;
+            }else{
+                var currentid = $(this).attr("question-id-prev");
+                questionNo = questionNo - 1;
+            }
+            var wrong_old_data_new = $("#wrong_ans_id").val();
+            var examid = $("input[name=exam_id]").val();
+            var language = $("input[name=language]").val();
+            // set question duration in second start
+            if(examaction == "Next"){
+                var answer = $(".checkanswer:checked").val();
+                var questionid = $(".checkanswer:checked").attr("question-id");
+                var submitid = $("#submitquestion").attr("submit-id");
+                var language = $("#attempt-exams input[name=language]").val();
+                if(question_old_data_new.length != 0){
+                    for(var ics = 0;ics < question_old_data_new.length;ics++){
+                        if(question_old_data_new[ics]["question_id"] == questionid && question_old_data_new[ics]["duration_second"] == 0){
+                            question_arr = {
+                                question_id: questionid,
+                                answer: answer,
+                                language: language,
+                                duration_second: $QuestionTimer,
+                            };
+                            question_old_data_new[ics] = question_arr;
                         }
                     }
-                    QuestionSecond = 0;
                 }
-                // set question duration in second end
-                // send ajax to get data
-                $.ajax({
-                    url: BASE_URL + "/next-question",
-                    type: "POST",
-                    data: {
-                        _token: $('meta[name="csrf-token"]').attr("content"),
-                        currentid: currentid,
-                        examid: examid,
-                        examaction: examaction,
-                        questionNo: questionNo,
-                        language: language,
-                        wrong_ans: wrong_question_old_data_new,
-                        attempt_ans: attempt_ans,
-                        // Get Question Position
-                        question_position: question_position,
-                    },
-                    success: function (response) {
-                        $("#nextquestionarea").html(response);
-                        if(question_old_data_new.length != 0){
-                            for(var icn = 0; icn < question_old_data_new.length; icn++){
-                                var question_id_check = $("#nextquestionarea .checkanswer").attr("question-id");
-                                if(question_old_data_new[icn]["question_id"] == question_id_check){
-                                    var answer_ren = question_old_data_new[icn]["answer"];
-                                    $("#nextquestionarea .checkanswer[value=" + answer_ren + "]").prop("checked", true);
-                                    $("#nextquestion").prop("disabled", false);
-                                    if($("#nextquestion").length == 0){
-                                        $("#submitquestion").prop("disabled",false);
-                                        $("#submitquestion").show();
-                                    }
+                QuestionSecond = 0;
+            }
+            // set question duration in second end
+            // send ajax to get data
+            $.ajax({
+                url: BASE_URL + "/next-question",
+                type: "POST",
+                data: {
+                    _token: $('meta[name="csrf-token"]').attr("content"),
+                    currentid: currentid,
+                    examid: examid,
+                    examaction: examaction,
+                    questionNo: questionNo,
+                    language: language,
+                    wrong_ans: wrong_question_old_data_new,
+                    attempt_ans: attempt_ans,
+                    // Get Question Position
+                    question_position: question_position,
+                },
+                success: function (response) {
+                    $("#nextquestionarea").html(response);
+                    if(question_old_data_new.length != 0){
+                        for(var icn = 0; icn < question_old_data_new.length; icn++){
+                            var question_id_check = $("#nextquestionarea .checkanswer").attr("question-id");
+                            if(question_old_data_new[icn]["question_id"] == question_id_check){
+                                var answer_ren = question_old_data_new[icn]["answer"];
+                                $("#nextquestionarea .checkanswer[value=" + answer_ren + "]").prop("checked", true);
+                                $("#nextquestion").prop("disabled", false);
+                                if($("#nextquestion").length == 0){
+                                    $("#submitquestion").prop("disabled",false);
+                                    $("#submitquestion").show();
                                 }
                             }
                         }
-                        //updateMathHtml();
-                        //updateMathHtmlById("nextquestionarea");
-                        MathJax.Hub.Queue(["Typeset", MathJax.Hub]);
-                        $("#cover-spin").hide();
-                    },
-                });
+                    }
+                    //updateMathHtml();
+                    //updateMathHtmlById("nextquestionarea");
+                    MathJax.Hub.Queue(["Typeset", MathJax.Hub]);
+                    $("#cover-spin").hide();
+                },
+            });
             }
         );
 

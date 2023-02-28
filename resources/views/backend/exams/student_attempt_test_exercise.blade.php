@@ -23,11 +23,14 @@
                         <hr class="blue-line">
                     </div>
                 </div>
-                <div class="alert alert-warning mb-5">{{\App\Helpers\Helper::getGlobalConfiguration('attempt_exam_restrict_notification_'.app()->getLocale())}}</div>
+                <!-- <div class="alert alert-warning mb-5">{{\App\Helpers\Helper::getGlobalConfiguration('attempt_exam_restrict_notification_'.app()->getLocale())}}</div> -->
                 <div class="test-navigation-main">
                     <div id="test-navigation" style="display: block;">
                         <div id="test_question_review">
                             <ol>
+                                @php
+                                    $ExamsQuestionIds = explode(',',$examDetail->question_ids);
+                                @endphp
                                 @if($question_ids)
                                     @foreach($question_ids as $QuestionIndex => $QuestionId)
                                     <!-- <li class="test-navigation-item selected_question_item" data-index="1">1</li> -->
@@ -37,7 +40,7 @@
                                     @if($Question->id == $QuestionId) selected_question_item @endif"
                                     data-index="{{$QuestionId}}" 
                                     question-id-next="{{$QuestionId}}" 
-                                    data-text="QuestionNavigation">{{($QuestionIndex+1)}}</li>
+                                    data-text="QuestionNavigation">{{(array_search($QuestionId,$ExamsQuestionIds)+1)}}</li>
                                     @endforeach
                                 @endif
                             </ol>
@@ -58,7 +61,7 @@
                 </div>
                 <div class="row" style="float:right;">
                     <div class="attmp-submit-btn attmp-butns">
-                        <button type="submit" class="btn btn-success mr-2" id="submitquestion" submit-id="1">
+                        <button type="button" class="btn btn-success mr-2" id="submitquestion" submit-id="1">
                         @if($examLanguage == 'en')
                         {{__('languages.submit')}}
                         @else
@@ -86,11 +89,11 @@
                                 <div class="exam_timer_section">
                                     <div class="attmp-timer-out-inr">
                                         @if($ExamMaximumSeconds != 'unlimited_time')
-                                            <h5 class="exam_time_limit_label">{{__('languages.time_limit')}} : </h5>
+                                            <h5 class="exam_time_limit_label">{{__('languages.remaining_time')}} : </h5>
                                             <span id="ExamTimerOut">@if(isset($ExamMaximumSeconds)) {{sprintf('%02d:%02d:%02d', ($ExamMaximumSeconds/ 3600),($ExamMaximumSeconds/ 60 % 60), $ExamMaximumSeconds% 60)}} @else 00:00:00 @endif</span>
                                         @endif
                                     </div>
-                                    <div class="attmp-timer-inr">
+                                    <div class="attmp-timer-inr" style="display:none;">
                                         <h5>{{__('languages.my_studies.exam_time')}}: </h5>
                                         <p><span id="ExamTimer">@if(isset($taking_exam_timing)) {{$taking_exam_timing}} @else 00:00:00 @endif</span></p>
                                     </div>
@@ -115,11 +118,6 @@
                                     </div>
                                 </div>
                                 <div class="attmp-main-answer">
-                                    @php
-                                        $random_number_array = range(1,4);
-                                        shuffle($random_number_array );
-                                        $random_number_array = array_slice($random_number_array ,0,4);
-                                    @endphp
                                     @if(isset($Question->answers->{'answer'.$random_number_array[0].'_'.$examLanguage}))
                                         <div class="attmp-ans pl-2 pb-2">
                                             <input type="radio" name="ans_que_{{$Question->id}}" value="{{$random_number_array[0]}}" class="radio mr-2 checkanswer" @if(isset($HistoryStudentQuestionAnswer) && $HistoryStudentQuestionAnswer->selected_answer_id == $random_number_array[0])) checked @endif question-id="{{$Question->id}}" @if(isset($examDetail[0]->exam_type)) question-type="{{$examDetail[0]->exam_type}}" @endif @if(isset($examDetail->exam_type)) question-type="{{$examDetail->exam_type}}" @endif  data-q-index="1" >
@@ -322,8 +320,8 @@
             <div class="modal-body " id="AttemptQuestionFeedbackBody">
                 <form class="smileys">
                     <input type="hidden" name="feedbackType" id="feedbackType" value=""/>
-                    <input type="radio" name="smiley" value="1" class="sad emojisButton">
-                    <input type="radio" name="smiley" value="2" class="happy emojisButton">
+                    <input type="radio" name="smiley" value="1" data-feedbackType="1" class="sad emojisButton">
+                    <input type="radio" name="smiley" value="2" data-feedbackType="2" class="happy emojisButton">
                 </form>
             </div>
         </div>
@@ -332,6 +330,7 @@
 {{-- End Modal --}}
 
 <script>
+    var IsSubmitConfirmPopup = true;
     var questionNo = 1;
     var attempt_ans = 0;
     var question_position = new Array();
@@ -383,7 +382,8 @@
 
         // Trigger on click event after selecting emoji
         $(document).on("click",".emojisButton",function () {
-            var FeedbackEmojiId = $('input[name="smiley"]:checked').val();
+            //var FeedbackEmojiId = $('input[name="smiley"]:checked').val();
+            var FeedbackEmojiId = $(this).attr('data-feedbackType');
             if(FeedbackEmojiId!=""){
                 //$("#cover-spin").show();
                 $.ajax({
@@ -551,11 +551,12 @@
                 second:second
             },
             success: function (response) {
-                var Response = JSON.parse(JSON.stringify(response));
+                var Response = JSON.parse(JSON.stringify(response));                
                 if(Response.data.html){
                     $("#nextquestionarea").html(Response.data.html);
                     MathJax.Hub.Queue(["Typeset", MathJax.Hub]);
                 }
+                $('#student-select-attempt-exam-language').attr('data-questionid',Response.data.question_id);
                 $('.test-navigation-item-'+Response.data.question_id).addClass('selected_question_item');
                 $("#cover-spin").hide();
             },
@@ -633,13 +634,257 @@
                         });
                     }
                 }
+                $('#ExamTimerOut').text(secondsTimeSpanToHMS(totalSeconds));
             }
         }
     }
 
     // Trigger on click form submit event
+    // $(document).on("click","#submitquestion",function (e) {
+    //     $(".test-all .checkanswer:checked").trigger('change');
+    //     if(APP_LANGUAGE == 'en'){
+    //         var confirm_button_yes_text = BUTTONYESTEXTEN;
+    //     }else{
+    //         var confirm_button_yes_text = BUTTONYESTEXTCH;
+    //     }
+    //     $.confirm({
+    //         title: CONFIRMATION_BUTTON_TEXT,
+    //         content: SUBMIT_TEST_EXERCISE_CONFIRMATION_MESSAGE,
+    //         autoClose: 'No|5000',
+    //         buttons: {
+    //             TryAgain: {
+    //                 text: confirm_button_yes_text,
+    //                 action: function () {
+    //                     var questionspos = "";
+    //                     var ExamType = $("#nextquestionarea .checkanswer").attr("question-type");
+    //                     var language = $("#student-select-attempt-exam-language").val();
+    //                     var no_of_trial_exam = $("input[name=no_of_trial_exam]").val();
+    //                     var exam_id = $("input[name=exam_id]").val();
+    //                     if(ExamType == 2){
+    //                         // Exam type => 2 = Excercise  & 1 = self learning
+    //                         if(isReAttempt === false){
+    //                             AfterCompleteTestFeedback();
+    //                         }else{
+    //                             $("#cover-spin").show();
+    //                             // The logic is second trial attempt test
+    //                             $.ajax({
+    //                                 url: BASE_URL + "/verify/question-answer/test-exercise",
+    //                                 type: "POST",
+    //                                 data:{
+    //                                     _token: $('meta[name="csrf-token"]').attr("content"),
+    //                                     exam_id: exam_id,
+    //                                     no_of_trial_exam: no_of_trial_exam,
+    //                                 },
+    //                                 success: function (response) {
+    //                                     $("#cover-spin").hide();
+    //                                     var Response = JSON.parse(JSON.stringify(response));
+    //                                     if(Response.data.questionNo !=""){
+    //                                         $.each(Response.data.questionNo, function (key, value) {
+    //                                             questionspos += "Q-" + value;
+    //                                             if(Response.data.questionNo - 1 != key){
+    //                                                 questionspos += ", ";
+    //                                             }
+    //                                         });
+    //                                         if(language == "ch"){
+    //                                             questionspos += "<br />" + POPMESSAGE_CH1;
+    //                                             $setPoptitle = POPMESSAGETITLE_CH;
+    //                                             $setYesButtonText = BUTTONYESTEXTCH;
+    //                                             setNoButtonText = BUTTONNOTEXTCH;
+    //                                         }else{
+    //                                             questionspos += "<br />" + POPMESSAGE_EN1;
+    //                                             $setPoptitle = POPMESSAGETITLE_EN;
+    //                                             $setYesButtonText = BUTTONYESTEXTEN;
+    //                                             setNoButtonText = BUTTONNOTEXTEN;
+    //                                         }
+    //                                         $.confirm({
+    //                                             title: $setPoptitle,
+    //                                             content: questionspos,
+    //                                             //autoClose: 'Cancellation|8000',
+    //                                             buttons: {
+    //                                                 TryAgain: {
+    //                                                     text: $setYesButtonText,
+    //                                                     action: function () {
+    //                                                         isReAttempt = false;
+    //                                                         var exam_id = $("input[name=exam_id]").val();
+    //                                                         $("input[name=no_of_trial_exam]").val(2);
+    //                                                         var no_of_trial_exam = $("input[name=no_of_trial_exam]").val();
+    //                                                         var WrongQuestionIds = Response.data.WrongQuestionIds;
+    //                                                         $("#cover-spin").show();
+    //                                                         $.ajax({
+    //                                                             url:BASE_URL + "/student/attempt/exercise/second-trial",
+    //                                                             type: "POST",
+    //                                                             data: {
+    //                                                                 _token: $('meta[name="csrf-token"]').attr("content"),
+    //                                                                 exam_id: exam_id,
+    //                                                                 WrongQuestionIds:WrongQuestionIds,
+    //                                                                 examaction: "Next",
+    //                                                                 language: language,
+    //                                                                 no_of_trial_exam:no_of_trial_exam,
+    //                                                                 second:second
+    //                                                             },
+    //                                                             success: function (Second_Trial_Response) {
+    //                                                                 var SecondTrialResponse = JSON.parse(JSON.stringify(Second_Trial_Response));
+    //                                                                 $('#test_question_review').html(SecondTrialResponse.data.IndexingHtml);
+    //                                                                 $("#nextquestionarea").html(SecondTrialResponse.data.html);
+    //                                                                 MathJax.Hub.Queue(["Typeset",MathJax.Hub]);
+    //                                                                 var FlaggedQuestionIds = new Array();
+    //                                                                 var answered_flag_question_ids = new Array();
+    //                                                                 clearInterval(examTimerInterval);
+    //                                                                 second = SecondTrialResponse.data.second;
+    //                                                                 examTimer();
+    //                                                             }
+    //                                                         });
+    //                                                         $("#cover-spin").hide();
+    //                                                     },
+    //                                                 },
+    //                                                 No: function () {
+    //                                                     $("#cover-spin").hide();
+    //                                                     isReAttempt = false;
+    //                                                     AfterCompleteTestFeedback();
+    //                                                     // $("#attempt-exams").submit();
+    //                                                     // return true;
+    //                                                 }
+    //                                             },
+    //                                         });
+    //                                     }
+    //                                 }
+    //                             });
+    //                         }
+    //                     }else{
+    //                         $("#cover-spin").hide();
+    //                         AfterCompleteTestFeedback();
+    //                     }
+    //                 },
+    //             },
+    //             No: function () {
+    //                 $("#cover-spin").hide();
+    //             }
+    //         },
+    //     });
+    //     //return false;
+    // });
+
+    /**
+     * USE : Trigger click on event submit button
+     */
     $(document).on("click","#submitquestion",function (e) {
         $(".test-all .checkanswer:checked").trigger('change');
+        var TotalNoOfQuestions = $('#test_question_review li').length;
+        var TotalAnsweredQuestions = $('#test_question_review li.answered-item').length;
+        var TotalFlaggedQuestion = $('#test_question_review li.flagged-item').length;
+        if(TotalNoOfQuestions != (TotalAnsweredQuestions + TotalFlaggedQuestion)){
+            IsSubmitConfirmPopup();
+        }else{
+            SubmitFormData();
+        }
+    });
+
+    function SubmitFormData(){
+        var questionspos = "";
+        var ExamType = $("#nextquestionarea .checkanswer").attr("question-type");
+        var language = $("#student-select-attempt-exam-language").val();
+        var no_of_trial_exam = $("input[name=no_of_trial_exam]").val();
+        var exam_id = $("input[name=exam_id]").val();
+        if(ExamType == 2){
+            // Exam type => 2 = Excercise  & 1 = self learning
+            if(isReAttempt === false){
+                AfterCompleteTestFeedback();
+            }else{
+                $("#cover-spin").show();
+                // The logic is second trial attempt test
+                $.ajax({
+                    url: BASE_URL + "/verify/question-answer/test-exercise",
+                    type: "POST",
+                    data:{
+                        _token: $('meta[name="csrf-token"]').attr("content"),
+                        exam_id: exam_id,
+                        no_of_trial_exam: no_of_trial_exam,
+                    },
+                    success: function (response) {
+                        $("#cover-spin").hide();
+                        var Response = JSON.parse(JSON.stringify(response));
+                        if(Response.data.questionNo !=""){
+                            $.each(Response.data.questionNo, function (key, value) {
+                                questionspos += "Q-" + value;
+                                if(Response.data.questionNo - 1 != key){
+                                    questionspos += ", ";
+                                }
+                            });
+                            if(language == "ch"){
+                                questionspos += "<br />" + POPMESSAGE_CH1;
+                                $setPoptitle = POPMESSAGETITLE_CH;
+                                $setYesButtonText = BUTTONYESTEXTCH;
+                                setNoButtonText = BUTTONNOTEXTCH;
+                            }else{
+                                questionspos += "<br />" + POPMESSAGE_EN1;
+                                $setPoptitle = POPMESSAGETITLE_EN;
+                                $setYesButtonText = BUTTONYESTEXTEN;
+                                setNoButtonText = BUTTONNOTEXTEN;
+                            }
+                            $.confirm({
+                                title: $setPoptitle,
+                                content: questionspos,
+                                //autoClose: 'Cancellation|8000',
+                                buttons: {
+                                    TryAgain: {
+                                        text: $setYesButtonText,
+                                        action: function () {
+                                            isReAttempt = false;
+                                            var exam_id = $("input[name=exam_id]").val();
+                                            $("input[name=no_of_trial_exam]").val(2);
+                                            var no_of_trial_exam = $("input[name=no_of_trial_exam]").val();
+                                            var WrongQuestionIds = Response.data.WrongQuestionIds;
+                                            $("#cover-spin").show();
+                                            $.ajax({
+                                                url:BASE_URL + "/student/attempt/exercise/second-trial",
+                                                type: "POST",
+                                                data: {
+                                                    _token: $('meta[name="csrf-token"]').attr("content"),
+                                                    exam_id: exam_id,
+                                                    WrongQuestionIds:WrongQuestionIds,
+                                                    examaction: "Next",
+                                                    language: language,
+                                                    no_of_trial_exam:no_of_trial_exam,
+                                                    second:second
+                                                },
+                                                success: function (Second_Trial_Response) {
+                                                    var SecondTrialResponse = JSON.parse(JSON.stringify(Second_Trial_Response));
+                                                    $('#test_question_review').html(SecondTrialResponse.data.IndexingHtml);
+                                                    $("#nextquestionarea").html(SecondTrialResponse.data.html);
+                                                    MathJax.Hub.Queue(["Typeset",MathJax.Hub]);
+                                                    var FlaggedQuestionIds = new Array();
+                                                    var answered_flag_question_ids = new Array();
+                                                    clearInterval(examTimerInterval);
+                                                    second = SecondTrialResponse.data.second;
+                                                    examTimer();
+                                                }
+                                            });
+                                            $("#cover-spin").hide();
+                                        },
+                                    },
+                                    No: function () {
+                                        $("#cover-spin").hide();
+                                        isReAttempt = false;
+                                        AfterCompleteTestFeedback();
+                                        // $("#attempt-exams").submit();
+                                        // return true;
+                                    }
+                                },
+                            });
+                        }
+                    }
+                });
+            }
+        }else{
+            $("#cover-spin").hide();
+            AfterCompleteTestFeedback();
+        }
+    }
+
+    /**
+     * Check confirmation popup
+     */
+    async function IsSubmitConfirmPopup(){
         if(APP_LANGUAGE == 'en'){
             var confirm_button_yes_text = BUTTONYESTEXTEN;
         }else{
@@ -648,114 +893,12 @@
         $.confirm({
             title: CONFIRMATION_BUTTON_TEXT,
             content: SUBMIT_TEST_EXERCISE_CONFIRMATION_MESSAGE,
-            autoClose: 'Cancellation|5000',
+            autoClose: 'No|5000',
             buttons: {
                 TryAgain: {
                     text: confirm_button_yes_text,
                     action: function () {
-                        var questionspos = "";
-                        var ExamType = $("#nextquestionarea .checkanswer").attr("question-type");
-                        var language = $("#student-select-attempt-exam-language").val();
-                        var no_of_trial_exam = $("input[name=no_of_trial_exam]").val();
-                        var exam_id = $("input[name=exam_id]").val();
-                        if(ExamType == 2){
-                            // Exam type => 2 = Excercise  & 1 = self learning
-                            if(isReAttempt === false){
-                                AfterCompleteTestFeedback();
-                                //$("#cover-spin").show();
-                                //$("#attempt-exams").submit();
-                                //return true;
-                            }else{
-                                $("#cover-spin").show();
-                                // The logic is second trial attempt test
-                                $.ajax({
-                                    url: BASE_URL + "/verify/question-answer/test-exercise",
-                                    type: "POST",
-                                    data:{
-                                        _token: $('meta[name="csrf-token"]').attr("content"),
-                                        exam_id: exam_id,
-                                        no_of_trial_exam: no_of_trial_exam,
-                                    },
-                                    success: function (response) {
-                                        $("#cover-spin").hide();
-                                        var Response = JSON.parse(JSON.stringify(response));
-                                        if(Response.data.questionNo !=""){
-                                            $.each(Response.data.questionNo, function (key, value) {
-                                                questionspos += "Q-" + value;
-                                                if(Response.data.questionNo - 1 != key){
-                                                    questionspos += ", ";
-                                                }
-                                            });
-                                            if(language == "ch"){
-                                                questionspos += "<br />" + POPMESSAGE_CH1;
-                                                $setPoptitle = POPMESSAGETITLE_CH;
-                                                $setYesButtonText = BUTTONYESTEXTCH;
-                                                setNoButtonText = BUTTONNOTEXTCH;
-                                            }else{
-                                                questionspos += "<br />" + POPMESSAGE_EN1;
-                                                $setPoptitle = POPMESSAGETITLE_EN;
-                                                $setYesButtonText = BUTTONYESTEXTEN;
-                                                setNoButtonText = BUTTONNOTEXTEN;
-                                            }
-                                            $.confirm({
-                                                title: $setPoptitle,
-                                                content: questionspos,
-                                                //autoClose: 'Cancellation|8000',
-                                                buttons: {
-                                                    TryAgain: {
-                                                        text: $setYesButtonText,
-                                                        action: function () {
-                                                            isReAttempt = false;
-                                                            var exam_id = $("input[name=exam_id]").val();
-                                                            $("input[name=no_of_trial_exam]").val(2);
-                                                            var no_of_trial_exam = $("input[name=no_of_trial_exam]").val();
-                                                            var WrongQuestionIds = Response.data.WrongQuestionIds;
-                                                            $("#cover-spin").show();
-                                                            $.ajax({
-                                                                url:BASE_URL + "/student/attempt/exercise/second-trial",
-                                                                type: "POST",
-                                                                data: {
-                                                                    _token: $('meta[name="csrf-token"]').attr("content"),
-                                                                    exam_id: exam_id,
-                                                                    WrongQuestionIds:WrongQuestionIds,
-                                                                    examaction: "Next",
-                                                                    language: language,
-                                                                    no_of_trial_exam:no_of_trial_exam,
-                                                                    second:second
-                                                                },
-                                                                success: function (Second_Trial_Response) {
-                                                                    var SecondTrialResponse = JSON.parse(JSON.stringify(Second_Trial_Response));
-                                                                    $('#test_question_review').html(SecondTrialResponse.data.IndexingHtml);
-                                                                    $("#nextquestionarea").html(SecondTrialResponse.data.html);
-                                                                    MathJax.Hub.Queue(["Typeset",MathJax.Hub]);
-                                                                    var FlaggedQuestionIds = new Array();
-                                                                    var answered_flag_question_ids = new Array();
-                                                                    clearInterval(examTimerInterval);
-                                                                    second = SecondTrialResponse.data.second;
-                                                                    examTimer();
-                                                                }
-                                                            });
-                                                            $("#cover-spin").hide();
-                                                        },
-                                                    },
-                                                    No: function () {
-                                                        
-                                                        $("#cover-spin").hide();
-                                                        isReAttempt = false;
-                                                        AfterCompleteTestFeedback();
-                                                        // $("#attempt-exams").submit();
-                                                        // return true;
-                                                    }
-                                                },
-                                            });
-                                        }
-                                    }
-                                });
-                            }
-                        }else{
-                            $("#cover-spin").hide();
-                            AfterCompleteTestFeedback();
-                        }
+                        SubmitFormData();
                     },
                 },
                 No: function () {
@@ -763,8 +906,7 @@
                 }
             },
         });
-        //return false;
-    });
+    }
 
     function AfterCompleteTestFeedback(){
         $('#feedbackType').val('after_test_exercise');
