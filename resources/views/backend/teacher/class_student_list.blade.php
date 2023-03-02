@@ -34,11 +34,22 @@
 						<div class="row">
 							<div class="col-lg-2 col-md-4">
 								<div class="select-lng pt-2 pb-2">
+									{{-- @php echo '<pre>';print_r($gradesList->toArray());die; @endphp --}}
 									<select class="selectpicker form-control" data-show-subtext="true" data-live-search="true" name="student_grade_id" id="student_grade_id">
 										<option value='all'>{{ __('languages.all') }}</option>
+										
 										@if(!empty($gradesList))
 											@foreach($gradesList as $grade)
-											<option value="{{$grade->getClass->id}}" {{ (request()->get('student_grade_id')) == $grade->getClass->id ? 'selected' : '' }}>{{ $grade->getClass->name}}</option>
+											@php
+												
+												if(array_key_exists("get_class",$grade->toArray()) ){
+													$gradeData = $grade->getClass;
+												}else{
+													$gradeData = $grade->grades;
+												}
+											@endphp
+											{{-- <option value="{{$grade->getClass->id}}" {{ (request()->get('student_grade_id')) == $grade->getClass->id ? 'selected' : '' }}>{{ $grade->getClass->name}}</option> --}}
+											<option value="{{$gradeData->id}}" {{ (request()->get('student_grade_id')) == $gradeData->id ? 'selected' : '' }}>{{ $gradeData->name}}</option>
 											@endforeach
 										@endif
 									</select>

@@ -16,7 +16,7 @@ class AddColumnIsSchoolAdminPrivilegeAccessInUsersTable extends Migration
     {
         Schema::table(cn::USERS_TABLE_NAME, function (Blueprint $table) {
             $table->after(cn::USERS_PROFILE_PHOTO_COL, function($table){
-                $table->enum(cn::USERS_IS_SCHOOL_ADMIN_PRIVILEGE_ACCESS_COL, ['true', 'false'])->default('false')->nullable();
+                $table->enum(cn::USERS_IS_SCHOOL_ADMIN_PRIVILEGE_ACCESS_COL, ['yes', 'no'])->default('no')->nullable();
             });
         });
     }

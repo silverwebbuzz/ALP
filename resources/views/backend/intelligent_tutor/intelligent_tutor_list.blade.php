@@ -22,15 +22,15 @@
             body {font-family: Arial, Helvetica, sans-serif;}
 
             #myImg {
-            border-radius: 5px;
-            cursor: pointer;
-            transition: 0.3s;
+                border-radius: 5px;
+                cursor: pointer;
+                transition: 0.3s;
             }
 
             #myImg:hover {opacity: 0.7;}
 
             /* The Modal (background) */
-            .modal {
+            #videoPlayer.modal {
                 display: none; /* Hidden by default */
                 position: fixed; /* Stay in place */
                 z-index: 1; /* Sit on top */
@@ -45,7 +45,7 @@
             }
 
             /* Modal Content (image) */
-            .modal-content {
+            #videoPlayer.modal-content {
                 margin: auto;
                 display: block;
                 width: 80%;
@@ -83,7 +83,7 @@
             }
 
             /* The Close Button */
-            .close {
+            #videoPlayer.close {
                 position: absolute;
                 top: 15px;
                 right: 35px;
@@ -93,8 +93,8 @@
                 transition: 0.3s;
             }
 
-            .close:hover,
-            .close:focus {
+            #videoPlayer.close:hover,
+            #videoPlayer.close:focus {
                 color: #bbb;
                 text-decoration: none;
                 cursor: pointer;
@@ -102,7 +102,7 @@
 
             /* 100% Image Width on Smaller Screens */
             @media only screen and (max-width: 700px){
-                .modal-content {
+                #videoPlayer.modal-content {
                     width: 100%;
                 }
             }
@@ -377,7 +377,6 @@
                                 </div>
                             </div>
                         </div>
-                
                     </div>
             </div>
         </div>
@@ -484,9 +483,9 @@
             var img = document.getElementsByClassName("img-fluid");
             var modalImg = document.getElementById("docImages");
             $(document).on('click', '.img-fluid', function() {
-            modal.style.display = "block";
-            modalImg.src = this.src;
-            captionText.innerHTML = this.alt;
+                modal.style.display = "block";
+                modalImg.src = this.src;
+                captionText.innerHTML = this.alt;
             });
             
             // Get the <span> element that closes the modal
@@ -582,6 +581,7 @@
                     },
                 });
             });
+
             //Update File With Title or Description
             $(document).on("click",'.UpdateLearningTutorFile',function(){
                 if($("#EditIntelligentTutorForm").valid()){
@@ -682,6 +682,7 @@
                     },
                 });
             })
+
             // Play Video In Modal 
             $(document).on("click",".playVideo",function(){
                 var videoSRC = $(this).data("filepath");
@@ -713,10 +714,12 @@
                     $("#videoPlayer").modal("show");
                 }
             });
+
             // On Modal Close Stop Playing Video 
             $("#videoPlayer").on("hide.bs.modal", function(e) {
                 $("#youTubeVideoPlay").attr("src", ""); 
             });
+            
             // Get Uploded Video Url to Youtube Video Id
             function getYoutubeId(url) {
                 const regExp = /^.*(youtu.be\/|v\/|u\/\w\/|embed\/|watch\?v=|&v=)([^#&?]*).*/;

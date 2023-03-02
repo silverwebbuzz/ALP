@@ -36,14 +36,14 @@ class MyTeachingController extends Controller
 
     protected $AlpAiGraphController, $Exam, $GradeSchoolMappings, $GradeClassMapping, $User, $AttemptExams, $MyTeachingReport, $PeerGroup,$TeacherGradesClassService;
     public function __construct(){
-        $this->AlpAiGraphController = new AlpAiGraphController();
-        $this->Exam = new Exam;
-        $this->GradeSchoolMappings = new GradeSchoolMappings;
-        $this->GradeClassMapping = new GradeClassMapping;
-        $this->User = new User;
-        $this->AttemptExams = new AttemptExams;
-        $this->MyTeachingReport = new MyTeachingReport;
-        $this->PeerGroup = new PeerGroup;
+        $this->AlpAiGraphController     = new AlpAiGraphController();
+        $this->Exam                     = new Exam;
+        $this->GradeSchoolMappings      = new GradeSchoolMappings;
+        $this->GradeClassMapping        = new GradeClassMapping;
+        $this->User                     = new User;
+        $this->AttemptExams             = new AttemptExams;
+        $this->MyTeachingReport         = new MyTeachingReport;
+        $this->PeerGroup                = new PeerGroup;
         $this->TeacherGradesClassService = new TeacherGradesClassService;
     }
 
@@ -56,65 +56,94 @@ class MyTeachingController extends Controller
         $class_type_id = array();
         $GradeClassListData = array();
         $Query = '';
-        // $difficultyLevels = PreConfigurationDiffiltyLevel::all();
         $difficultyLevels = PreConfigurationDiffiltyLevel::get();
-        $gradesList = TeachersClassSubjectAssign::where([
-                                                            cn::TEACHER_CLASS_SUBJECT_TEACHER_ID_COL => Auth()->user()->{cn::USERS_ID_COL},
-                                                            cn::TEACHER_CLASS_SUBJECT_CURRICULUM_YEAR_ID_COL =>$this->GetCurriculumYear()
-                                                        ])
-                                                        ->with('getClass')
-                                                        ->get()
-                                                        ->unique(cn::TEACHER_CLASS_SUBJECT_CLASS_ID_COL);
-        $gradesListId = TeachersClassSubjectAssign::where([
-                                                            cn::TEACHER_CLASS_SUBJECT_TEACHER_ID_COL => Auth()->user()->{cn::USERS_ID_COL},
-                                                            cn::TEACHER_CLASS_SUBJECT_CURRICULUM_YEAR_ID_COL =>$this->GetCurriculumYear()
-                                                        ])
-                                                        ->pluck(cn::TEACHER_CLASS_SUBJECT_CLASS_NAME_ID_COL,cn::TEACHER_CLASS_SUBJECT_CLASS_ID_COL)
-                                                        ->toArray();
-        $gradesListIdArr = TeachersClassSubjectAssign::where([
-                                                                cn::TEACHER_CLASS_SUBJECT_TEACHER_ID_COL => Auth()->user()->{cn::USERS_ID_COL},
-                                                                cn::TEACHER_CLASS_SUBJECT_CURRICULUM_YEAR_ID_COL =>$this->GetCurriculumYear()
-                                                            ])
-                                                            ->pluck(cn::TEACHER_CLASS_SUBJECT_CLASS_ID_COL)->toArray();
-        $TeacherClass = TeachersClassSubjectAssign::where([
-                                                            cn::TEACHER_CLASS_SUBJECT_TEACHER_ID_COL => Auth()->user()->{cn::USERS_ID_COL},
-                                                            cn::TEACHER_CLASS_SUBJECT_CURRICULUM_YEAR_ID_COL =>$this->GetCurriculumYear()
-                                                        ])
-                                                        ->pluck(cn::TEACHER_CLASS_SUBJECT_CLASS_NAME_ID_COL)->toArray();
-        $TeacherAssignedClassIds = [];
-        $TeacherAssignedClass = [];
-        if(!empty($TeacherClass)){
-            foreach($TeacherClass as $teacherClass){
-                $TeacherAssignedClass[] = explode(',',$teacherClass);
-            }
-        }
-        $TeacherAssignedClass = $this->array_flatten($TeacherAssignedClass);
-        $classListIdArray =  GradeClassMapping::whereIn(cn::GRADE_CLASS_MAPPING_GRADE_ID_COL,$gradesListIdArr)
-                            ->where(cn::GRADE_CLASS_MAPPING_SCHOOL_ID_COL,$schoolId)
-                            ->where(cn::GRADE_CLASS_MAPPING_CURRICULUM_YEAR_ID_COL,$this->GetCurriculumYear())
-                            ->pluck(cn::GRADE_CLASS_MAPPING_ID_COL)
-                            ->toArray();
 
-        // Find Teacher Peer Group Ids
-        $TeachersPeerGroupIds = [];
-        $TeachersPeerGroupIds = $this->TeacherGradesClassService->GetTeachersPeerGroupIds(Auth::user()->{cn::USERS_ID_COL}, Auth::user()->{cn::USERS_SCHOOL_ID_COL});
-        $AssignmentTestList = MyTeachingReport::where(function($query) use($gradesListIdArr, $TeacherAssignedClass, $TeachersPeerGroupIds){
-                                        $query->whereIn(cn::TEACHING_REPORT_GRADE_ID_COL ,$gradesListIdArr)
-                                            ->whereIn(cn::TEACHING_REPORT_CLASS_ID_COL ,$TeacherAssignedClass)
-                                            ->orWhereIn(cn::TEACHING_REPORT_PEER_GROUP_ID,$TeachersPeerGroupIds);
-                                    })
-                                    ->where([
-                                        cn::TEACHING_REPORT_CURRICULUM_YEAR_ID_COL => $this->GetCurriculumYear(),
-                                        cn::TEACHING_REPORT_REPORT_TYPE_COL => 'assignment_test',
-                                        cn::TEACHING_REPORT_STUDY_TYPE_COL  =>  2,
-                                        cn::TEACHING_REPORT_SCHOOL_ID_COL   =>  $schoolId,
-                                    ])
-                                    ->with('exams','peerGroup')
-                                    ->whereHas('exams',function($q){
-                                        $q->where(cn::EXAM_CURRICULUM_YEAR_ID_COL, $this->GetCurriculumYear())
-                                        ->where(cn::EXAM_TABLE_STATUS_COLS,'<>','inactive');
-                                    })
-                                    ->orderBy(cn::TEACHING_REPORT_EXAM_ID_COL,'DESC')->paginate($items);
+        if($this->isTeacherLogin()){
+            $gradesList =   TeachersClassSubjectAssign::where([
+                                cn::TEACHER_CLASS_SUBJECT_TEACHER_ID_COL => Auth()->user()->{cn::USERS_ID_COL},
+                                cn::TEACHER_CLASS_SUBJECT_CURRICULUM_YEAR_ID_COL =>$this->GetCurriculumYear()
+                            ])
+                            ->with('getClass')
+                            ->get()
+                            ->unique(cn::TEACHER_CLASS_SUBJECT_CLASS_ID_COL);
+            $gradesListId = TeachersClassSubjectAssign::where([
+                                cn::TEACHER_CLASS_SUBJECT_TEACHER_ID_COL => Auth()->user()->{cn::USERS_ID_COL},
+                                cn::TEACHER_CLASS_SUBJECT_CURRICULUM_YEAR_ID_COL =>$this->GetCurriculumYear()
+                            ])
+                            ->pluck(cn::TEACHER_CLASS_SUBJECT_CLASS_NAME_ID_COL,cn::TEACHER_CLASS_SUBJECT_CLASS_ID_COL)
+                            ->toArray();
+            $gradesListIdArr =  TeachersClassSubjectAssign::where([
+                                    cn::TEACHER_CLASS_SUBJECT_TEACHER_ID_COL => Auth()->user()->{cn::USERS_ID_COL},
+                                    cn::TEACHER_CLASS_SUBJECT_CURRICULUM_YEAR_ID_COL =>$this->GetCurriculumYear()
+                                ])
+                                ->pluck(cn::TEACHER_CLASS_SUBJECT_CLASS_ID_COL)->toArray();
+            $TeacherClass = TeachersClassSubjectAssign::where([
+                                cn::TEACHER_CLASS_SUBJECT_TEACHER_ID_COL => Auth()->user()->{cn::USERS_ID_COL},
+                                cn::TEACHER_CLASS_SUBJECT_CURRICULUM_YEAR_ID_COL =>$this->GetCurriculumYear()
+                            ])
+                            ->pluck(cn::TEACHER_CLASS_SUBJECT_CLASS_NAME_ID_COL)->toArray();
+            $TeacherAssignedClassIds = [];
+            $TeacherAssignedClass = [];
+            if(!empty($TeacherClass)){
+                foreach($TeacherClass as $teacherClass){
+                    $TeacherAssignedClass[] = explode(',',$teacherClass);
+                }
+            }
+            $TeacherAssignedClass = $this->array_flatten($TeacherAssignedClass);
+            $classListIdArray =  GradeClassMapping::whereIn(cn::GRADE_CLASS_MAPPING_GRADE_ID_COL,$gradesListIdArr)
+                                ->where(cn::GRADE_CLASS_MAPPING_SCHOOL_ID_COL,$schoolId)
+                                ->where(cn::GRADE_CLASS_MAPPING_CURRICULUM_YEAR_ID_COL,$this->GetCurriculumYear())
+                                ->pluck(cn::GRADE_CLASS_MAPPING_ID_COL)
+                                ->toArray();
+
+            // Find Teacher Peer Group Ids
+            $PeerGroupIds = [];
+            $PeerGroupIds = $this->TeacherGradesClassService->GetTeachersPeerGroupIds(Auth::user()->{cn::USERS_ID_COL}, Auth::user()->{cn::USERS_SCHOOL_ID_COL});
+        }
+
+        if($this->isPrincipalLogin() || $this->isCoOrdinatorLogin() || $this->isPanelHeadLogin() ){
+            $gradesList =   GradeSchoolMappings::where([
+                                cn::GRADES_MAPPING_SCHOOL_ID_COL => Auth::user()->school_id,
+                                cn::GRADES_MAPPING_CURRICULUM_YEAR_ID_COL => $this->GetCurriculumYear()
+                            ])
+                            ->with('grades')
+                            ->get();
+            $TeacherAssignedClass = GradeClassMapping::where([
+                                cn::GRADE_CLASS_MAPPING_SCHOOL_ID_COL             => Auth::user()->school_id,
+                                cn::GRADE_CLASS_MAPPING_CURRICULUM_YEAR_ID_COL    => $this->GetCurriculumYear()
+                            ])
+                            ->get()
+                            ->pluck(cn::GRADE_CLASS_MAPPING_ID_COL);
+            if(!empty($TeacherAssignedClass)){
+                $TeacherAssignedClass = $TeacherAssignedClass->toArray();
+            }
+
+            if(!empty($gradesList)){
+                $gradesListIdArr = $gradesList->pluck(cn::GRADES_MAPPING_GRADE_ID_COL)->toArray();
+            }
+
+            // Find Teacher Peer Group Ids
+            $PeerGroupIds = [];
+            $PeerGroupIds = $this->TeacherGradesClassService->GetSchoolBasedPeerGroupIds(Auth::user()->{cn::USERS_SCHOOL_ID_COL});
+        }
+
+        $AssignmentTestList =   MyTeachingReport::where(function($query) use($gradesListIdArr, $TeacherAssignedClass, $PeerGroupIds){
+                                    $query->whereIn(cn::TEACHING_REPORT_GRADE_ID_COL ,$gradesListIdArr)
+                                        ->whereIn(cn::TEACHING_REPORT_CLASS_ID_COL ,$TeacherAssignedClass)
+                                        ->orWhereIn(cn::TEACHING_REPORT_PEER_GROUP_ID,$PeerGroupIds);
+                                })
+                                ->where([
+                                    cn::TEACHING_REPORT_CURRICULUM_YEAR_ID_COL => $this->GetCurriculumYear(),
+                                    cn::TEACHING_REPORT_REPORT_TYPE_COL => 'assignment_test',
+                                    cn::TEACHING_REPORT_STUDY_TYPE_COL  =>  2,
+                                    cn::TEACHING_REPORT_SCHOOL_ID_COL   =>  $schoolId,
+                                ])
+                                ->with('exams','peerGroup')
+                                ->whereHas('exams',function($q){
+                                    $q->where(cn::EXAM_CURRICULUM_YEAR_ID_COL, $this->GetCurriculumYear())
+                                    ->where(cn::EXAM_TABLE_STATUS_COLS,'<>','inactive');
+                                })
+                                ->orderBy(cn::TEACHING_REPORT_EXAM_ID_COL,'DESC')->paginate($items);
         
         // For Filtration
         if(isset($request->filter) && !empty($request->filter)){
@@ -122,13 +151,13 @@ class MyTeachingController extends Controller
             $class_type_id = $request->class_type_id;
             $gradeId = ($request->grade_id) ? $request->grade_id : $gradesListIdArr;
             $classTypeId = ($request->class_type_id) ? $request->class_type_id : $TeacherAssignedClass;
-            $AssignmentTestList = MyTeachingReport::Select('*')
+            $AssignmentTestList =   MyTeachingReport::Select('*')
                                     ->with('exams','peerGroup')
                                     ->whereHas('exams',function($q){
                                         $q->where(cn::EXAM_CURRICULUM_YEAR_ID_COL, $this->GetCurriculumYear())
                                         ->where(cn::EXAM_TABLE_STATUS_COLS,'<>','inactive');
                                     })
-                                    ->where(function($query) use($gradeId, $classTypeId, $TeachersPeerGroupIds){
+                                    ->where(function($query) use($gradeId, $classTypeId, $PeerGroupIds){
                                         $query->whereIn(cn::TEACHING_REPORT_GRADE_ID_COL ,$gradeId)
                                             ->whereIn(cn::TEACHING_REPORT_CLASS_ID_COL ,$classTypeId);
                                     })
@@ -139,12 +168,13 @@ class MyTeachingController extends Controller
                                         cn::TEACHING_REPORT_SCHOOL_ID_COL   => $schoolId,
                                     ])
                                     ->orderBy(cn::TEACHING_REPORT_EXAM_ID_COL,'DESC')->paginate($items);
-
             //After filtration selected value selected display.
             $GradeClassListDataArr = GradeClassMapping::whereIn(cn::GRADE_CLASS_MAPPING_GRADE_ID_COL,$gradeId)
-                ->where(cn::GRADE_CLASS_MAPPING_SCHOOL_ID_COL,$schoolId)
-                ->where(cn::GRADE_CLASS_MAPPING_CURRICULUM_YEAR_ID_COL,$this->GetCurriculumYear())
-                ->whereIn(cn::GRADE_CLASS_MAPPING_ID_COL,$TeacherAssignedClass)->get()->toArray();
+                                    ->where([
+                                        cn::GRADE_CLASS_MAPPING_SCHOOL_ID_COL => $schoolId,
+                                        cn::GRADE_CLASS_MAPPING_CURRICULUM_YEAR_ID_COL => $this->GetCurriculumYear()
+                                    ])
+                                    ->whereIn(cn::GRADE_CLASS_MAPPING_ID_COL,$TeacherAssignedClass)->get()->toArray();
             if(!empty($GradeClassListDataArr)){
                 foreach($GradeClassListDataArr as $class){
                     $GradeList = Grades::find($class[cn::GRADE_CLASS_MAPPING_GRADE_ID_COL]);
@@ -167,67 +197,92 @@ class MyTeachingController extends Controller
         $GradeClassListData = array();
         $Query = '';
         $classTypeId = array();
-        // $difficultyLevels = PreConfigurationDiffiltyLevel::all();
         $difficultyLevels = PreConfigurationDiffiltyLevel::get();
-        $gradesList = TeachersClassSubjectAssign::where([
-                                                            cn::TEACHER_CLASS_SUBJECT_TEACHER_ID_COL => Auth()->user()->{cn::USERS_ID_COL},
-                                                            cn::TEACHER_CLASS_SUBJECT_CURRICULUM_YEAR_ID_COL => $this->GetCurriculumYear()
-                                                        ])
-                                                        ->with('getClass')
-                                                        ->get()
-                                                        ->unique(cn::TEACHER_CLASS_SUBJECT_CLASS_ID_COL);
-        $gradesListId = TeachersClassSubjectAssign::where([
-                                                            cn::TEACHER_CLASS_SUBJECT_TEACHER_ID_COL => Auth()->user()->{cn::USERS_ID_COL},
-                                                            cn::TEACHER_CLASS_SUBJECT_CURRICULUM_YEAR_ID_COL => $this->GetCurriculumYear()
-                                                        ])
-                                                        ->pluck(cn::TEACHER_CLASS_SUBJECT_CLASS_NAME_ID_COL,cn::TEACHER_CLASS_SUBJECT_CLASS_ID_COL)
-                                                        ->toArray();
-        $gradesListIdArr = TeachersClassSubjectAssign::where([
-                                                                cn::TEACHER_CLASS_SUBJECT_TEACHER_ID_COL => Auth()->user()->{cn::USERS_ID_COL},
-                                                                cn::TEACHER_CLASS_SUBJECT_CURRICULUM_YEAR_ID_COL => $this->GetCurriculumYear()
-                                                            ])
-                                                            ->pluck(cn::TEACHER_CLASS_SUBJECT_CLASS_ID_COL)
-                                                            ->toArray();
-        $TeacherClass = TeachersClassSubjectAssign::where([
-                                                                cn::TEACHER_CLASS_SUBJECT_TEACHER_ID_COL => Auth()->user()->{cn::USERS_ID_COL},
-                                                                cn::TEACHER_CLASS_SUBJECT_CURRICULUM_YEAR_ID_COL => $this->GetCurriculumYear()
-                                                        ])
-                                                        ->pluck(cn::TEACHER_CLASS_SUBJECT_CLASS_NAME_ID_COL)
-                                                        ->toArray();
-        $TeacherAssignedClassIds = [];
-        $TeacherAssignedClass = [];
-        if(!empty($TeacherClass)){
-            foreach($TeacherClass as $teacherClass){
-                $TeacherAssignedClass[] = explode(',',$teacherClass);
-            }
-        }
-        $TeacherAssignedClass =$this->array_flatten($TeacherAssignedClass);
-        
-        // Find Teacher Peer Group Ids
-        $TeachersPeerGroupIds = [];
-        $TeachersPeerGroupIds = $this->TeacherGradesClassService->GetTeachersPeerGroupIds(Auth::user()->{cn::USERS_ID_COL}, Auth::user()->{cn::USERS_SCHOOL_ID_COL});
 
-        $AssignmentExerciseList = MyTeachingReport::where(function($query) use($gradesListIdArr, $TeacherAssignedClass,$TeachersPeerGroupIds){
-                                                        $query->whereIn(cn::TEACHING_REPORT_GRADE_ID_COL,$gradesListIdArr)
-                                                        ->whereIn(cn::TEACHING_REPORT_CLASS_ID_COL ,$TeacherAssignedClass)
-                                                        ->orWhereIn(cn::TEACHING_REPORT_PEER_GROUP_ID,$TeachersPeerGroupIds);
-                                                        // ->orWhere(function($SubQuery){
-                                                        //     $SubQuery->whereNull(cn::TEACHING_REPORT_GRADE_ID_COL)
-                                                        //     ->orWhereNull(cn::TEACHING_REPORT_CLASS_ID_COL)
-                                                        //     ->orWhereNull(cn::TEACHING_REPORT_GRADE_WITH_CLASS_COL);
-                                                        // });
-                                                    })
-                                                    ->where(cn::TEACHING_REPORT_CURRICULUM_YEAR_ID_COL,$this->GetCurriculumYear())
-                                                    ->where(cn::TEACHING_REPORT_REPORT_TYPE_COL,'assignment_test')
-                                                    ->where(cn::TEACHING_REPORT_STUDY_TYPE_COL,1)
-                                                    ->where(cn::TEACHING_REPORT_SCHOOL_ID_COL,$schoolId)
-                                                    ->with(['exams','peerGroup'])
-                                                    ->whereHas('exams',function($q){
-                                                        $q->where(cn::EXAM_CURRICULUM_YEAR_ID_COL, $this->GetCurriculumYear())
-                                                        ->where(cn::EXAM_TABLE_STATUS_COLS,'<>','inactive');
-                                                    })
-                                                    ->orderBy(cn::TEACHING_REPORT_EXAM_ID_COL,'DESC')->paginate($items);
-        
+        if($this->isTeacherLogin()){
+            $gradesList =   TeachersClassSubjectAssign::where([
+                                cn::TEACHER_CLASS_SUBJECT_TEACHER_ID_COL => Auth()->user()->{cn::USERS_ID_COL},
+                                cn::TEACHER_CLASS_SUBJECT_CURRICULUM_YEAR_ID_COL => $this->GetCurriculumYear()
+                            ])
+                            ->with('getClass')
+                            ->get()
+                            ->unique(cn::TEACHER_CLASS_SUBJECT_CLASS_ID_COL);
+            $gradesListId = TeachersClassSubjectAssign::where([
+                                cn::TEACHER_CLASS_SUBJECT_TEACHER_ID_COL => Auth()->user()->{cn::USERS_ID_COL},
+                                cn::TEACHER_CLASS_SUBJECT_CURRICULUM_YEAR_ID_COL => $this->GetCurriculumYear()
+                            ])
+                            ->pluck(cn::TEACHER_CLASS_SUBJECT_CLASS_NAME_ID_COL,cn::TEACHER_CLASS_SUBJECT_CLASS_ID_COL)
+                            ->toArray();
+            $gradesListIdArr =  TeachersClassSubjectAssign::where([
+                                    cn::TEACHER_CLASS_SUBJECT_TEACHER_ID_COL => Auth()->user()->{cn::USERS_ID_COL},
+                                    cn::TEACHER_CLASS_SUBJECT_CURRICULUM_YEAR_ID_COL => $this->GetCurriculumYear()
+                                ])
+                                ->pluck(cn::TEACHER_CLASS_SUBJECT_CLASS_ID_COL)
+                                ->toArray();
+            $TeacherClass = TeachersClassSubjectAssign::where([
+                                cn::TEACHER_CLASS_SUBJECT_TEACHER_ID_COL => Auth()->user()->{cn::USERS_ID_COL},
+                                cn::TEACHER_CLASS_SUBJECT_CURRICULUM_YEAR_ID_COL => $this->GetCurriculumYear()
+                            ])
+                            ->pluck(cn::TEACHER_CLASS_SUBJECT_CLASS_NAME_ID_COL)
+                            ->toArray();
+            $TeacherAssignedClassIds = [];
+            $TeacherAssignedClass = [];
+            if(!empty($TeacherClass)){
+                foreach($TeacherClass as $teacherClass){
+                    $TeacherAssignedClass[] = explode(',',$teacherClass);
+                }
+            }
+            $TeacherAssignedClass =$this->array_flatten($TeacherAssignedClass);
+            
+            // Find Teacher Peer Group Ids
+            $PeerGroupIds = [];
+            $PeerGroupIds = $this->TeacherGradesClassService->GetTeachersPeerGroupIds(Auth::user()->{cn::USERS_ID_COL}, Auth::user()->{cn::USERS_SCHOOL_ID_COL});
+        }
+
+        if($this->isPrincipalLogin() || $this->isCoOrdinatorLogin() || $this->isPanelHeadLogin() ){
+            $gradesList =   GradeSchoolMappings::where([
+                                cn::GRADES_MAPPING_SCHOOL_ID_COL => Auth::user()->school_id,
+                                cn::GRADES_MAPPING_CURRICULUM_YEAR_ID_COL => $this->GetCurriculumYear()
+                            ])
+                            ->with('grades')
+                            ->get();
+            $TeacherAssignedClass = GradeClassMapping::where([
+                                cn::GRADE_CLASS_MAPPING_SCHOOL_ID_COL             => Auth::user()->school_id,
+                                cn::GRADE_CLASS_MAPPING_CURRICULUM_YEAR_ID_COL    => $this->GetCurriculumYear()
+                            ])
+                            ->get()
+                            ->pluck(cn::GRADE_CLASS_MAPPING_ID_COL);
+            if(!empty($TeacherAssignedClass)){
+                $TeacherAssignedClass = $TeacherAssignedClass->toArray();
+            }
+
+            if(!empty($gradesList)){
+                $gradesListIdArr = $gradesList->pluck(cn::GRADES_MAPPING_GRADE_ID_COL)->toArray();
+            }
+
+            // Find Teacher Peer Group Ids
+            $PeerGroupIds = [];
+            $PeerGroupIds = $this->TeacherGradesClassService->GetSchoolBasedPeerGroupIds(Auth::user()->{cn::USERS_SCHOOL_ID_COL});
+        }
+
+        $AssignmentExerciseList =   MyTeachingReport::where(function($query) use($gradesListIdArr, $TeacherAssignedClass,$PeerGroupIds){
+                                        $query->whereIn(cn::TEACHING_REPORT_GRADE_ID_COL,$gradesListIdArr)
+                                        ->whereIn(cn::TEACHING_REPORT_CLASS_ID_COL ,$TeacherAssignedClass)
+                                        ->orWhereIn(cn::TEACHING_REPORT_PEER_GROUP_ID,$PeerGroupIds);
+                                    })
+                                    ->where([
+                                        cn::TEACHING_REPORT_CURRICULUM_YEAR_ID_COL => $this->GetCurriculumYear(),
+                                        cn::TEACHING_REPORT_REPORT_TYPE_COL => 'assignment_test',
+                                        cn::TEACHING_REPORT_STUDY_TYPE_COL => 1,
+                                        cn::TEACHING_REPORT_SCHOOL_ID_COL => $schoolId
+                                    ])
+                                    ->with(['exams','peerGroup'])
+                                    ->whereHas('exams',function($q){
+                                        $q->where(cn::EXAM_CURRICULUM_YEAR_ID_COL, $this->GetCurriculumYear())
+                                        ->where(cn::EXAM_TABLE_STATUS_COLS,'<>','inactive');
+                                    })
+                                    ->orderBy(cn::TEACHING_REPORT_EXAM_ID_COL,'DESC')
+                                    ->paginate($items);
         // For Filtration
         if(isset($request->filter) && !empty($request->filter)){
             $gradeId = (!empty($request->grade_id)) ? $request->grade_id : $gradesListIdArr;
@@ -238,16 +293,15 @@ class MyTeachingController extends Controller
                         ->where(cn::EXAM_TABLE_STATUS_COLS,'<>','inactive');
                     })
                     ->Select('*');
-            $Query->whereIn(cn::TEACHING_REPORT_GRADE_ID_COL , $gradeId)
-                ->whereIn(cn::TEACHING_REPORT_CLASS_ID_COL ,$classTypeId)
-                ->where([
-                    cn::TEACHING_REPORT_CURRICULUM_YEAR_ID_COL =>$this->GetCurriculumYear(),
-                    cn::TEACHING_REPORT_REPORT_TYPE_COL => 'assignment_test',
-                    cn::TEACHING_REPORT_STUDY_TYPE_COL  =>  1,
-                    cn::TEACHING_REPORT_SCHOOL_ID_COL   =>  $schoolId,
-                ]);
-            $AssignmentExerciseList = $Query->orderBy(cn::TEACHING_REPORT_EXAM_ID_COL,'DESC')
-                                            ->paginate($items);
+            $Query->whereIn(cn::TEACHING_REPORT_GRADE_ID_COL, $gradeId)
+            ->whereIn(cn::TEACHING_REPORT_CLASS_ID_COL,$classTypeId)
+            ->where([
+                cn::TEACHING_REPORT_CURRICULUM_YEAR_ID_COL => $this->GetCurriculumYear(),
+                cn::TEACHING_REPORT_REPORT_TYPE_COL => 'assignment_test',
+                cn::TEACHING_REPORT_STUDY_TYPE_COL  =>  1,
+                cn::TEACHING_REPORT_SCHOOL_ID_COL   =>  $schoolId,
+            ]);
+            $AssignmentExerciseList = $Query->orderBy(cn::TEACHING_REPORT_EXAM_ID_COL,'DESC')->paginate($items);
 
             //After filtration selected value selected display.
             $GradeClassListDataArr = GradeClassMapping::whereIn(cn::GRADE_CLASS_MAPPING_GRADE_ID_COL,$gradeId)
@@ -257,11 +311,10 @@ class MyTeachingController extends Controller
             if(!empty($GradeClassListDataArr)){
                 foreach($GradeClassListDataArr as $class){
                     $GradeList = Grades::find($class[cn::GRADE_CLASS_MAPPING_GRADE_ID_COL]);
-                    $GradeClassListData[strtoupper($class[cn::GRADE_CLASS_MAPPING_ID_COL])]=$GradeList->name.strtoupper($class[cn::GRADE_CLASS_MAPPING_NAME_COL]);
+                    $GradeClassListData[strtoupper($class[cn::GRADE_CLASS_MAPPING_ID_COL])] = $GradeList->name.strtoupper($class[cn::GRADE_CLASS_MAPPING_NAME_COL]);
                 }
             }
         }
-        // echo '<pre>';print_r($gradesList->toArray());echo "<pre>";print_r($gradeId);die;
         return view('backend/MyTeachingReports/assignment_exercise',compact('AssignmentExerciseList','difficultyLevels','items','schoolId','gradesList','gradeId','classTypeId','GradeClassListData'));
     }
 
@@ -272,46 +325,69 @@ class MyTeachingController extends Controller
         $userId = Auth::id();
         $items = $request->items ?? 10;
         $schoolId = Auth::user()->{cn::USERS_SCHOOL_ID_COL};
-        $roleId = Auth::user()->{cn::USERS_ROLE_ID_COL};
         $grade_id = array();
         $GradeClassListData = array();
         $Query = '';
         $class_type_id = array();
-        // $difficultyLevels = PreConfigurationDiffiltyLevel::all();
         $difficultyLevels = PreConfigurationDiffiltyLevel::get();
-        $gradesList = TeachersClassSubjectAssign::where([
-                                                            cn::TEACHER_CLASS_SUBJECT_TEACHER_ID_COL => Auth()->user()->{cn::USERS_ID_COL},
-                                                            cn::TEACHER_CLASS_SUBJECT_CURRICULUM_YEAR_ID_COL => $this->GetCurriculumYear()
-                                                        ])
-                                                ->with('getClass')
-                                                ->get()
-                                                ->unique(cn::TEACHER_CLASS_SUBJECT_CLASS_ID_COL);
-        $gradesListId = TeachersClassSubjectAssign::where([
-                                                            cn::TEACHER_CLASS_SUBJECT_TEACHER_ID_COL => Auth()->user()->{cn::USERS_ID_COL},
-                                                            cn::TEACHER_CLASS_SUBJECT_CURRICULUM_YEAR_ID_COL => $this->GetCurriculumYear()
-                                                        ])
-                                                        ->pluck(cn::TEACHER_CLASS_SUBJECT_CLASS_NAME_ID_COL,cn::TEACHER_CLASS_SUBJECT_CLASS_ID_COL)
-                                                        ->toArray();
-        $gradesListIdArr = TeachersClassSubjectAssign::where([
-                                                                cn::TEACHER_CLASS_SUBJECT_TEACHER_ID_COL => Auth()->user()->{cn::USERS_ID_COL},
-                                                                cn::TEACHER_CLASS_SUBJECT_CURRICULUM_YEAR_ID_COL => $this->GetCurriculumYear()
-                                                            ])
-                                                            ->pluck(cn::TEACHER_CLASS_SUBJECT_CLASS_ID_COL)
-                                                            ->toArray();
-        $TeacherClass = TeachersClassSubjectAssign::where([
-                                                            cn::TEACHER_CLASS_SUBJECT_TEACHER_ID_COL => Auth()->user()->{cn::USERS_ID_COL},
-                                                            cn::TEACHER_CLASS_SUBJECT_CURRICULUM_YEAR_ID_COL => $this->GetCurriculumYear()
-                                                        ])
-                                                        ->pluck(cn::TEACHER_CLASS_SUBJECT_CLASS_NAME_ID_COL)
-                                                        ->toArray();
-        $TeacherAssignedClassIds = [];
-        $TeacherAssignedClass = [];
-        if(!empty($TeacherClass)){
-            foreach($TeacherClass as $teacherClass){
-                $TeacherAssignedClass[] = explode(',',$teacherClass);
+        if($this->isTeacherLogin()){
+            $gradesList =   TeachersClassSubjectAssign::where([
+                                cn::TEACHER_CLASS_SUBJECT_TEACHER_ID_COL => Auth()->user()->{cn::USERS_ID_COL},
+                                cn::TEACHER_CLASS_SUBJECT_CURRICULUM_YEAR_ID_COL => $this->GetCurriculumYear()
+                            ])
+                            ->with('getClass')
+                            ->get()
+                            ->unique(cn::TEACHER_CLASS_SUBJECT_CLASS_ID_COL);
+            $gradesListId = TeachersClassSubjectAssign::where([
+                                cn::TEACHER_CLASS_SUBJECT_TEACHER_ID_COL => Auth()->user()->{cn::USERS_ID_COL},
+                                cn::TEACHER_CLASS_SUBJECT_CURRICULUM_YEAR_ID_COL => $this->GetCurriculumYear()
+                            ])
+                            ->pluck(cn::TEACHER_CLASS_SUBJECT_CLASS_NAME_ID_COL,cn::TEACHER_CLASS_SUBJECT_CLASS_ID_COL)
+                            ->toArray();
+            $gradesListIdArr =  TeachersClassSubjectAssign::where([
+                                    cn::TEACHER_CLASS_SUBJECT_TEACHER_ID_COL => Auth()->user()->{cn::USERS_ID_COL},
+                                    cn::TEACHER_CLASS_SUBJECT_CURRICULUM_YEAR_ID_COL => $this->GetCurriculumYear()
+                                ])
+                                ->pluck(cn::TEACHER_CLASS_SUBJECT_CLASS_ID_COL)
+                                ->toArray();
+            $TeacherClass = TeachersClassSubjectAssign::where([
+                                cn::TEACHER_CLASS_SUBJECT_TEACHER_ID_COL => Auth()->user()->{cn::USERS_ID_COL},
+                                cn::TEACHER_CLASS_SUBJECT_CURRICULUM_YEAR_ID_COL => $this->GetCurriculumYear()
+                            ])
+                            ->pluck(cn::TEACHER_CLASS_SUBJECT_CLASS_NAME_ID_COL)
+                            ->toArray();
+            $TeacherAssignedClassIds = [];
+            $TeacherAssignedClass = [];
+            if(!empty($TeacherClass)){
+                foreach($TeacherClass as $teacherClass){
+                    $TeacherAssignedClass[] = explode(',',$teacherClass);
+                }
+            }
+            $TeacherAssignedClass = $this->array_flatten($TeacherAssignedClass);
+        }
+
+        if($this->isPrincipalLogin() || $this->isCoOrdinatorLogin() || $this->isPanelHeadLogin() ){
+            $gradesList =   GradeSchoolMappings::where([
+                                cn::GRADES_MAPPING_SCHOOL_ID_COL => Auth::user()->school_id,
+                                cn::GRADES_MAPPING_CURRICULUM_YEAR_ID_COL => $this->GetCurriculumYear()
+                            ])
+                            ->with('grades')
+                            ->get();
+            $TeacherAssignedClass = GradeClassMapping::where([
+                                cn::GRADE_CLASS_MAPPING_SCHOOL_ID_COL             => Auth::user()->school_id,
+                                cn::GRADE_CLASS_MAPPING_CURRICULUM_YEAR_ID_COL    => $this->GetCurriculumYear()
+                            ])
+                            ->get()
+                            ->pluck(cn::GRADE_CLASS_MAPPING_ID_COL);
+            if(!empty($TeacherAssignedClass)){
+                $TeacherAssignedClass = $TeacherAssignedClass->toArray();
+            }
+
+            if(!empty($gradesList)){
+                $gradesListIdArr = $gradesList->pluck(cn::GRADES_MAPPING_GRADE_ID_COL)->toArray();
             }
         }
-        $TeacherAssignedClass = $this->array_flatten($TeacherAssignedClass);
+
         $SelfLearningTestList = MyTeachingReport::whereIn(cn::TEACHING_REPORT_GRADE_ID_COL ,$gradesListIdArr)
                                 ->whereIn(cn::TEACHING_REPORT_CLASS_ID_COL ,$TeacherAssignedClass)
                                 ->where([
@@ -373,53 +449,79 @@ class MyTeachingController extends Controller
         $strandsList = array();
         $LearningUnits = array();
         $LearningObjectives = array();
-        // $difficultyLevels = PreConfigurationDiffiltyLevel::all();
         $difficultyLevels = PreConfigurationDiffiltyLevel::get();
-        $gradesList = TeachersClassSubjectAssign::where([
-                                                            cn::TEACHER_CLASS_SUBJECT_TEACHER_ID_COL => Auth()->user()->{cn::USERS_ID_COL},
-                                                            cn::TEACHER_CLASS_SUBJECT_CURRICULUM_YEAR_ID_COL => $this->GetCurriculumYear()
-                                                        ])
-                                                        ->with('getClass')
-                                                        ->get()
-                                                        ->unique(cn::TEACHER_CLASS_SUBJECT_CLASS_ID_COL);
-        $gradesListId = TeachersClassSubjectAssign::where([
-                                                            cn::TEACHER_CLASS_SUBJECT_TEACHER_ID_COL => Auth()->user()->{cn::USERS_ID_COL},
-                                                            cn::TEACHER_CLASS_SUBJECT_CURRICULUM_YEAR_ID_COL => $this->GetCurriculumYear()
-                                                        ])
-                                                        ->pluck(cn::TEACHER_CLASS_SUBJECT_CLASS_NAME_ID_COL,cn::TEACHER_CLASS_SUBJECT_CLASS_ID_COL)
-                                                        ->toArray();
-        $gradesListIdArr = TeachersClassSubjectAssign::where([
-                                                                cn::TEACHER_CLASS_SUBJECT_TEACHER_ID_COL => Auth()->user()->{cn::USERS_ID_COL},
-                                                                cn::TEACHER_CLASS_SUBJECT_CURRICULUM_YEAR_ID_COL => $this->GetCurriculumYear()
-                                                            ])
-                                                            ->pluck(cn::TEACHER_CLASS_SUBJECT_CLASS_ID_COL)
-                                                            ->toArray();
-        $TeacherClass = TeachersClassSubjectAssign::where([
-                                                            cn::TEACHER_CLASS_SUBJECT_TEACHER_ID_COL => Auth()->user()->{cn::USERS_ID_COL},
-                                                            cn::TEACHER_CLASS_SUBJECT_CURRICULUM_YEAR_ID_COL => $this->GetCurriculumYear()
-                                                        ])->pluck(cn::TEACHER_CLASS_SUBJECT_CLASS_NAME_ID_COL)
-                                                        ->toArray();
-        $TeacherAssignedClassIds = [];
-        $TeacherAssignedClass = [];
-        if(!empty($TeacherClass)){
-            foreach($TeacherClass as $teacherClass){
-                $TeacherAssignedClass[] = explode(',',$teacherClass);
+
+        if($this->isTeacherLogin()){
+            $gradesList =   TeachersClassSubjectAssign::where([
+                                cn::TEACHER_CLASS_SUBJECT_TEACHER_ID_COL => Auth()->user()->{cn::USERS_ID_COL},
+                                cn::TEACHER_CLASS_SUBJECT_CURRICULUM_YEAR_ID_COL => $this->GetCurriculumYear()
+                            ])
+                            ->with('getClass')
+                            ->get()
+                            ->unique(cn::TEACHER_CLASS_SUBJECT_CLASS_ID_COL);
+            $gradesListId = TeachersClassSubjectAssign::where([
+                                cn::TEACHER_CLASS_SUBJECT_TEACHER_ID_COL => Auth()->user()->{cn::USERS_ID_COL},
+                                cn::TEACHER_CLASS_SUBJECT_CURRICULUM_YEAR_ID_COL => $this->GetCurriculumYear()
+                            ])
+                            ->pluck(cn::TEACHER_CLASS_SUBJECT_CLASS_NAME_ID_COL,cn::TEACHER_CLASS_SUBJECT_CLASS_ID_COL)
+                            ->toArray();
+            $gradesListIdArr =  TeachersClassSubjectAssign::where([
+                                    cn::TEACHER_CLASS_SUBJECT_TEACHER_ID_COL => Auth()->user()->{cn::USERS_ID_COL},
+                                    cn::TEACHER_CLASS_SUBJECT_CURRICULUM_YEAR_ID_COL => $this->GetCurriculumYear()
+                                ])
+                                ->pluck(cn::TEACHER_CLASS_SUBJECT_CLASS_ID_COL)
+                                ->toArray();
+            $TeacherClass = TeachersClassSubjectAssign::where([
+                                cn::TEACHER_CLASS_SUBJECT_TEACHER_ID_COL => Auth()->user()->{cn::USERS_ID_COL},
+                                cn::TEACHER_CLASS_SUBJECT_CURRICULUM_YEAR_ID_COL => $this->GetCurriculumYear()
+                            ])->pluck(cn::TEACHER_CLASS_SUBJECT_CLASS_NAME_ID_COL)
+                            ->toArray();
+            $TeacherAssignedClassIds = [];
+            $TeacherAssignedClass = [];
+            if(!empty($TeacherClass)){
+                foreach($TeacherClass as $teacherClass){
+                    $TeacherAssignedClass[] = explode(',',$teacherClass);
+                }
+            }
+            $TeacherAssignedClass = $this->array_flatten($TeacherAssignedClass);
+        }
+
+        if($this->isPrincipalLogin() || $this->isCoOrdinatorLogin() || $this->isPanelHeadLogin() ){
+            $gradesList =   GradeSchoolMappings::where([
+                                cn::GRADES_MAPPING_SCHOOL_ID_COL => Auth::user()->school_id,
+                                cn::GRADES_MAPPING_CURRICULUM_YEAR_ID_COL => $this->GetCurriculumYear()
+                            ])
+                            ->with('grades')
+                            ->get();
+            $TeacherAssignedClass = GradeClassMapping::where([
+                                cn::GRADE_CLASS_MAPPING_SCHOOL_ID_COL             => Auth::user()->school_id,
+                                cn::GRADE_CLASS_MAPPING_CURRICULUM_YEAR_ID_COL    => $this->GetCurriculumYear()
+                            ])
+                            ->get()
+                            ->pluck(cn::GRADE_CLASS_MAPPING_ID_COL);
+            if(!empty($TeacherAssignedClass)){
+                $TeacherAssignedClass = $TeacherAssignedClass->toArray();
+            }
+
+            if(!empty($gradesList)){
+                $gradesListIdArr = $gradesList->pluck(cn::GRADES_MAPPING_GRADE_ID_COL)->toArray();
             }
         }
-        $TeacherAssignedClass = $this->array_flatten($TeacherAssignedClass);
+
         $SelfLearningTestList = MyTeachingReport::whereIn(cn::TEACHING_REPORT_GRADE_ID_COL ,$gradesListIdArr)
-                                                ->whereIn(cn::TEACHING_REPORT_CLASS_ID_COL ,$TeacherAssignedClass)
-                                                ->where([
-                                                    cn::TEACHING_REPORT_CURRICULUM_YEAR_ID_COL => $this->GetCurriculumYear(),
-                                                    cn::TEACHING_REPORT_REPORT_TYPE_COL => 'self_learning',
-                                                    cn::TEACHING_REPORT_STUDY_TYPE_COL  =>  2,
-                                                    cn::TEACHING_REPORT_SCHOOL_ID_COL   =>  $schoolId,
-                                                ])
-                                                ->with('exams','user','attempt_exams')
-                                                ->whereHas('exams',function($q){
-                                                    $q->where(cn::EXAM_CURRICULUM_YEAR_ID_COL, $this->GetCurriculumYear());
-                                                })
-                                                ->orderBy(cn::TEACHING_REPORT_EXAM_ID_COL,'DESC')->paginate($items);
+                                ->whereIn(cn::TEACHING_REPORT_CLASS_ID_COL ,$TeacherAssignedClass)
+                                ->where([
+                                    cn::TEACHING_REPORT_CURRICULUM_YEAR_ID_COL => $this->GetCurriculumYear(),
+                                    cn::TEACHING_REPORT_REPORT_TYPE_COL => 'self_learning',
+                                    cn::TEACHING_REPORT_STUDY_TYPE_COL  =>  2,
+                                    cn::TEACHING_REPORT_SCHOOL_ID_COL   =>  $schoolId,
+                                ])
+                                ->with('exams','user','attempt_exams')
+                                ->whereHas('exams',function($q){
+                                    $q->where(cn::EXAM_CURRICULUM_YEAR_ID_COL, $this->GetCurriculumYear());
+                                })
+                                ->orderBy(cn::TEACHING_REPORT_EXAM_ID_COL,'DESC')
+                                ->paginate($items);
 
         // Get Current student grade id wise strand list
         $strandsList =  StrandUnitsObjectivesMappings::pluck(cn::OBJECTIVES_MAPPINGS_STRAND_ID_COL);

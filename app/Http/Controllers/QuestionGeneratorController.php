@@ -79,6 +79,21 @@ class QuestionGeneratorController extends Controller {
         });
     }
 
+    public function UpdateExamsTimeDurations(){
+        $Exams = Exam::all();
+        if(isset($Exams) && !empty($Exams)){
+            foreach($Exams as $Exam){
+                if($Exam->exam_type == 3){
+                    Exam::find($Exam->id)
+                    ->Update([
+                        cn::EXAM_TABLE_IS_UNLIMITED        => ($Exam->exam_type == 3) ? 1 : 0,
+                        cn::EXAM_TABLE_TIME_DURATIONS_COLS => ($Exam->exam_type == 3) ? $this->CalculateTimeDuration(count(explode(',',$Exam->question_ids))) : null
+                    ]);
+                }
+            }
+        }
+    }
+
     public function GetCurrentSchoolAssignedTestPeerGroups($ExamId){
         $ExamData = $this->Exam->find($ExamId);
         $GetAssignedPeerGroupsIds = [];
@@ -210,8 +225,8 @@ class QuestionGeneratorController extends Controller {
                 cn::EXAM_TABLE_TIME_DURATIONS_COLS              => $timeDuration,
                 cn::EXAM_TABLE_QUESTION_IDS_COL                 => $questionIds,
                 cn::EXAM_TABLE_SCHOOL_COLS                      => $schoolIds,
-                cn::EXAM_TABLE_IS_UNLIMITED                     => ($request->test_type == 1) ? 1 : 0,
-                cn::EXAM_TABLE_TIME_DURATIONS_COLS              => ($request->test_type == 2) ? $this->CalculateTimeDuration(count(explode(',',$questionIds))) : null,
+                cn::EXAM_TABLE_IS_UNLIMITED                     => ($request->test_type == 3) ? 1 : 0,
+                cn::EXAM_TABLE_TIME_DURATIONS_COLS              => ($request->test_type == 3) ? $this->CalculateTimeDuration(count(explode(',',$questionIds))) : null,
                 cn::EXAM_TABLE_SELF_LEARNING_TEST_TYPE_COL      => null,
                 cn::EXAM_TABLE_NO_OF_TRIALS_PER_QUESTIONS_COL   => $request->no_of_trials_per_question,
                 cn::EXAM_TABLE_DIFFICULTY_MODE_COL              => $request->difficulty_mode,
@@ -374,8 +389,8 @@ class QuestionGeneratorController extends Controller {
                     cn::EXAM_TABLE_TIME_DURATIONS_COLS                  => $timeDuration,
                     cn::EXAM_TABLE_QUESTION_IDS_COL                     => $questionIds,
                     cn::EXAM_TABLE_SCHOOL_COLS                          => $schoolIds,
-                    cn::EXAM_TABLE_IS_UNLIMITED                         => ($request->test_type == 1) ? 1 : 0,
-                    cn::EXAM_TABLE_TIME_DURATIONS_COLS                  => ($request->test_type == 2) ? $this->CalculateTimeDuration(count(explode(',',$questionIds))) : null,
+                    cn::EXAM_TABLE_IS_UNLIMITED                         => ($request->test_type == 3) ? 1 : 0,
+                    cn::EXAM_TABLE_TIME_DURATIONS_COLS                  => ($request->test_type == 3) ? $this->CalculateTimeDuration(count(explode(',',$questionIds))) : null,
                     cn::EXAM_TABLE_SELF_LEARNING_TEST_TYPE_COL          => null,
                     cn::EXAM_TABLE_NO_OF_TRIALS_PER_QUESTIONS_COL       => $request->no_of_trials_per_question,
                     cn::EXAM_TABLE_DIFFICULTY_MODE_COL                  => $request->difficulty_mode,
@@ -614,16 +629,8 @@ class QuestionGeneratorController extends Controller {
                             ->whereIn('CurriculumYearClassId',$gradeClassId);
         }
 
-        if($this->isSchoolLogin() || $this->isPrincipalLogin() || $this->isSubAdminLogin()){
-            if($this->isSchoolLogin()){
-                $schoolId = $this->isSchoolLogin();
-            }
-            if($this->isPrincipalLogin()){
-                $schoolId = $this->isPrincipalLogin();
-            }     
-            if($this->isSubAdminLogin()){
-                $schoolId = $this->isSubAdminLogin();
-            }           
+        if($this->isSchoolLogin() || $this->isPrincipalLogin() || $this->isPanelHeadLogin() || $this->isCoOrdinatorLogin()){
+            $schoolId = Auth::user()->{cn::USERS_SCHOOL_ID_COL};
             $GradeMapping = GradeSchoolMappings::with('grades')
                             ->where(cn::GRADES_MAPPING_CURRICULUM_YEAR_ID_COL,$this->GetCurriculumYear())
                             ->where(cn::GRADES_MAPPING_SCHOOL_ID_COL,$schoolId)
@@ -661,17 +668,8 @@ class QuestionGeneratorController extends Controller {
             $studentIds = '';
             $difficulty_lvl = '';
             $schoolId = '';
-            if($this->isSchoolLogin()){
-                $schoolId = $this->isSchoolLogin();
-            }
-            if($this->isPrincipalLogin()){
-                $schoolId = $this->isPrincipalLogin();
-            }
-            if($this->isTeacherLogin()){
-                $schoolId = $this->isTeacherLogin();
-            }
-            if($this->isSubAdminLogin()){
-                $schoolId = $this->isSubAdminLogin();
+            if($this->isSchoolLogin() || $this->isPrincipalLogin() || $this->isPanelHeadLogin() || $this->isCoOrdinatorLogin() || $this->isTeacherLogin()){
+                $schoolId = Auth::user()->{cn::USERS_SCHOOL_ID_COL};
             }
             $learningObjectivesConfigurations = '';
             if(isset($request->title) && $request->title == ""){
@@ -688,7 +686,7 @@ class QuestionGeneratorController extends Controller {
             }
 
             if(isset($request->learning_unit) && !empty($request->learning_unit)){
-                $learningObjectivesConfigurations=json_encode($request->learning_unit);
+                $learningObjectivesConfigurations = json_encode($request->learning_unit);
             }
             $report_date = $this->DateConvertToYMD($request->end_date);
             if($request->report_date == 'after_submit'){
@@ -735,8 +733,8 @@ class QuestionGeneratorController extends Controller {
                 cn::EXAM_TABLE_STUDENT_IDS_COL                  => $studentIds,
                 cn::EXAM_TABLE_PEER_GROUP_IDS_COL               => $peerGroupIds,
                 cn::EXAM_TABLE_SCHOOL_COLS                      => $schoolId,
-                cn::EXAM_TABLE_IS_UNLIMITED                     => ($request->test_type == 1) ? 1 : 0,
-                cn::EXAM_TABLE_TIME_DURATIONS_COLS              => ($request->test_type == 2) ? $this->CalculateTimeDuration(count(explode(',',$questionIds))) : null,
+                cn::EXAM_TABLE_IS_UNLIMITED                     => ($request->test_type == 3) ? 1 : 0,
+                cn::EXAM_TABLE_TIME_DURATIONS_COLS              => ($request->test_type == 3) ? $this->CalculateTimeDuration(count(explode(',',$questionIds))) : null,
                 cn::EXAM_TABLE_SELF_LEARNING_TEST_TYPE_COL      => null,
                 cn::EXAM_TABLE_NO_OF_TRIALS_PER_QUESTIONS_COL   => $request->no_of_trials_per_question,
                 cn::EXAM_TABLE_DIFFICULTY_MODE_COL              => $request->difficulty_mode,
@@ -925,17 +923,8 @@ class QuestionGeneratorController extends Controller {
                 }
             }
             
-            if($this->isTeacherLogin()){
-                $schoolId = $this->isTeacherLogin();
-            }
-            if($this->isSchoolLogin()){
-                $schoolId = $this->isSchoolLogin();
-            }
-            if($this->isPrincipalLogin()){
-                $schoolId = $this->isPrincipalLogin();
-            }
-            if($this->isSubAdminLogin()){
-                $schoolId = $this->isSubAdminLogin();
+            if($this->isTeacherLogin() || $this->isSchoolLogin() || $this->isPrincipalLogin() || $this->isPanelHeadLogin() || $this->isCoOrdinatorLogin()){
+                $schoolId = Auth::user()->{cn::USERS_SCHOOL_ID_COL};
             }
             $examCreditPointRulesData = $exam->examCreditPointRules()->where('school_id',$schoolId)->pluck('rules_value','credit_point_rules')->toArray();
             $studentGradeData = array();
@@ -974,17 +963,8 @@ class QuestionGeneratorController extends Controller {
                                 ])->get();
             }
 
-            if($this->isSchoolLogin() || $this->isPrincipalLogin() || $this->isSubAdminLogin()){
-                if($this->isSchoolLogin()){
-                    $schoolId = $this->isSchoolLogin();
-                }
-                if($this->isPrincipalLogin()){
-                    $schoolId = $this->isPrincipalLogin();
-                }
-                if($this->isSubAdminLogin()){
-                    $schoolId = $this->isSubAdminLogin();
-                }
-
+            if($this->isSchoolLogin() || $this->isPrincipalLogin() || $this->isPanelHeadLogin() || $this->isCoOrdinatorLogin()){
+                $schoolId = Auth::user()->{cn::USERS_SCHOOL_ID_COL};
                 $GradeMapping = GradeSchoolMappings::with('grades')
                                 ->where([
                                     cn::GRADES_MAPPING_SCHOOL_ID_COL => $schoolId,
@@ -1168,18 +1148,10 @@ class QuestionGeneratorController extends Controller {
                         $report_date = ($request->custom_date) ? $this->DateConvertToYMD($request->custom_date) : $exam->result_date;
                     }
 
-                    if($this->isTeacherLogin()){
-                        $schoolId = $this->isTeacherLogin();
+                    if($this->isTeacherLogin() || $this->isSchoolLogin() || $this->isPrincipalLogin() || $this->isPanelHeadLogin() || $this->isCoOrdinatorLogin()){
+                        $schoolId = Auth::user()->{cn::USERS_SCHOOL_ID_COL};
                     }
-                    if($this->isSchoolLogin()){
-                        $schoolId = $this->isSchoolLogin();
-                    }
-                    if($this->isPrincipalLogin()){
-                        $schoolId = $this->isPrincipalLogin();
-                    }
-                    if($this->isSubAdminLogin()){
-                        $schoolId = $this->isSubAdminLogin();
-                    }
+                    
                     $start_date = $request->start_date ?? $exam->from_date;
                     $end_date = $request->end_date ?? $exam->to_date;
                     $start_time = $request->start_time ?? $exam->start_time;
@@ -1220,8 +1192,8 @@ class QuestionGeneratorController extends Controller {
                         }
                         $exams->{cn::EXAM_TABLE_QUESTION_IDS_COL} = $questionIds;
                         if(isset($request->test_type)){
-                            $exams->{cn::EXAM_TABLE_IS_UNLIMITED} = ($request->test_type == 1) ? 1 : 0;
-                            $exams->{cn::EXAM_TABLE_TIME_DURATIONS_COLS} = ($request->test_type == 2) ? $this->CalculateTimeDuration(count(explode(',',$questionIds))) : null;
+                            $exams->{cn::EXAM_TABLE_IS_UNLIMITED} = ($request->test_type == 3) ? 1 : 0;
+                            $exams->{cn::EXAM_TABLE_TIME_DURATIONS_COLS} = ($request->test_type == 3) ? $this->CalculateTimeDuration(count(explode(',',$questionIds))) : null;
                         }                        
                         if(isset($request->no_of_trials_per_question)){
                             $exams->{cn::EXAM_TABLE_NO_OF_TRIALS_PER_QUESTIONS_COL} = $request->no_of_trials_per_question;
@@ -1435,7 +1407,7 @@ class QuestionGeneratorController extends Controller {
                         }
 
                         // Remove some grades and classes
-                        if($this->isSchoolLogin() || $this->isPrincipalLogin() || $this->isSubAdminLogin()){
+                        if($this->isSchoolLogin() || $this->isPrincipalLogin() || $this->isPanelHeadLogin() || $this->isCoOrdinatorLogin()){
                             $oldDataId = ExamGradeClassMappingModel::where([
                                             cn::EXAM_SCHOOL_GRADE_CLASS_MAPPING_CURRICULUM_YEAR_ID_COL => $this->GetCurriculumYear(),
                                             cn::EXAM_SCHOOL_GRADE_CLASS_MAPPING_SCHOOL_ID_COL => $schoolId,
@@ -1468,7 +1440,6 @@ class QuestionGeneratorController extends Controller {
                     return back()->with('error_msg', __('languages.problem_was_occur_please_try_again'));
                 }
             }
-            // echo "<pre>";print_r($LearningObjectives);die;
             return view('backend.question_generator.school.edit_test',compact('schoolList','difficultyLevels','strandsList','LearningUnits',
             'LearningObjectives','timeSlots','RequiredQuestionPerSkill','exam','learningObjectivesConfiguration','SelectedStrands','SelectedLearningUnit',
             'questionDataArray','GradeClassData','StudentList','PeerGroupList','studentGradeData','studentClassData','questionListHtml','examGradeIds',
@@ -2462,24 +2433,6 @@ class QuestionGeneratorController extends Controller {
         $difficultyLevels = $this->getDifficultyLevel();
         switch(Auth::user()->{cn::USERS_ROLE_ID_COL}){
             case cn::SUPERADMIN_ROLE_ID : // 1 = Super Admin Role
-                // $examList = $this->Exam->whereHas('ExamSchoolMapping',function ($q){
-                //                                             $q->where(cn::EXAM_SCHOOL_MAPPING_STATUS_COL,'<>','inactive')
-                //                                             ->where(cn::EXAM_SCHOOL_MAPPING_CURRICULUM_YEAR_ID_COL,$this->GetCurriculumYear());
-                //                                     })
-                //             ->where(function($query){
-                //                 $query->whereIn(cn::EXAM_TABLE_USE_OF_MODE_COLS,[1,2])
-                //                  ->whereNull(cn::EXAM_TABLE_PARENT_EXAM_ID_COLS)
-                //                  ->where(cn::EXAM_TABLE_STATUS_COLS,'<>','inactive')
-                //                  ->where(cn::EXAM_CURRICULUM_YEAR_ID_COL, $this->GetCurriculumYear())
-                //                  ->where(cn::EXAM_TYPE_COLS,'<>',1);
-                //             })->orWhere(function($q){
-                //                 $q->whereIn(cn::EXAM_TABLE_USE_OF_MODE_COLS,[1,2])
-                //                 ->whereNull(cn::EXAM_TABLE_PARENT_EXAM_ID_COLS)
-                //                 ->where(cn::EXAM_TABLE_STATUS_COLS,'<>','inactive')
-                //                 ->where(cn::EXAM_CURRICULUM_YEAR_ID_COL, $this->GetCurriculumYear())
-                //                 ->where(cn::EXAM_TYPE_COLS,'<>',1)
-                //                 ->where(cn::EXAM_TABLE_CREATED_BY_USER_COL,'student');
-                //             })
                 $examList = $this->Exam->where(function ($q1){
                                 $q1->whereHas('ExamSchoolMapping',function ($q){
                                     $q->where(cn::EXAM_SCHOOL_MAPPING_STATUS_COL,'<>','inactive')
@@ -2511,7 +2464,6 @@ class QuestionGeneratorController extends Controller {
                             ->sortable()
                             ->paginate($items);
                 if(isset($request->filter)){
-                    // $Query = $this->Exam->select('*');
                     $Query = $this->Exam->with(['ExamSchoolMapping'])
                             ->where(cn::EXAM_CURRICULUM_YEAR_ID_COL, $this->GetCurriculumYear());
                     if($request->status != 'inactive'){
@@ -2530,9 +2482,6 @@ class QuestionGeneratorController extends Controller {
                                     ->where(cn::EXAM_TYPE_COLS,'<>',1);
                                 });;
                             });
-                            // ->whereHas('ExamSchoolMapping',function($q2) {
-                            //     $q2->where(cn::EXAM_SCHOOL_MAPPING_STATUS_COL,'<>','inactive');
-                            // });
                         });
                     }
 
@@ -2603,8 +2552,9 @@ class QuestionGeneratorController extends Controller {
             
             case cn::SCHOOL_ROLE_ID : //  = School Role
             case cn::PRINCIPAL_ROLE_ID ://  = Principal Role
-            case cn::SUB_ADMIN_ROLE_ID :
-                if($this->isSchoolLogin() || $this->isPrincipalLogin() || $this->isSubAdminLogin()){
+            case cn::PANEL_HEAD_ROLE_ID :
+            case cn::CO_ORDINATOR_ROLE_ID:
+                if($this->isSchoolLogin() || $this->isPrincipalLogin() || $this->isPanelHeadLogin() || $this->isCoOrdinatorLogin()){
                     $SchoolId = Auth::user()->{cn::USERS_SCHOOL_ID_COL};
                     $GetAssignedExamIds =   $this->ExamSchoolMapping->where(cn::EXAM_SCHOOL_MAPPING_SCHOOL_ID_COL,$SchoolId)
                                             ->where(cn::EXAM_SCHOOL_MAPPING_CURRICULUM_YEAR_ID_COL,$this->GetCurriculumYear())
@@ -2615,10 +2565,6 @@ class QuestionGeneratorController extends Controller {
                                         $q->where(cn::EXAM_SCHOOL_MAPPING_SCHOOL_ID_COL,$SchoolId)
                                         ->where(cn::EXAM_TABLE_STATUS_COLS,'<>','inactive');
                                     })
-                                    // with(['ExamSchoolMapping' => function($q) use($SchoolId){
-                                    //     $q->where(cn::EXAM_SCHOOL_MAPPING_SCHOOL_ID_COL,$SchoolId)
-                                    //     ->where(cn::EXAM_TABLE_STATUS_COLS,'<>','inactive');
-                                    // }])
                                     ->whereIn(cn::EXAM_TABLE_ID_COLS,$GetAssignedExamIds)
                                     ->where(cn::EXAM_TYPE_COLS,'<>',1)
                                     ->where(cn::EXAM_TABLE_STATUS_COLS,'<>','inactive')
@@ -2628,14 +2574,6 @@ class QuestionGeneratorController extends Controller {
                                     ->paginate($items);
                     if(isset($request->filter)){
                         $Query = $this->Exam->select('*')->with(['ExamSchoolMapping' => fn($q) => $q->where(cn::EXAM_SCHOOL_MAPPING_SCHOOL_ID_COL,$SchoolId)])
-                                // ->with(['ExamSchoolMapping' => function($q) use($SchoolId,$request){
-                                //     $q->where(cn::EXAM_SCHOOL_MAPPING_SCHOOL_ID_COL,$SchoolId);
-                                //     if(isset($request->status) && !empty($request->status)){
-                                //         $q->where(cn::EXAM_SCHOOL_MAPPING_STATUS_COL,$request->status);
-                                //     }else{
-                                //         $q->where(cn::EXAM_SCHOOL_MAPPING_STATUS_COL,'<>','inactive');
-                                //     }
-                                // }])
                                 ->whereHas('ExamSchoolMapping',function($q) use($SchoolId,$request){
                                     $q->where(cn::EXAM_SCHOOL_MAPPING_SCHOOL_ID_COL,$SchoolId);
                                     if(isset($request->status) && !empty($request->status)){
@@ -2810,7 +2748,8 @@ class QuestionGeneratorController extends Controller {
                             // Update status by school admin
             case cn::SCHOOL_ROLE_ID : 
             case cn::PRINCIPAL_ROLE_ID : 
-            case cn::SUB_ADMIN_ROLE_ID : // 5 = School Admin  & 7 = Principal & 5 = Teacher
+            case cn::PANEL_HEAD_ROLE_ID :
+            case cn::CO_ORDINATOR_ROLE_ID:
             case cn::TEACHER_ROLE_ID :
                 if($this->ExamGradeClassMappingModel->where([
                     cn::EXAM_SCHOOL_GRADE_CLASS_MAPPING_SCHOOL_ID_COL => Auth::user()->{cn::USERS_SCHOOL_ID_COL},
@@ -3050,11 +2989,6 @@ class QuestionGeneratorController extends Controller {
                 }
 
                 // get student list
-                // $StudentList = User::whereIn(cn::USERS_GRADE_ID_COL,$TeacherGradeClassData['grades'])
-                //             ->whereIn(cn::USERS_CLASS_ID_COL,$TeacherGradeClassData['class'])
-                //             ->where([cn::USERS_ROLE_ID_COL => 3,cn::USERS_STATUS_COL => 'active'])
-                //             ->get();
-
                 $StudentList =  User::where([
                                     cn::USERS_ROLE_ID_COL => 3,
                                     cn::USERS_STATUS_COL => 'active'
@@ -3076,16 +3010,8 @@ class QuestionGeneratorController extends Controller {
                                             ->toArray();
             }
 
-            if($this->isSchoolLogin() || $this->isPrincipalLogin() || $this->isSubAdminLogin()){
-                if($this->isSchoolLogin()){
-                    $schoolId = $this->isSchoolLogin();
-                }
-                if($this->isPrincipalLogin()){
-                    $schoolId = $this->isPrincipalLogin();
-                }
-                if($this->isSubAdminLogin()){
-                    $schoolId = $this->isSubAdminLogin();
-                }
+            if($this->isSchoolLogin() || $this->isPrincipalLogin() || $this->isPanelHeadLogin() || $this->isCoOrdinatorLogin()){
+                $schoolId = Auth::user()->{cn::USERS_SCHOOL_ID_COL};
                 $GradeMapping = GradeSchoolMappings::with('grades')
                                 ->where([
                                     cn::GRADES_MAPPING_SCHOOL_ID_COL => $schoolId,
@@ -3124,12 +3050,8 @@ class QuestionGeneratorController extends Controller {
                                             ->pluck(cn::EXAM_CREDIT_POINT_RULES_MAPPING_RULES_VALUE_COL,cn::EXAM_CREDIT_POINT_RULES_MAPPING_CREDIT_POINT_RULES_COL)
                                             ->toArray();
             }
-            
             $questionListHtml = '';
             $difficultyLevels = PreConfigurationDiffiltyLevel::all();
-            // $question_list = Question::with(['answers','PreConfigurationDifficultyLevel','objectiveMapping'])
-            //                     ->whereIn(cn::QUESTION_TABLE_ID_COL,explode(',',$exam->question_ids))
-            //                     ->get();
             $question_list = Question::with(['answers','objectiveMapping'])
                                 ->whereIn(cn::QUESTION_TABLE_ID_COL,explode(',',$exam->question_ids))
                                 ->get();
@@ -3168,7 +3090,7 @@ class QuestionGeneratorController extends Controller {
             ])->pluck('peer_group_id')->toArray();
         }
 
-        if($this->isSchoolLogin() || $this->isPrincipalLogin() || $this->isSubAdminLogin()){
+        if($this->isSchoolLogin() || $this->isPrincipalLogin() || $this->isPanelHeadLogin() || $this->isCoOrdinatorLogin()){
             if(!empty($peerGroupIds)){
                 $getGroupData = PeerGroup::where([
                                     cn::PEER_GROUP_CURRICULUM_YEAR_ID_COL => $this->GetCurriculumYear(),
@@ -3210,12 +3132,6 @@ class QuestionGeneratorController extends Controller {
                             $StudentIds = array_values(array_filter(array_unique(array_merge(explode(',',$AvailableStudentIds[0])))));
                             $StudentIdsSize = sizeof($StudentIds);
                             // get student list
-                            // $getStudentList = User::where(cn::USERS_GRADE_ID_COL,$gradesIds)
-                            //                 ->where(cn::USERS_CLASS_ID_COL,$classId)
-                            //                 ->where(cn::USERS_SCHOOL_ID_COL,$schoolId)
-                            //                 ->where([cn::USERS_ROLE_ID_COL => 3,cn::USERS_STATUS_COL => 'active'])
-                            //                 ->count();
-
                             $getStudentList = User::where([
                                                 cn::USERS_ROLE_ID_COL => 3,
                                                 cn::USERS_STATUS_COL => 'active',
@@ -3225,14 +3141,6 @@ class QuestionGeneratorController extends Controller {
                                             ->where('CurriculumYearGradeId',$gradesIds)
                                             ->where('CurriculumYearClassId',$classId)
                                             ->count();
-
-                            // $getStudentList = User::with(['curriculum_year_mapping' => fn($query) => $query->where([cn::CURRICULUM_YEAR_STUDENT_MAPPING_GRADE_ID_COL => $gradesIds, cn::CURRICULUM_YEAR_STUDENT_MAPPING_CLASS_ID_COL => $classId])])
-                            //                 // ->where(cn::USERS_GRADE_ID_COL,$gradesIds)
-                            //                 // ->where(cn::USERS_CLASS_ID_COL,$classId)
-                            //                 ->where(cn::USERS_SCHOOL_ID_COL,$schoolId)
-                            //                 ->where([cn::USERS_ROLE_ID_COL => 3,cn::USERS_STATUS_COL => 'active'])
-                            //                 ->count();
-
                             if($StudentIdsSize != $getStudentList){
                                 $oldStudentList = array_values(array_filter(array_unique(array_merge($oldStudentList,$StudentIds))));
                                 $oldAvailableClassIds[] = $classId;
@@ -3270,13 +3178,7 @@ class QuestionGeneratorController extends Controller {
                 }
                 if(isset($gradeClassId) && !empty($gradeClassId)){
                     $GradeClassData = Grades::with(['classes' => fn($query) => $query->whereIn(cn::GRADE_CLASS_MAPPING_ID_COL,$gradeClassId)->where([cn::GRADE_CLASS_MAPPING_CURRICULUM_YEAR_ID_COL => $this->GetCurriculumYear(),cn::GRADE_CLASS_MAPPING_SCHOOL_ID_COL => $schoolId])])->whereIn(cn::GRADES_ID_COL,$GradeMapping)->get();
-                    
                     // get student list
-                    // $StudentList = User::whereIn(cn::USERS_GRADE_ID_COL,$GradeMapping)
-                    //                 ->whereIn(cn::USERS_CLASS_ID_COL,$gradeClassId)
-                    //                 ->where([cn::USERS_ROLE_ID_COL => 3,cn::USERS_STATUS_COL => 'active'])
-                    //                 ->get();
-
                     $StudentList = User::where([cn::USERS_ROLE_ID_COL => 3,cn::USERS_STATUS_COL => 'active'])
                                     ->get()
                                     ->whereIn('CurriculumYearGradeId',$GradeMapping)
@@ -3285,19 +3187,6 @@ class QuestionGeneratorController extends Controller {
                     
                     if(isset($oldStudentList) && !empty($oldStudentList)){
                         // get student list
-                        // $StudentList = User::whereIn(cn::USERS_GRADE_ID_COL,$GradeMapping)
-                        //                 ->whereIn(cn::USERS_CLASS_ID_COL,$gradeClassId)
-                        //                 ->whereNotIn(cn::USERS_ID_COL,$oldStudentList)
-                        //                 ->where([cn::USERS_ROLE_ID_COL => 3,cn::USERS_STATUS_COL => 'active'])
-                        //                 ->get();
-
-                        // $StudentList = User::with(['curriculum_year_mapping' => fn($query) => $query->whereIn(cn::CURRICULUM_YEAR_STUDENT_MAPPING_GRADE_ID_COL,$GradeMapping)->whereIn(cn::CURRICULUM_YEAR_STUDENT_MAPPING_CLASS_ID_COL,$gradeClassId)])
-                        //                 // ->whereIn(cn::USERS_GRADE_ID_COL,$GradeMapping)
-                        //                 // ->whereIn(cn::USERS_CLASS_ID_COL,$gradeClassId)
-                        //                 ->whereNotIn(cn::USERS_ID_COL,$oldStudentList)
-                        //                 ->where([cn::USERS_ROLE_ID_COL => 3,cn::USERS_STATUS_COL => 'active'])
-                        //                 ->get();
-
                         $StudentList = User::where([cn::USERS_ROLE_ID_COL => 3,cn::USERS_STATUS_COL => 'active'])
                                         ->whereNotIn(cn::USERS_ID_COL,$oldStudentList)
                                         ->get()
@@ -3370,17 +3259,6 @@ class QuestionGeneratorController extends Controller {
                                 $StudentIds = array_values(array_filter(array_unique(array_merge(explode(',',$AvailableStudentIds[0])))));
                                 $StudentIdsSize = sizeof($StudentIds);
                                 // get student list
-                                // $getStudentList = User::where(cn::USERS_GRADE_ID_COL,$gradesIds)
-                                //                     ->where(cn::USERS_CLASS_ID_COL,$classId)
-                                //                     ->where(cn::USERS_SCHOOL_ID_COL,$schoolId)
-                                //                     ->where([cn::USERS_ROLE_ID_COL => 3,cn::USERS_STATUS_COL => 'active'])
-                                //                     ->count();
-
-                                // $getStudentList = User::with(['curriculum_year_mapping' => fn($query) => $query->whereIn([cn::CURRICULUM_YEAR_STUDENT_MAPPING_GRADE_ID_COL => $gradesIds, cn::CURRICULUM_YEAR_STUDENT_MAPPING_CLASS_ID_COL => $classId])])
-                                //                     ->where(cn::USERS_SCHOOL_ID_COL,$schoolId)
-                                //                     ->where([cn::USERS_ROLE_ID_COL => 3,cn::USERS_STATUS_COL => 'active'])
-                                //                     ->count();
-
                                 $getStudentList = User::where([
                                     cn::USERS_ROLE_ID_COL => 3,
                                     cn::USERS_STATUS_COL => 'active',
@@ -3427,12 +3305,7 @@ class QuestionGeneratorController extends Controller {
                     }
                     if(isset($gradeClassId) && !empty($gradeClassId)){
                         $GradeClassData = Grades::with(['classes' => fn($query) => $query->whereIn(cn::GRADE_CLASS_MAPPING_ID_COL,$gradeClassId)->where([cn::GRADE_CLASS_MAPPING_CURRICULUM_YEAR_ID_COL => $this->GetCurriculumYear(),cn::GRADE_CLASS_MAPPING_SCHOOL_ID_COL => $currentLoggedSchoolId])])->whereIn(cn::GRADES_ID_COL,$GradeMapping)->get();
-                        // get student list
-                        // $StudentList = User::whereIn(cn::USERS_GRADE_ID_COL,$GradeMapping)
-                        //                 ->whereIn(cn::USERS_CLASS_ID_COL,$gradeClassId)
-                        //                 ->where([cn::USERS_ROLE_ID_COL => 3,cn::USERS_STATUS_COL => 'active'])
-                        //                 ->get();
-                        
+                        // get student list                        
                         $StudentList = User::where([
                                             cn::USERS_ROLE_ID_COL => 3,
                                             cn::USERS_STATUS_COL => 'active',
@@ -3882,8 +3755,8 @@ class QuestionGeneratorController extends Controller {
                 cn::EXAM_TABLE_TIME_DURATIONS_COLS                      => $ExamData->{cn::EXAM_TABLE_TIME_DURATIONS_COLS},
                 cn::EXAM_TABLE_QUESTION_IDS_COL                         => $ExamData->{cn::EXAM_TABLE_QUESTION_IDS_COL},
                 cn::EXAM_TABLE_SCHOOL_COLS                              => $ExamData->{cn::EXAM_TABLE_SCHOOL_COLS},
-                cn::EXAM_TABLE_IS_UNLIMITED                             => ($ExamData->{cn::EXAM_TYPE_COLS} == 1) ? 1 : 0,
-                cn::EXAM_TABLE_TIME_DURATIONS_COLS                      => ($ExamData->{cn::EXAM_TYPE_COLS} == 2) ? $this->CalculateTimeDuration(count(explode(',',$ExamData->{cn::EXAM_TABLE_QUESTION_IDS_COL}))) : null,
+                cn::EXAM_TABLE_IS_UNLIMITED                             => ($ExamData->{cn::EXAM_TYPE_COLS} == 3) ? 1 : 0,
+                cn::EXAM_TABLE_TIME_DURATIONS_COLS                      => ($ExamData->{cn::EXAM_TYPE_COLS} == 3) ? $this->CalculateTimeDuration(count(explode(',',$ExamData->{cn::EXAM_TABLE_QUESTION_IDS_COL}))) : null,
                 cn::EXAM_TABLE_SELF_LEARNING_TEST_TYPE_COL              => null,
                 cn::EXAM_TABLE_NO_OF_TRIALS_PER_QUESTIONS_COL           => $ExamData->{cn::EXAM_TABLE_NO_OF_TRIALS_PER_QUESTIONS_COL},
                 cn::EXAM_TABLE_DIFFICULTY_MODE_COL                      => $ExamData->{cn::EXAM_TABLE_DIFFICULTY_MODE_COL},

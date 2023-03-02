@@ -56,8 +56,7 @@
 											</th>
 											<th>#{{__('languages.no')}}</th>
 							          		<th class="first-head"><span>@sortablelink('name',__('languages.grade'))</span></th>
-											  <th class="first-head"><span>{{__('languages.class')}}</span></th>
-											  <!-- <th class="first-head"><span>@sortablelink('code','Code')</span></th> -->
+											<th class="first-head"><span>{{__('languages.class')}}</span></th>
 											<th class="selec-head">@sortablelink('status',__('languages.class'))</th>
 											<th class="selec-head">{{__('languages.action')}}</th>
 							        	</tr>
@@ -70,7 +69,6 @@
 											<td>{{ $loop->iteration }}</td>
 											<td>{{ $data->grades->name }}</td>
 											<td>{{ $data->getClassNames($data->grade_id) }}</td>
-											<!-- <td>{{ $data->grades->code }}</td> -->
 											<td>
 												@if($data->grades->status == '1')
 													<span class="badge badge-success">{{__('languages.active')}}</span> 

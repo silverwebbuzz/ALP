@@ -105,8 +105,8 @@ class CommonController extends Controller
 
     public function getSubjectFromGrades(Request $request){
         try{
-            if($this->isSchoolLogin()){
-                $subjectIds = SubjectSchoolMappings::where(cn::SUBJECT_MAPPING_SCHOOL_ID_COL,$this->isSchoolLogin())->pluck(cn::SUBJECT_MAPPING_SUBJECT_ID_COL);
+            if($this->isSchoolLogin() || $this->isPrincipalLogin() || $this->isPanelHeadLogin() || $this->isCoOrdinatorLogin()){
+                $subjectIds = SubjectSchoolMappings::where(cn::SUBJECT_MAPPING_SCHOOL_ID_COL,Auth::user()->{cn::USERS_SCHOOL_ID_COL})->pluck(cn::SUBJECT_MAPPING_SUBJECT_ID_COL);
             }else if($this->isTeacherLogin()){
                 $subjectIds = SubjectSchoolMappings::where(cn::SUBJECT_MAPPING_SCHOOL_ID_COL,$this->isTeacherLogin())->pluck(cn::SUBJECT_MAPPING_SUBJECT_ID_COL);
             }else{
@@ -376,8 +376,11 @@ class CommonController extends Controller
         $GradeClassData ='';
         $html ='';
         if(!empty($request->grade_id)){
-            if($this->isSchoolLogin()){
-                $GradeClassMapping = GradeClassMapping::where([cn::GRADE_CLASS_MAPPING_GRADE_ID_COL => $request->grade_id,cn::GRADE_CLASS_MAPPING_SCHOOL_ID_COL => $this->isSchoolLogin()])->get();
+            if($this->isSchoolLogin() || $this->isPrincipalLogin() || $this->isPanelHeadLogin() || $this->isCoOrdinatorLogin()){
+                $GradeClassMapping =    GradeClassMapping::where([
+                                            cn::GRADE_CLASS_MAPPING_GRADE_ID_COL => $request->grade_id,
+                                            cn::GRADE_CLASS_MAPPING_SCHOOL_ID_COL => Auth::user()->{cn::USERS_SCHOOL_ID_COL}
+                                        ])->get();
             }
             if($this->isTeacherLogin()){
                 $GradeClassMapping = GradeClassMapping::where([cn::GRADE_CLASS_MAPPING_GRADE_ID_COL => $request->grade_id, cn::GRADE_CLASS_MAPPING_SCHOOL_ID_COL => $this->isTeacherLogin()])->get();
@@ -387,12 +390,11 @@ class CommonController extends Controller
                             FROM grade_class_mapping
                             WHERE grade_id = $request->grade_id
                             GROUP BY name");
-                //$GradeClassMapping = GradeClassMapping::where([cn::GRADE_CLASS_MAPPING_GRADE_ID_COL => $request->grade_id])->groupBy(cn::GRADE_CLASS_MAPPING_NAME_COL)->get();
             }
         }
 
         if(!empty($GradeClassMapping)){
-            if($this->isSchoolLogin() || $this->isTeacherLogin()){
+            if($this->isSchoolLogin() || $this->isPrincipalLogin() || $this->isPanelHeadLogin() || $this->isCoOrdinatorLogin() || $this->isTeacherLogin()){
                 foreach($GradeClassMapping as $class){
                     $GradeList = Grades::find($class->grade_id);
                     $html .= '<option value='.strtoupper($class->id).'>'.$GradeList->name.strtoupper($class->name).'</option>';
@@ -400,7 +402,6 @@ class CommonController extends Controller
             }else{
                 foreach($GradeClassMapping as $class){
                     $GradeList = Grades::find($class->grade_id);
-                    //$html .= '<option value='.strtoupper($class->id).'>'.$GradeList->name.strtoupper($class->name).'</option>';
                     $html .= '<option value='.strtoupper($class->class_id).'>'.$GradeList->name.strtoupper($class->name).'</option>';
                 }
             }
@@ -483,7 +484,7 @@ class CommonController extends Controller
     public function getTestListByGradeAndClass(Request $request){
         $optionlist = '';
         $Query = User::where(cn::USERS_ROLE_ID_COL,cn::STUDENT_ROLE_ID);
-        if($this->isSchoolLogin() || $this->isTeacherLogin()){
+        if($this->isSchoolLogin() || $this->isPrincipalLogin() || $this->isPanelHeadLogin() || $this->isCoOrdinatorLogin() || $this->isTeacherLogin()){
             $Query->where(cn::USERS_SCHOOL_ID_COL,Auth::user()->{cn::USERS_SCHOOL_ID_COL});
             if(isset($request->classIds) && !empty($request->classIds)){
                 // $Query->whereIn(cn::USERS_CLASS_ID_COL,$request->classIds);
@@ -510,7 +511,7 @@ class CommonController extends Controller
         $StudentIds = $Query->get()->pluck(cn::USERS_ID_COL);
         if(!$StudentIds->isEmpty()){
             $ExamQuery = Exam::where(cn::EXAM_TABLE_IS_GROUP_TEST_COL,0);
-            if($this->isSchoolLogin() || $this->isTeacherLogin()){
+            if($this->isSchoolLogin() || $this->isPrincipalLogin() || $this->isPanelHeadLogin() || $this->isCoOrdinatorLogin() || $this->isTeacherLogin()){
                 $schoolId = Auth::user()->{cn::USERS_SCHOOL_ID_COL};
                 $ExamQuery->whereRaw("find_in_set($schoolId,school_id)");
             }
@@ -655,7 +656,7 @@ class CommonController extends Controller
                                 cn::PEER_GROUP_SCHOOL_ID_COL => Auth::user()->{cn::USERS_SCHOOL_ID_COL},
                                 cn::PEER_GROUP_CREATED_BY_USER_ID_COL => Auth::user()->{cn::USERS_ID_COL}
                             ])->get();
-        }else if($this->isSchoolLogin() || isPrincipalLogin() || $this->isSubAdminLogin()){
+        }else if($this->isSchoolLogin() || isPrincipalLogin() || $this->isPanelHeadLogin() || $this->isCoOrdinatorLogin()){
             $peerGroupData = $peerGroupData->select(cn::PEER_GROUP_ID_COL,cn::PEER_GROUP_GROUP_NAME_COL)
                             ->where([
                                 cn::PEER_GROUP_SCHOOL_ID_COL => Auth::user()->{cn::USERS_SCHOOL_ID_COL}

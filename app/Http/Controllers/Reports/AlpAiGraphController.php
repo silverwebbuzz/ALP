@@ -140,12 +140,6 @@ class AlpAiGraphController extends Controller
                         $gradeClass = implode(',', $gradeClass);
                         $gradeClassId = explode(',',$gradeClass);
                     }
-                    // $studentidlist = User::whereIn(cn::USERS_GRADE_ID_COL,$gradesListId)
-                    //                 ->whereIn(cn::USERS_CLASS_ID_COL,$gradeClassId)
-                    //                 ->where(cn::USERS_SCHOOL_ID_COL,$schoolId)
-                    //                 ->where(cn::USERS_ROLE_ID_COL,cn::STUDENT_ROLE_ID)
-                    //                 ->pluck(cn::USERS_ID_COL)
-                    //                 ->toArray();
                     $studentidlist = User::where([
                                         cn::USERS_SCHOOL_ID_COL => $schoolId,
                                         cn::USERS_ROLE_ID_COL => cn::STUDENT_ROLE_ID
@@ -157,7 +151,7 @@ class AlpAiGraphController extends Controller
                                     ->toArray();
                 }
 
-                if($this->isPrincipalLogin() || $this->isSchoolLogin() || $this->isSubAdminLogin()){
+                if($this->isPrincipalLogin() || $this->isSchoolLogin() || $this->isPanelHeadLogin() || $this->isCoOrdinatorLogin()){
                     $studentidlist = User::where(cn::USERS_SCHOOL_ID_COL,$schoolId)
                                         ->where(cn::USERS_ROLE_ID_COL,cn::STUDENT_ROLE_ID)
                                         ->pluck(cn::USERS_ID_COL)

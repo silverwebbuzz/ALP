@@ -27,8 +27,8 @@
 									@if(in_array('user_management_create', $permissions))
 									<a href="{{ route('school-users.create') }}" class="dark-blue-btn btn btn-primary mb-4">{{__('languages.user_management.add_new_user')}}</a>
 									@endif
-									<a href="{{ route('users.import') }}" class="dark-blue-btn btn btn-primary mb-4">{{__('languages.user_management.import_users')}}</a>
-									<a href="{{ route('users.export') }}" class="dark-blue-btn btn btn-primary mb-4">{{__('languages.user_management.export_users')}}</a>
+									<!-- <a href="{{ route('users.import') }}" class="dark-blue-btn btn btn-primary mb-4">{{__('languages.user_management.import_users')}}</a>
+									<a href="{{ route('users.export') }}" class="dark-blue-btn btn btn-primary mb-4">{{__('languages.user_management.export_users')}}</a> -->
 								</div>
 							</div>
 							<hr class="blue-line">
@@ -49,6 +49,7 @@
 					@endif
 					<form class="addUserFilterForm" id="addUserFilterForm" method="get">	
 					<div class="row">
+						@if(Auth::user()->role_id == 1)
 						<div class="select-lng pt-2 pb-2 col-lg-2 col-md-4">                            
                             <select name="school_id"  class="form-control select-option selectpicker"  data-show-subtext="true" data-live-search="true" id="user_filter_school">
                                 <option value="">{{ __('languages.user_management.school') }}</option>
@@ -68,6 +69,7 @@
                                 <span class="validation_error">{{ $errors->first('school_id') }}</span>
                             @endif
                         </div>
+						@endif
 
 						<div class="col-lg-2 col-md-4">
                             <div class="select-lng pt-2 pb-2">
@@ -116,13 +118,14 @@
 							          		<th>
 										  		<input type="checkbox" name="" class="checkbox">
 											</th>
-											<th class="first-head"><span>@sortablelink('role_id',__('languages.role'))</span></th>
-							          		<th class="first-head"><span>@sortablelink('name_en',__('languages.name_english'))</span></th>
-											<th class="first-head"><span>@sortablelink('name_ch',__('languages.name_chinese'))</span></th>
-											<th class="sec-head selec-opt"><span>@sortablelink('email',__('languages.email'))</span></th>
-											<th class="selec-head">@sortablelink('is_school_admin_privilege_access',__('languages.school_user_management.school_admin_privilege'))</th>
-											<th class="selec-head">@sortablelink('status',__('languages.status'))</th>
-											<th class="selec-head">{{__('languages.action')}}</th>
+											<th><span>@sortablelink('role_id',__('languages.role'))</span></th>
+							          		<th><span>@sortablelink('name_en',__('languages.name_english'))</span></th>
+											<th><span>@sortablelink('name_ch',__('languages.name_chinese'))</span></th>
+											<th><span>@sortablelink('email',__('languages.email'))</span></th>
+											<th><span>@sortablelink('school',__('languages.school_user_management.school_name'))</span></th>
+											<th>@sortablelink('is_school_admin_privilege_access',__('languages.school_user_management.school_admin_privilege'))</th>
+											<th>@sortablelink('status',__('languages.status'))</th>
+											<th>{{__('languages.action')}}</th>
 							        	</tr>
 							    	</thead>
 							    	<tbody class="scroll-pane">
@@ -134,7 +137,14 @@
 											<td>{{($User->name_en) ? App\Helpers\Helper::decrypt($User->name_en) : $User->name}}</td>
 											<td>{{($User->name_ch) ? App\Helpers\Helper::decrypt($User->name_ch) : 'N/A' }}</td>
 											<td>{{$User->email }}</td>
-											<td>{{($User->is_school_admin_privilege_access === true) ? 'Yes' : 'No'}}</td>
+											<td>
+												@if(app()->getLocale() == 'ch')
+													{{$User->schools->DecryptSchoolNameCh}}
+												@else
+													{{$User->schools->DecryptSchoolNameEn}}
+												@endif
+											</td>
+											<td>{{ucfirst($User->is_school_admin_privilege_access)}}</td>
 											<td>
 												@if($User->status === 'pending')
 													<span class="badge badge-warning">{{__('languages.pending')}}</span>
@@ -145,11 +155,9 @@
 												@endif
 											</td>
 											<td class="btn-edit">
-												@if (in_array('user_management_update', $permissions))
-													<a href="{{ route('users.edit', $User->id) }}" class="" title="{{__('languages.edit')}}"><i class="fa fa-pencil" aria-hidden="true"></i></a>
-												@endif
+												<a href="{{ route('school-users.edit', $User->id) }}" class="" title="{{__('languages.edit')}}"><i class="fa fa-pencil" aria-hidden="true"></i></a>
 												@if (in_array('user_management_delete', $permissions))
-													<a href="javascript:void(0);" class="pl-2" id="deleteUser" data-id="{{$User->id}}" title="{{__('languages.delete')}}"><i class="fa fa-trash" aria-hidden="true"></i></a>
+													<a href="javascript:void(0);" class="pl-2" id="deleteSchoolUser" data-id="{{$User->id}}" title="{{__('languages.delete')}}"><i class="fa fa-trash" aria-hidden="true"></i></a>
 												@endif
 												@if(Auth::user()->role_id == 1 || Auth::user()->role_id == 5)
 													@if (in_array('change_password_update', $permissions))
@@ -160,12 +168,11 @@
 													<a href="{{route('student-profiles',$User->id)}}" class="pl-2" title="{{__('languages.sidebar.profile')}}"><i class="fa fa-user" aria-hidden="true"></i></a>
 													@endif
 												@endif
-												
 											</td>
 										</tr>
 										@endforeach
 										@endif
-							  </tbody>
+							  		</tbody>
 							</table>
 							<div>{{__('languages.showing')}} {{!empty($UsersList->firstItem()) ? $UsersList->firstItem() : 0}} {{__('languages.to')}} {{!empty($UsersList->lastItem()) ? $UsersList->lastItem() : 0}}
 								{{__('languages.of')}}  {{$UsersList->total()}} {{__('languages.entries')}}

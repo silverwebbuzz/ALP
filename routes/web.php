@@ -17,10 +17,8 @@ Route::get('remove-duplicate-student', 'CronJobController@RemoveDuplicateStudent
 Route::get('updateStudyReports', 'MyStudyController@updateStudyReports')->name('updateStudyReports');
 Route::get('updateClassId','CommonController@updateClassIdAsClassName')->name('updateClassId');
 
-
 Route::match(['GET', 'POST'], 'update/question/codes', 'QuestionController@UpdateQuestionCodeWithNewCode')->name('update.question.codes');
-
-
+Route::get('UpdateExamsTimeDurations', 'QuestionGeneratorController@UpdateExamsTimeDurations')->name('UpdateExamsTimeDurations');
 
 // For AI-Calibration module
 Route::get('updateQuestionDifficultyValue','CommonController@updateQuestionDifficultyValue')->name('updateQuestionDifficultyValue');
@@ -134,6 +132,7 @@ Route::group(['middleware'=>['auth']], function () {
     Route::get('super-admin/dashboard', 'AdminDashboardController@index')->middleware(['admin'])->name('superadmin.dashboard');
 
     // Module for School User Management
+    Route::get('school-users/delete/{id}', 'SchoolUsersController@destroy');
     Route::resource('school-users','SchoolUsersController');
 
     /** Start Questions Module Route **/
@@ -312,14 +311,14 @@ Route::group(['middleware'=>['auth']], function () {
     /***********************************************************************************
      * Backend Routes (Teacher Panel)
      * *********************************************************************************/
-    Route::post('assign-student-in-group','TeacherDashboardController@assignStudentInGroup')->middleware(['teacher'])->name('assign-student-in-group');
+    Route::post('assign-student-in-group','TeacherDashboardController@assignStudentInGroup')->name('assign-student-in-group');
 
     Route::get('teacher', 'TeacherDashboardController@index')->middleware(['teacher'])->name('teacher');
     Route::get('teacher/dashboard', 'TeacherDashboardController@index')->middleware(['teacher'])->name('teacher.dashboard');
-    Route::get('teacher/profile','ProfileController@teacher_profile')->name('teacher.profile');
-    Route::patch('teacher/update_profile/{id}','ProfileController@update_teacher_profile')->name('teacher.profile.update');
+    // Route::get('teacher/profile','ProfileController@teacher_profile')->name('teacher.profile');
+    // Route::patch('teacher/update_profile/{id}','ProfileController@update_teacher_profile')->name('teacher.profile.update');
     // Route::get('teacher/students-profile/{id}','TeacherDashboardController@studentsProfile')->middleware(['teacher'])->name('teacher.student-profiles');
-    Route::get('my-class', 'TeacherDashboardController@MyClass')->middleware(['teacher'])->name('my-class');
+    Route::get('my-class', 'TeacherDashboardController@MyClass')->name('my-class');
     Route::get('my-subject', 'TeacherDashboardController@MySubject')->middleware(['teacher'])->name('my-subject');
     Route::post('get_studentdata', 'UsersController@getStudentList')->name('getstudentdata')->middleware('teacher');
     Route::match(['GET', 'POST'],'my-teaching', 'ExamController@myTeaching')->name('myTeaching');
@@ -366,7 +365,11 @@ Route::group(['middleware'=>['auth']], function () {
     Route::post('student/answer/save', 'ExamController@studentExamAnswerSave')->middleware(['student'])->name('student.answer.save');
     Route::get('student/dashboard', 'StudentDashboardController@index')->middleware(['student'])->name('student.dashboard');
     Route::resource('profile','ProfileController');
-    Route::patch('student/update_profile/{id}','ProfileController@update_student_profile')->name('student.profile.update');
+    
+    //Route::patch('student/update_profile/{id}','ProfileController@update_student_profile')->name('student.profile.update');
+
+    Route::patch('update_profile/{id}','ProfileController@updateProfile')->name('save-updated-profile');
+
     Route::get('student/mysubjects', 'StudentDashboardController@mySubjects')->middleware(['student'])->name('student.mysubjects');
     Route::get('student/myteachers', 'StudentDashboardController@myTeachers')->middleware(['student'])->name('student.myteachers');
     Route::get('student/myclass', 'StudentDashboardController@myclass')->middleware(['student'])->name('student.myclass');
@@ -423,8 +426,8 @@ Route::group(['middleware'=>['auth']], function () {
     Route::get('schools', 'SchoolDashboardController@index')->middleware(['school'])->name('schools');
     Route::get('schools/dashboard', 'SchoolDashboardController@index')->middleware(['school'])->name('schools.dashboard');
     
-    Route::get('schoolprofile', 'SchoolDashboardController@SchoolProfile')->middleware(['school'])->name('schoolprofile');
-    Route::post('schoolprofileupdate', 'SchoolDashboardController@SchoolProfileUpdate')->middleware(['school'])->name('schoolprofileupdate');
+    Route::get('school/profile', 'SchoolDashboardController@SchoolProfile')->name('schoolprofile');
+    Route::post('schoolprofileupdate', 'SchoolDashboardController@SchoolProfileUpdate')->name('schoolprofileupdate');
 
     // Route::resource('teacher','TeacherController')->middleware(['school']);
     // Route::get('teacher/delete/{id}', 'TeacherController@destroy')->middleware(['school'])->name('teacher.destroy');
@@ -435,18 +438,16 @@ Route::group(['middleware'=>['auth']], function () {
     Route::get('subject/delete/{id}', 'SubjectController@destroy')->middleware(['school'])->name('subject.destroy');
     Route::resource('subject','SubjectController')->middleware(['school']);
 
-    // Route::resource('class','ClassController')->middleware(['school']);
     // Route::get('class/delete/{id}', 'ClassController@destroy')->middleware(['school'])->name('class.destroy');
     Route::resource('class','ClassController');
     Route::get('class/delete/{id}', 'ClassController@destroy')->name('class.destroy');
     
-    // Route::resource('teacher-class-subject-assign','TeachersClassSubjectController')->middleware(['school']);
     Route::resource('teacher-class-subject-assign','TeachersClassSubjectController');
     Route::get('get-class-type','TeachersClassSubjectController@getClassType')->name('get-class-type');
     Route::get('get-performance-report-class-type','TeachersClassSubjectController@getPerformanceReportClassType')->name('get-performance-report-class-type');
     Route::get('class-promotion-history/{id}','StudentController@ClassPromotionHistory')->name('class-promotion-history');
-    Route::get('teacher-class-subject-assign/delete/{id}', 'TeachersClassSubjectController@destroy')->middleware(['school'])->name('teacher-class-subject-assign.destroy');
-    Route::post('chechteacherid', 'TeachersClassSubjectController@chechteacherid')->name('chechteacherid')->middleware('school');
+    Route::get('teacher-class-subject-assign/delete/{id}', 'TeachersClassSubjectController@destroy')->name('teacher-class-subject-assign.destroy');
+    Route::post('chechteacherid', 'TeachersClassSubjectController@chechteacherid')->name('chechteacherid');
 
     // Route::match(['GET', 'POST'],'student/import/upgrade-school-year','ImportController@StudentUpgradeSchoolYear')->middleware(['school'])->name('student.import.upgrade-school-year');\
     Route::match(['GET', 'POST'],'student/import/upgrade-school-year','ImportController@StudentUpgradeSchoolYear')->name('student.import.upgrade-school-year');
@@ -582,4 +583,23 @@ Route::group(['middleware'=>['auth']], function () {
     // Route::match(['GET', 'POST'],'assign-credit-points','TeacherDashboardController@AssignCreditPoints')->middleware(['teacher'])->name('assign-credit-points');
     Route::match(['GET', 'POST'],'assign-credit-points','CreditPointController@AssignCreditPoints')->middleware(['teacher'])->name('assign-credit-points');
     Route::get('get-students-list-checkbox', 'CommonController@getStudentListByGradeClassGroup');
+
+
+    /***********************************************************************************
+     * Panel head Routes
+     * *********************************************************************************/
+    Route::get('panel-head/dashboard', 'DashboardController@PanelHead')->name('panel-head.dashboard');
+    /***********************************************************************************
+     * End Panel Head Routes
+     * *********************************************************************************/
+
+
+
+     /***********************************************************************************
+     * CoOrdinator Routes
+     * *********************************************************************************/
+    Route::get('co-ordinator/dashboard', 'DashboardController@CoOrdinator')->name('co-ordinator.dashboard');
+    /***********************************************************************************
+     * End CoOrdinator Routes
+     * *********************************************************************************/
 });

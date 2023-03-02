@@ -9,6 +9,8 @@ if(Auth::user()->role_id == 1){
         $color = '#BDE5E1';
     }else if(Auth::user()->role_id == 8){
         $color = '#fed08d';
+    }else if(Auth::user()->role_id == 9){
+        $color = '#eab676';
     }else{
         $color = '#a8e4b0';
     }

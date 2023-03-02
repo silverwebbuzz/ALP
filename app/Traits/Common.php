@@ -304,20 +304,26 @@ trait Common {
 
     function findCreatedByUserType(){
         switch(Auth::user()->role_id){
-            case 1: 
+            case cn::SUPERADMIN_ROLE_ID: 
                 $UserType = 'super_admin';
                 break;
-            case 2:
+            case cn::TEACHER_ROLE_ID:
                 $UserType = 'teacher';
                 break;
-            case 3:
+            case cn::STUDENT_ROLE_ID:
                 $UserType = 'student';
                 break;
-            case 5:
+            case cn::SCHOOL_ROLE_ID:
                 $UserType = 'school_admin';
                 break;
-            case 7:
+            case cn::PRINCIPAL_ROLE_ID:
                 $UserType = 'principal';
+                break;
+            case cn::PANEL_HEAD_ROLE_ID:
+                $UserType = 'panel_head';
+                break;
+            case cn::CO_ORDINATOR_ROLE_ID:
+                $UserType = 'co_ordinator';
                 break;
             default:
                 $UserType = '';
@@ -348,7 +354,8 @@ trait Common {
 
                 case cn::SCHOOL_ROLE_ID: 
                 case cn::PRINCIPAL_ROLE_ID:
-                case cn::SUB_ADMIN_ROLE_ID: // Case 5 & 7 is School Admin & Principal
+                case cn::CO_ORDINATOR_ROLE_ID:
+                case cn::PANEL_HEAD_ROLE_ID: // Case 5 & 7 is School Admin & Principal
                     $ExamData = Exam::find($ExamId);
                     if(!empty($ExamData)){
                         $status = ($request->has('save_and_publish')) ? 'publish' : 'draft';
@@ -475,6 +482,16 @@ trait Common {
                     //$redirectUrl = config()->get('app.url').'admin/dashboard';
                     $redirectUrl = config()->get('app.url').'users';
                     break;
+                case "principal":
+                    $redirectUrl = config()->get('app.url').'principal/dashboard';
+                    //$redirectUrl = config()->get('app.url').'report/class-test-reports/correct-incorrect-answer';
+                    break;
+                case "panel_head" :
+                    $redirectUrl = config()->get('app.url').'report/class-test-reports/correct-incorrect-answer';
+                    break;
+                case "co-ordinator" :
+                    $redirectUrl = config()->get('app.url').'report/class-test-reports/correct-incorrect-answer';
+                    break;
                 case "teacher":
                     $redirectUrl = config()->get('app.url').'teacher/dashboard';
                     break;
@@ -488,13 +505,6 @@ trait Common {
                 case "school" :
                     //$redirectUrl = config()->get('app.url').'schools/dashboard';
                     $redirectUrl = config()->get('app.url').'report/class-test-reports/correct-incorrect-answer';
-                    break;
-                case "sub_admin" :
-                    $redirectUrl = config()->get('app.url').'report/class-test-reports/correct-incorrect-answer';
-                    break;
-                case "principal":
-                    $redirectUrl = config()->get('app.url').'principal/dashboard';
-                    //$redirectUrl = config()->get('app.url').'report/class-test-reports/correct-incorrect-answer';
                     break;
                 case "external_resource":
                     //$redirectUrl = config()->get('app.url').'schools/dashboard';
@@ -519,8 +529,10 @@ trait Common {
             return route('parent.dashboard');
         }elseif(Auth::check() && Auth::user()->{cn::USERS_ROLE_ID_COL} == cn::SCHOOL_ROLE_ID){
             return route('schools.dashboard');
-        }elseif(Auth::check() && Auth::user()->{cn::USERS_ROLE_ID_COL} == cn::SUB_ADMIN_ROLE_ID){
-            return route('sub_admin.dashboard');
+        }elseif(Auth::check() && Auth::user()->{cn::USERS_ROLE_ID_COL} == cn::PANEL_HEAD_ROLE_ID){
+            return route('panel_head.dashboard');
+        }elseif(Auth::check() && Auth::user()->{cn::USERS_ROLE_ID_COL} == cn::CO_ORDINATOR_ROLE_ID){
+            return route('co_ordinator.dashboard');
         }elseif(Auth::check() && Auth::user()->{cn::USERS_ROLE_ID_COL} == cn::EXTERNAL_RESOURCE_ROLE_ID){
             return route('external_resource.dashboard');
         }elseif(Auth::check() && Auth::user()->{cn::USERS_ROLE_ID_COL} == cn::PRINCIPAL_ROLE_ID){
@@ -552,7 +564,29 @@ trait Common {
      * Return : true | false
      */
     protected static function isSubAdminLogin(){
-        if(Auth::check() && Auth::user()->{cn::USERS_ROLE_ID_COL} == cn::SUB_ADMIN_ROLE_ID){
+        if(Auth::check() && Auth::user()->{cn::USERS_ROLE_ID_COL} == cn::PANEL_HEAD_ROLE_ID){
+            return Auth::user()->{cn::USERS_SCHOOL_ID_COL};
+        }
+        return false;
+    }
+
+    /**
+     * USE : Check current logged user is Panel Head
+     * Return : Current user school id
+     */
+    protected static function isPanelHeadLogin(){
+        if(Auth::check() && Auth::user()->{cn::USERS_ROLE_ID_COL} == cn::PANEL_HEAD_ROLE_ID){
+            return Auth::user()->{cn::USERS_SCHOOL_ID_COL};
+        }
+        return false;
+    }
+
+    /**
+     * USE : Check current logged user is Panel Head
+     * Return : Current user school id
+     */
+    protected static function isCoOrdinatorLogin(){
+        if(Auth::check() && Auth::user()->{cn::USERS_ROLE_ID_COL} == cn::CO_ORDINATOR_ROLE_ID){
             return Auth::user()->{cn::USERS_SCHOOL_ID_COL};
         }
         return false;
@@ -780,6 +814,14 @@ trait Common {
      */
     public static function LoggedUserId(){
         return Auth::user()->{cn::USERS_ID_COL};
+    }
+
+    /**
+     * USE : Get current login user school id
+     * Return : school id
+     */
+    public static function LoggedUserSchoolId(){
+        return Auth::user()->{cn::USERS_SCHOOL_ID_COL};
     }
 
     /**
@@ -2004,7 +2046,8 @@ trait Common {
                 break;
             case cn::SCHOOL_ROLE_ID:
             case cn::PRINCIPAL_ROLE_ID:
-            case cn::SUB_ADMIN_ROLE_ID:
+            case cn::PANEL_HEAD_ROLE_ID:
+            case cn::CO_ORDINATOR_ROLE_ID:
                 return $this->GetPluckIds('GradeClassMapping');
                 break;
         }
@@ -2574,7 +2617,7 @@ trait Common {
                 }               
             }
 
-            if(SELF::isPrincipalLogin() || SELF::isSchoolLogin() || SELF::isSubAdminLogin()){
+            if(SELF::isPrincipalLogin() || SELF::isSchoolLogin() || SELF::isPanelHeadLogin() || SELF::isCoOrdinatorLogin()){
                 if(!empty($GetStudentIds)){
                     $AttemptExamData = $Query->whereHas('user',function($q) use($GetStudentIds){
                         $q->where(cn::USERS_SCHOOL_ID_COL, Auth::user()->{cn::USERS_SCHOOL_ID_COL})

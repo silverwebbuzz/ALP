@@ -19,6 +19,7 @@ use App\Models\PeerGroup;
 use App\Models\PeerGroupMember;
 use App\Models\Exam;
 use App\Models\ExamGradeClassMappingModel;
+use App\Models\GradeSchoolMappings;
 use App\Models\UserCreditPointHistory;
 use App\Models\UserCreditPoints;
 use App\Http\Services\TeacherGradesClassService;
@@ -40,36 +41,66 @@ class TeacherDashboardController extends Controller
     }
     
     public function MyClass(Request $request){
-        try{
+        //try{
             //  Laravel Pagination set in Cookie
             //$this->paginationCookie('TeacherMyClassList',$request);
-            if(!in_array('my_classes_read', Helper::getPermissions(Auth::user()->{cn::USERS_ID_COL}))) {
-                return redirect('/');
-            }
+            // if(!in_array('my_classes_read', Helper::getPermissions(Auth::user()->{cn::USERS_ID_COL}))) {
+            //     return redirect('/');
+            // }
             $gradeid =  array();
             $gradeClassId = array();
-            // $GroupData = PeerGroup::where(cn::PEER_GROUP_CREATED_BY_USER_ID_COL,Auth::user()->{cn::USERS_ID_COL})->get();
-            $GroupData = PeerGroup::where([cn::PEER_GROUP_CREATED_BY_USER_ID_COL => Auth::user()->{cn::USERS_ID_COL},
-                                            cn::PEER_GROUP_CURRICULUM_YEAR_ID_COL => $this->GetCurriculumYear()
-                                        ])->get();
-            // $gradesList = TeachersClassSubjectAssign::where([cn::TEACHER_CLASS_SUBJECT_TEACHER_ID_COL=>Auth()->user()->{cn::USERS_ID_COL}])->with('getClass')->get()->unique(cn::TEACHER_CLASS_SUBJECT_CLASS_ID_COL);
-            $gradesList = TeachersClassSubjectAssign::where([
-                                                            cn::TEACHER_CLASS_SUBJECT_TEACHER_ID_COL => Auth()->user()->{cn::USERS_ID_COL},
-                                                            cn::TEACHER_CLASS_SUBJECT_CURRICULUM_YEAR_ID_COL => $this->GetCurriculumYear()
+            $GroupData = array();
+            $gradesList = array();
+            $gradeClassIds = array();
+
+            if($this->isTeacherLogin()){
+                $GroupData =    PeerGroup::where([cn::PEER_GROUP_CREATED_BY_USER_ID_COL => Auth::user()->{cn::USERS_ID_COL},
+                                    cn::PEER_GROUP_CURRICULUM_YEAR_ID_COL => $this->GetCurriculumYear()
+                                ])->get();
+                $gradesList =   TeachersClassSubjectAssign::where([
+                                    cn::TEACHER_CLASS_SUBJECT_TEACHER_ID_COL => Auth()->user()->{cn::USERS_ID_COL},
+                                    cn::TEACHER_CLASS_SUBJECT_CURRICULUM_YEAR_ID_COL => $this->GetCurriculumYear()
+                                ])
+                                ->with('getClass')
+                                ->get()
+                                ->unique(cn::TEACHER_CLASS_SUBJECT_CLASS_ID_COL);
+                $gradeid =  TeachersClassSubjectAssign::where([
+                                cn::TEACHER_CLASS_SUBJECT_TEACHER_ID_COL => Auth()->user()->{cn::USERS_ID_COL},
+                                cn::TEACHER_CLASS_SUBJECT_CURRICULUM_YEAR_ID_COL => $this->GetCurriculumYear()
+                            ])->pluck(cn::TEACHER_CLASS_SUBJECT_CLASS_ID_COL)->toArray();
+                $gradeClass = TeachersClassSubjectAssign::where([
+                                                                    cn::TEACHER_CLASS_SUBJECT_TEACHER_ID_COL => Auth()->user()->{cn::USERS_ID_COL},
+                                                                    cn::TEACHER_CLASS_SUBJECT_CURRICULUM_YEAR_ID_COL => $this->GetCurriculumYear()
+                                                                ])->pluck(cn::TEACHER_CLASS_SUBJECT_CLASS_NAME_ID_COL)->toArray();
+            }
+
+            if($this->isPrincipalLogin() || $this->isCoOrdinatorLogin() || $this->isPanelHeadLogin() ){
+                $GroupData =    PeerGroup::where(['school_id' => Auth::user()->school_id,
+                                    cn::PEER_GROUP_CURRICULUM_YEAR_ID_COL => $this->GetCurriculumYear()
+                                ])->get();
+                
+                $gradesList =   GradeSchoolMappings::where([
+                                                            'school_id' => Auth::user()->school_id,
+                                                            'curriculum_year_id' => $this->GetCurriculumYear()
                                                         ])
-                                                        ->with('getClass')
-                                                        ->get()
-                                                        ->unique(cn::TEACHER_CLASS_SUBJECT_CLASS_ID_COL);
-            // $gradeid = TeachersClassSubjectAssign::where([cn::TEACHER_CLASS_SUBJECT_TEACHER_ID_COL => Auth()->user()->{cn::USERS_ID_COL}])->pluck(cn::TEACHER_CLASS_SUBJECT_CLASS_ID_COL)->toArray();
-            // $gradeClass = TeachersClassSubjectAssign::where([cn::TEACHER_CLASS_SUBJECT_TEACHER_ID_COL => Auth()->user()->{cn::USERS_ID_COL}])->pluck(cn::TEACHER_CLASS_SUBJECT_CLASS_NAME_ID_COL)->toArray();
-            $gradeid = TeachersClassSubjectAssign::where([
-                                                            cn::TEACHER_CLASS_SUBJECT_TEACHER_ID_COL => Auth()->user()->{cn::USERS_ID_COL},
-                                                            cn::TEACHER_CLASS_SUBJECT_CURRICULUM_YEAR_ID_COL => $this->GetCurriculumYear()
-                                                        ])->pluck(cn::TEACHER_CLASS_SUBJECT_CLASS_ID_COL)->toArray();
-            $gradeClass = TeachersClassSubjectAssign::where([
-                                                                cn::TEACHER_CLASS_SUBJECT_TEACHER_ID_COL => Auth()->user()->{cn::USERS_ID_COL},
-                                                                cn::TEACHER_CLASS_SUBJECT_CURRICULUM_YEAR_ID_COL => $this->GetCurriculumYear()
-                                                            ])->pluck(cn::TEACHER_CLASS_SUBJECT_CLASS_NAME_ID_COL)->toArray();
+                                                        ->with('grades')
+                                                        ->get();
+                $gradeClassIds = GradeClassMapping::where([
+                                    'school_id'             => Auth::user()->school_id,
+                                    'curriculum_year_id'    => $this->GetCurriculumYear()
+                                ])
+                                ->get()
+                                ->pluck('id');
+                if(!empty($gradeClassIds)){
+                    $gradeClass = $gradeClassIds->toArray();
+                }
+
+                if(!empty($gradesList)){
+                    $gradeid = $gradesList->pluck('grade_id')->toArray();
+                }
+                    
+            }
+            
             if(isset($gradeClass) && !empty($gradeClass)){
                 $gradeClass = implode(',', $gradeClass);
                 $gradeClassId = explode(',',$gradeClass);
@@ -84,27 +115,19 @@ class TeacherDashboardController extends Controller
             ($items == 0) ? $items = 10 : $request->items;//for maintain all filtration when count data value is 0
             
             $gradeData = Grades::whereIn(cn::GRADES_ID_COL,$gradeid)->get();
-            // $studentList = User::whereIn(cn::USERS_GRADE_ID_COL,$gradeid)->whereIn(cn::USERS_CLASS_ID_COL,$gradeClassId)
-            //                     ->where([
-            //                                 cn::USERS_SCHOOL_ID_COL=>Auth::user()->{cn::USERS_SCHOOL_ID_COL},
-            //                                 cn::USERS_ROLE_ID_COL=>cn::STUDENT_ROLE_ID
-            //                             ])
-            //                             ->where(cn::USERS_GRADE_ID_COL,'<>','')
-            //                             ->sortable()
-            //                             ->paginate($items);
-            $studentList = User::whereIn(cn::USERS_ID_COL,$this->curriculum_year_mapping_student_ids($gradeid,$gradeClassId,Auth::user()->school_id))
-                                ->where([
-                                        cn::USERS_SCHOOL_ID_COL=>Auth::user()->{cn::USERS_SCHOOL_ID_COL},
-                                        cn::USERS_ROLE_ID_COL=>cn::STUDENT_ROLE_ID
-                                    ])
-                                    ->where(cn::USERS_GRADE_ID_COL,'<>','')
-                                    ->sortable()
-                                    ->paginate($items);
-            // $GradeClassData = GradeClassMapping::whereIn(cn::GRADE_CLASS_MAPPING_GRADE_ID_COL,$gradeid)->whereIn(cn::GRADE_CLASS_MAPPING_ID_COL,$gradeClassId)->where([cn::GRADE_CLASS_MAPPING_SCHOOL_ID_COL=>$this->isTeacherLogin()])->get();
+            $studentList =  User::whereIn(cn::USERS_ID_COL,$this->curriculum_year_mapping_student_ids($gradeid,$gradeClassId,Auth::user()->school_id))
+                            ->where([
+                                cn::USERS_SCHOOL_ID_COL=>Auth::user()->{cn::USERS_SCHOOL_ID_COL},
+                                cn::USERS_ROLE_ID_COL=>cn::STUDENT_ROLE_ID
+                            ])
+                            ->where(cn::USERS_GRADE_ID_COL,'<>','')
+                            ->sortable()
+                            ->paginate($items);
+                                      
             $GradeClassData = GradeClassMapping::whereIn(cn::GRADE_CLASS_MAPPING_GRADE_ID_COL,$gradeid)
                                                 ->whereIn(cn::GRADE_CLASS_MAPPING_ID_COL,$gradeClassId)
                                                 ->where([
-                                                        cn::GRADE_CLASS_MAPPING_SCHOOL_ID_COL          => $this->isTeacherLogin(),
+                                                        cn::GRADE_CLASS_MAPPING_SCHOOL_ID_COL          => Auth::user()->school_id,
                                                         cn::GRADE_CLASS_MAPPING_CURRICULUM_YEAR_ID_COL => $this->GetCurriculumYear()
                                                     ])
                                                 ->get();
@@ -150,10 +173,11 @@ class TeacherDashboardController extends Controller
                 }
                 $studentList = $Query->orderBy(cn::USERS_ID_COL,'DESC')->sortable()->paginate($items);
             }
+            // echo "<pre>";print_r($gradesList->toArray());die;
             return view('backend.teacher.class_student_list',compact('gradesList','studentList','items','classTypeOptions','GroupData'));
-        }catch(Exception $exception){
-            return back()->withError($exception->getMessage())->withInput();
-        }
+        // }catch(Exception $exception){
+        //     return back()->withError($exception->getMessage())->withInput();
+        // }
     }
 
     public function studentsProfile($id){

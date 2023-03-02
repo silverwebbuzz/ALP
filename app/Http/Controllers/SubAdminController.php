@@ -31,7 +31,13 @@ class SubAdminController extends Controller
             //  Laravel Pagination set in Cookie
             //$this->paginationCookie('SchoolSubAdminList',$request);
             $items = $request->items ?? 10;
-            $SubAdminData = User::whereNotNull(cn::USERS_CREATED_BY_COL)->where([cn::USERS_ROLE_ID_COL=>cn::SUB_ADMIN_ROLE_ID,cn::USERS_SCHOOL_ID_COL => $this->isSchoolLogin()])->orWhere(cn::USERS_CREATED_BY_COL ,Auth()->user()->role_id)->sortable()->orderBy(cn::USERS_ID_COL,'DESC')->paginate($items);
+            $SubAdminData = User::whereNotNull(cn::USERS_CREATED_BY_COL)->where([
+                                cn::USERS_ROLE_ID_COL   =>  cn::PANEL_HEAD_ROLE_ID,
+                                cn::USERS_SCHOOL_ID_COL => $this->LoggedUserSchoolId()
+                            ])
+                            ->orWhere(cn::USERS_CREATED_BY_COL ,Auth()->user()->role_id)
+                            ->sortable()->orderBy(cn::USERS_ID_COL,'DESC')
+                            ->paginate($items);
             $statusList = array(
                 ['id' => 'pending',"name" => 'Pending'],
                 ['id' => 'active',"name" => 'Active'],
@@ -48,7 +54,15 @@ class SubAdminController extends Controller
                 if(isset($request->Status) && !empty($request->Status)){
                     $Query->where(cn::USERS_STATUS_COL,$request->Status);
                 }
-                $SubAdminData = $Query->whereNotNull(cn::USERS_CREATED_BY_COL)->where([cn::USERS_ROLE_ID_COL=>cn::SUB_ADMIN_ROLE_ID,cn::USERS_SCHOOL_ID_COL => $this->isSchoolLogin()])->orWhere(cn::USERS_CREATED_BY_COL ,Auth()->user()->role_id)->sortable()->orderBy(cn::USERS_ID_COL,'DESC')->paginate($items);
+                $SubAdminData = $Query->whereNotNull(cn::USERS_CREATED_BY_COL)
+                                ->where([
+                                    cn::USERS_ROLE_ID_COL   =>  cn::PANEL_HEAD_ROLE_ID,
+                                    cn::USERS_SCHOOL_ID_COL => $this->LoggedUserSchoolId()
+                                ])
+                                ->orWhere(cn::USERS_CREATED_BY_COL ,Auth()->user()->role_id)
+                                ->sortable()
+                                ->orderBy(cn::USERS_ID_COL,'DESC')
+                                ->paginate($items);
             }
             return view('backend.sub_admin.list',compact('SubAdminData','items','statusList'));
         }catch(Exception $exception){
@@ -79,8 +93,8 @@ class SubAdminController extends Controller
             }
             $postData = User::create([
                 // cn::USERS_ROLE_ID_COL       => cn::SCHOOL_ROLE_ID,
-                cn::USERS_ROLE_ID_COL       => cn::SUB_ADMIN_ROLE_ID,
-                cn::USERS_SCHOOL_ID_COL     => $this->isSchoolLogin(),
+                cn::USERS_ROLE_ID_COL       => cn::PANEL_HEAD_ROLE_ID,
+                cn::USERS_SCHOOL_ID_COL     => $this->LoggedUserSchoolId(),
                 cn::USERS_NAME_COL          => $this->encrypt($request->name_en),
                 cn::USERS_NAME_EN_COL       => $this->encrypt($request->name_en),
                 cn::USERS_NAME_CH_COL       => $this->encrypt($request->name_ch),
@@ -125,8 +139,8 @@ class SubAdminController extends Controller
             
             $postData = User::find($id)->update([
                 // cn::USERS_ROLE_ID_COL       => cn::SCHOOL_ROLE_ID,
-                cn::USERS_ROLE_ID_COL       => cn::SUB_ADMIN_ROLE_ID,
-                cn::USERS_SCHOOL_ID_COL     => $this->isSchoolLogin(),
+                cn::USERS_ROLE_ID_COL       => cn::PANEL_HEAD_ROLE_ID,
+                cn::USERS_SCHOOL_ID_COL     => $this->LoggedUserSchoolId(),
                 cn::USERS_NAME_COL          => $this->encrypt($request->name_en),
                 cn::USERS_NAME_EN_COL       => $this->encrypt($request->name_en),
                 cn::USERS_NAME_CH_COL       => $this->encrypt($request->name_ch),

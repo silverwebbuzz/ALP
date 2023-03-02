@@ -82,7 +82,7 @@
 	        </div>
 		</div>
     </div>
-		@include('backend.layouts.footer')
+	@include('backend.layouts.footer')
 <script>
     $(document).ready(function () {
         var lastposition = $("#pills-tab li p:last").data('id');

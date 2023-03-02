@@ -32,7 +32,7 @@ class SubjectController extends Controller
             $items = $request->items ?? 10;
             $countData = Subjects::all()->count();
             $TotalFilterData ='';
-            $List = SubjectSchoolMappings::with('subjects')->where(cn::SUBJECT_MAPPING_SCHOOL_ID_COL,$this->isSchoolLogin())->orderBy(cn::SUBJECTS_ID_COL, 'DESC')->sortable()->paginate($items);
+            $List = SubjectSchoolMappings::with('subjects')->where(cn::SUBJECT_MAPPING_SCHOOL_ID_COL,$this->LoggedUserSchoolId())->orderBy(cn::SUBJECTS_ID_COL, 'DESC')->sortable()->paginate($items);
             if(isset($request->filter)){
                 $Query = Subjects::select('*');
                 $Query->where(cn::SUBJECTS_SCHOOL_ID_COL,'=',auth()->user()->school_id);
@@ -57,7 +57,7 @@ class SubjectController extends Controller
             if(!in_array('subject_management_create', Helper::getPermissions(Auth::user()->{cn::USERS_ID_COL}))) {
                 return  redirect(Helper::redirectRoleBasedDashboard(Auth::user()->{cn::USERS_ID_COL}));
             }
-            $classList = GradeSchoolMappings::with('grades')->where(cn::GRADES_SCHOOL_ID_COL,$this->isSchoolLogin())->get();
+            $classList = GradeSchoolMappings::with('grades')->where(cn::GRADES_SCHOOL_ID_COL,$this->LoggedUserSchoolId())->get();
             return view('backend.subject.add',compact('classList'));
         } catch (\Exception $exception) {
             return back()->withError($exception->getMessage())->withInput();
@@ -88,10 +88,10 @@ class SubjectController extends Controller
             }
             if(!empty($Subjects)){
                 $this->StoreAuditLogFunction($PostData,'Subjects',cn::SUBJECTS_ID_COL,'','Create Student',cn::SUBJECTS_TABLE_NAME,array(cn::CLASS_SUBJECT_MAPPING_TABLE_NAME));
-                if(SubjectSchoolMappings::where([cn::SUBJECT_MAPPING_SCHOOL_ID_COL => $this->isSchoolLogin(),
+                if(SubjectSchoolMappings::where([cn::SUBJECT_MAPPING_SCHOOL_ID_COL => $this->LoggedUserSchoolId(),
                 cn::SUBJECT_MAPPING_SUBJECT_ID_COL => $Subjects->id])->doesntExist()){
                     SubjectSchoolMappings::create([
-                        cn::SUBJECT_MAPPING_SCHOOL_ID_COL => $this->isSchoolLogin(),
+                        cn::SUBJECT_MAPPING_SCHOOL_ID_COL => $this->LoggedUserSchoolId(),
                         cn::SUBJECT_MAPPING_SUBJECT_ID_COL => $Subjects->id
                     ]);
                 }
@@ -103,13 +103,13 @@ class SubjectController extends Controller
                         if(ClassSubjectMapping::where([
                             cn::CLASS_SUBJECT_MAPPING_SUBJECT_ID_COL => $Subjects->id,
                             cn::CLASS_SUBJECT_MAPPING_CLASS_ID_COL => $Grades->id,
-                            cn::CLASS_SUBJECT_MAPPING_SCHOOL_ID_COL => $this->isSchoolLogin(),
+                            cn::CLASS_SUBJECT_MAPPING_SCHOOL_ID_COL => $this->LoggedUserSchoolId(),
                             cn::CLASS_SUBJECT_MAPPING_STATUS_COL => 1
                         ])){
                             ClassSubjectMapping::create([
                                 cn::CLASS_SUBJECT_MAPPING_SUBJECT_ID_COL => $Subjects->id,
                                 cn::CLASS_SUBJECT_MAPPING_CLASS_ID_COL => $Grades->id,
-                                cn::CLASS_SUBJECT_MAPPING_SCHOOL_ID_COL => $this->isSchoolLogin(),
+                                cn::CLASS_SUBJECT_MAPPING_SCHOOL_ID_COL => $this->LoggedUserSchoolId(),
                                 cn::CLASS_SUBJECT_MAPPING_STATUS_COL => 1
                             ]);
                         }
@@ -133,14 +133,14 @@ class SubjectController extends Controller
                 return  redirect(Helper::redirectRoleBasedDashboard(Auth::user()->{cn::USERS_ID_COL}));
             }
             $data = '';
-            $classList = GradeSchoolMappings::with('grades')->where(cn::GRADES_SCHOOL_ID_COL,$this->isSchoolLogin())->get();
+            $classList = GradeSchoolMappings::with('grades')->where(cn::GRADES_SCHOOL_ID_COL,$this->LoggedUserSchoolId())->get();
             $subjectMappingData = SubjectSchoolMappings::find($id);
             if(!empty($subjectMappingData)){
                 $data = Subjects::where([cn::SUBJECTS_ID_COL => $subjectMappingData->subject_id])->first();
             }
             $existingclassIds = array();
             $existingclassIds = ClassSubjectMapping::where(cn::CLASS_SUBJECT_MAPPING_SUBJECT_ID_COL,$subjectMappingData->subject_id)
-                                ->where('school_id',$this->isSchoolLogin())
+                                ->where('school_id',$this->LoggedUserSchoolId())
                                 ->pluck(cn::CLASS_SUBJECT_MAPPING_CLASS_ID_COL)
                                 ->toArray();
             return view('backend.subject.edit',compact('data','classList','existingclassIds'));

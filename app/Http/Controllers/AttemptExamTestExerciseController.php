@@ -55,9 +55,7 @@ class AttemptExamTestExerciseController extends Controller
             // Get the exam details
             $examDetail = Exam::where(cn::EXAM_TABLE_ID_COLS,$exam_id)->first();
 
-            $ExamMaximumSeconds = Exam::where(cn::EXAM_TABLE_ID_COLS,$exam_id)
-                            ->where(cn::EXAM_TABLE_IS_UNLIMITED,0)
-                            ->sum(cn::EXAM_TABLE_TIME_DURATIONS_COLS);
+            $ExamMaximumSeconds = Exam::where(cn::EXAM_TABLE_ID_COLS,$exam_id)->where(cn::EXAM_TABLE_IS_UNLIMITED,1)->sum(cn::EXAM_TABLE_TIME_DURATIONS_COLS);
             if(empty($ExamMaximumSeconds)){
                 $ExamMaximumSeconds = 'unlimited_time';
                 $RemainingSeconds = 'unlimited_time';
@@ -596,7 +594,7 @@ class AttemptExamTestExerciseController extends Controller
                                                             ])
                                                             ->first();
                             if(isset($HistoryStudentQuestionAnswer) && !empty($HistoryStudentQuestionAnswer)){
-                                $language = $HistoryStudentQuestionAnswer->{cn::HISTORY_STUDENT_QUESTION_ANSWER_LANGUAGE_COL};
+                                $language = $HistoryStudentQuestionAnswer->{cn::HISTORY_STUDENT_QUESTION_ANSWER_LANGUAGE_COL} ?? 'en';
                                 $AnswerDetail = Answer::where(cn::ANSWER_QUESTION_ID_COL,$AssignedQuestionId)->first()->toArray();
                                 if(isset($AnswerDetail) && !empty($AnswerDetail) && ($AnswerDetail['correct_answer_'.$language] != $HistoryStudentQuestionAnswer->{cn::HISTORY_STUDENT_QUESTION_ANSWER_SELECTED_ANSWER_ID_COL})){
                                     $response['questionNo'][] = (array_search($HistoryStudentQuestionAnswer->{cn::HISTORY_STUDENT_QUESTION_ANSWER_QUESTION_ID_COL}, $AssignedQuestionIds) + 1);

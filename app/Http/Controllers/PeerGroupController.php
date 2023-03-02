@@ -54,7 +54,7 @@ class PeerGroupController extends Controller
         $PeerGroupQuery = PeerGroup::select('*')
                             ->with(['subject','Members'])
                             ->where(cn::PEER_GROUP_CURRICULUM_YEAR_ID_COL,$this->GetCurriculumYear());
-        if($this->isSchoolLogin() || $this->isSubAdminLogin()){
+        if($this->isSchoolLogin() || $this->isPrincipalLogin() || $this->isPanelHeadLogin() || $this->isCoOrdinatorLogin()){
             $PeerGroupList = $PeerGroupQuery->where(cn::PEER_GROUP_SCHOOL_ID_COL,Auth::user()->{cn::USERS_SCHOOL_ID_COL})
                             ->sortable()
                             ->orderBy(cn::PEER_GROUP_ID_COL,'DESC')
@@ -63,7 +63,6 @@ class PeerGroupController extends Controller
                                 cn::SUBJECT_MAPPING_CURRICULUM_YEAR_ID_COL => $this->GetCurriculumYear(),
                                 cn::CLASS_SUBJECT_MAPPING_SCHOOL_ID_COL => Auth::user()->{cn::USERS_SCHOOL_ID_COL}
                             ])
-                            // ->pluck(cn::CLASS_SUBJECT_MAPPING_SCHOOL_ID_COL)
                             ->pluck(cn::CLASS_SUBJECT_MAPPING_SUBJECT_ID_COL)
                             ->unique()
                             ->toArray();            
@@ -112,8 +111,11 @@ class PeerGroupController extends Controller
             if($this->isTeacherLogin()){
                 $PeerGroupList = $Query->where(cn::PEER_GROUP_CREATED_BY_USER_ID_COL,Auth::user()->{cn::USERS_ID_COL})->sortable()->orderBy(cn::PEER_GROUP_ID_COL,'DESC')->paginate($items);
             }
-            if($this->isSchoolLogin()){
-                $PeerGroupList = $Query->where(cn::PEER_GROUP_SCHOOL_ID_COL,Auth::user()->{cn::USERS_SCHOOL_ID_COL})->sortable()->orderBy(cn::PEER_GROUP_ID_COL,'DESC')->paginate($items);
+            if($this->isSchoolLogin() || $this->isPrincipalLogin() || $this->isPanelHeadLogin() || $this->isCoOrdinatorLogin()){
+                $PeerGroupList = $Query->where(cn::PEER_GROUP_SCHOOL_ID_COL,Auth::user()->{cn::USERS_SCHOOL_ID_COL})
+                                ->sortable()
+                                ->orderBy(cn::PEER_GROUP_ID_COL,'DESC')
+                                ->paginate($items);
             }
         }
         return view('backend.peer_group.peer_group_list',compact('items','PeerGroupList','SubjectList'));
@@ -186,7 +188,7 @@ class PeerGroupController extends Controller
                 }
             }
         }
-        if($this->isSchoolLogin()){
+        if($this->isSchoolLogin() || $this->isPrincipalLogin() || $this->isPanelHeadLogin() || $this->isCoOrdinatorLogin()){
             $userData = User::with('classes')
                         ->where([cn::USERS_ROLE_ID_COL => cn::STUDENT_ROLE_ID,cn::USERS_SCHOOL_ID_COL => Auth::user()->{cn::USERS_SCHOOL_ID_COL}]);
             $gradeid = GradeSchoolMappings::where(cn::GRADES_MAPPING_CURRICULUM_YEAR_ID_COL,$this->GetCurriculumYear())
@@ -279,9 +281,6 @@ class PeerGroupController extends Controller
 
     public function GetStudentClassId($studentId){
         if(!empty($studentId)){
-            // $UserData = User::find($studentId);
-            // return $UserData->{cn::USERS_CLASS_ID_COL};
-
             $UserData = User::with(['curriculum_year_mapping' => fn($query) => $query->where('user_id',$studentId)])->find($studentId);
             return $UserData->curriculum_year_mapping->class_id;
         }
@@ -353,7 +352,7 @@ class PeerGroupController extends Controller
                 }
             }
             
-            if($this->isSchoolLogin() || $this->isSubAdminLogin()){                
+            if($this->isSchoolLogin() || $this->isPanelHeadLogin() || $this->isCoOrdinatorLogin()){                
                 $gradeid = GradeSchoolMappings::where(cn::GRADES_MAPPING_CURRICULUM_YEAR_ID_COL,$this->GetCurriculumYear())->where(cn::GRADES_MAPPING_SCHOOL_ID_COL,Auth::user()->{cn::USERS_SCHOOL_ID_COL})
                             ->pluck(cn::GRADES_MAPPING_GRADE_ID_COL)
                             ->unique()->toArray();
@@ -527,7 +526,7 @@ class PeerGroupController extends Controller
                         ->toArray();
         }
 
-        if($this->isSchoolLogin() || $this->isSubAdminLogin()){
+        if($this->isSchoolLogin() || $this->isPrincipalLogin() || $this->isPanelHeadLogin() || $this->isCoOrdinatorLogin()){
             $gradeid = GradeSchoolMappings::where(cn::GRADES_MAPPING_CURRICULUM_YEAR_ID_COL,$this->GetCurriculumYear())
                         ->where(cn::GRADES_MAPPING_SCHOOL_ID_COL,$schoolId)
                         ->pluck(cn::GRADES_MAPPING_GRADE_ID_COL)
@@ -696,7 +695,7 @@ class PeerGroupController extends Controller
                         ->toArray();
         }
 
-        if($this->isSchoolLogin()){
+        if($this->isSchoolLogin() || $this->isPrincipalLogin() || $this->isPanelHeadLogin() || $this->isCoOrdinatorLogin()){
             $gradeid = GradeSchoolMappings::where(cn::GRADES_MAPPING_SCHOOL_ID_COL,Auth::user()->{cn::USERS_SCHOOL_ID_COL})
                         ->where(cn::GRADES_MAPPING_CURRICULUM_YEAR_ID_COL,$this->GetCurriculumYear())
                         ->pluck(cn::GRADES_MAPPING_GRADE_ID_COL)
@@ -707,14 +706,6 @@ class PeerGroupController extends Controller
                             ->pluck(cn::GRADE_CLASS_MAPPING_ID_COL)
                             ->toArray();
             if(!empty($gradeid) && !empty($gradeClass)){
-                // $userData = User::with('grades')
-                //             ->whereIn(cn::USERS_GRADE_ID_COL,$gradeid)
-                //             ->whereIn(cn::USERS_CLASS_ID_COL,$gradeClass)
-                //             ->where([
-                //                 cn::USERS_ROLE_ID_COL => cn::STUDENT_ROLE_ID,
-                //                 cn::USERS_SCHOOL_ID_COL => Auth::user()->{cn::USERS_SCHOOL_ID_COL}
-                //             ]);
-
                 $userData = User::with('grades')
                             ->with(['curriculum_year_mapping' => fn($query) => $query->whereIn([cn::CURRICULUM_YEAR_STUDENT_MAPPING_GRADE_ID_COL => $gradeid, cn::CURRICULUM_YEAR_STUDENT_MAPPING_CLASS_ID_COL => $gradeClass])])
                             ->where([
@@ -917,27 +908,13 @@ class PeerGroupController extends Controller
                             ])->get();
 
             // get student list
-            // $StudentList = User::whereIn(cn::USERS_GRADE_ID_COL,$TeacherGradeClass['grades'])
-            //                 ->whereIn(cn::USERS_CLASS_ID_COL,$TeacherGradeClass['class'])
-            //                 ->where([cn::USERS_ROLE_ID_COL => cn::STUDENT_ROLE_ID,cn::USERS_STATUS_COL => 'active'])
-            //                 ->get();
-
             $StudentList =  User::whereIn('id',$this->curriculum_year_mapping_student_ids($TeacherGradeClass['grades'],$TeacherGradeClass['class']))
                             ->where([cn::USERS_ROLE_ID_COL => cn::STUDENT_ROLE_ID,cn::USERS_STATUS_COL => 'active'])
                             ->get();
         }
 
-        if($this->isSchoolLogin() || $this->isPrincipalLogin() || $this->isSubAdminLogin()){
-            if($this->isSchoolLogin()){
-                $schoolId = $this->isSchoolLogin();
-            }
-            if($this->isPrincipalLogin()){
-                $schoolId = $this->isPrincipalLogin();
-            }
-            if($this->isSubAdminLogin()){
-                $schoolId = $this->isSubAdminLogin();
-            }
-
+        if($this->isSchoolLogin() || $this->isPrincipalLogin() || $this->isPanelHeadLogin() || $this->isCoOrdinatorLogin()){
+            $schoolId = Auth::user()->{cn::USERS_SCHOOL_ID_COL};
             $GradeMapping = GradeSchoolMappings::with('grades')
                             ->where(cn::GRADES_MAPPING_CURRICULUM_YEAR_ID_COL,$this->GetCurriculumYear())
                             ->where(cn::GRADES_MAPPING_SCHOOL_ID_COL,$schoolId)
@@ -974,17 +951,8 @@ class PeerGroupController extends Controller
         $coded_students_list = [];
         $getFormData  = $request->all();
         $formData = [];
-        if($this->isTeacherLogin()){
-            $schoolId = $this->isTeacherLogin();
-        }
-        if($this->isSchoolLogin()){
-            $schoolId = $this->isSchoolLogin();
-        }
-        if($this->isPrincipalLogin()){
-            $schoolId = $this->isPrincipalLogin();
-        }
-        if($this->isSubAdminLogin()){
-            $schoolId = $this->isSubAdminLogin();
+        if($this->isTeacherLogin() || $this->isSchoolLogin() || $this->isPrincipalLogin() || $this->isPanelHeadLogin() || $this->isCoOrdinatorLogin()){
+            $schoolId = Auth::user()->{cn::USERS_SCHOOL_ID_COL};
         }
         $requestPayloadUser = new Request();
         $requestPayloadUser['uid'] = Auth::user()->id;

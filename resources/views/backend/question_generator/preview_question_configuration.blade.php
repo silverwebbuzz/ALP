@@ -31,9 +31,7 @@
                 </div>
                 @endif
                 @php
-                    if(Auth::user()->role_id == 1){
-                        $color = '#A5A6F6';
-                    }else if(Auth::user()->role_id==2){
+                    if(Auth::user()->role_id==2){
                         $color = '#f7bfbf';
                     }else if(Auth::user()->role_id==3){
                         $color = '#d8dc41';
@@ -41,8 +39,12 @@
                         $color = '#BDE5E1';
                     }else if(Auth::user()->role_id == 8){
                         $color = '#fed08d';
-                    }else{
+                    }else if(Auth::user()->role_id == 9){
+                        $color = '#eab676';
+                    }else if(Auth::user()->role_id == 5){
                         $color = '#a8e4b0';
+                    }else{
+                        $color = '#A5A6F6';
                     }
                 @endphp
                 <style type="text/css">
@@ -1353,9 +1355,9 @@ $(document).ready(function () {
             setGroupDateTimeList();
         }
 
-        @if($exam->created_by_user=='super_admin')
-            var selectedStartTimeIndex=$('#test_start_time option[value="{{$exam->start_time}}"]').index();
-            var selectedEndTimeIndex=$('#test_end_time option[value="{{$exam->end_time}}"]').index();
+        @if($exam->created_by_user == 'super_admin')
+            var selectedStartTimeIndex = $('#test_start_time option[value="{{$exam->start_time}}"]').index();
+            var selectedEndTimeIndex = $('#test_end_time option[value="{{$exam->end_time}}"]').index();
             $("#test_start_time option").each(function(){
                 var endOptionSelectedStartTimeIndex = $(this).index();
                 if(endOptionSelectedStartTimeIndex < selectedStartTimeIndex){
@@ -1408,7 +1410,7 @@ $(document).ready(function () {
         var testEndTimeHtml = $('#test_end_time').html();
         var htmlData = '';
         $('.question-generator-grade-chkbox').each(function(){
-            var generatorValue=$(this).val();
+            var generatorValue = $(this).val();
             if($(this).is(":checked")) {
                 var generatorClassChkboxLength = $(this).closest('.form-grade-select').find('.question-generator-class-chkbox:checked').length;
                 var generatorClassChkboxAllLength = $(this).closest('.form-grade-select').find('.question-generator-class-chkbox').length;
@@ -1435,13 +1437,13 @@ $(document).ready(function () {
             $('.question-generator-class-chkbox:checked').each(function(){
                 var generatorValue = $(this).closest('.form-grade-select').find('.question-generator-grade-chkbox').val();
                 var generatorClassValue = $(this).val();
-                htmlData+=dateTimeList($(this),generatorValue,generatorClassValue,testStartTimeHtml,testEndTimeHtml);
+                htmlData += dateTimeList($(this),generatorValue,generatorClassValue,testStartTimeHtml,testEndTimeHtml);
             });
         }
 
         $(".grade-class-date-time-list").html(htmlData);
-        var mainStartDate=$("input[name=start_date]").val();
-        var mainEndDate=$("input[name=end_date]").val();
+        var mainStartDate = $("input[name=start_date]").val();
+        var mainEndDate = $("input[name=end_date]").val();
 
         $(".date-picker-stud").datepicker({
             dateFormat: "dd/mm/yy",
@@ -1451,8 +1453,8 @@ $(document).ready(function () {
             changeYear: true,
             yearRange: "1950:" + new Date().getFullYear(),
         });
-        var selectedStartTimeIndex=$('#test_start_time option[value="'+$('#test_start_time').val()+'"]').index();
-        var selectedEndTimeIndex=$('#test_end_time option[value="'+$('#test_end_time').val()+'"]').index();
+        var selectedStartTimeIndex = $('#test_start_time option[value="'+$('#test_start_time').val()+'"]').index();
+        var selectedEndTimeIndex = $('#test_end_time option[value="'+$('#test_end_time').val()+'"]').index();
         $(".grade-class-date-time-list .end_time option").each(function(){
             var endOptionSelectedStartTimeIndex = $(this).index();
             if(endOptionSelectedStartTimeIndex < selectedStartTimeIndex){
@@ -1474,8 +1476,8 @@ $(document).ready(function () {
             }
         });
 
-        @if(App\Helpers\Helper::isSchoolLogin() || App\Helpers\Helper::isPrincipalLogin() || App\Helpers\Helper::isSubAdminLogin())
-            var examStartTime={!! $examStartTime !!};
+        @if(App\Helpers\Helper::isSchoolLogin() || App\Helpers\Helper::isPrincipalLogin() || App\Helpers\Helper::isPanelHeadLogin() || App\Helpers\Helper::isCoOrdinatorLogin())
+            var examStartTime = {!! $examStartTime !!};
             $.each(examStartTime, function (k,v) {
                 v = v.split(':');
                 v = v[0]+':'+v[1];
@@ -1582,13 +1584,13 @@ $(document).ready(function () {
         var testEndTimeHtml = $('#test_end_time').html();
         var htmlData = '';
         $('#question-generator-peer-group-options option:selected').each(function(){
-            var generatorGroupValue=$(this).attr('value');
-            htmlData+=groupDateTimeList($(this),generatorGroupValue,testStartTimeHtml,testEndTimeHtml);
+            var generatorGroupValue = $(this).attr('value');
+            htmlData += groupDateTimeList($(this),generatorGroupValue,testStartTimeHtml,testEndTimeHtml);
         });
 
         $(".group-date-time-list").html(htmlData);
-        var mainStartDate=$("input[name=start_date]").val();
-        var mainEndDate=$("input[name=end_date]").val();
+        var mainStartDate = $("input[name=start_date]").val();
+        var mainEndDate = $("input[name=end_date]").val();
 
         $(".date-picker-stud").datepicker({
             dateFormat: "dd/mm/yy",
@@ -1598,8 +1600,8 @@ $(document).ready(function () {
             changeYear: true,
             yearRange: "1950:" + new Date().getFullYear(),
         });
-        var selectedStartTimeIndex=$('#test_start_time option[value="'+$('#test_start_time').val()+'"]').index();
-        var selectedEndTimeIndex=$('#test_end_time option[value="'+$('#test_end_time').val()+'"]').index();
+        var selectedStartTimeIndex = $('#test_start_time option[value="'+$('#test_start_time').val()+'"]').index();
+        var selectedEndTimeIndex = $('#test_end_time option[value="'+$('#test_end_time').val()+'"]').index();
         $(".group-date-time-list .end_time option").each(function(){
             var endOptionSelectedStartTimeIndex = $(this).index();
             if(endOptionSelectedStartTimeIndex < selectedStartTimeIndex){
@@ -1622,60 +1624,60 @@ $(document).ready(function () {
         });
         var examStartTime={!! $examStartTime !!};
         $.each(examStartTime, function (k,v) {
-            v=v.split(':');
-            v=v[0]+':'+v[1];
+            v = v.split(':');
+            v = v[0]+':'+v[1];
             $('.cls_'+k).val(v);
         });
-        var examEndTime={!! $examEndTime !!};
+        var examEndTime = {!! $examEndTime !!};
         $.each(examEndTime, function (k,v) {
-            v=v.split(':');
-            v=v[0]+':'+v[1];
+            v = v.split(':');
+            v = v[0]+':'+v[1];
             $('.clsE_'+k).val(v);
         });
     }
     //generator Group date and time html
     function groupDateTimeList(E,generatorGroupValue,testStartTimeHtml,testEndTimeHtml){
-        var examStartTime={!! $examStartTime !!};
-        var examEndTime={!! $examEndTime !!};
-        var examStartDate={!! $examStartDate !!};
-        var examEndDate={!! $examEndDate !!};
-        var startTime='';
-        if(examStartTime.length!=0 && examStartTime[generatorGroupValue]){
-            startTime=examStartTime[generatorGroupValue];
-            startTime=startTime.split(':');
-            startTime=startTime[0]+':'+startTime[1];
+        var examStartTime = {!! $examStartTime !!};
+        var examEndTime = {!! $examEndTime !!};
+        var examStartDate = {!! $examStartDate !!};
+        var examEndDate = {!! $examEndDate !!};
+        var startTime = '';
+        if(examStartTime.length != 0 && examStartTime[generatorGroupValue]){
+            startTime = examStartTime[generatorGroupValue];
+            startTime = startTime.split(':');
+            startTime = startTime[0]+':'+startTime[1];
         }
 
-        var endTime='';
+        var endTime = '';
         if(examEndTime.length!=0 && examEndTime[generatorGroupValue]){
-            endTime=examEndTime[generatorGroupValue];
-            endTime=endTime.split(':');
-            endTime=endTime[0]+':'+endTime[1];
+            endTime = examEndTime[generatorGroupValue];
+            endTime = endTime.split(':');
+            endTime = endTime[0]+':'+endTime[1];
         }
-        var mainStartDate=$("input[name=start_date]").val();
-        var mainEndDate=$("input[name=end_date]").val();
-        var startDate='{{date('d/m/Y')}}';
-        if(mainStartDate!=''){
-            startDate=mainStartDate;
+        var mainStartDate = $("input[name=start_date]").val();
+        var mainEndDate = $("input[name=end_date]").val();
+        var startDate = '{{date('d/m/Y')}}';
+        if(mainStartDate != ''){
+            startDate = mainStartDate;
         }
-        if(examStartDate.length!=0 && examStartDate[generatorGroupValue]){
-            startDateNew=examStartDate[generatorGroupValue];
-            startDateNew=startDateNew.split(' ');
-            if(startDateNew[0]!='0000-00-00'){
-                startDate=startDateNew[0].split('-');
-                startDate=startDate[2]+'/'+startDate[1]+'/'+startDate[0];
+        if(examStartDate.length != 0 && examStartDate[generatorGroupValue]){
+            startDateNew = examStartDate[generatorGroupValue];
+            startDateNew = startDateNew.split(' ');
+            if(startDateNew[0] != '0000-00-00'){
+                startDate = startDateNew[0].split('-');
+                startDate = startDate[2]+'/'+startDate[1]+'/'+startDate[0];
             }
         }
-        var endDate='{{date('d/m/Y')}}';
-        if(mainEndDate!=''){
-            endDate=mainEndDate;
+        var endDate = '{{date('d/m/Y')}}';
+        if(mainEndDate != ''){
+            endDate = mainEndDate;
         }
-        if(examEndDate.length!=0 && examEndDate[generatorGroupValue]){
-            endDateNew=examEndDate[generatorGroupValue];
-            endDateNew=endDateNew.split(' ');
-            if(endDateNew[0]!='0000-00-00'){
-                endDate=endDateNew[0].split('-');
-                endDate=endDate[2]+'/'+endDate[1]+'/'+endDate[0];
+        if(examEndDate.length != 0 && examEndDate[generatorGroupValue]){
+            endDateNew = examEndDate[generatorGroupValue];
+            endDateNew = endDateNew.split(' ');
+            if(endDateNew[0] != '0000-00-00'){
+                endDate = endDateNew[0].split('-');
+                endDate = endDate[2]+'/'+endDate[1]+'/'+endDate[0];
             }
         }
         dataHtmlData='<div class="row"><div class="col-md-1"><label>'+E.attr('data-label')+'</label></div><div class="col-md-11"><div class="form-row">\

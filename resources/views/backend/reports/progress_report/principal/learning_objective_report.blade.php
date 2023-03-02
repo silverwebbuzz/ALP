@@ -72,13 +72,13 @@
                                 <select name="learning_unit_id" class="form-control select-option" id="learning_unit" >
                                     @if(isset($LearningUnits) && !empty($LearningUnits))
                                         @foreach ($LearningUnits as $learningUnitKey => $learningUnit)
-                                            <option value="{{ $learningUnit->id }}" 
-                                            	@if(null !== request()->get('learning_unit_id') && $learningUnit->id==request()->get('learning_unit_id')) 
+                                            <option value="{{ $learningUnit['id'] }}" 
+                                            	@if(null !== request()->get('learning_unit_id') && $learningUnit['id']==request()->get('learning_unit_id')) 
 													selected
 												@elseif($loop->index==0)
 												selected 
 												@endif
-											>{{ $learningUnit->{'name_'.app()->getLocale()} }}</option>
+											>{{ $learningUnit['name_'.app()->getLocale()] }}</option>
                                         @endforeach
                                     @else
                                         <option value="">{{__('languages.no_learning_units_available')}}</option>

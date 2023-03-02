@@ -33,6 +33,7 @@ class User extends Authenticatable
     protected $fillable = [
         cn::USERS_CURRICULUM_YEAR_ID_COL,
         cn::USERS_ALP_CHAT_USER_ID_COL,
+        cn::USERS_IS_SCHOOL_ADMIN_PRIVILEGE_ACCESS_COL,
         cn::USERS_ROLE_ID_COL,
         cn::USERS_GRADE_ID_COL,
         cn::USERS_CLASS_ID_COL,
@@ -312,6 +313,19 @@ class User extends Authenticatable
                     }
                 }
                 break;
+            case 'School_Users_Update':
+                $rules = [
+                    cn::USERS_NAME_EN_COL   => ['required'],
+                    cn::USERS_NAME_CH_COL   => ['required'],
+                    cn::USERS_EMAIL_COL     => ['required', Rule::unique(cn::USERS_TABLE_NAME)->ignore($id)->whereNull(cn::USERS_DELETED_AT_COL)],
+                    'role'                  => ['required'],
+                ];
+                if(auth()->user()->{cn::USERS_ROLE_ID_COL} == cn::SUPERADMIN_ROLE_ID){
+                    if($request->role == ''){
+                        $rules = ['school' => ['required']];
+                    }
+                }
+                break;
             default:
                 break;
         }
@@ -349,8 +363,23 @@ class User extends Authenticatable
                     cn::USERS_EMAIL_COL.'.required' => __('validation.please_enter_email'),
                     cn::USERS_EMAIL_COL.'.unique' => __('validation.email_already_exists'),
                     cn::USERS_PASSWORD_COL.'.required' => __('validation.please_enter_password'),
-                    'role.required' => 'Role field is required',
+                    'role.required' => 'Please select role',
                 ];
+                if(auth()->user()->{cn::USERS_ROLE_ID_COL} == cn::SUPERADMIN_ROLE_ID){
+                    $messages = ['school.required' => 'Please select school'];
+                }
+                break;
+            case 'School_Users_Update':
+                $messages = [
+                    cn::USERS_NAME_EN_COL.'.required' => __('validation.please_enter_english_name'),
+                    cn::USERS_NAME_CH_COL.'.required' => __('validation.please_enter_chinese_name'),
+                    cn::USERS_EMAIL_COL.'.required' => __('validation.please_enter_email'),
+                    cn::USERS_EMAIL_COL.'.unique' => __('validation.email_already_exists'),
+                    'role.required' => 'Please select role',
+                ];
+                if(auth()->user()->{cn::USERS_ROLE_ID_COL} == cn::SUPERADMIN_ROLE_ID){
+                    $messages = ['school.required' => 'Please select school'];
+                }
                 break;
         }
         return $messages;

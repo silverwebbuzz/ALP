@@ -42,14 +42,14 @@ class TeachersClassSubjectController extends Controller
             $countData = TeachersClassSubjectAssign::where([
                             cn::TEACHER_CLASS_SUBJECT_CURRICULUM_YEAR_ID_COL => $this->GetCurriculumYear()
                         ])
-                        ->where(cn::TEACHER_CLASS_SUBJECT_TABLE_NAME.'.'.cn::TEACHER_CLASS_SUBJECT_SCHOOL_ID_COL,'=',auth()->user()->school_id)
+                        ->where(cn::TEACHER_CLASS_SUBJECT_TABLE_NAME.'.'.cn::TEACHER_CLASS_SUBJECT_SCHOOL_ID_COL,'=',auth()->user()->{cn::USERS_SCHOOL_ID_COL})
                         ->count();
             $TotalFilterData ='';
             $classGradeName = GradeClassMapping::where(cn::GRADE_CLASS_MAPPING_CURRICULUM_YEAR_ID_COL,$this->GetCurriculumYear())->get();
             $List = TeachersClassSubjectAssign::with('getTeacher')
                     ->with('getClass')
                     ->where(cn::TEACHER_CLASS_SUBJECT_CURRICULUM_YEAR_ID_COL,$this->GetCurriculumYear())
-                    ->where(cn::TEACHER_CLASS_SUBJECT_TABLE_NAME.'.'.cn::TEACHER_CLASS_SUBJECT_SCHOOL_ID_COL,'=',auth()->user()->school_id)
+                    ->where(cn::TEACHER_CLASS_SUBJECT_TABLE_NAME.'.'.cn::TEACHER_CLASS_SUBJECT_SCHOOL_ID_COL,'=',auth()->user()->{cn::USERS_SCHOOL_ID_COL})
                     ->orderBy(cn::TEACHER_CLASS_SUBJECT_ID_COL, 'DESC')
                     ->sortable()
                     ->paginate($items);
@@ -64,22 +64,22 @@ class TeachersClassSubjectController extends Controller
             if(!in_array('teacher_class_and_subject_assign_create', Helper::getPermissions(Auth::user()->{cn::USERS_ID_COL}))) {
                return  redirect(Helper::redirectRoleBasedDashboard(Auth::user()->{cn::USERS_ID_COL}));
             }
-            $schoolId = Auth::user()->school_id;
-            $teacherList = User::where(cn::USERS_SCHOOL_ID_COL,'=',auth()->user()->school_id)->where(cn::USERS_ROLE_ID_COL,cn::TEACHER_ROLE_ID)->get();
-            // $gradeList = GradeSchoolMappings::with('grades')
-            //                 ->where(cn::GRADES_MAPPING_SCHOOL_ID_COL,$schoolId)
-            //                 ->where(cn::GRADES_MAPPING_CURRICULUM_YEAR_ID_COL,$this->GetCurriculumYear())
-            //                 ->get();
-            $gradeListCollection = GradeSchoolMappings::with('grades')
-                        ->where(cn::GRADES_MAPPING_SCHOOL_ID_COL,$schoolId)
-                        ->where(cn::GRADES_MAPPING_CURRICULUM_YEAR_ID_COL,$this->GetCurriculumYear())
-                        ->get();
+            $teacherList =  User::where([
+                                cn::USERS_SCHOOL_ID_COL     => auth()->user()->{cn::USERS_SCHOOL_ID_COL},
+                                cn::USERS_ROLE_ID_COL       => cn::TEACHER_ROLE_ID
+                            ])->get();
+            $gradeListCollection =  GradeSchoolMappings::with('grades')
+                                    ->where([
+                                        cn::GRADES_MAPPING_SCHOOL_ID_COL            => auth()->user()->{cn::USERS_SCHOOL_ID_COL},
+                                        cn::GRADES_MAPPING_CURRICULUM_YEAR_ID_COL   => $this->GetCurriculumYear()
+                                    ])->get();
             $gradeList = $gradeListCollection->unique('grades');            
 
             $subjectList = SubjectSchoolMappings::with('subjects')
-                            ->where(cn::SUBJECT_MAPPING_CURRICULUM_YEAR_ID_COL,$this->GetCurriculumYear())
-                            ->where(cn::SUBJECT_MAPPING_SCHOOL_ID_COL,$schoolId)
-                            ->get();            
+                            ->where([
+                                cn::SUBJECT_MAPPING_CURRICULUM_YEAR_ID_COL  => $this->GetCurriculumYear(),
+                                cn::SUBJECT_MAPPING_SCHOOL_ID_COL           => auth()->user()->{cn::USERS_SCHOOL_ID_COL}
+                            ])->get();            
             return view('backend.teacherclasssubjectmanagement.add',compact('teacherList','gradeList','subjectList'));
         } catch (Exception $exception) {
             return back()->withError($exception->getMessage())->withInput();
@@ -100,12 +100,13 @@ class TeachersClassSubjectController extends Controller
             if($request->has('subject_id')){
                 foreach($request->subject_id as $subjectid){
                     if($request->has('class_type')){
-                        $TeachersClassSubjectAssign = TeachersClassSubjectAssign::where(cn::TEACHER_CLASS_SUBJECT_SCHOOL_ID_COL, auth()->user()->school_id)
-                                                        ->where(cn::TEACHER_CLASS_SUBJECT_CURRICULUM_YEAR_ID_COL,$this->GetCurriculumYear())
-                                                        ->where(cn::TEACHER_CLASS_SUBJECT_TEACHER_ID_COL,$request->teacher_id)
-                                                        ->where(cn::TEACHER_CLASS_SUBJECT_CLASS_ID_COL,$request->class_id)
-                                                        ->where(cn::TEACHER_CLASS_SUBJECT_SUBJECT_ID_COL,$subjectid)
-                                                        ->first();
+                        $TeachersClassSubjectAssign =   TeachersClassSubjectAssign::where(cn::TEACHER_CLASS_SUBJECT_SCHOOL_ID_COL, auth()->user()->{cn::USERS_SCHOOL_ID_COL})
+                                                        ->where([
+                                                            cn::TEACHER_CLASS_SUBJECT_CURRICULUM_YEAR_ID_COL    => $this->GetCurriculumYear(),
+                                                            cn::TEACHER_CLASS_SUBJECT_TEACHER_ID_COL            => $request->teacher_id,
+                                                            cn::TEACHER_CLASS_SUBJECT_CLASS_ID_COL              => $request->class_id,
+                                                            cn::TEACHER_CLASS_SUBJECT_SUBJECT_ID_COL            => $subjectid
+                                                        ])->first();
                         if(isset($TeachersClassSubjectAssign) && !empty($TeachersClassSubjectAssign)){
                             $existsClasses = explode(',',$TeachersClassSubjectAssign->class_name_id);
                             if($existsClasses && $request->class_type){
@@ -115,7 +116,7 @@ class TeachersClassSubjectController extends Controller
                             }else{
                                 $PostData = array(
                                     cn::TEACHER_CLASS_SUBJECT_CURRICULUM_YEAR_ID_COL    => $this->GetCurriculumYear(),
-                                    cn::TEACHER_CLASS_SUBJECT_SCHOOL_ID_COL             => auth()->user()->school_id,
+                                    cn::TEACHER_CLASS_SUBJECT_SCHOOL_ID_COL             => auth()->user()->{cn::USERS_SCHOOL_ID_COL},
                                     cn::TEACHER_CLASS_SUBJECT_TEACHER_ID_COL            => $request->teacher_id,
                                     cn::TEACHER_CLASS_SUBJECT_CLASS_ID_COL              => $request->class_id,
                                     cn::TEACHER_CLASS_SUBJECT_SUBJECT_ID_COL            => $request->has('subject_id') ? implode(',',$request->subject_id) : '',
@@ -127,7 +128,7 @@ class TeachersClassSubjectController extends Controller
                         }else{
                             $PostData = array(
                                 cn::TEACHER_CLASS_SUBJECT_CURRICULUM_YEAR_ID_COL    => $this->GetCurriculumYear(),
-                                cn::TEACHER_CLASS_SUBJECT_SCHOOL_ID_COL   => auth()->user()->school_id,
+                                cn::TEACHER_CLASS_SUBJECT_SCHOOL_ID_COL   => auth()->user()->{cn::USERS_SCHOOL_ID_COL},
                                 cn::TEACHER_CLASS_SUBJECT_TEACHER_ID_COL  => $request->teacher_id,
                                 cn::TEACHER_CLASS_SUBJECT_CLASS_ID_COL    => $request->class_id,
                                 cn::TEACHER_CLASS_SUBJECT_SUBJECT_ID_COL  => $request->has('subject_id') ? implode(',',$request->subject_id) : '',
@@ -155,22 +156,25 @@ class TeachersClassSubjectController extends Controller
             if(!in_array('teacher_class_and_subject_assign_update', Helper::getPermissions(Auth::user()->{cn::USERS_ID_COL}))) {
                return  redirect(Helper::redirectRoleBasedDashboard(Auth::user()->{cn::USERS_ID_COL}));
             }
-            $schoolId = Auth::user()->school_id;
-            $teacherList = User::where(cn::USERS_SCHOOL_ID_COL,auth()->user()->school_id)
-                            ->where(cn::USERS_ROLE_ID_COL, cn::TEACHER_ROLE_ID)
-                            ->get();
-            $gradeList = GradeSchoolMappings::with('grades')
-                        ->where(cn::GRADES_MAPPING_CURRICULUM_YEAR_ID_COL,$this->GetCurriculumYear())
-                        ->where(cn::GRADES_MAPPING_SCHOOL_ID_COL,$schoolId)
-                        ->get();
-            $subjectList = SubjectSchoolMappings::with('subjects')
-                            ->where(cn::SUBJECT_MAPPING_CURRICULUM_YEAR_ID_COL,$this->GetCurriculumYear())
-                            ->where(cn::SUBJECT_MAPPING_SCHOOL_ID_COL,$schoolId)
+            $teacherList =  User::where([
+                                cn::USERS_SCHOOL_ID_COL => auth()->user()->{cn::USERS_SCHOOL_ID_COL},
+                                cn::USERS_ROLE_ID_COL => cn::TEACHER_ROLE_ID
+                            ])->get();
+            $gradeList =    GradeSchoolMappings::with('grades')
+                            ->where([
+                                cn::GRADES_MAPPING_CURRICULUM_YEAR_ID_COL => $this->GetCurriculumYear(),
+                                cn::GRADES_MAPPING_SCHOOL_ID_COL => Auth::user()->{cn::USERS_SCHOOL_ID_COL}
+                            ])->get();
+            $subjectList =  SubjectSchoolMappings::with('subjects')
+                            ->where([
+                                cn::SUBJECT_MAPPING_CURRICULUM_YEAR_ID_COL => $this->GetCurriculumYear(),
+                                cn::SUBJECT_MAPPING_SCHOOL_ID_COL => Auth::user()->{cn::USERS_SCHOOL_ID_COL}
+                            ])
                             ->get();
             $data = TeachersClassSubjectAssign::find($id);
             $gradeClassData = GradeClassMapping::where([
                                 cn::GRADE_CLASS_MAPPING_CURRICULUM_YEAR_ID_COL => $this->GetCurriculumYear(),
-                                cn::GRADE_CLASS_MAPPING_SCHOOL_ID_COL => $schoolId,
+                                cn::GRADE_CLASS_MAPPING_SCHOOL_ID_COL => Auth::user()->{cn::USERS_SCHOOL_ID_COL},
                                 cn::GRADE_CLASS_MAPPING_GRADE_ID_COL => $data->class_id
                             ])->get();
             return view('backend.teacherclasssubjectmanagement.edit',compact('data','teacherList','gradeList','subjectList','gradeClassData'));
@@ -202,7 +206,7 @@ class TeachersClassSubjectController extends Controller
                             }else{
                                 $PostData = array(
                                     cn::TEACHER_CLASS_SUBJECT_CURRICULUM_YEAR_ID_COL => $this->GetCurriculumYear(),
-                                    cn::TEACHER_CLASS_SUBJECT_SCHOOL_ID_COL   => auth()->user()->school_id,
+                                    cn::TEACHER_CLASS_SUBJECT_SCHOOL_ID_COL   => auth()->user()->{cn::USERS_SCHOOL_ID_COL},
                                     cn::TEACHER_CLASS_SUBJECT_TEACHER_ID_COL  => $request->teacher_id,
                                     cn::TEACHER_CLASS_SUBJECT_CLASS_ID_COL    => $request->class_id,
                                     cn::TEACHER_CLASS_SUBJECT_SUBJECT_ID_COL  => $request->has('subject_id') ? implode(',',$request->subject_id) : '',
@@ -214,7 +218,7 @@ class TeachersClassSubjectController extends Controller
                         }else{
                             $PostData = array(
                                 cn::TEACHER_CLASS_SUBJECT_CURRICULUM_YEAR_ID_COL => $this->GetCurriculumYear(),
-                                cn::TEACHER_CLASS_SUBJECT_SCHOOL_ID_COL   => auth()->user()->school_id,
+                                cn::TEACHER_CLASS_SUBJECT_SCHOOL_ID_COL   => auth()->user()->{cn::USERS_SCHOOL_ID_COL},
                                 cn::TEACHER_CLASS_SUBJECT_TEACHER_ID_COL  => $request->teacher_id,
                                 cn::TEACHER_CLASS_SUBJECT_CLASS_ID_COL    => $request->class_id,
                                 cn::TEACHER_CLASS_SUBJECT_SUBJECT_ID_COL  => $request->has('subject_id') ? implode(',',$request->subject_id) : '',
@@ -264,19 +268,15 @@ class TeachersClassSubjectController extends Controller
     public function getClassType(Request $request){
         $html ='';
         if(!empty($request->grade_id)){
-            if($this->isSchoolLogin() || $this->isPrincipalLogin() || $this->isSubAdminLogin()){
-                // $GradeClassMapping = GradeClassMapping::whereIn(cn::GRADE_CLASS_MAPPING_GRADE_ID_COL,[$request->grade_id])
-                //                     ->where(cn::GRADE_CLASS_MAPPING_CURRICULUM_YEAR_ID_COL,$this->GetCurriculumYear())
-                //                     ->where(cn::GRADE_CLASS_MAPPING_SCHOOL_ID_COL ,Auth::user()->{cn::USERS_SCHOOL_ID_COL})
-                //                     ->get();
+            if($this->isSchoolLogin() || $this->isPrincipalLogin() || $this->isPanelHeadLogin() || $this->isCoOrdinatorLogin()){
                 if(is_array($request->grade_id) || $request->grade_id == "all"){
                     $SchoolAssignGrades = $request->grade_id;
-                    $SchoolAssignGrades = GradeSchoolMappings::where([
-                                                                        cn::GRADES_MAPPING_CURRICULUM_YEAR_ID_COL => $this->GetCurriculumYear(),
-                                                                        cn::GRADES_MAPPING_SCHOOL_ID_COL          => Auth::user()->school_id,                                                                        
-                                                                    ])
-                                                                    ->pluck(cn::GRADES_MAPPING_GRADE_ID_COL)
-                                                                    ->toArray();
+                    $SchoolAssignGrades =   GradeSchoolMappings::where([
+                                                cn::GRADES_MAPPING_CURRICULUM_YEAR_ID_COL => $this->GetCurriculumYear(),
+                                                cn::GRADES_MAPPING_SCHOOL_ID_COL          => Auth::user()->school_id,                                                                        
+                                            ])
+                                            ->pluck(cn::GRADES_MAPPING_GRADE_ID_COL)
+                                            ->toArray();
                     $GradeClassMapping = GradeClassMapping::where([
                                             cn::GRADE_CLASS_MAPPING_CURRICULUM_YEAR_ID_COL => $this->GetCurriculumYear(),
                                             cn::GRADE_CLASS_MAPPING_SCHOOL_ID_COL => Auth::user()->{cn::USERS_SCHOOL_ID_COL},
@@ -290,11 +290,10 @@ class TeachersClassSubjectController extends Controller
                                             cn::GRADE_CLASS_MAPPING_CURRICULUM_YEAR_ID_COL => $this->GetCurriculumYear(),
                                             cn::GRADE_CLASS_MAPPING_SCHOOL_ID_COL => Auth::user()->{cn::USERS_SCHOOL_ID_COL},
                                             cn::GRADE_CLASS_MAPPING_GRADE_ID_COL => $request->grade_id
-                                        ])
-                                        ->get();
-                }  
-                
+                                        ])->get();
+                }
             }
+
             if($this->isTeacherLogin()){
                 if(is_array($request->grade_id)){
                     $gradeClass = TeachersClassSubjectAssign::where([
@@ -355,7 +354,6 @@ class TeachersClassSubjectController extends Controller
         if(!empty($GradeClassMapping)){
             foreach($GradeClassMapping as $class){
                 $GradeList = Grades::find($class->grade_id);
-                // if($request->grade_id=="all"){
                 if(is_array($request->grade_id)){
                     $html .= '<option value='.strtoupper($class->id).' selected>'.$GradeList->name.strtoupper($class->name).'</option>';
                 }else{
@@ -366,7 +364,6 @@ class TeachersClassSubjectController extends Controller
         return $this->sendResponse($html, '');
     }
 
-
     /**
      * USE : Get Classlist by grade id on Performance Report
      */
@@ -375,50 +372,50 @@ class TeachersClassSubjectController extends Controller
         $schoolId = !empty($request->schoolId) ? $request->schoolId : Auth::user()->school_id;
         
         if(!empty($request->grade_id)){
-            if($this->isSchoolLogin() || $this->isPrincipalLogin() || $this->isSubAdminLogin()){
-                $AvailableClassIds =   ExamGradeClassMappingModel::where([
-                                                                            cn::EXAM_SCHOOL_GRADE_CLASS_MAPPING_CURRICULUM_YEAR_ID_COL => $this->GetCurriculumYear(),
-                                                                            cn::EXAM_SCHOOL_GRADE_CLASS_MAPPING_EXAM_ID_COL => $request->examId,
-                                                                            cn::EXAM_SCHOOL_GRADE_CLASS_MAPPING_SCHOOL_ID_COL => $schoolId,
-                                                                            cn::EXAM_SCHOOL_GRADE_CLASS_MAPPING_STATUS_COL => 'publish'
-                                                                        ])
-                                                                        ->where(cn::EXAM_SCHOOL_GRADE_CLASS_MAPPING_GRADE_ID_COL,$request->grade_id)
-                                                                        ->pluck(cn::EXAM_SCHOOL_GRADE_CLASS_MAPPING_CLASS_ID_COL)->toArray();
+            if($this->isSchoolLogin() || $this->isPrincipalLogin() || $this->isPanelHeadLogin() || $this->isCoOrdinatorLogin()){
+                $AvailableClassIds =    ExamGradeClassMappingModel::where([
+                                            cn::EXAM_SCHOOL_GRADE_CLASS_MAPPING_CURRICULUM_YEAR_ID_COL => $this->GetCurriculumYear(),
+                                            cn::EXAM_SCHOOL_GRADE_CLASS_MAPPING_EXAM_ID_COL => $request->examId,
+                                            cn::EXAM_SCHOOL_GRADE_CLASS_MAPPING_SCHOOL_ID_COL => $schoolId,
+                                            cn::EXAM_SCHOOL_GRADE_CLASS_MAPPING_STATUS_COL => 'publish'
+                                        ])
+                                        ->where(cn::EXAM_SCHOOL_GRADE_CLASS_MAPPING_GRADE_ID_COL,$request->grade_id)
+                                        ->pluck(cn::EXAM_SCHOOL_GRADE_CLASS_MAPPING_CLASS_ID_COL)->toArray();
                 $GradeAvailableInSchool = GradeSchoolMappings::where([
-                                                                        cn::GRADES_MAPPING_CURRICULUM_YEAR_ID_COL => $this->GetCurriculumYear(),
-                                                                        cn::GRADES_MAPPING_SCHOOL_ID_COL          => $schoolId,
-                                                                        cn::GRADES_MAPPING_GRADE_ID_COL           => $request->grade_id
-                                                                    ])->pluck(cn::GRADES_MAPPING_GRADE_ID_COL)->toArray();
+                                            cn::GRADES_MAPPING_CURRICULUM_YEAR_ID_COL => $this->GetCurriculumYear(),
+                                            cn::GRADES_MAPPING_SCHOOL_ID_COL          => $schoolId,
+                                            cn::GRADES_MAPPING_GRADE_ID_COL           => $request->grade_id
+                                        ])->pluck(cn::GRADES_MAPPING_GRADE_ID_COL)->toArray();
                 $GradeClassMapping = GradeClassMapping::where([
-                                                                cn::GRADE_CLASS_MAPPING_CURRICULUM_YEAR_ID_COL => $this->GetCurriculumYear(),
-                                                                cn::GRADE_CLASS_MAPPING_SCHOOL_ID_COL => $schoolId
-                                                            ])
-                                                            ->whereIn(cn::GRADE_CLASS_MAPPING_GRADE_ID_COL,$GradeAvailableInSchool)
-                                                            ->whereIn(cn::GRADE_CLASS_MAPPING_ID_COL,$AvailableClassIds)
-                                                            ->get();                                                     
+                                        cn::GRADE_CLASS_MAPPING_CURRICULUM_YEAR_ID_COL => $this->GetCurriculumYear(),
+                                        cn::GRADE_CLASS_MAPPING_SCHOOL_ID_COL => $schoolId
+                                    ])
+                                    ->whereIn(cn::GRADE_CLASS_MAPPING_GRADE_ID_COL,$GradeAvailableInSchool)
+                                    ->whereIn(cn::GRADE_CLASS_MAPPING_ID_COL,$AvailableClassIds)
+                                    ->get();                                                     
                 
             }
             if($this->isTeacherLogin()){
                 $AssignGradeClasses = $this->TeacherGradesClassService->getTeacherAssignedGradesClass($schoolId, Auth::user()->{cn::USERS_ID_COL});
-                $AvailableClassIds =   ExamGradeClassMappingModel::where([
-                                                                            cn::EXAM_SCHOOL_GRADE_CLASS_MAPPING_CURRICULUM_YEAR_ID_COL => $this->GetCurriculumYear(),
-                                                                            cn::EXAM_SCHOOL_GRADE_CLASS_MAPPING_EXAM_ID_COL => $request->examId,
-                                                                            cn::EXAM_SCHOOL_GRADE_CLASS_MAPPING_SCHOOL_ID_COL => $schoolId,
-                                                                            cn::EXAM_SCHOOL_GRADE_CLASS_MAPPING_STATUS_COL => 'publish'
-                                                                        ])
-                                                                        ->where(cn::EXAM_SCHOOL_GRADE_CLASS_MAPPING_GRADE_ID_COL,$request->grade_id)
-                                                                        ->whereIn(cn::EXAM_SCHOOL_GRADE_CLASS_MAPPING_CLASS_ID_COL,$AssignGradeClasses['class'])
-                                                                        ->pluck(cn::EXAM_SCHOOL_GRADE_CLASS_MAPPING_CLASS_ID_COL)->toArray();
+                $AvailableClassIds =    ExamGradeClassMappingModel::where([
+                                            cn::EXAM_SCHOOL_GRADE_CLASS_MAPPING_CURRICULUM_YEAR_ID_COL => $this->GetCurriculumYear(),
+                                            cn::EXAM_SCHOOL_GRADE_CLASS_MAPPING_EXAM_ID_COL => $request->examId,
+                                            cn::EXAM_SCHOOL_GRADE_CLASS_MAPPING_SCHOOL_ID_COL => $schoolId,
+                                            cn::EXAM_SCHOOL_GRADE_CLASS_MAPPING_STATUS_COL => 'publish'
+                                        ])
+                                        ->where(cn::EXAM_SCHOOL_GRADE_CLASS_MAPPING_GRADE_ID_COL,$request->grade_id)
+                                        ->whereIn(cn::EXAM_SCHOOL_GRADE_CLASS_MAPPING_CLASS_ID_COL,$AssignGradeClasses['class'])
+                                        ->pluck(cn::EXAM_SCHOOL_GRADE_CLASS_MAPPING_CLASS_ID_COL)->toArray();
                 
                 $GradeClassMapping = GradeClassMapping::where([
-                                                                cn::GRADE_CLASS_MAPPING_CURRICULUM_YEAR_ID_COL => $this->GetCurriculumYear(),
-                                                                cn::GRADE_CLASS_MAPPING_SCHOOL_ID_COL => $schoolId
-                                                            ])
-                                                            ->whereIn(cn::GRADE_CLASS_MAPPING_ID_COL,$AvailableClassIds)
-                                                            ->get();
+                                        cn::GRADE_CLASS_MAPPING_CURRICULUM_YEAR_ID_COL => $this->GetCurriculumYear(),
+                                        cn::GRADE_CLASS_MAPPING_SCHOOL_ID_COL => $schoolId
+                                    ])
+                                    ->whereIn(cn::GRADE_CLASS_MAPPING_ID_COL,$AvailableClassIds)
+                                    ->get();
             }
             if($this->isAdmin()){
-                $AvailableClassIds =   ExamGradeClassMappingModel::where([
+                $AvailableClassIds =    ExamGradeClassMappingModel::where([
                                             cn::EXAM_SCHOOL_GRADE_CLASS_MAPPING_CURRICULUM_YEAR_ID_COL => $this->GetCurriculumYear(),
                                             cn::EXAM_SCHOOL_GRADE_CLASS_MAPPING_EXAM_ID_COL => $request->examId,
                                             cn::EXAM_SCHOOL_GRADE_CLASS_MAPPING_SCHOOL_ID_COL => $schoolId,
@@ -427,7 +424,7 @@ class TeachersClassSubjectController extends Controller
                                         ->where(cn::EXAM_SCHOOL_GRADE_CLASS_MAPPING_GRADE_ID_COL,$request->grade_id)
                                         ->pluck(cn::EXAM_SCHOOL_GRADE_CLASS_MAPPING_CLASS_ID_COL)->toArray();
 
-                $GradeClassMapping = GradeClassMapping::where([
+                $GradeClassMapping =    GradeClassMapping::where([
                                             cn::GRADE_CLASS_MAPPING_CURRICULUM_YEAR_ID_COL => $this->GetCurriculumYear(),
                                             cn::GRADE_CLASS_MAPPING_SCHOOL_ID_COL => $schoolId
                                         ])
@@ -439,7 +436,6 @@ class TeachersClassSubjectController extends Controller
             foreach($GradeClassMapping as $class){
                 $GradeList = Grades::find($class->grade_id);
                 $html .= '<option value='.strtoupper($class->id). ' selected>'.$GradeList->name.strtoupper($class->name).'</option>';
-                
             }
         }
         return $this->sendResponse($html, '');

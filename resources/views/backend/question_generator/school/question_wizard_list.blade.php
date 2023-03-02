@@ -164,8 +164,6 @@
 							    	<tbody class="scroll-pane">
                                         @if(!empty($examList))
 										@foreach($examList as $exam)
-										{{-- @php echo $exam->ExamSchoolMapping[0]['status'];die; @endphp --}}
-										{{-- @if(!empty($exam->ExamSchoolMapping[0])) --}}
 										@if(!empty($exam->ExamSchoolMapping[0])  && (($exam->created_by_user =='super_admin'  && $exam->status == 'publish' && $exam->ExamSchoolMapping[0]['status'] == 'draft') || $exam->created_by_user !='super_admin'))
 											<tr>
 												<td><input type="checkbox" name="examids" class="checkbox exam-id" value="{{$exam->id}}"></td>
@@ -225,7 +223,7 @@
 													@endif
 												</td>
 												<td>
-													@if($exam->created_by_user == 'super_admin' || $exam->created_by_user == 'school_admin' || $exam->created_by_user == 'principal' || $exam->created_by_user == 'teacher' || $exam->created_by_user == 'sub_admin')
+													@if($exam->created_by_user == 'super_admin' || $exam->created_by_user == 'school_admin' || $exam->created_by_user == 'principal' || $exam->created_by_user == 'teacher' || $exam->created_by_user == 'panel_head' || $exam->created_by_user == 'co_ordinator')
 													<select name="exam_status" id="update_exam_status" class="update_exam_status" data-examid="{{$exam->id}}"  {{ $exam->exam_type == 1 ? 'disabled' : ''}} >
 														<option value="">{{__('languages.select_status')}}</option>
 														<option value="publish" {{$exam->ExamSchoolMapping[0]['status'] == 'publish' ? 'selected' : ''}}>{{__('languages.publish')}}</option>
@@ -236,13 +234,13 @@
 												<td class="edit-class">
 												@if($exam->exam_type !=1)
 													@if(in_array('exam_management_update', $permissions))
-														@if($exam->ExamSchoolMapping[0]['status'] == 'draft' && ($exam->created_by_user == 'super_admin' || $exam->created_by_user == 'school_admin' || $exam->created_by_user == 'principal'))
+														@if($exam->ExamSchoolMapping[0]['status'] == 'draft' && ($exam->created_by_user == 'super_admin' || $exam->created_by_user == 'school_admin' || $exam->created_by_user == 'principal' || $exam->created_by_user == 'panel_head' || $exam->created_by_user == 'co_ordinator'))
 														<a href="{{ route('school.generate-questions-edit', $exam->id) }}" class="btn-edit pl-2" title="{{__('languages.edit')}}">
 															<i class="fa fa-pencil" aria-hidden="true"></i>
 														</a>
 														@endif
 													@endif
-													@if(in_array('exam_management_delete', $permissions) && ($exam->ExamSchoolMapping[0]['status'] == 'draft' && ($exam->created_by_user == 'school_admin' || $exam->created_by_user == 'principal' || $exam->created_by_user == 'teacher')))
+													@if(in_array('exam_management_delete', $permissions) && ($exam->ExamSchoolMapping[0]['status'] == 'draft' && ($exam->created_by_user == 'school_admin' || $exam->created_by_user == 'principal' || $exam->created_by_user == 'teacher' || $exam->created_by_user == 'panel_head' || $exam->created_by_user == 'co_ordinator')))
 														<a href="javascript:void(0);" class="pl-2 btn-delete" id="deleteExam" data-id="{{$exam->id}}" title="{{__('languages.delete')}}">
 															<i class="fa fa-trash" aria-hidden="true"></i>
 														</a>
@@ -251,7 +249,7 @@
 
 												<!-- If Exams Is Publish then display view student result icon -->
 												@if($exam->ExamSchoolMapping[0]['status'] == 'publish')
-													@if($exam->created_by_user == 'super_admin' || $exam->created_by_user == 'school_admin' || $exam->created_by_user == 'principal' || $exam->created_by_user == 'teacher' || $exam->created_by_user == 'sub_admin')
+													@if($exam->created_by_user == 'super_admin' || $exam->created_by_user == 'school_admin' || $exam->created_by_user == 'principal' || $exam->created_by_user == 'teacher' || $exam->created_by_user == 'panel_head' || $exam->created_by_user == 'co_ordinator')
 														<span>
 															<i class="fa fa-user add-peer-group" aria-hidden="true" title="{{__('languages.add_students')}}" data-id={{$exam->id}}></i>
 														</span>
@@ -263,7 +261,7 @@
 													</a>
 													@endif
 
-													@if($exam->created_by_user == 'super_admin' || $exam->created_by_user == 'school_admin' || $exam->created_by_user == 'principal' || $exam->created_by_user == "teacher")
+													@if($exam->created_by_user == 'super_admin' || $exam->created_by_user == 'school_admin' || $exam->created_by_user == 'principal' || $exam->created_by_user == "teacher" || $exam->created_by_user == 'panel_head' || $exam->created_by_user == 'co_ordinator')
 													@php
 													if($exam->exam_type==1){
 														$previewUrl = route('self_learning.preview',$exam->id);
@@ -277,7 +275,7 @@
 													@endif
 												@endif
 
-												@if($exam->created_by_user == 'school_admin' || $exam->created_by_user == 'principal' || $exam->created_by_user == 'teacher' || $exam->created_by_user == 'sub_admin')
+												@if($exam->created_by_user == 'school_admin' || $exam->created_by_user == 'principal' || $exam->created_by_user == 'teacher' || $exam->created_by_user == 'panel_head' || $exam->created_by_user == 'co_ordinator')
 												<!-- Copy and create new test Action -->
 												<a class="pl-2" href="{{route('question-wizard.copy',$exam->id)}}" title="{{__('languages.copy_create_test')}}">
 													<i class="fa fa-copy"></i>

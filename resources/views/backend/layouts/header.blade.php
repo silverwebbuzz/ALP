@@ -10,6 +10,8 @@
         $color = '#BDE5E1';
     }else if(Auth::user()->role_id == 8){
         $color = '#fed08d';
+    }else if(Auth::user()->role_id == 9){
+        $color = '#eab676';
     }else{
         $color = '#a8e4b0';
     }
@@ -59,7 +61,7 @@
             <!-- End Selection for school year -->
         @endif
 
-        @if(auth()->user()->role_id == 2 || auth()->user()->role_id == 5 || auth()->user()->role_id == 7 || auth()->user()->role_id == 1)
+        @if(in_array(auth()->user()->role_id,[2,5,7,1,9,8]))
             <?php $CurriculumYearList = \App\Traits\Common::GetCurriculumCurrentYear(); ?>
             <!-- Selection for school year -->
             <div class="years-selection-dropdown-main ml-auto">

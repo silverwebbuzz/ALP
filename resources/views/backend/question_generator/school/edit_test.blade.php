@@ -37,10 +37,12 @@
                         $color = '#d8dc41';
                     }else if(Auth::user()->role_id == 7){
                         $color = '#BDE5E1';
-                    }else if(Auth::user()->role_id == 5){
-                        $color = '#a8e4b0';
                     }else if(Auth::user()->role_id == 8){
                         $color = '#fed08d';
+                    }else if(Auth::user()->role_id == 9){
+                        $color = '#eab676';
+                    }else if(Auth::user()->role_id == 5){
+                        $color = '#a8e4b0';
                     }else{
                         $color = '#A5A6F6';
                     }
@@ -369,13 +371,15 @@
                                                         </div>
                                                         @if(!empty($grade->classes))
                                                         <div class="form-grade-sub-option">
-                                                            <div class="form-grade-sub-single-option">
+                                                            <div class="form-grade-sub-single-option d-flex flex-wrap">
                                                                 @foreach($grade->classes as $classes)
-                                                                <input type="checkbox" name="classes[{{$grade->id}}][]" value="{{$classes->id}}"   data-label="{{$grade->name}}{{$classes->name}}" class="question-generator-class-chkbox" @if(in_array($classes->id,$studentClassData)) checked @endif>
-                                                                <label>{{$grade->name}}{{$classes->name}}</label>
-                                                                @if(in_array($classes->id,$studentClassData))
-                                                                    <input type="hidden" name="oldClasses[{{$grade->id}}][]" value="{{$classes->id}}">
-                                                                @endif
+                                                                <div>
+                                                                    <input type="checkbox" name="classes[{{$grade->id}}][]" value="{{$classes->id}}"   data-label="{{$grade->name}}{{$classes->name}}" class="question-generator-class-chkbox" @if(in_array($classes->id,$studentClassData)) checked @endif>
+                                                                    <label>{{$grade->name}}{{$classes->name}}</label>
+                                                                    @if(in_array($classes->id,$studentClassData))
+                                                                        <input type="hidden" name="oldClasses[{{$grade->id}}][]" value="{{$classes->id}}">
+                                                                    @endif
+                                                                </div>
                                                                 @endforeach
                                                             </div>
                                                         </div>

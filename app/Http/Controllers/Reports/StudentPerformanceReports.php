@@ -16,8 +16,8 @@ class StudentPerformanceReports extends Controller
     
     public function getStudentPerformanceResults(Request $request){
         try {
-            if($this->isSchoolLogin()){
-                $currentLoggedSchoolId = $this->isSchoolLogin();
+            if($this->isSchoolLogin() || $this->isPrincipalLogin() || $this->isPanelHeadLogin() || $this->isCoOrdinatorLogin()){
+                $currentLoggedSchoolId = $this->LoggedUserSchoolId();
                 $ExamList = Exam::where('is_group_test',0)->whereRaw("find_in_set($currentLoggedSchoolId,school_id)")->where('status','publish')->get();
             }else{
                 $ExamList = Exam::where('is_group_test',0)->where('status','publish')->get();
@@ -26,8 +26,8 @@ class StudentPerformanceReports extends Controller
             if(isset($request->filter)){
                 if(isset($request->school_id)){
                     $ExamData = Exam::where(cn::EXAM_TABLE_ID_COLS,$request->details_report_exam_id)->whereRaw("find_in_set($request->school_id,school_id)")->first();
-                }else if($this->isSchoolLogin()){
-                    $currentLoggedSchoolId = $this->isSchoolLogin();
+                }else if($this->isSchoolLogin() || $this->isPrincipalLogin() || $this->isPanelHeadLogin() || $this->isCoOrdinatorLogin()){
+                    $currentLoggedSchoolId = $this->LoggedUserSchoolId();
                     $ExamData = Exam::where(cn::EXAM_TABLE_ID_COLS,$request->details_report_exam_id)->whereRaw("find_in_set($currentLoggedSchoolId,school_id)")->first();
                 }else{
                     $ExamData = Exam::find($request->details_report_exam_id);
@@ -37,8 +37,8 @@ class StudentPerformanceReports extends Controller
                 $examId = $request->details_report_exam_id;
                 if(isset($request->school_id)){
                     $ExamData = Exam::where(cn::EXAM_TABLE_ID_COLS,$request->details_report_exam_id)->whereRaw("find_in_set($request->school_id,school_id)")->first();
-                }else if($this->isSchoolLogin()){
-                    $currentLoggedSchoolId = $this->isSchoolLogin();
+                }else if($this->isSchoolLogin() || $this->isPrincipalLogin() || $this->isPanelHeadLogin() || $this->isCoOrdinatorLogin()){
+                    $currentLoggedSchoolId = $this->LoggedUserSchoolId();
                     $ExamData = Exam::where(cn::EXAM_TABLE_ID_COLS,$request->details_report_exam_id)->whereRaw("find_in_set($currentLoggedSchoolId,school_id)")->first();
                 }else{
                     $ExamData = Exam::find($request->details_report_exam_id);
@@ -60,13 +60,12 @@ class StudentPerformanceReports extends Controller
         $data = [];
         if(isset($request->school_id)){
             $ExamDetails = Exam::where(cn::EXAM_TABLE_ID_COLS,$examId)->whereRaw("find_in_set($request->school_id,school_id)")->first();
-        }else if($this->isSchoolLogin()){
-            $currentLoggedSchoolId = $this->isSchoolLogin();
+        }else if($this->isSchoolLogin() || $this->isPrincipalLogin() || $this->isPanelHeadLogin() || $this->isCoOrdinatorLogin()){
+            $currentLoggedSchoolId = $this->LoggedUserSchoolId();
             $ExamDetails = Exam::where(cn::EXAM_TABLE_ID_COLS,$examId)->whereRaw("find_in_set($currentLoggedSchoolId,school_id)")->first();
         }else{
             $ExamDetails = Exam::find($examId);
         }
-        //$ExamDetails = Exam::find($examId);
         if(isset($ExamDetails)){
             $Questions = Question::with('answers')->whereIn(cn::QUESTION_TABLE_ID_COL,explode(',',$ExamDetails->question_ids))->get();
             $AttemptExamData = AttemptExams::where(cn::ATTEMPT_EXAMS_EXAM_ID,$examId)->get();

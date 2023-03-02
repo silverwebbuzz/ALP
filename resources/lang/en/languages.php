@@ -1548,5 +1548,8 @@ return [
     'school_user_management' => [
         'title'                                 => 'School Users List',
         'school_admin_privilege'                => 'School Admin Privilege',
+        'add_school_user'                       => 'Add School User',
+        'update_school_user'                    => 'Update School User',
+        'school_name'                           => 'School Name',
     ]
 ];

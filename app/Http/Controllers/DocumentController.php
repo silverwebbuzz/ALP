@@ -789,7 +789,7 @@ class DocumentController extends Controller
                 $schoolId = Auth::user()->{cn::USERS_SCHOOL_ID_COL};
                 $GradesId = GradeSchoolMappings::where(cn::GRADES_MAPPING_SCHOOL_ID_COL,$schoolId)->get()->pluck(cn::GRADES_MAPPING_GRADE_ID_COL);
             }
-            if($this->isSubAdminLogin()){
+            if($this->isPanelHeadLogin() || $this->isCoOrdinatorLogin()){
                 $schoolId = Auth::user()->{cn::USERS_SCHOOL_ID_COL};
                 $GradesId = GradeSchoolMappings::where(cn::GRADES_MAPPING_SCHOOL_ID_COL,$schoolId)->get()->pluck(cn::GRADES_MAPPING_GRADE_ID_COL);
             }

@@ -32,6 +32,10 @@ class RedirectIfAuthenticated
             return redirect()->route('report.class-test-reports.correct-incorrect-answer');
         }elseif(Auth::guard($guard)->check() && Auth::user()->role_id == 7){
             return redirect()->route('principal.dashboard');
+        }elseif(Auth::guard($guard)->check() && Auth::user()->role_id == 8){
+            return redirect()->route('panel-head.dashboard');
+        }elseif(Auth::guard($guard)->check() && Auth::user()->role_id == 9){
+            return redirect()->route('co-ordinator.dashboard');
         }else{
             return $next($request);
         }

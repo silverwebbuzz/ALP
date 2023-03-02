@@ -66,7 +66,15 @@ if($user_id){
 								<select class="form-control" data-show-subtext="true" data-live-search="true" name="grade_id[]" id="student_multiple_grade_id" multiple required >
 									@if(!empty($gradesList))
 									@foreach($gradesList as $grade)
-										<option value="{{$grade->getClass->id}}" @if(!empty($gradeId)) {{ in_array($grade->getClass->id,$gradeId) ? 'selected' : '' }} @endif>{{ $grade->getClass->name}}</option>
+									@php
+                                    if(array_key_exists("get_class",$grade->toArray())){
+                                        $gradeData = $grade->getClass;
+                                    }else{
+                                        $gradeData = $grade->grades;
+                                    }
+                                    @endphp
+									{{--<option value="{{$grade->getClass->id}}" @if(!empty($gradeId)) {{ in_array($grade->getClass->id,$gradeId) ? 'selected' : '' }} @endif>{{ $grade->getClass->name}}</option>--}}
+									<option value="{{$gradeData->id}}" @if($gradeId){{ in_array($gradeData->id,$gradeId) ? 'selected' : '' }} @endif>{{ $gradeData->name}}</option>
 									@endforeach
 									@endif
 								</select>

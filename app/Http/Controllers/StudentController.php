@@ -83,7 +83,7 @@ class StudentController extends Controller
 
             $GradeClassMapping = GradeClassMapping::where([
                                     cn::GRADE_CLASS_MAPPING_GRADE_ID_COL => $request->student_grade_id,
-                                    cn::GRADE_CLASS_MAPPING_SCHOOL_ID_COL => $this->isSchoolLogin()
+                                    cn::GRADE_CLASS_MAPPING_SCHOOL_ID_COL => $this->LoggedUserSchoolId()
                                 ])->get();
             
             $Query = User::select('*');
@@ -382,7 +382,7 @@ class StudentController extends Controller
                 $Grades = Grades::find($request->grade_id);
                 $ClassData = GradeClassMapping::where([
                                 cn::GRADE_CLASS_MAPPING_CURRICULUM_YEAR_ID_COL => $this->GetCurriculumYear(),
-                                cn::GRADE_CLASS_MAPPING_SCHOOL_ID_COL => $this->isSchoolLogin(),
+                                cn::GRADE_CLASS_MAPPING_SCHOOL_ID_COL => $this->LoggedUserSchoolId(),
                                 cn::GRADE_CLASS_MAPPING_ID_COL => $request->class_type
                             ])->first();
                 $UserData = User::find($student);

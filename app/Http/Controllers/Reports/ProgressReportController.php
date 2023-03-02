@@ -688,7 +688,7 @@ class ProgressReportController extends Controller
      * USE : Progress report learning objectives display into principal panel
      */
     public function PrincipalProgressReportLearningObjective(Request $request){
-        try{
+        // try{
             ini_set('max_execution_time', -1);
             if(isset($request->isFilter)){
                 $isFilter = true;
@@ -797,17 +797,7 @@ class ProgressReportController extends Controller
             }
             $LearningsUnitsLbl = LearningsUnits::where('stage_id','<>',3)->pluck('name_'.app()->getLocale(),cn::LEARNING_UNITS_ID_COL)->toArray();
             $strandId = $strand->id;
-            if(LearningUnitOrdering::where('school_id',Auth::user()->school_id)->exists()){
-                $Query = LearningUnitOrdering::whereRelation('learning_unit',function ($q) use($strand){
-                    $q->whereIn('strand_id',[$strand->id]);
-                })
-                ->where(cn::LEARNING_UNIT_ORDERING_SCHOOL_ID_COL,Auth::user()->school_id)->orderBy('learning_unit_id','Asc')->get();
-                $positionArray = $Query->pluck(cn::LEARNING_UNIT_ORDERING_LEARNING_POSITION_COL);
-                $learningUnitIds = $Query->pluck('learning_unit_id')->toArray();
-                $LearningUnitData = $this->OrderingLearningUnits($positionArray->toArray(),$learningUnitIds);  
-            }else{
-                $LearningUnits = LearningsUnits::where(cn::LEARNING_UNITS_STRANDID_COL, $strand->{cn::STRANDS_ID_COL})->where('stage_id','<>',3)->get();
-            }
+            $LearningUnits = $this->GetLearningUnits($strandId);
             $learningUnitsIds = LearningsUnits::where(cn::LEARNING_UNITS_STRANDID_COL, $strand->id)->where('stage_id','<>',3)->pluck(cn::LEARNING_UNITS_ID_COL)->toArray();
             if(LearningObjectiveOrdering::where('school_id',Auth::user()->school_id)->exists()){
                 $Query = LearningObjectiveOrdering::whereHas('learning_objective',function ($q) use($learningUnitsIds){
@@ -827,18 +817,7 @@ class ProgressReportController extends Controller
                                     ->where('stage_id','<>',3)
                                     ->where(cn::LEARNING_UNITS_ID_COL, $request->learning_unit_id)
                                     ->pluck(cn::LEARNING_UNITS_ID_COL)->toArray();                
-                if(LearningObjectiveOrdering::where('school_id',Auth::user()->school_id)->exists()){
-                    $LearningsObjectives = LearningsObjectives::where('stage_id','<>',3)->whereIn('learning_unit_id',$LearningUnits->pluck('id'))->get();
-                    $Query = LearningObjectiveOrdering::whereHas('learning_objective',function ($q) use($LearningsObjectives){
-                        $q->whereIn('learning_objective_id',$learningUnitsIds[0]);
-                    })
-                    ->where('school_id',Auth::user()->school_id)->orderBy('learning_objective_id','Asc')->get();
-                    $positionArray = $Query->pluck(cn::LEARNING_UNIT_ORDERING_LEARNING_POSITION_COL);
-                    $learningObjectiveIds = $Query->pluck('learning_objective_id');
-                    $LearningObjectives = $this->OrderingLearningObjectives($positionArray->toArray(),$learningObjectiveIds);  
-                }else{
-                    $learningObjectivesList = LearningsObjectives::IsAvailableQuestion()->where('stage_id','<>',3)->where(cn::LEARNING_OBJECTIVES_LEARNING_UNITID_COL,$learningUnitsIds[0])->get();
-                }                
+                $learningObjectivesList = $this->GetLearningObjectives($learningUnitsIds);             
             }
             if(isset($gradeArray)){
                 $gradeid = $gradeArray[0];
@@ -1051,16 +1030,16 @@ class ProgressReportController extends Controller
                 }
             }
             return view('backend.reports.progress_report.principal.learning_objective_report',compact('strandData','GradesList','grade_id','teachersClassList','reportLearningType','progressReportArray','strandDataLbl','LearningsUnitsLbl','learningObjectivesList','LearningUnits','gradeid','classid','schoolId','roleId','ColorCodes'));
-        }catch(\Exception $exception){
-            return back()->withError($exception->getMessage())->withInput();
-        }
+        // }catch(\Exception $exception){
+        //     return back()->withError($exception->getMessage())->withInput();
+        // }
     }
 
     /**
      * USE : Progress report learning Unit display into principal panel
      */
     public function PrincipalProgressReportLearningUnits(Request $request){
-        try{
+        // try{
             ini_set('max_execution_time', -1);
             if(isset($request->isFilter)){
                 $isFilter = true;
@@ -1070,7 +1049,7 @@ class ProgressReportController extends Controller
 
             // Get Color Codes Array
             $ColorCodes = Helper::GetColorCodes();
-
+            $LearningUnits = array();
             $progressReportArray = array();
             $LearningsUnitsLbl = array();
             $grade_id = array();
@@ -1152,16 +1131,11 @@ class ProgressReportController extends Controller
                 $classid = $classArray[0];
             }
             $StrandList = Strands::all();
-            if(LearningUnitOrdering::where('school_id',Auth::user()->school_id)->exists()){
-                $Query = LearningUnitOrdering::whereHas('learning_unit')
-                ->where(cn::LEARNING_UNIT_ORDERING_SCHOOL_ID_COL,Auth::user()->school_id)->orderBy('learning_unit_id','Asc')->get();
-                $positionArray = $Query->pluck(cn::LEARNING_UNIT_ORDERING_LEARNING_POSITION_COL);
-                $learningUnitIds = $Query->pluck('learning_unit_id')->toArray();
-                $LearningUnitsList = $this->OrderingLearningUnits($positionArray->toArray(),$learningUnitIds);      
-            }else{
-                $LearningUnitsList = LearningsUnits::where('stage_id','<>',3)->get();
-            }
 
+            if(!empty($StrandList)){
+                $strandId = $StrandList->pluck('id')->toArray();
+            }
+            $LearningUnitsList = $this->GetLearningUnits($strandId);
             $StrandsLearningUnitsList = Strands::with('LearningUnit')->get()->toArray();
             
             $strandDataLbl = Strands::pluck('name_'.app()->getLocale(),cn::STRANDS_ID_COL)->toArray();
@@ -1176,6 +1150,7 @@ class ProgressReportController extends Controller
                                     ->whereIn(cn::GRADE_CLASS_MAPPING_ID_COL,$classArray)
                                     ->get();
                 $gradeClasss = $GradeClassData[0];
+                
                 $studentList =  User::where([
                                     cn::USERS_SCHOOL_ID_COL => $schoolId,
                                     cn::USERS_ROLE_ID_COL => cn::STUDENT_ROLE_ID
@@ -1183,6 +1158,7 @@ class ProgressReportController extends Controller
                                 ->get()
                                 ->where('CurriculumYearGradeId',$gradeid)
                                 ->where('CurriculumYearClassId',$gradeClasss->id);
+                
                 foreach($studentList as $student){
                     $progressReportArray[$student->id]['student_data'][] = $student->toArray();
                     $no_of_learning_unit = count($LearningUnitsList);
@@ -1341,9 +1317,9 @@ class ProgressReportController extends Controller
                 }
             }
             return view('backend.reports.progress_report.principal.learning_unit_report',compact('StrandList','LearningUnitsList','StrandsLearningUnitsList','GradesList','grade_id','principalClassList','reportLearningType','progressReportArray','strandDataLbl','LearningsUnitsLbl','LearningUnits','gradeid','classid','ColorCodes'));
-        } catch (\Exception $exception) {
-            return back()->withError($exception->getMessage())->withInput();
-        }
+        // } catch (\Exception $exception) {
+        //     return back()->withError($exception->getMessage())->withInput();
+        // }
     }
 
     /**

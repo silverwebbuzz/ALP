@@ -36,6 +36,8 @@
                         $color = '#BDE5E1';
                     }else if(Auth::user()->role_id == 8){
                         $color = '#fed08d';
+                    }else if(Auth::user()->role_id == 9){
+                        $color = '#eab676';
                     }else if(Auth::user()->role_id == 5){
                         $color = '#a8e4b0';
                     }else{
@@ -329,10 +331,12 @@
                                                         </div>
                                                         @if(!empty($grade->classes))
                                                         <div class="form-grade-sub-option">
-                                                            <div class="form-grade-sub-single-option">
+                                                            <div class="form-grade-sub-single-option d-flex flex-wrap">
                                                                 @foreach($grade->classes as $classes)
+                                                                <div>
                                                                 <input type="checkbox" name="classes[{{$grade->id}}][]" value="{{$classes->id}}" class="question-generator-class-chkbox" data-label="{{$grade->name}}{{$classes->name}}">
                                                                 <label>{{$grade->name}}{{$classes->name}}</label>
+                                                                </div>
                                                                 @endforeach
                                                             </div>
                                                         </div>

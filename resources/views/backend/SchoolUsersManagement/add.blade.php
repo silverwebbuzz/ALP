@@ -12,7 +12,7 @@
 					<div class="row">
 						<div class="col-md-12">
 							<div class="sec-title">
-								<h2 class="mb-4 main-title">{{__('languages.user_management.add_new_user')}}</h2>
+								<h2 class="mb-4 main-title">{{__('languages.school_user_management.add_school_user')}}</h2>
 							</div>
                             <div class="sec-title">
                                 <a href="javascript:void(0);" class="btn-back" id="backButton">{{__('languages.back')}}</a>
@@ -32,9 +32,28 @@
                                 {{ session()->get('error_msg') }}
                             </div>
                             @endif
-                            <form class="user-form" method="post" id="add-school-user-form"  action="{{ route('users.store') }}">
+                            <form class="add-school-user-form" method="post" id="add-school-user-form"  action="{{ route('school-users.store') }}">
                                 @csrf()
                                 <div class="form-row">
+                                    @if(App\Helpers\Helper::isAdmin())
+                                    <div class="form-group col-md-6">                                    
+                                        <label for="users-list-role">{{ __('languages.user_management.school') }}</label>
+                                        <fieldset class="form-group">
+                                            <select class="selectpicker form-control" data-show-subtext="true" data-live-search="true" name="school" id="school_users_school_id">
+                                            <option value=''>{{ __('languages.select_school') }}</option>
+                                            @if(!empty($Schools))
+                                                @foreach($Schools as $school)
+                                                <option value="{{$school->id}}" @if(old('school') == $school->id) selected @endif>{{$school->DecryptSchoolNameEn}}</option>
+                                                @endforeach
+                                            @else
+                                                <option value="">{{ __('languages.no_available_school') }}</option>
+                                            @endif
+                                            </select>
+                                            <span id="error-school"></span>
+                                            @if($errors->has('school'))<span class="validation_error">{{ $errors->first('school') }}</span>@endif
+                                        </fieldset>
+                                    </div>
+                                    @endif
                                     <div class="form-group col-md-6">
                                         <label for="users-list-role">{{ __('languages.user_management.role') }}</label>
                                         <fieldset class="form-group">
@@ -52,23 +71,6 @@
                                             </select>
                                             <span id="error-role"></span>
                                             @if($errors->has('role'))<span class="validation_error">{{ $errors->first('role') }}</span>@endif
-                                        </fieldset>
-                                    </div>
-                                    <div class="form-group col-md-6">                                    
-                                        <label for="users-list-role">{{ __('languages.user_management.school') }}</label>
-                                        <fieldset class="form-group">
-                                            <select class="selectpicker form-control" data-show-subtext="true" data-live-search="true" name="school" id="school_id">
-                                            <option value=''>{{ __('languages.select_school') }}</option>
-                                            @if(!empty($Schools))
-                                                @foreach($Schools as $school)
-                                                <option value="{{$school->id}}" @if(old('school') == $school->id) selected @endif>{{$school->DecryptSchoolNameEn}}</option>
-                                                @endforeach
-                                            @else
-                                                <option value="">{{ __('languages.no_available_school') }}</option>
-                                            @endif
-                                            </select>
-                                            <span id="error-school"></span>
-                                            @if($errors->has('school'))<span class="validation_error">{{ $errors->first('school') }}</span>@endif
                                         </fieldset>
                                     </div>
                                     <div class="form-group col-md-6 mb-50">
@@ -93,7 +95,7 @@
                                         </ul>                                        
                                     </div>
                                 </div>
-                                <div class="form-row">                                
+                                <div class="form-row">
                                     <div class="form-group col-md-6 mb-50">
                                         <label class="text-bold-600" for="name_en">{{ __('languages.user_management.name_english') }}</label>
                                         <input type="text" class="form-control" name="name_en" id="name_en" placeholder="{{__('languages.user_management.enter_english_name')}}" value="{{old('name_en')}}">
@@ -123,7 +125,7 @@
                                     </div>
                                     <div class="form-group col-md-6 mb-50">
                                         <label class="text-bold-600" for="exampleInputUsername1">{{ __('languages.confirm_password') }}</label>
-                                        <input type="Password" class="form-control" name="confirm_password" id="confirm_password" placeholder="****" value="{{old('password')}}">
+                                        <input type="Password" class="form-control" name="confirm_password" id="confirm_password" placeholder="******" value="{{old('password')}}">
                                         @if($errors->has('confirm_password'))<span class="validation_error">{{ $errors->first('confirm_password') }}</span>@endif
                                     </div>
                                     <div class="form-group col-md-6 mb-50">

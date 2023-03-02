@@ -1545,4 +1545,11 @@ return [
     'learning_objectives_skill_deleted_successfully'    => '學習目標技能刪除成功',
     'ordering_sorted'                                   => '排序...',
     'remaining_time'                                    => '剩餘時間',
+    'school_user_management' => [
+        'title'                                         => '學校用戶列表',
+        'school_admin_privilege'                        => '學校管理員權限',
+        'add_school_user'                               => '添加學校用戶',
+        'update_school_user'                            => '更新學校用戶',
+        'school_name'                                   => '學校名稱',
+    ]
 ];

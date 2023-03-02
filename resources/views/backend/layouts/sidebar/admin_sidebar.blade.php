@@ -66,7 +66,7 @@ if(Auth::user()->role_id == 1){
                     <ul class="flex-column pl-2 nav">
                         {{-- Profile --}}
                         <li class="nav-item">
-                            <a class="nav-link" href="#">
+                            <a class="nav-link" href="{{route('profile.index')}}">
                                 <span class="fa fa-user"></span>
                                 <span class="text">{{__('Profile')}}</span>
                             </a>
@@ -166,7 +166,7 @@ if(Auth::user()->role_id == 1){
                             <li class="nav-item {{ (request()->is('question-wizard') || request()->is('super-admin/generate-questions') || request()->is('question-wizard/preview/*') || request()->is('exams/attempt/students/*') || request()->is('super-admin/generate-questions-edit/*') || request()->is('question-wizard/proof-reading-question')) ? 'active': ''  }}">
                                 <a href="{{ route('question-wizard') }}">
                                     <span class="fa fa-book"></span>
-                                    <span class="text">{{__('Tese and Exercise Wizard')}}</span>
+                                    <span class="text">{{__('Test and Exercise Wizard')}}</span>
                                 </a>
                             </li>
                         @endif

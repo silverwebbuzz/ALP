@@ -28,10 +28,9 @@ class SchoolDashboardController extends Controller
 
     public function SchoolProfile(){        
         try{
-            $id = auth()->user()->{cn::USERS_SCHOOL_ID_COL} ;
-            $uid = auth()->user()->{cn::USERS_ID_COL};
-            $SchoolData = School::where(cn::SCHOOL_ID_COLS,$id)->first();
-            $UserData = User::where(cn::USERS_ID_COL,$uid)->first();
+            $SchoolId = auth()->user()->{cn::USERS_SCHOOL_ID_COL} ;
+            $SchoolData = School::where(cn::SCHOOL_ID_COLS,$SchoolId)->first();
+            $UserData = User::where(cn::USERS_ROLE_ID_COL,cn::SCHOOL_ROLE_ID)->where(cn::USERS_SCHOOL_ID_COL,$SchoolId)->first();
             (!empty($UserData)) ? $Schoolemail['email'] = $UserData->{cn::USERS_EMAIL_COL} :  $Schoolemail['email'] = '';
             return view('backend.schools.school_profile',compact('SchoolData','Schoolemail','UserData'));
         }catch(Exception $exception){
@@ -39,11 +38,14 @@ class SchoolDashboardController extends Controller
         }
     }
     
+    /**
+     * USE : Update School Profile
+     */
     public function SchoolProfileUpdate(Request $request){
        try{
-            $id = auth()->user()->{cn::USERS_SCHOOL_ID_COL} ;
+            $SchoolId = auth()->user()->{cn::USERS_SCHOOL_ID_COL} ;
             $destinationPath = public_path('uploads/profile_image');
-            $userDetail = User::find(auth()->user()->{cn::USERS_ID_COL});
+            $userDetail = User::where(cn::USERS_ROLE_ID_COL,cn::SCHOOL_ROLE_ID)->where(cn::USERS_SCHOOL_ID_COL,$SchoolId)->first();
             $validator = Validator::make($request->all(), School::rules($request, 'update'), School::rulesMessages('update'));
             if ($validator->fails()) {
                 return back()->withErrors($validator)->withInput();
@@ -77,21 +79,21 @@ class SchoolDashboardController extends Controller
                             cn::SCHOOL_STARTTIME_COL        => (!empty($request->starttime) ? $this->DateConvertToYMD($request->starttime) : ''),
                             cn::SCHOOL_SCHOOL_STATUS        => $request->status
                         );
-            $this->StoreAuditLogFunction($PostData,'School',cn::SCHOOL_ID_COLS,$id,'Update School Profile',cn::SCHOOL_TABLE_NAME,'');
-            $Schools = School::where(cn::SCHOOL_ID_COLS,$id)->update($PostData);
+            $this->StoreAuditLogFunction($PostData,'School',cn::SCHOOL_ID_COLS,$SchoolId,'Update School Profile',cn::SCHOOL_TABLE_NAME,'');
+            $Schools = School::where(cn::SCHOOL_ID_COLS,$SchoolId)->update($PostData);
             //in user table 
             if(!empty($Schools)){
-                if(User::where(cn::USERS_ROLE_ID_COL,auth()->user()->role_id)->where(cn::USERS_SCHOOL_ID_COL,$id)->exists()){
-                    $school_add_in_user_table = array(
-                        cn::USERS_NAME_COL      => $request->school_name,
-                        cn::USERS_ADDRESS_COL   => ($request->address) ? $this->encrypt($request->address) : null,
-                        cn::USERS_CITY_COL      => ($request->city) ? $this->encrypt($request->city) : null,
-                        cn::USERS_PROFILE_PHOTO_COL => $request->file('profile_photo') ? $ProfileImageFullPath : $userDetail->profile_photo
-                    );
+                if(User::where(cn::USERS_ROLE_ID_COL,cn::SCHOOL_ROLE_ID)->where(cn::USERS_SCHOOL_ID_COL,$SchoolId)->exists()){
+                    $SchoolData = array(
+                                                    cn::USERS_NAME_COL      => $request->school_name,
+                                                    cn::USERS_ADDRESS_COL   => ($request->address) ? $this->encrypt($request->address) : null,
+                                                    cn::USERS_CITY_COL      => ($request->city) ? $this->encrypt($request->city) : null,
+                                                    cn::USERS_PROFILE_PHOTO_COL => $request->file('profile_photo') ? $ProfileImageFullPath : $userDetail->profile_photo
+                                                );
                 }
-                $this->StoreAuditLogFunction($school_add_in_user_table,'User',cn::USERS_ROLE_ID_COL,auth()->user()->role_id,'Update School Profile',cn::USERS_TABLE_NAME,'');
-                $update = User::where(cn::USERS_ROLE_ID_COL,auth()->user()->role_id)->where(cn::USERS_SCHOOL_ID_COL,$id)->update($school_add_in_user_table);
-                return redirect('schoolprofile')->with('success_msg', __('languages.profile_updated_successfully'));
+                $this->StoreAuditLogFunction($SchoolData,'User',cn::USERS_ROLE_ID_COL,cn::SCHOOL_ROLE_ID,'Update School Profile',cn::USERS_TABLE_NAME,'');
+                $update = User::where(cn::USERS_ROLE_ID_COL,cn::SCHOOL_ROLE_ID)->where(cn::USERS_SCHOOL_ID_COL,$SchoolId)->update($SchoolData);
+                return redirect('school/profile')->with('success_msg', __('languages.profile_updated_successfully'));
             }else{
                 return back()->with('error_msg', __('languages.problem_was_occur_please_try_again'));
             }

@@ -62,6 +62,7 @@ class LeaderBoardController extends Controller
             case 5 :
             case 7 :
             case 8 :
+            case 9 :
                 $studentList =UserCreditPoints::with('user')->whereHas('user',function($query){
                                                             return $query->where([
                                                                                     cn::USERS_ROLE_ID_COL   => cn::STUDENT_ROLE_ID,
@@ -125,7 +126,8 @@ class LeaderBoardController extends Controller
                         
                     case cn::SCHOOL_ROLE_ID :
                     case cn::PRINCIPAL_ROLE_ID :
-                    case cn::SUB_ADMIN_ROLE_ID:
+                    case cn::PANEL_HEAD_ROLE_ID:
+                    case cn::CO_ORDINATOR_ROLE_ID:
                         $studentList =UserCreditPoints::with('user')->whereHas('user',function($query){
                                                                                     return $query->where([
                                                                                                             cn::USERS_ROLE_ID_COL   => cn::STUDENT_ROLE_ID,
@@ -182,7 +184,8 @@ class LeaderBoardController extends Controller
                             break;
                     case cn::SCHOOL_ROLE_ID :
                     case cn::PRINCIPAL_ROLE_ID :
-                    case cn::SUB_ADMIN_ROLE_ID :
+                    case cn::PANEL_HEAD_ROLE_ID :
+                    case cn::CO_ORDINATOR_ROLE_ID:
                         $studentList = User::where([
                                                         cn::USERS_ROLE_ID_COL => cn::STUDENT_ROLE_ID,
                                                         cn::USERS_SCHOOL_ID_COL => Auth::user()->{cn::USERS_SCHOOL_ID_COL},

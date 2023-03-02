@@ -42,26 +42,13 @@ class CreditPointController extends Controller
             $PeerGroupList = PeerGroup::where([cn::PEER_GROUP_CREATED_BY_USER_ID_COL => Auth()->user()->{cn::USERS_ID_COL}, cn::PEER_GROUP_STATUS_COL => '1'])->get();
 
             // get student list
-            // $StudentList = User::whereIn(cn::USERS_GRADE_ID_COL,$TeacherGradeClass['grades'])
-            //                 ->whereIn(cn::USERS_CLASS_ID_COL,$TeacherGradeClass['class'])
-            //                 ->where([cn::USERS_ROLE_ID_COL => cn::STUDENT_ROLE_ID,cn::USERS_STATUS_COL => 'active'])
-            //                 ->get();
-            $StudentList = User::whereIn(cn::USERS_ID_COL,$this->curriculum_year_mapping_student_ids($TeacherGradeClass['grades'],$TeacherGradeClass['class'],$schoolId))
-            ->where([cn::USERS_ROLE_ID_COL => cn::STUDENT_ROLE_ID,cn::USERS_STATUS_COL => 'active'])
-            ->get();
+            $StudentList =  User::whereIn(cn::USERS_ID_COL,$this->curriculum_year_mapping_student_ids($TeacherGradeClass['grades'],$TeacherGradeClass['class'],$schoolId))
+                            ->where([cn::USERS_ROLE_ID_COL => cn::STUDENT_ROLE_ID,cn::USERS_STATUS_COL => 'active'])
+                            ->get();
         }
 
-        if($this->isSchoolLogin() || $this->isPrincipalLogin() || $this->isSubAdminLogin()){    
-            if($this->isSchoolLogin()){
-                $schoolId = $this->isSchoolLogin();
-            }
-            if($this->isPrincipalLogin()){
-                $schoolId = $this->isPrincipalLogin();
-            }
-            if($this->isSubAdminLogin()){
-                $schoolId = $this->isSubAdminLogin();
-            }
-
+        if($this->isSchoolLogin() || $this->isPrincipalLogin() || $this->isPanelHeadLogin() || $this->isCoOrdinatorLogin()){    
+            $schoolId = Auth::user()->{cn::USERS_SCHOOL_ID_COL};
             $GradeMapping = GradeSchoolMappings::with('grades')->where(cn::GRADES_MAPPING_SCHOOL_ID_COL,$schoolId)->get()->pluck(cn::GRADES_MAPPING_GRADE_ID_COL);
             $gradeClass = GradeClassMapping::where(cn::GRADE_CLASS_MAPPING_SCHOOL_ID_COL,$schoolId)->whereIn(cn::GRADE_CLASS_MAPPING_GRADE_ID_COL,$GradeMapping)->pluck(cn::GRADE_CLASS_MAPPING_ID_COL)->toArray();
             if(isset($gradeClass) && !empty($gradeClass)){

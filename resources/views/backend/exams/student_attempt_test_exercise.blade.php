@@ -93,7 +93,7 @@
                                             <span id="ExamTimerOut">@if(isset($ExamMaximumSeconds)) {{sprintf('%02d:%02d:%02d', ($ExamMaximumSeconds/ 3600),($ExamMaximumSeconds/ 60 % 60), $ExamMaximumSeconds% 60)}} @else 00:00:00 @endif</span>
                                         @endif
                                     </div>
-                                    <div class="attmp-timer-inr" style="display:none;">
+                                    <div class="attmp-timer-inr"@if($ExamMaximumSeconds != 'unlimited_time') style="display:none;" @endif>
                                         <h5>{{__('languages.my_studies.exam_time')}}: </h5>
                                         <p><span id="ExamTimer">@if(isset($taking_exam_timing)) {{$taking_exam_timing}} @else 00:00:00 @endif</span></p>
                                     </div>

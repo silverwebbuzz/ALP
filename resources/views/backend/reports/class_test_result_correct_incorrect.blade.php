@@ -46,8 +46,11 @@
 											if(App\Helpers\Helper::isPrincipalLogin()){
 												$school_id = App\Helpers\Helper::isPrincipalLogin();
 											}
-											if(App\Helpers\Helper::isSubAdminLogin()){
-												$school_id = App\Helpers\Helper::isSubAdminLogin();
+											if(App\Helpers\Helper::isPanelHeadLogin()){
+												$school_id = App\Helpers\Helper::isPanelHeadLogin();
+											}
+											if(App\Helpers\Helper::isCoOrdinatorLogin()){
+												$school_id = App\Helpers\Helper::isCoOrdinatorLogin();
 											}
 										@endphp
 											@if(!empty($ExamList))
@@ -731,7 +734,9 @@
 				isPrincipalLogin = 1;
 			@elseif(App\Helpers\Helper::isAdmin())
 				isAdmin = 1;
-			@elseif(App\Helpers\Helper::isSubAdminLogin())
+			@elseif(App\Helpers\Helper::isPanelHeadLogin())
+				isSubAdminLogin = 1;
+			@elseif(App\Helpers\Helper::isCoOrdinatorLogin())
 				isSubAdminLogin = 1;
 			@endif
 		</script>

@@ -60,7 +60,7 @@ OnPageLoadEvent = {
             knowledgeNode($("#naming_structure_code").val());
         }
 
-        $(".select-search,#nodeModal #main_node_id,#addNodesForm #sub_node_id,#updateNodesForm #sub_node_id,#nodeModal #parent-node-id,#question_filter_grade,#question_filter_difficulty,#question_filter_question_type,#question_filter_status,#user_filter_school,#user_filter_role,#user_filter_grade,#role,#school_id,#grade_id,#status,#add_student_group_grade,#add_student_group_status,#School,#filter_test_template_difficult_lvl,#filter_test_template_template_type,#template_type,#difficulty_level,#learningReportStrand,#reportLearningType,#pass_only_and_or,#curriculum,#test_type,#select-report-date,#select-no-of-per-trials-question,#difficulty_mode,#select-display-hints,#select-display-full-solutions,#select-display-pr-answer-hints,#select-randomize-answers,#select-randomize-order,#test_start_time,#test_end_time,#use_of_modes,#assignStudentIntoGroup,#leaderboard_type,#learning_tutor_language_id,#is_approved_question,.performance_exam_id,#current_curriculum_year,#curriculum_year,#reference_adjusted_calibration").select2({
+        $(".select-search,#nodeModal #main_node_id,#addNodesForm #sub_node_id,#updateNodesForm #sub_node_id,#nodeModal #parent-node-id,#question_filter_grade,#question_filter_difficulty,#question_filter_question_type,#question_filter_status,#user_filter_school,#user_filter_role,#user_filter_grade,#role,#school_id,#grade_id,#status,#add_student_group_grade,#add_student_group_status,#School,#filter_test_template_difficult_lvl,#filter_test_template_template_type,#template_type,#difficulty_level,#learningReportStrand,#reportLearningType,#pass_only_and_or,#curriculum,#test_type,#select-report-date,#select-no-of-per-trials-question,#difficulty_mode,#select-display-hints,#select-display-full-solutions,#select-display-pr-answer-hints,#select-randomize-answers,#select-randomize-order,#test_start_time,#test_end_time,#use_of_modes,#assignStudentIntoGroup,#leaderboard_type,#learning_tutor_language_id,#is_approved_question,.performance_exam_id,#current_curriculum_year,#curriculum_year,#reference_adjusted_calibration,#school_users_school_id").select2({
             width: "100%",
         });
 
@@ -1053,15 +1053,6 @@ OnChangeEvent = {
 
         // Preview image on change profile image
         $("#profile_photo").change(function () {
-            let reader = new FileReader();
-            reader.onload = (e) => {
-                $("#preview-profile-image").attr("src", e.target.result);
-            };
-            reader.readAsDataURL(this.files[0]);
-        });
-
-        // Preview image on change profile image
-        $("#teacher_profile_photo").change(function () {
             let reader = new FileReader();
             reader.onload = (e) => {
                 $("#preview-profile-image").attr("src", e.target.result);
@@ -3029,7 +3020,9 @@ OnClickEvent = {
         });
 
         $(document).on("click", ".closeSchoolProfilePopup", function () {
-            closePopupModal("school-profile-popup");
+            $("#school-profile-popup").on("hidden.bs.modal", function (e) {
+                $(this).end();
+            });
         });
 
         /**
@@ -3848,6 +3841,45 @@ OnClickEvent = {
                             $("#cover-spin").show();
                             $.ajax({
                                 url: BASE_URL + "/user/delete/" + dataid,
+                                type: "GET",
+                                success: function (response) {
+                                    $("#cover-spin").hide();
+                                    var data = JSON.parse(JSON.stringify(response));
+                                    if (data.status === "success") {
+                                        toastr.success(data.message);
+                                        tr.fadeOut(500, function () {
+                                            $(this).remove();
+                                        });
+                                    } else {
+                                        toastr.error(data.message);
+                                    }
+                                },
+                                error: function (response) {
+                                    ErrorHandlingMessage(response);
+                                },
+                            });
+                        },
+                    },
+                    Cancellation: function () {},
+                },
+            });
+        });
+
+        // Delete School Users
+        $(document).on("click", "#deleteSchoolUser", function () {
+            var dataid = $(this).data("id");
+            var tr = $(this).closest("tr");
+            $.confirm({
+                title: DELETE_USER + "?",
+                content: CONFIRMATION,
+                autoClose: "Cancellation|8000",
+                buttons: {
+                    deleteUser: {
+                        text: DELETE_USER,
+                        action: function () {
+                            $("#cover-spin").show();
+                            $.ajax({
+                                url: BASE_URL + "/school-users/delete/" + dataid,
                                 type: "GET",
                                 success: function (response) {
                                     $("#cover-spin").hide();
@@ -7280,46 +7312,46 @@ Validation = {
         });
 
         //update teacher profile validation
-        $("#updateTeacherProfileForm").validate({
-            rules: {
-                name_en: {
-                    required: true,
-                },
-                name_ch: {
-                    required: true,
-                },
-                mobile_no: {
-                    number: true,
-                    minlength: 8,
-                },
-                profile_photo: {
-                    extension: "png|jpe?g|gif",
-                },
-            },
-            messages: {
-                name_en: {
-                    required: VALIDATIONS.PLEASE_ENTER_ENGLISH_NAME,
-                },
-                name_ch: {
-                    required: VALIDATIONS.PLEASE_ENTER_CHINESE_NAME,
-                },
-                mobile_no: {
-                    number: VALIDATIONS.PLEASE_ENTER_ONLY_NUMERIC_VALUE,
-                    minlength: VALIDATIONS.PLEASE_ENTER_MINIMUM_EIGHT_DIGIT,
-                },
-                profile_photo: {
-                    extension:
-                        VALIDATIONS.PLEASE_UPLOAD_ONLY_JPEG_JPG_OR_PNG_FILES,
-                },
-            },
-            errorPlacement: function (error, element) {
-                if (element.attr("name") == "status") {
-                    error.appendTo("#error-status");
-                } else {
-                    error.insertAfter(element);
-                }
-            },
-        });
+        // $("#updateTeacherProfileForm").validate({
+        //     rules: {
+        //         name_en: {
+        //             required: true,
+        //         },
+        //         name_ch: {
+        //             required: true,
+        //         },
+        //         mobile_no: {
+        //             number: true,
+        //             minlength: 8,
+        //         },
+        //         profile_photo: {
+        //             extension: "png|jpe?g|gif",
+        //         },
+        //     },
+        //     messages: {
+        //         name_en: {
+        //             required: VALIDATIONS.PLEASE_ENTER_ENGLISH_NAME,
+        //         },
+        //         name_ch: {
+        //             required: VALIDATIONS.PLEASE_ENTER_CHINESE_NAME,
+        //         },
+        //         mobile_no: {
+        //             number: VALIDATIONS.PLEASE_ENTER_ONLY_NUMERIC_VALUE,
+        //             minlength: VALIDATIONS.PLEASE_ENTER_MINIMUM_EIGHT_DIGIT,
+        //         },
+        //         profile_photo: {
+        //             extension:
+        //                 VALIDATIONS.PLEASE_UPLOAD_ONLY_JPEG_JPG_OR_PNG_FILES,
+        //         },
+        //     },
+        //     errorPlacement: function (error, element) {
+        //         if (element.attr("name") == "status") {
+        //             error.appendTo("#error-status");
+        //         } else {
+        //             error.insertAfter(element);
+        //         }
+        //     },
+        // });
 
         //Add Filteration on grade from teacher panel->myclass  Form Validation
         $("#displayStudentProfileFilterForm").validate({

@@ -34,12 +34,13 @@ class ClassController extends Controller
         }
         $items = $request->items ?? 10;
         $countData = Grades::all()->count();
-        $schoolId = Auth::user()->{cn::USERS_SCHOOL_ID_COL};
         $TotalFilterData = '';
         try{
             $List = GradeSchoolMappings::with('grades')
-                    ->where(cn::GRADES_MAPPING_SCHOOL_ID_COL,$schoolId)
-                    ->where(cn::GRADES_MAPPING_CURRICULUM_YEAR_ID_COL,$this->GetCurriculumYear())
+                    ->where([
+                        cn::GRADES_MAPPING_SCHOOL_ID_COL            => Auth::user()->{cn::USERS_SCHOOL_ID_COL},
+                        cn::GRADES_MAPPING_CURRICULUM_YEAR_ID_COL   => $this->GetCurriculumYear()
+                    ])
                     ->orderBy(cn::GRADES_ID_COL,'DESC')
                     ->sortable()
                     ->paginate($items);
@@ -56,7 +57,6 @@ class ClassController extends Controller
         if(!in_array('grade_management_create', Helper::getPermissions(Auth::user()->{cn::USERS_ID_COL}))) {
             return  redirect(Helper::redirectRoleBasedDashboard(Auth::user()->{cn::USERS_ID_COL}));
         }
-        // $GradeList = Grades::where(cn::GRADES_STATUS_COL,1)->whereIn(cn::GRADES_ID_COL,[1,2,3,4,5,6])->get();
         $GradeList = $this->getGradeLists();
         return view('backend.class.add',compact('GradeList'));
     }
@@ -81,17 +81,16 @@ class ClassController extends Controller
                 //Create Grade
                 $PostData = array(
                     cn::GRADES_NAME_COL => $request->name,
-                    //cn::GRADES_CODE_COL => $request->code,
                     cn::GRADES_STATUS_COL => $request->status
                 );
                 $Grades = Grades::create($PostData);
                 if(!empty($request->class_type)){
                     foreach($request->class_type as $classType){
                         $classData = array(
-                            cn::GRADE_CLASS_MAPPING_CURRICULUM_YEAR_ID_COL => $this->GetCurriculumYear(),
-                            cn::GRADE_CLASS_MAPPING_SCHOOL_ID_COL => $this->isSchoolLogin(),
-                            cn::GRADE_CLASS_MAPPING_GRADE_ID_COL => $Grades->{cn::GRADES_ID_COL},
-                            cn::GRADE_CLASS_MAPPING_NAME_COL => $classType
+                            cn::GRADE_CLASS_MAPPING_CURRICULUM_YEAR_ID_COL  => $this->GetCurriculumYear(),
+                            cn::GRADE_CLASS_MAPPING_SCHOOL_ID_COL           => Auth::user()->{cn::USERS_SCHOOL_ID_COL},
+                            cn::GRADE_CLASS_MAPPING_GRADE_ID_COL            => $Grades->{cn::GRADES_ID_COL},
+                            cn::GRADE_CLASS_MAPPING_NAME_COL                => $classType
                         );
                         $gradeClassMapping = GradeClassMapping::create($classData);
                     }
@@ -108,53 +107,53 @@ class ClassController extends Controller
                         $Subjects = Subjects::create($PostData);
                         if(!empty($Subjects)){
                             GradeSchoolMappings::create([
-                                cn::GRADES_MAPPING_CURRICULUM_YEAR_ID_COL => $this->GetCurriculumYear(),
-                                cn::GRADES_MAPPING_SCHOOL_ID_COL => $this->isSchoolLogin(),
-                                cn::GRADES_MAPPING_GRADE_ID_COL => $Grades->id
+                                cn::GRADES_MAPPING_CURRICULUM_YEAR_ID_COL   => $this->GetCurriculumYear(),
+                                cn::GRADES_MAPPING_SCHOOL_ID_COL            => Auth::user()->{cn::USERS_SCHOOL_ID_COL},
+                                cn::GRADES_MAPPING_GRADE_ID_COL             => $Grades->id
                             ]);
                             $ClassSubjectMapping = ClassSubjectMapping::create([
-                                                    cn::CLASS_SUBJECT_MAPPING_CURRICULUM_YEAR_ID_COL => $this->GetCurriculumYear(),
-                                                    cn::CLASS_SUBJECT_MAPPING_SUBJECT_ID_COL => $Subjects->{cn::SUBJECTS_ID_COL},
-                                                    cn::CLASS_SUBJECT_MAPPING_CLASS_ID_COL => $Grades->{cn::GRADES_ID_COL},
-                                                    cn::CLASS_SUBJECT_MAPPING_SCHOOL_ID_COL => $this->isSchoolLogin(),
-                                                    cn::CLASS_SUBJECT_MAPPING_STATUS_COL => 1
+                                                    cn::CLASS_SUBJECT_MAPPING_CURRICULUM_YEAR_ID_COL    => $this->GetCurriculumYear(),
+                                                    cn::CLASS_SUBJECT_MAPPING_SUBJECT_ID_COL            => $Subjects->{cn::SUBJECTS_ID_COL},
+                                                    cn::CLASS_SUBJECT_MAPPING_CLASS_ID_COL              => $Grades->{cn::GRADES_ID_COL},
+                                                    cn::CLASS_SUBJECT_MAPPING_SCHOOL_ID_COL             => Auth::user()->{cn::USERS_SCHOOL_ID_COL},
+                                                    cn::CLASS_SUBJECT_MAPPING_STATUS_COL                => 1
                                                 ]);
                             if(SubjectSchoolMappings::where([
-                                cn::SUBJECT_MAPPING_CURRICULUM_YEAR_ID_COL => $this->GetCurriculumYear(),
-                                cn::SUBJECT_MAPPING_SCHOOL_ID_COL => $this->isSchoolLogin(),
-                                cn::SUBJECT_MAPPING_SUBJECT_ID_COL => $Subjects->{cn::SUBJECTS_ID_COL}
+                                cn::SUBJECT_MAPPING_CURRICULUM_YEAR_ID_COL  => $this->GetCurriculumYear(),
+                                cn::SUBJECT_MAPPING_SCHOOL_ID_COL           => Auth::user()->{cn::USERS_SCHOOL_ID_COL},
+                                cn::SUBJECT_MAPPING_SUBJECT_ID_COL          => $Subjects->{cn::SUBJECTS_ID_COL}
                             ])->doesntExist()){
                                 $subjectMapping =   SubjectSchoolMappings::create([
-                                                        cn::SUBJECT_MAPPING_CURRICULUM_YEAR_ID_COL => $this->GetCurriculumYear(),
-                                                        cn::SUBJECT_MAPPING_SCHOOL_ID_COL => $this->isSchoolLogin(),
-                                                        cn::SUBJECT_MAPPING_SUBJECT_ID_COL => $Subjects->{cn::SUBJECTS_ID_COL},
-                                                        cn::SUBJECT_MAPPING_STATUS_COL => 'active'
+                                                        cn::SUBJECT_MAPPING_CURRICULUM_YEAR_ID_COL  => $this->GetCurriculumYear(),
+                                                        cn::SUBJECT_MAPPING_SCHOOL_ID_COL           => Auth::user()->{cn::USERS_SCHOOL_ID_COL},
+                                                        cn::SUBJECT_MAPPING_SUBJECT_ID_COL          => $Subjects->{cn::SUBJECTS_ID_COL},
+                                                        cn::SUBJECT_MAPPING_STATUS_COL              => 'active'
                                                     ]);
                             }
                             // Clone and mapping data
                             //$this->StrandUnitObjectivesMappingClone($Grades->{cn::GRADES_ID_COL},$Subjects->{cn::SUBJECTS_ID_COL});
-                            Log::info('Job Success - Redirect success page');
+                            //Log::info('Job Success - Redirect success page');
                             return redirect('class')->with('success_msg', __('languages.class_added_successfully'));
                         }else{
                             return back()->with('error_msg', __('languages.problem_was_occur_please_try_again'));
                         }
                     }else{
-                        $Subjects = Subjects::where([cn::SUBJECTS_NAME_COL=>cn::SUBJECTMATHEMATICS])->first();
+                        $Subjects = Subjects::where([cn::SUBJECTS_NAME_COL => cn::SUBJECTMATHEMATICS])->first();
                         if(!empty($Subjects)){
                             GradeSchoolMappings::create([
-                                cn::GRADES_MAPPING_CURRICULUM_YEAR_ID_COL => $this->GetCurriculumYear(),
-                                cn::GRADES_MAPPING_SCHOOL_ID_COL => $this->isSchoolLogin(),
-                                cn::GRADES_MAPPING_GRADE_ID_COL => $Grades->{cn::GRADES_ID_COL},
+                                cn::GRADES_MAPPING_CURRICULUM_YEAR_ID_COL   => $this->GetCurriculumYear(),
+                                cn::GRADES_MAPPING_SCHOOL_ID_COL            => Auth::user()->{cn::USERS_SCHOOL_ID_COL},
+                                cn::GRADES_MAPPING_GRADE_ID_COL             => $Grades->{cn::GRADES_ID_COL},
                             ]);
                             $ClassSubjectMapping = ClassSubjectMapping::create([
-                                                    cn::CLASS_SUBJECT_MAPPING_SUBJECT_ID_COL => $Subjects->{cn::SUBJECTS_ID_COL},
-                                                    cn::CLASS_SUBJECT_MAPPING_CLASS_ID_COL => $Grades->{cn::GRADES_ID_COL},
-                                                    cn::CLASS_SUBJECT_MAPPING_SCHOOL_ID_COL => $this->isSchoolLogin(),
-                                                    cn::GRADES_MAPPING_CURRICULUM_YEAR_ID_COL => $this->GetCurriculumYear(),
-                                                    cn::CLASS_SUBJECT_MAPPING_STATUS_COL => 1
+                                                    cn::CLASS_SUBJECT_MAPPING_SUBJECT_ID_COL    => $Subjects->{cn::SUBJECTS_ID_COL},
+                                                    cn::CLASS_SUBJECT_MAPPING_CLASS_ID_COL      => $Grades->{cn::GRADES_ID_COL},
+                                                    cn::CLASS_SUBJECT_MAPPING_SCHOOL_ID_COL     => Auth::user()->{cn::USERS_SCHOOL_ID_COL},
+                                                    cn::GRADES_MAPPING_CURRICULUM_YEAR_ID_COL   => $this->GetCurriculumYear(),
+                                                    cn::CLASS_SUBJECT_MAPPING_STATUS_COL        => 1
                                                 ]);
-                            if(SubjectSchoolMappings::where([cn::SUBJECT_MAPPING_SCHOOL_ID_COL => $this->isSchoolLogin(),cn::SUBJECT_MAPPING_SUBJECT_ID_COL => $Subjects->{cn::SUBJECTS_ID_COL}])->doesntExist()){
-                                $subjectMapping = SubjectSchoolMappings::create([cn::SUBJECT_MAPPING_SCHOOL_ID_COL => $this->isSchoolLogin(),cn::SUBJECT_MAPPING_SUBJECT_ID_COL => $Subjects->{cn::SUBJECTS_ID_COL},cn::SUBJECT_MAPPING_STATUS_COL => 'active']);
+                            if(SubjectSchoolMappings::where([cn::SUBJECT_MAPPING_SCHOOL_ID_COL => Auth::user()->{cn::USERS_SCHOOL_ID_COL},cn::SUBJECT_MAPPING_SUBJECT_ID_COL => $Subjects->{cn::SUBJECTS_ID_COL}])->doesntExist()){
+                                $subjectMapping = SubjectSchoolMappings::create([cn::SUBJECT_MAPPING_SCHOOL_ID_COL => Auth::user()->{cn::USERS_SCHOOL_ID_COL},cn::SUBJECT_MAPPING_SUBJECT_ID_COL => $Subjects->{cn::SUBJECTS_ID_COL},cn::SUBJECT_MAPPING_STATUS_COL => 'active']);
                             }
                             // Clone and mapping data
                             //$this->StrandUnitObjectivesMappingClone($Grades->{cn::GRADES_ID_COL},$Subjects->{cn::SUBJECTS_ID_COL});
@@ -170,57 +169,57 @@ class ClassController extends Controller
                 if(!empty($request->class_type)){
                     foreach($request->class_type as $classType){
                         if(GradeClassMapping::where([
-                            cn::GRADE_CLASS_MAPPING_CURRICULUM_YEAR_ID_COL => $this->GetCurriculumYear(),
-                            cn::GRADE_CLASS_MAPPING_SCHOOL_ID_COL => $this->isSchoolLogin(),
-                            cn::GRADE_CLASS_MAPPING_GRADE_ID_COL => $Grades->{cn::GRADES_ID_COL},
-                            cn::GRADE_CLASS_MAPPING_NAME_COL => $classType
+                            cn::GRADE_CLASS_MAPPING_CURRICULUM_YEAR_ID_COL  => $this->GetCurriculumYear(),
+                            cn::GRADE_CLASS_MAPPING_SCHOOL_ID_COL           => Auth::user()->{cn::USERS_SCHOOL_ID_COL},
+                            cn::GRADE_CLASS_MAPPING_GRADE_ID_COL            => $Grades->{cn::GRADES_ID_COL},
+                            cn::GRADE_CLASS_MAPPING_NAME_COL                => $classType
                         ])->doesntExist()){
                             $classData = array(
-                                cn::GRADE_CLASS_MAPPING_CURRICULUM_YEAR_ID_COL => $this->GetCurriculumYear(),
-                                cn::GRADE_CLASS_MAPPING_SCHOOL_ID_COL => $this->isSchoolLogin(),
-                                cn::GRADE_CLASS_MAPPING_GRADE_ID_COL => $Grades->{cn::GRADES_ID_COL},
-                                cn::GRADE_CLASS_MAPPING_NAME_COL => $classType 
+                                cn::GRADE_CLASS_MAPPING_CURRICULUM_YEAR_ID_COL  => $this->GetCurriculumYear(),
+                                cn::GRADE_CLASS_MAPPING_SCHOOL_ID_COL           => Auth::user()->{cn::USERS_SCHOOL_ID_COL},
+                                cn::GRADE_CLASS_MAPPING_GRADE_ID_COL            => $Grades->{cn::GRADES_ID_COL},
+                                cn::GRADE_CLASS_MAPPING_NAME_COL                => $classType 
                             );
                             GradeClassMapping::create($classData);
                         }
                     }
                 }
                 if(GradeSchoolMappings::where([
-                    cn::GRADES_MAPPING_CURRICULUM_YEAR_ID_COL => $this->GetCurriculumYear(),
-                    cn::GRADES_MAPPING_SCHOOL_ID_COL => $this->isSchoolLogin(),
-                    cn::GRADES_MAPPING_GRADE_ID_COL => $Grades->{cn::GRADES_ID_COL}
+                    cn::GRADES_MAPPING_CURRICULUM_YEAR_ID_COL   => $this->GetCurriculumYear(),
+                    cn::GRADES_MAPPING_SCHOOL_ID_COL            => Auth::user()->{cn::USERS_SCHOOL_ID_COL},
+                    cn::GRADES_MAPPING_GRADE_ID_COL             => $Grades->{cn::GRADES_ID_COL}
                 ])->doesntExist()){
                     if(!empty($Grades)){
                         if(Subjects::where(cn::SUBJECTS_NAME_COL,cn::SUBJECTMATHEMATICS)->doesntExist()){
                             $PostData = array(
-                                cn::SUBJECTS_NAME_COL => cn::SUBJECTMATHEMATICS,
-                                cn::SUBJECTS_CODE_COL => cn::CODEMATHEMATICS,
+                                cn::SUBJECTS_NAME_COL   => cn::SUBJECTMATHEMATICS,
+                                cn::SUBJECTS_CODE_COL   => cn::CODEMATHEMATICS,
                                 cn::SUBJECTS_STATUS_COL => 1
                             );
                             $Subjects = Subjects::create($PostData);
                             if(!empty($Subjects)){
                                 GradeSchoolMappings::create([
-                                    cn::GRADES_MAPPING_CURRICULUM_YEAR_ID_COL => $this->GetCurriculumYear(),
-                                    cn::GRADES_MAPPING_SCHOOL_ID_COL => $this->isSchoolLogin(),
-                                    cn::GRADES_MAPPING_GRADE_ID_COL => $Grades->{cn::GRADES_ID_COL}
+                                    cn::GRADES_MAPPING_CURRICULUM_YEAR_ID_COL   => $this->GetCurriculumYear(),
+                                    cn::GRADES_MAPPING_SCHOOL_ID_COL            => Auth::user()->{cn::USERS_SCHOOL_ID_COL},
+                                    cn::GRADES_MAPPING_GRADE_ID_COL             => $Grades->{cn::GRADES_ID_COL}
                                 ]);
                                 ClassSubjectMapping::create([
-                                    cn::CLASS_SUBJECT_MAPPING_CURRICULUM_YEAR_ID_COL => $this->GetCurriculumYear(),
-                                    cn::CLASS_SUBJECT_MAPPING_SUBJECT_ID_COL => $Subjects->{cn::SUBJECTS_ID_COL},
-                                    cn::CLASS_SUBJECT_MAPPING_CLASS_ID_COL => $Grades->{cn::GRADES_ID_COL},
-                                    cn::CLASS_SUBJECT_MAPPING_SCHOOL_ID_COL => $this->isSchoolLogin(),
-                                    cn::CLASS_SUBJECT_MAPPING_STATUS_COL => 1
+                                    cn::CLASS_SUBJECT_MAPPING_CURRICULUM_YEAR_ID_COL    => $this->GetCurriculumYear(),
+                                    cn::CLASS_SUBJECT_MAPPING_SUBJECT_ID_COL            => $Subjects->{cn::SUBJECTS_ID_COL},
+                                    cn::CLASS_SUBJECT_MAPPING_CLASS_ID_COL              => $Grades->{cn::GRADES_ID_COL},
+                                    cn::CLASS_SUBJECT_MAPPING_SCHOOL_ID_COL             => Auth::user()->{cn::USERS_SCHOOL_ID_COL},
+                                    cn::CLASS_SUBJECT_MAPPING_STATUS_COL                => 1
                                 ]);
                                 if(SubjectSchoolMappings::where([
-                                    cn::SUBJECT_MAPPING_CURRICULUM_YEAR_ID_COL => $this->GetCurriculumYear(),
-                                    cn::SUBJECT_MAPPING_SCHOOL_ID_COL => $this->isSchoolLogin(),
-                                    cn::SUBJECT_MAPPING_SUBJECT_ID_COL => $Subjects->{cn::SUBJECTS_ID_COL}
+                                    cn::SUBJECT_MAPPING_CURRICULUM_YEAR_ID_COL  => $this->GetCurriculumYear(),
+                                    cn::SUBJECT_MAPPING_SCHOOL_ID_COL           => Auth::user()->{cn::USERS_SCHOOL_ID_COL},
+                                    cn::SUBJECT_MAPPING_SUBJECT_ID_COL          => $Subjects->{cn::SUBJECTS_ID_COL}
                                 ])->doesntExist()){
                                     SubjectSchoolMappings::create([
-                                        cn::SUBJECT_MAPPING_CURRICULUM_YEAR_ID_COL => $this->GetCurriculumYear(),
-                                        cn::SUBJECT_MAPPING_SCHOOL_ID_COL => $this->isSchoolLogin(),
-                                        cn::SUBJECT_MAPPING_SUBJECT_ID_COL => $Subjects->{cn::SUBJECTS_ID_COL},
-                                        cn::SUBJECT_MAPPING_STATUS_COL => 'active'
+                                        cn::SUBJECT_MAPPING_CURRICULUM_YEAR_ID_COL  => $this->GetCurriculumYear(),
+                                        cn::SUBJECT_MAPPING_SCHOOL_ID_COL           => Auth::user()->{cn::USERS_SCHOOL_ID_COL},
+                                        cn::SUBJECT_MAPPING_SUBJECT_ID_COL          => $Subjects->{cn::SUBJECTS_ID_COL},
+                                        cn::SUBJECT_MAPPING_STATUS_COL              => 'active'
                                     ]);
                                 }
                                 // Clone and mapping data
@@ -234,25 +233,25 @@ class ClassController extends Controller
                             $Subjects = Subjects::where([cn::SUBJECTS_NAME_COL => cn::SUBJECTMATHEMATICS])->first();
                             if(!empty($Subjects)){
                                 GradeSchoolMappings::create([
-                                    cn::GRADES_MAPPING_CURRICULUM_YEAR_ID_COL => $this->GetCurriculumYear(),
-                                    cn::GRADES_MAPPING_SCHOOL_ID_COL => $this->isSchoolLogin(),
-                                    cn::GRADES_MAPPING_GRADE_ID_COL => $Grades->{cn::GRADES_ID_COL}
+                                    cn::GRADES_MAPPING_CURRICULUM_YEAR_ID_COL   => $this->GetCurriculumYear(),
+                                    cn::GRADES_MAPPING_SCHOOL_ID_COL            => Auth::user()->{cn::USERS_SCHOOL_ID_COL},
+                                    cn::GRADES_MAPPING_GRADE_ID_COL             => $Grades->{cn::GRADES_ID_COL}
                                 ]);
                                 ClassSubjectMapping::create([
-                                    cn::CLASS_SUBJECT_MAPPING_CURRICULUM_YEAR_ID_COL => $this->GetCurriculumYear(),
-                                    cn::CLASS_SUBJECT_MAPPING_SUBJECT_ID_COL => $Subjects->{cn::SUBJECTS_ID_COL},
-                                    cn::CLASS_SUBJECT_MAPPING_CLASS_ID_COL => $Grades->{cn::GRADES_ID_COL},
-                                    cn::CLASS_SUBJECT_MAPPING_SCHOOL_ID_COL => $this->isSchoolLogin(),
-                                    cn::CLASS_SUBJECT_MAPPING_STATUS_COL => 1
+                                    cn::CLASS_SUBJECT_MAPPING_CURRICULUM_YEAR_ID_COL    => $this->GetCurriculumYear(),
+                                    cn::CLASS_SUBJECT_MAPPING_SUBJECT_ID_COL            => $Subjects->{cn::SUBJECTS_ID_COL},
+                                    cn::CLASS_SUBJECT_MAPPING_CLASS_ID_COL              => $Grades->{cn::GRADES_ID_COL},
+                                    cn::CLASS_SUBJECT_MAPPING_SCHOOL_ID_COL             => Auth::user()->{cn::USERS_SCHOOL_ID_COL},
+                                    cn::CLASS_SUBJECT_MAPPING_STATUS_COL                => 1
                                 ]);                               
                                 if(SubjectSchoolMappings::where([
-                                    cn::SUBJECT_MAPPING_CURRICULUM_YEAR_ID_COL => $this->GetCurriculumYear(),
-                                    cn::SUBJECT_MAPPING_SCHOOL_ID_COL => $this->isSchoolLogin(),
-                                    cn::SUBJECT_MAPPING_SUBJECT_ID_COL => $Subjects->{cn::SUBJECTS_ID_COL}
+                                    cn::SUBJECT_MAPPING_CURRICULUM_YEAR_ID_COL  => $this->GetCurriculumYear(),
+                                    cn::SUBJECT_MAPPING_SCHOOL_ID_COL           => Auth::user()->{cn::USERS_SCHOOL_ID_COL},
+                                    cn::SUBJECT_MAPPING_SUBJECT_ID_COL          => $Subjects->{cn::SUBJECTS_ID_COL}
                                 ])->doesntExist()){
                                     SubjectSchoolMappings::create([
                                         cn::SUBJECT_MAPPING_CURRICULUM_YEAR_ID_COL => $this->GetCurriculumYear(),
-                                        cn::SUBJECT_MAPPING_SCHOOL_ID_COL => $this->isSchoolLogin(),
+                                        cn::SUBJECT_MAPPING_SCHOOL_ID_COL => Auth::user()->{cn::USERS_SCHOOL_ID_COL},
                                         cn::SUBJECT_MAPPING_SUBJECT_ID_COL => $Subjects->{cn::SUBJECTS_ID_COL},
                                         cn::SUBJECT_MAPPING_STATUS_COL => 'active'
                                     ]);
@@ -307,53 +306,47 @@ class ClassController extends Controller
             $validator = Validator::make($request->all(), GradeClassMapping::rules($request, 'update'),GradeClassMapping::rulesMessages('update'));
             if ($validator->fails()) {
                 return back()->withErrors($validator)->withInput();
-            }
-            // $PostData = array(
-            //     cn::GRADES_NAME_COL => $request->name,
-            //     //cn::GRADES_CODE_COL => $request->code,
-            //     cn::GRADES_STATUS_COL => $request->status
-            // );
-            // $Grades = Grades::where(cn::GRADES_ID_COL,$id)->update($PostData);
-            
+            }            
             $flag = 0; //for manage create or update class
             if(!empty($request->class_type) && isset($request->class_type)){
                 $getClassData = GradeClassMapping::withTrashed()->where([
-                                    cn::GRADE_CLASS_MAPPING_CURRICULUM_YEAR_ID_COL => $this->GetCurriculumYear(),
-                                    cn::GRADE_CLASS_MAPPING_SCHOOL_ID_COL=> $this->isSchoolLogin(),
-                                    cn::GRADE_CLASS_MAPPING_GRADE_ID_COL => $id
+                                    cn::GRADE_CLASS_MAPPING_CURRICULUM_YEAR_ID_COL  => $this->GetCurriculumYear(),
+                                    cn::GRADE_CLASS_MAPPING_SCHOOL_ID_COL           => Auth::user()->{cn::USERS_SCHOOL_ID_COL},
+                                    cn::GRADE_CLASS_MAPPING_GRADE_ID_COL            => $id
                                 ])
                                 ->get()
                                 ->toArray();
                 foreach($request->class_type as $classType){
                     if(!in_array($classType,array_column($getClassData,cn::GRADE_CLASS_MAPPING_NAME_COL))){
                         $classData = array(
-                            cn::GRADE_CLASS_MAPPING_CURRICULUM_YEAR_ID_COL => $this->GetCurriculumYear(),
-                            cn::GRADE_CLASS_MAPPING_SCHOOL_ID_COL => $this->isSchoolLogin(),
-                            cn::GRADE_CLASS_MAPPING_GRADE_ID_COL => $id,
-                            cn::GRADE_CLASS_MAPPING_NAME_COL => $classType 
+                            cn::GRADE_CLASS_MAPPING_CURRICULUM_YEAR_ID_COL  => $this->GetCurriculumYear(),
+                            cn::GRADE_CLASS_MAPPING_SCHOOL_ID_COL           => Auth::user()->{cn::USERS_SCHOOL_ID_COL},
+                            cn::GRADE_CLASS_MAPPING_GRADE_ID_COL            => $id,
+                            cn::GRADE_CLASS_MAPPING_NAME_COL                => $classType 
                         );
                         $gradeClassMapping = GradeClassMapping::create($classData);
                     }else{
                         GradeClassMapping::withTrashed()->where([
-                            cn::GRADE_CLASS_MAPPING_CURRICULUM_YEAR_ID_COL => $this->GetCurriculumYear(),
-                            cn::GRADE_CLASS_MAPPING_SCHOOL_ID_COL => $this->isSchoolLogin(),
-                            cn::GRADE_CLASS_MAPPING_GRADE_ID_COL => $id,
-                            cn::GRADE_CLASS_MAPPING_NAME_COL => $classType
-                        ])->Update([cn::DELETED_AT_COL => null]);
+                            cn::GRADE_CLASS_MAPPING_CURRICULUM_YEAR_ID_COL  => $this->GetCurriculumYear(),
+                            cn::GRADE_CLASS_MAPPING_SCHOOL_ID_COL           => Auth::user()->{cn::USERS_SCHOOL_ID_COL},
+                            cn::GRADE_CLASS_MAPPING_GRADE_ID_COL            => $id,
+                            cn::GRADE_CLASS_MAPPING_NAME_COL                => $classType
+                        ])
+                        ->Update([cn::DELETED_AT_COL => null]);
                     }
                 }
                 GradeClassMapping::where([
-                    cn::GRADE_CLASS_MAPPING_SCHOOL_ID_COL => $this->isSchoolLogin(),
-                    cn::GRADE_CLASS_MAPPING_CURRICULUM_YEAR_ID_COL => $this->GetCurriculumYear(),
-                    cn::GRADE_CLASS_MAPPING_GRADE_ID_COL => $id
+                    cn::GRADE_CLASS_MAPPING_SCHOOL_ID_COL           => Auth::user()->{cn::USERS_SCHOOL_ID_COL},
+                    cn::GRADE_CLASS_MAPPING_CURRICULUM_YEAR_ID_COL  => $this->GetCurriculumYear(),
+                    cn::GRADE_CLASS_MAPPING_GRADE_ID_COL            => $id
                 ])
                 ->whereNotIn(cn::GRADE_CLASS_MAPPING_NAME_COL,$request->class_type)
                 ->delete();
             }else{
                 GradeClassMapping::where([
-                    cn::GRADE_CLASS_MAPPING_SCHOOL_ID_COL => $this->isSchoolLogin(),
-                    cn::GRADE_CLASS_MAPPING_CURRICULUM_YEAR_ID_COL => $this->GetCurriculumYear(),
-                    cn::GRADE_CLASS_MAPPING_GRADE_ID_COL => $id
+                    cn::GRADE_CLASS_MAPPING_SCHOOL_ID_COL           => Auth::user()->{cn::USERS_SCHOOL_ID_COL},
+                    cn::GRADE_CLASS_MAPPING_CURRICULUM_YEAR_ID_COL  => $this->GetCurriculumYear(),
+                    cn::GRADE_CLASS_MAPPING_GRADE_ID_COL            => $id
                 ])->delete();
             }
             if(!empty($getClassData)){
@@ -394,19 +387,18 @@ class ClassController extends Controller
             $TotalFilterData = '';
             $StudentList = User::where([cn::USERS_SCHOOL_ID_COL => $school_id,cn::USERS_GRADE_ID_COL => null,cn::USERS_ROLE_ID_COL => cn::STUDENT_ROLE_ID])->paginate($items);
             $countStudentData = $StudentList->count();
-            if($this->isSchoolLogin() || $this->isTeacherLogin()){
-                $schoolid = Auth::user()->{cn::USERS_SCHOOL_ID_COL};
-                $Grades = Grades::select(cn::GRADES_ID_COL,cn::GRADES_NAME_COL)->whereIn(cn::GRADES_ID_COL,$this->getSchoolByGradeIds($schoolid))->get();
+            if(Auth::user()->{cn::USERS_SCHOOL_ID_COL} || $this->isTeacherLogin()){
+                $Grades = Grades::select(cn::GRADES_ID_COL,cn::GRADES_NAME_COL)->whereIn(cn::GRADES_ID_COL,$this->getSchoolByGradeIds(Auth::user()->{cn::USERS_SCHOOL_ID_COL}))->get();
             }else{
                 $Grades = Grades::select(cn::GRADES_ID_COL,cn::GRADES_NAME_COL)->get();
             }
             $Query = User::select('*');
             if(isset($request->filter)){
                 if(isset($request->searchs) && !empty($request->searchs)){
-                    $Query->orwhere(cn::USERS_NAME_EN_COL,'Like','%'.$this->encrypt($request->searchs.'%'));
-                    $Query->orwhere(cn::USERS_EMAIL_COL,'Like','%'.$request->searchs.'%');
-                    $Query->orwhere(cn::USERS_MOBILENO_COL,'Like','%'.$request->searchs.'%');
-                    $Query->orwhere(cn::USERS_CITY_COL,'Like','%'.$request->searchs.'%');
+                    $Query->orWhere(cn::USERS_NAME_EN_COL,'Like','%'.$this->encrypt($request->searchs.'%'));
+                    $Query->orWhere(cn::USERS_EMAIL_COL,'Like','%'.$request->searchs.'%');
+                    $Query->orWhere(cn::USERS_MOBILENO_COL,'Like','%'.$request->searchs.'%');
+                    $Query->orWhere(cn::USERS_CITY_COL,'Like','%'.$request->searchs.'%');
                 }
                 if(isset($request->gender)){
                     $Query->where(cn::USERS_GENDER_COL,$request->gender);
@@ -415,7 +407,13 @@ class ClassController extends Controller
                     $Query->where(cn::USERS_STATUS_COL,$request->status);
                 }
                 $TotalFilterData = $Query->count();
-                $StudentList = $Query->where([cn::USERS_SCHOOL_ID_COL => auth()->user()->{cn::USERS_SCHOOL_ID_COL},cn::USERS_GRADE_ID_COL => null,cn::USERS_ROLE_ID_COL => cn::STUDENT_ROLE_ID])->sortable()->paginate($items);
+                $StudentList =  $Query->where([
+                                    cn::USERS_SCHOOL_ID_COL => auth()->user()->{cn::USERS_SCHOOL_ID_COL},
+                                    cn::USERS_GRADE_ID_COL => null,
+                                    cn::USERS_ROLE_ID_COL => cn::STUDENT_ROLE_ID
+                                ])
+                                ->sortable()
+                                ->paginate($items);
                 $this->StoreAuditLogFunction($request->all(),'User',cn::USERS_ID_COL,'','Assign Students Filter',cn::USERS_TABLE_NAME,'');
             }
             return view('backend.class.assign_student_form',compact('StudentList','countStudentData','items','Grades','TotalFilterData'));

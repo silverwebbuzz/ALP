@@ -128,7 +128,7 @@
                             <div class="form-row select-data">
                                 <div class="sm-btn-sec form-row">
                                     <div class="form-group col-md-6 mb-50 btn-sec">
-                                        @if (in_array('profile_management_create', $permissions))
+                                        @if(in_array('profile_management_create', $permissions))
                                         <button class="blue-btn btn btn-primary mt-4">{{ __('languages.submit') }}</button>
                                         @endif
                                     </div>

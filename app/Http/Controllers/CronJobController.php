@@ -426,8 +426,16 @@ class CronJobController extends Controller
                         break; 
 
                     case cn::SCHOOL_ROLE_ID ://5
-                        $AllUsers = $this->getRoleBasedUserForParticularSchool([cn::TEACHER_ROLE_ID,cn::STUDENT_ROLE_ID,cn::PARENT_ROLE_ID,
-                                                cn::SCHOOL_ROLE_ID,cn::EXTERNAL_RESOURCE_ROLE_ID,cn::PRINCIPAL_ROLE_ID,cn::SUB_ADMIN_ROLE_ID],$SchoolId);
+                        $AllUsers = $this->getRoleBasedUserForParticularSchool([
+                                    cn::TEACHER_ROLE_ID,
+                                    cn::STUDENT_ROLE_ID,
+                                    cn::PARENT_ROLE_ID,
+                                    cn::SCHOOL_ROLE_ID,
+                                    cn::EXTERNAL_RESOURCE_ROLE_ID,
+                                    cn::PRINCIPAL_ROLE_ID,
+                                    cn::PANEL_HEAD_ROLE_ID,
+                                    cn::CO_ORDINATOR_ROLE_ID
+                                ],$SchoolId);
                         $userID = $this->getRoleBasedUserForParticularSchool(cn::STUDENT_ROLE_ID,$SchoolId);
                         if(!empty($userID)){
                             $ExamIDs = Exam::where(function($query) use($SchoolId){
@@ -491,7 +499,8 @@ class CronJobController extends Controller
                         Exam::where(cn::EXAM_TABLE_CREATED_BY_COL,$id)->delete();
                         User::where(cn::USERS_ID_COL,$id)->delete();
                         break;
-                    case cn::SUB_ADMIN_ROLE_ID ://8
+                    case cn::PANEL_HEAD_ROLE_ID :
+                    case cn::CO_ORDINATOR_ROLE_ID :
                         $ExamIDs = Exam::where(cn::EXAM_TABLE_CREATED_BY_COL,$id)->pluck(cn::EXAM_TABLE_ID_COLS)->toArray();
                         MyTeachingReport::whereIn(cn::TEACHING_REPORT_EXAM_ID_COL,$ExamIDs)->delete();
                         AttemptExams::whereIn(cn::ATTEMPT_EXAMS_EXAM_ID,$ExamIDs)->delete();

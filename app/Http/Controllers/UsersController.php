@@ -73,7 +73,7 @@ class UsersController extends Controller
                 
                 $Query = User::select('*')
                         ->where(function($q){
-                            $q->whereIn('role_id',[cn::TEACHER_ROLE_ID,cn::SCHOOL_ROLE_ID,cn::PRINCIPAL_ROLE_ID,cn::SUB_ADMIN_ROLE_ID])
+                            $q->whereIn('role_id',[cn::TEACHER_ROLE_ID,cn::SCHOOL_ROLE_ID,cn::PRINCIPAL_ROLE_ID,cn::PANEL_HEAD_ROLE_ID,cn::CO_ORDINATOR_ROLE_ID])
                             ->orWhereIn('id',$this->curriculum_year_mapping_student_ids());
                         });
                 //search by school
@@ -217,9 +217,14 @@ class UsersController extends Controller
     //  Remove School Logic 
     public function getAllDataOfSchool($SchoolId){
         $AllUsers = $this->getRoleBasedUserForParticularSchool([
-                        cn::TEACHER_ROLE_ID,cn::STUDENT_ROLE_ID,cn::PARENT_ROLE_ID,
-                        cn::SCHOOL_ROLE_ID,cn::EXTERNAL_RESOURCE_ROLE_ID,cn::PRINCIPAL_ROLE_ID,
-                        cn::SUB_ADMIN_ROLE_ID
+                        cn::TEACHER_ROLE_ID,
+                        cn::STUDENT_ROLE_ID,
+                        cn::PARENT_ROLE_ID,
+                        cn::SCHOOL_ROLE_ID,
+                        cn::EXTERNAL_RESOURCE_ROLE_ID,
+                        cn::PRINCIPAL_ROLE_ID,
+                        cn::PANEL_HEAD_ROLE_ID,
+                        cn::CO_ORDINATOR_ROLE_ID
                     ],$SchoolId);
         //Get All Student of That School
         $userID = $this->getRoleBasedUserForParticularSchool(cn::STUDENT_ROLE_ID,$SchoolId);
@@ -610,13 +615,11 @@ class UsersController extends Controller
     public function ImportStudents(Request $request){
         try{
             $Grades = '';
-            if($request->isMethod('get')){                
-                // $CurriculumYears = CurriculumYear::IsActiveYear()->get()->toArray();
+            if($request->isMethod('get')){
                 $getMappingGradeId = GradeSchoolMappings::where(cn::GRADES_SCHOOL_ID_COL,Auth::user()->{cn::USERS_SCHOOL_ID_COL})->pluck(cn::GRADES_MAPPING_GRADE_ID_COL);
                 if(!empty($getMappingGradeId)){
                     $Grades = Grades::whereIn(cn::GRADES_ID_COL, $getMappingGradeId)->get();
                 }
-                // return view('backend.student.import_student',compact('Grades','CurriculumYears'));
                 return view('backend.student.import_student',compact('Grades','request'));
             }
             
@@ -661,7 +664,7 @@ class UsersController extends Controller
                             $num = count($filedata );
                             // Skip first row (Remove below comment if you want to skip the first row)
                             if($i != 0){
-                                for ($c=0; $c < $num; $c++) {
+                                for($c=0; $c < $num; $c++){
                                     $importData_arr[$i][] = $filedata [$c];
                                 }   
                             }
@@ -726,17 +729,17 @@ class UsersController extends Controller
                                     }
 
                                     // Check class is already available in this school
-                                    $ClassData = GradeClassMapping::where(cn::GRADE_CLASS_MAPPING_SCHOOL_ID_COL,$this->isSchoolLogin())
-                                                                    ->where(cn::GRADE_CLASS_MAPPING_GRADE_ID_COL,$gradeId)
-                                                                    ->where(cn::GRADE_CLASS_MAPPING_NAME_COL,strtoupper($importData[6]))
-                                                                    ->first();
+                                    $ClassData = GradeClassMapping::where(cn::GRADE_CLASS_MAPPING_SCHOOL_ID_COL,$this->LoggedUserSchoolId())
+                                                ->where(cn::GRADE_CLASS_MAPPING_GRADE_ID_COL,$gradeId)
+                                                ->where(cn::GRADE_CLASS_MAPPING_NAME_COL,strtoupper($importData[6]))
+                                                ->first();
                                     if(isset($ClassData) && !empty($ClassData)){
                                         $classId = $ClassData->id;
                                     }else{
                                         // If the class is not available into this school then create new class
                                         $ClassData = GradeClassMapping::create([
                                             cn::GRADE_CLASS_MAPPING_CURRICULUM_YEAR_ID_COL=>$request->curriculum_year_id,
-                                            cn::GRADE_CLASS_MAPPING_SCHOOL_ID_COL => $this->isSchoolLogin(),
+                                            cn::GRADE_CLASS_MAPPING_SCHOOL_ID_COL => $this->LoggedUserSchoolId(),
                                             cn::GRADE_CLASS_MAPPING_GRADE_ID_COL  => $gradeId,
                                             cn::GRADE_CLASS_MAPPING_NAME_COL      => $importData[6],
                                             cn::GRADE_CLASS_MAPPING_STATUS_COL    => 'active'
@@ -761,38 +764,38 @@ class UsersController extends Controller
                                 $checkUserExists = User::where([cn::USERS_EMAIL_COL => $importData[0],cn::USERS_SCHOOL_ID_COL => Auth()->user()->school_id])->first();
                                 if(!empty($checkUserExists)){
                                     User::where(cn::USERS_ID_COL,$checkUserExists->id)->update([
-                                        cn::USERS_PASSWORD_COL => ($importData[1]) ? Hash::make($this->setPassword(trim($importData[1]))) : null,
-                                        cn::USERS_NAME_EN_COL => ($importData[2]) ? $this->encrypt(trim($importData[2])) : null,
-                                        cn::USERS_NAME_CH_COL => ($importData[3]) ? $this->encrypt(trim($importData[3])) : null,
-                                        cn::USERS_PERMANENT_REFERENCE_NUMBER => ($importData[4]) ? trim($importData[4]) : null,
-                                        cn::USERS_GRADE_ID_COL => $gradeId,
-                                        cn::USERS_CLASS_ID_COL => $classId,
-                                        cn::STUDENT_NUMBER_WITHIN_CLASS => ($studentNumberWithInClass) ? $studentNumberWithInClass : null,
-                                        cn::USERS_CLASS => $Grade->name.''.$ClassData->name,
-                                        cn::USERS_CLASS_STUDENT_NUMBER => $Grade->name.$ClassData->name.$studentNumberWithInClass,
-                                        cn::USERS_SCHOOL_ID_COL => Auth::user()->{cn::USERS_SCHOOL_ID_COL},
-                                        cn::USERS_STATUS_COL => 'active',
-                                        cn::USERS_IMPORT_DATE_COL => Carbon::now(),
-                                        cn::USERS_CREATED_BY_COL => Auth::user()->{cn::USERS_ID_COL}
+                                        cn::USERS_PASSWORD_COL                  => ($importData[1]) ? Hash::make($this->setPassword(trim($importData[1]))) : null,
+                                        cn::USERS_NAME_EN_COL                   => ($importData[2]) ? $this->encrypt(trim($importData[2])) : null,
+                                        cn::USERS_NAME_CH_COL                   => ($importData[3]) ? $this->encrypt(trim($importData[3])) : null,
+                                        cn::USERS_PERMANENT_REFERENCE_NUMBER    => ($importData[4]) ? trim($importData[4]) : null,
+                                        cn::USERS_GRADE_ID_COL                  => $gradeId,
+                                        cn::USERS_CLASS_ID_COL                  => $classId,
+                                        cn::STUDENT_NUMBER_WITHIN_CLASS         => ($studentNumberWithInClass) ? $studentNumberWithInClass : null,
+                                        cn::USERS_CLASS                         => $Grade->name.''.$ClassData->name,
+                                        cn::USERS_CLASS_STUDENT_NUMBER          => $Grade->name.$ClassData->name.$studentNumberWithInClass,
+                                        cn::USERS_SCHOOL_ID_COL                 => Auth::user()->{cn::USERS_SCHOOL_ID_COL},
+                                        cn::USERS_STATUS_COL                    => 'active',
+                                        cn::USERS_IMPORT_DATE_COL               => Carbon::now(),
+                                        cn::USERS_CREATED_BY_COL                => Auth::user()->{cn::USERS_ID_COL}
                                     ]);
                                 }else{
                                     // If user is not exists then create new student
                                     User::create([
-                                        cn::USERS_EMAIL_COL =>   ($importData[0]) ? trim($importData[0]) :null,
-                                        cn::USERS_PASSWORD_COL => ($importData[1]) ? Hash::make($this->setPassword(trim($importData[1]))) : null,
-                                        cn::USERS_NAME_EN_COL => ($importData[2]) ? $this->encrypt(trim($importData[2])) : null,
-                                        cn::USERS_NAME_CH_COL => ($importData[3]) ? $this->encrypt(trim($importData[3])) : null,
+                                        cn::USERS_EMAIL_COL                 => ($importData[0]) ? trim($importData[0]) :null,
+                                        cn::USERS_PASSWORD_COL              => ($importData[1]) ? Hash::make($this->setPassword(trim($importData[1]))) : null,
+                                        cn::USERS_NAME_EN_COL               => ($importData[2]) ? $this->encrypt(trim($importData[2])) : null,
+                                        cn::USERS_NAME_CH_COL               => ($importData[3]) ? $this->encrypt(trim($importData[3])) : null,
                                         cn::USERS_PERMANENT_REFERENCE_NUMBER => ($importData[4]) ? trim($importData[4]) : null,
-                                        cn::USERS_GRADE_ID_COL => $gradeId,
-                                        cn::USERS_CLASS_ID_COL => $classId,
-                                        cn::STUDENT_NUMBER_WITHIN_CLASS => ($studentNumberWithInClass) ? $studentNumberWithInClass : null,
-                                        cn::USERS_CLASS => $Grade->name.''.$ClassData->name,
-                                        cn::USERS_CLASS_STUDENT_NUMBER => $Grade->name.$ClassData->name.$studentNumberWithInClass,
-                                        cn::USERS_ROLE_ID_COL => cn::STUDENT_ROLE_ID,
-                                        cn::USERS_SCHOOL_ID_COL => Auth::user()->{cn::USERS_SCHOOL_ID_COL},
-                                        cn::USERS_STATUS_COL => 'active',
-                                        cn::USERS_IMPORT_DATE_COL => Carbon::now(),
-                                        cn::USERS_CREATED_BY_COL => Auth::user()->{cn::USERS_ID_COL}
+                                        cn::USERS_GRADE_ID_COL              => $gradeId,
+                                        cn::USERS_CLASS_ID_COL              => $classId,
+                                        cn::STUDENT_NUMBER_WITHIN_CLASS     => ($studentNumberWithInClass) ? $studentNumberWithInClass : null,
+                                        cn::USERS_CLASS                     => $Grade->name.''.$ClassData->name,
+                                        cn::USERS_CLASS_STUDENT_NUMBER      => $Grade->name.$ClassData->name.$studentNumberWithInClass,
+                                        cn::USERS_ROLE_ID_COL               => cn::STUDENT_ROLE_ID,
+                                        cn::USERS_SCHOOL_ID_COL             => Auth::user()->{cn::USERS_SCHOOL_ID_COL},
+                                        cn::USERS_STATUS_COL                => 'active',
+                                        cn::USERS_IMPORT_DATE_COL           => Carbon::now(),
+                                        cn::USERS_CREATED_BY_COL            => Auth::user()->{cn::USERS_ID_COL}
                                     ]);
                                 }
                             }
@@ -936,14 +939,14 @@ class UsersController extends Controller
                             }
 
                             // Check class is already available in this school
-                            $ClassData = GradeClassMapping::where(cn::GRADE_CLASS_MAPPING_SCHOOL_ID_COL,$this->isSchoolLogin())->where(cn::GRADE_CLASS_MAPPING_GRADE_ID_COL,$gradeId)->where(cn::GRADE_CLASS_MAPPING_NAME_COL,strtoupper($importData[6]))->first();
+                            $ClassData = GradeClassMapping::where(cn::GRADE_CLASS_MAPPING_SCHOOL_ID_COL,$this->LoggedUserSchoolId())->where(cn::GRADE_CLASS_MAPPING_GRADE_ID_COL,$gradeId)->where(cn::GRADE_CLASS_MAPPING_NAME_COL,strtoupper($importData[6]))->first();
                             if(isset($ClassData) && !empty($ClassData)){
                                 $classId = $ClassData->id;
                             }else{
                                 // If the class is not available into this school then create new class
                                 $ClassData = GradeClassMapping::create([
                                     cn::GRADE_CLASS_MAPPING_CURRICULUM_YEAR_ID_COL=>$request->curriculum_year_id,
-                                    cn::GRADE_CLASS_MAPPING_SCHOOL_ID_COL => $this->isSchoolLogin(),
+                                    cn::GRADE_CLASS_MAPPING_SCHOOL_ID_COL => $this->LoggedUserSchoolId(),
                                     cn::GRADE_CLASS_MAPPING_GRADE_ID_COL  => $gradeId,
                                     cn::GRADE_CLASS_MAPPING_NAME_COL      => $importData[6],
                                     cn::GRADE_CLASS_MAPPING_STATUS_COL    => 'active'
@@ -1163,11 +1166,10 @@ class UsersController extends Controller
 
                                 // Check class is already available in this school
                                 $ClassData = GradeClassMapping::where(cn::GRADE_CLASS_MAPPING_SCHOOL_ID_COL,Auth::user()->school_id)
-                                                                // where(cn::GRADE_CLASS_MAPPING_SCHOOL_ID_COL,$this->isSchoolLogin())
-                                                                ->where(cn::GRADE_CLASS_MAPPING_GRADE_ID_COL,$gradeId)
-                                                                ->where(cn::GRADE_CLASS_MAPPING_NAME_COL,strtoupper($importData[6]))
-                                                                ->where(cn::GRADE_CLASS_MAPPING_CURRICULUM_YEAR_ID_COL,$request->curriculum_year_id)
-                                                                ->first();
+                                            ->where(cn::GRADE_CLASS_MAPPING_GRADE_ID_COL,$gradeId)
+                                            ->where(cn::GRADE_CLASS_MAPPING_NAME_COL,strtoupper($importData[6]))
+                                            ->where(cn::GRADE_CLASS_MAPPING_CURRICULUM_YEAR_ID_COL,$request->curriculum_year_id)
+                                            ->first();
                                 if(isset($ClassData) && !empty($ClassData)){
                                     $classId = $ClassData->id;
                                     $className = $ClassData->name;

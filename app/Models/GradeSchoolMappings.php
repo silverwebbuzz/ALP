@@ -11,6 +11,7 @@ use Kyslik\ColumnSortable\Sortable;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use App\Traits\Common;
 use DB;
+use Auth;
 
 class GradeSchoolMappings extends Model
 {
@@ -31,9 +32,15 @@ class GradeSchoolMappings extends Model
         return $this->hasOne(Grades::Class, cn::GRADES_ID_COL, cn::GRADES_MAPPING_GRADE_ID_COL);
     }
 
-    public function getClassNames($gradeid){
+    public function getClassNames($GradeId){
         $classNames = '';
-        $Result = GradeClassMapping::select(DB::raw('group_concat('.cn::GRADE_CLASS_MAPPING_NAME_COL.') as ClassNames'))->where(cn::GRADE_CLASS_MAPPING_SCHOOL_ID_COL,$this->isSchoolLogin())->where(cn::GRADE_CLASS_MAPPING_CURRICULUM_YEAR_ID_COL, $this->GetCurriculumYear())->where(cn::GRADE_CLASS_MAPPING_GRADE_ID_COL,$gradeid)->first();
+        $Result =   GradeClassMapping::select(DB::raw('group_concat('.cn::GRADE_CLASS_MAPPING_NAME_COL.') as ClassNames'))
+                    ->where([
+                        cn::GRADE_CLASS_MAPPING_CURRICULUM_YEAR_ID_COL  => $this->GetCurriculumYear(),
+                        cn::GRADE_CLASS_MAPPING_SCHOOL_ID_COL           => Auth::user()->{cn::USERS_SCHOOL_ID_COL},
+                        cn::GRADE_CLASS_MAPPING_GRADE_ID_COL            => $GradeId
+                    ])
+                    ->first();
         if(isset($Result) && !empty($Result)){
             $classNames = $Result->ClassNames;
         }

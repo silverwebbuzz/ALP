@@ -894,7 +894,7 @@ class ExamController extends Controller
                 }
             }
 
-            if($this->isTeacherLogin() || $this->isSchoolLogin() || $this->isPrincipalLogin()|| $this->isSubAdminLogin()){
+            if($this->isTeacherLogin() || $this->isSchoolLogin() || $this->isPrincipalLogin()|| $this->isPanelHeadLogin() || $this->isCoOrdinatorLogin()){
                 $schoolId = Auth::user()->{cn::USERS_SCHOOL_ID_COL};
                 $examsData = Exam::with('attempt_exams')->where(cn::EXAM_TABLE_ID_COLS,$id)->whereRaw("find_in_set($schoolId,school_id)")->first();
                 
@@ -915,7 +915,7 @@ class ExamController extends Controller
                                     ->with('grades')
                                     ->paginate($items);
                 }
-                if($this->isTeacherLogin() || $this->isSchoolLogin() || $this->isPrincipalLogin() || $this->isSubAdminLogin()){
+                if($this->isTeacherLogin() || $this->isSchoolLogin() || $this->isPrincipalLogin() || $this->isPanelHeadLogin() || $this->isCoOrdinatorLogin()){
                     $studentList = User::whereIn(cn::USERS_ID_COL,explode(',',$examsData->{cn::EXAM_TABLE_STUDENT_IDS_COL}))
                                     ->where([
                                         cn::USERS_ROLE_ID_COL => cn::STUDENT_ROLE_ID,
@@ -2057,8 +2057,8 @@ class ExamController extends Controller
                 $response['studentIds'] = implode(',',$studentIds->toArray());
             }
         }
-        if($this->isSchoolLogin()){
-            $school_id = $this->isSchoolLogin();
+        if($this->isSchoolLogin() || $this->isPrincipalLogin() || $this->isPanelHeadLogin() || $this->isCoOrdinatorLogin()){
+            $school_id = Auth::user()->{cn::USERS_SCHOOL_ID_COL};
             if(isset($school_id) && !empty($school_id)){
                 $response['schoolIds'] = $school_id;
             }

@@ -106,8 +106,11 @@ class Helper{
             case cn::PRINCIPAL_ROLE_ID :  // Principal
                 $menuActiveColor = '#46a59b;';
                 break;
-            case cn::SUB_ADMIN_ROLE_ID :  // Sub ADmin
-                $menuActiveColor = '#f7b350 ;';
+            case cn::PANEL_HEAD_ROLE_ID :  // Panel HEead
+                $menuActiveColor = '#f7b350;';
+                break;
+            case cn::CO_ORDINATOR_ROLE_ID :  //Co-ordinator
+                $menuActiveColor = '#f4a23d;';
                 break;
             default:
                 $menuActiveColor = '#8687fd;';
@@ -135,6 +138,21 @@ class Helper{
         }
         return false;
     }
+
+    public static function isPanelHeadLogin(){
+        if(Auth::check() && Auth::user()->{cn::USERS_ROLE_ID_COL} == cn::PANEL_HEAD_ROLE_ID){
+            return true;
+        }
+        return false;
+    }
+
+    public static function isCoOrdinatorLogin(){
+        if(Auth::check() && Auth::user()->{cn::USERS_ROLE_ID_COL} == cn::CO_ORDINATOR_ROLE_ID){
+            return true;
+        }
+        return false;
+    }
+
     public static function isExternalUserLogin(){
         if(Auth::check() && Auth::user()->{cn::USERS_ROLE_ID_COL} == cn::EXTERNAL_RESOURCE_ROLE_ID){
             return true;
@@ -189,8 +207,11 @@ class Helper{
                 case cn::EXTERNAL_RESOURCE_ROLE_ID:
                     $roleType = 'External Resource';
                     break;
-                case cn::SUB_ADMIN_ROLE_ID:
-                    $roleType = 'Sub Admin';
+                case cn::PANEL_HEAD_ROLE_ID:
+                    $roleType = 'Panel Head';
+                    break;
+                case cn::CO_ORDINATOR_ROLE_ID:
+                    $roleType = 'Co-ordinator';
                     break;
             }
             return $roleType;

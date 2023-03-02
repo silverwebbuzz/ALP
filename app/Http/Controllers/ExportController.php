@@ -265,7 +265,7 @@ class ExportController extends Controller
                 }
                                 
             }
-            if($this->isPrincipalLogin() || $this->isSchoolLogin() || $this->isSubAdminLogin()){
+            if($this->isPrincipalLogin() || $this->isSchoolLogin() || $this->isPanelHeadLogin() || $this->isCoOrdinatorLogin()){
                 if(empty($groupIds) && empty($classIds)){
                     $userData = User::find($ExamData->student_ids);
                     $AttemptExamData =  $Query->whereHas('user',function($q) use($userData){
