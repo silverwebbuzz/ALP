@@ -2424,10 +2424,10 @@ class QuestionGeneratorController extends Controller {
         $items = $request->items ?? 10;        
         $CurriculumYears = $this->GetCurriculumCurrentYear();
         $examTypes = array(
-            ['id'=> 4, 'name' => 'All'],
-            ['id'=> 1, 'name' => 'Self-Learning'],
-            ['id'=> 2, 'name' => 'Exercise'],
-            ['id'=> 3, 'name' => 'Test']
+            ['id'=> 4, 'name' => __('languages.all')],
+            ['id'=> 1, 'name' => __('languages.self_learning')],
+            ['id'=> 2, 'name' => __('languages.exercise')],
+            ['id'=> 3, 'name' => __('languages.test_text')]
         );
         $statusLists = $this->ExamStatusList();
         $difficultyLevels = $this->getDifficultyLevel();
@@ -3056,10 +3056,15 @@ class QuestionGeneratorController extends Controller {
                                 ->whereIn(cn::QUESTION_TABLE_ID_COL,explode(',',$exam->question_ids))
                                 ->get();
             $questionListHtml = (string)View::make('backend.question_generator.school.question_list_preview',compact('question_list','difficultyLevels'));
+            // Get Page name
+            $menuItem = '';
+            if(isset($exam->id) && !empty($exam->id)){
+                $menuItem = $this->GetPageName($exam->id);
+            }
             return view('backend.question_generator.preview_question_configuration',compact('schoolList','difficultyLevels','strandsList','LearningUnits',
                         'LearningObjectives','timeSlots','RequiredQuestionPerSkill','exam','learningObjectivesConfiguration','SelectedStrands','SelectedLearningUnit',
                         'questionDataArray','GradeClassData','StudentList','PeerGroupList','studentGradeData','studentClassData','questionListHtml','examGradeIds',
-                        'examClassIds','examStartTime','examEndTime','examStartDate','examEndDate','examCreditPointRulesData'));
+                        'examClassIds','examStartTime','examEndTime','examStartDate','examEndDate','examCreditPointRulesData','menuItem'));
         }else{
             return back()->with('error_msg', __('languages.data_not_found'));
         } 
@@ -3635,6 +3640,8 @@ class QuestionGeneratorController extends Controller {
      * USE : User can change exam end date after publish exam
      */
     public function ChangeExamEndDate(Request $request){
+        echo "Mueksh";die;
+        echo "<pre>";print_r($request->all());die;
         $UpdateExamEndDate = '';
         $ExamData = Exam::find($request->ExamId);        
         if(!empty($ExamData)){
@@ -3702,6 +3709,7 @@ class QuestionGeneratorController extends Controller {
                     break;
                 case 5:
                 case 7:
+                case 9:
                     // if($request->ExamType == "EndDate"){
                     if($request->dateType == "EndDate"){
                         ExamGradeClassMappingModel::where(cn::EXAM_SCHOOL_GRADE_CLASS_MAPPING_EXAM_ID_COL,$request->ExamId)

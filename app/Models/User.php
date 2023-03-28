@@ -7,6 +7,7 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Kyslik\ColumnSortable\Sortable;
+use App\Models\Regions;
 use App\Models\Role;
 use App\Models\Grades;
 use App\Models\Section;
@@ -49,6 +50,7 @@ class User extends Authenticatable
         cn::USERS_ADDRESS_COL,
         cn::USERS_GENDER_COL,
         cn::USERS_CITY_COL,
+        cn::USERS_REGION_ID_COL,
         cn::USERS_DATE_OF_BIRTH_COL,
         cn::USERS_OTHER_ROLES_COL,
         cn::USERS_OVERALL_ABILITY_COL,
@@ -120,7 +122,7 @@ class User extends Authenticatable
     public function getCreditPointsAttribute(){
         $CreditPoints = [];
         $UserData = Self::find($this->id);
-        if(!empty($this->id) && $UserData->role_id == cn::STUDENT_ROLE_ID){
+        if(!empty($this->id) && isset($UserData->role_id) && $UserData->role_id == cn::STUDENT_ROLE_ID){
             $CreditPointService = new CreditPointService();
             $CreditPoints = $CreditPointService->GetStudentCreditPoints($this->id);
         }
@@ -133,7 +135,7 @@ class User extends Authenticatable
     public function getCurriculumYearDataAttribute(){
         $CurriculumYearData = [];
         $UserData = Self::find($this->id);
-        if(!empty($this->id) && $UserData->role_id == cn::STUDENT_ROLE_ID){
+        if(!empty($this->id) && isset($UserData->role_id) && $UserData->role_id == cn::STUDENT_ROLE_ID){
             $CurriculumYearData = $this->GetStudentDataByCurriculumYear($this->GetCurriculumYear(),$this->id);
         }
         return $CurriculumYearData;
@@ -145,7 +147,7 @@ class User extends Authenticatable
     public function getCurriculumYearGradeIdAttribute(){
         $CurriculumYearGradeId = 0;
         $UserData = Self::find($this->id);
-        if(!empty($this->id) && $UserData->role_id == cn::STUDENT_ROLE_ID){
+        if(!empty($this->id) && isset($UserData->role_id) && $UserData->role_id == cn::STUDENT_ROLE_ID){
             $Data = $this->GetStudentDataByCurriculumYear($this->GetCurriculumYear(),$this->id);
             if(isset($Data) && !empty($Data)){
                 $CurriculumYearGradeId = $Data['grade_id'];
@@ -160,7 +162,7 @@ class User extends Authenticatable
     public function getCurriculumYearClassIdAttribute(){
         $CurriculumYearClassId = 0;
         $UserData = Self::find($this->id);
-        if(!empty($this->id) && $UserData->role_id == cn::STUDENT_ROLE_ID){
+        if(!empty($this->id) && isset($UserData->role_id) && $UserData->role_id == cn::STUDENT_ROLE_ID){
             $Data = $this->GetStudentDataByCurriculumYear($this->GetCurriculumYear(),$this->id);
             if(isset($Data) && !empty($Data)){
                 $CurriculumYearClassId = $Data['class_id'];
@@ -416,7 +418,6 @@ class User extends Authenticatable
         return $this->belongsToMany(User::class,ParentChildMapping::class,cn::PARANT_CHILD_MAPPING_PARENT_ID_COL,cn::PARANT_CHILD_MAPPING_STUDENT_ID_COL);
     }
     
-
     public function getClassname($userid = null){
         $classNames = '';
         if(!empty($userid)){
@@ -441,5 +442,9 @@ class User extends Authenticatable
 
     public function getUserCreditPoints(){
         return $this->hasOne(UserCreditPoints::class,cn::USER_CREDIT_USER_ID_COL,cn::USERS_ID_COL);
+    }
+
+    public function Region(){
+        return $this->hasOne(Regions::Class,cn::REGIONS_ID_COL,cn::USERS_REGION_ID_COL);
     }
 }

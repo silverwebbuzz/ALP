@@ -76,7 +76,6 @@ class UpdateUserCreditPointsJob implements ShouldQueue
                                             if(!empty($StudentAccuracy)){
                                                 if($StudentAccuracy >= $GlobalConfiguration[array_search('self_learning_exercise_starting_accuracy_to_earn_credit_points', array_column($GlobalConfiguration, cn::GLOBAL_CONFIGURATION_KEY_COL))][cn::GLOBAL_CONFIGURATION_VALUE_COL]){
                                                     $AccuracyCreditPoint += $GlobalConfiguration[array_search('self_learning_exercise_credit_points_earned_for_starting_accuracy', array_column($GlobalConfiguration, cn::GLOBAL_CONFIGURATION_KEY_COL))][cn::GLOBAL_CONFIGURATION_VALUE_COL];
-
                                                     $self_learning_exercise_number_of_stages_to_earn_extra_credit_point = $GlobalConfiguration[array_search('self_learning_exercise_number_of_stages_to_earn_extra_credit_point', array_column($GlobalConfiguration, cn::GLOBAL_CONFIGURATION_KEY_COL))][cn::GLOBAL_CONFIGURATION_VALUE_COL];
                                                     $startingAccuracyPercentage = $GlobalConfiguration[array_search('self_learning_exercise_starting_accuracy_to_earn_credit_points', array_column($GlobalConfiguration, cn::GLOBAL_CONFIGURATION_KEY_COL))][cn::GLOBAL_CONFIGURATION_VALUE_COL];
                                                     if(!empty($self_learning_exercise_number_of_stages_to_earn_extra_credit_point)){
@@ -96,7 +95,7 @@ class UpdateUserCreditPointsJob implements ShouldQueue
                                                             cn::USER_CREDIT_POINT_HISTORY_USER_ID_COL => $this->StudentId,
                                                             cn::USER_CREDIT_POINT_HISTORY_TEST_TYPE_COL => 'self_learning',
                                                             cn::USER_CREDIT_POINT_HISTORY_SELF_LEARNING_TYPE_COL => 'exercise',
-                                                            cn::USER_CREDIT_POINT_HISTORY_CREDIT_POINT_TYPE_COL => 'accuracy_level',
+                                                            cn::USER_CREDIT_POINT_HISTORY_CREDIT_POINT_TYPE_COL => 'accuracy',
                                                             cn::USER_CREDIT_POINT_HISTORY_NO_OF_CREDIT_POINT_COL => $AccuracyCreditPoint
                                                         ]);
                                                     }
@@ -135,7 +134,7 @@ class UpdateUserCreditPointsJob implements ShouldQueue
                                                             cn::USER_CREDIT_POINT_HISTORY_USER_ID_COL => $this->StudentId,
                                                             cn::USER_CREDIT_POINT_HISTORY_TEST_TYPE_COL => 'self_learning',
                                                             cn::USER_CREDIT_POINT_HISTORY_SELF_LEARNING_TYPE_COL => 'test',
-                                                            cn::USER_CREDIT_POINT_HISTORY_CREDIT_POINT_TYPE_COL => 'ability_level',
+                                                            cn::USER_CREDIT_POINT_HISTORY_CREDIT_POINT_TYPE_COL => 'ability',
                                                             cn::USER_CREDIT_POINT_HISTORY_NO_OF_CREDIT_POINT_COL => $AbilityCreditPoint
                                                         ]);
                                                     }
@@ -171,9 +170,9 @@ class UpdateUserCreditPointsJob implements ShouldQueue
                                                             cn::USER_CREDIT_POINT_HISTORY_CURRICULUM_YEAR_ID_COL => $ExamData->{cn::EXAM_CURRICULUM_YEAR_ID_COL},
                                                             cn::USER_CREDIT_POINT_HISTORY_EXAM_ID_COL => $ExamData->{cn::EXAM_TABLE_ID_COLS},
                                                             cn::USER_CREDIT_POINT_HISTORY_USER_ID_COL => $this->StudentId,
-                                                            cn::USER_CREDIT_POINT_HISTORY_TEST_TYPE_COL => 'self_learning',
+                                                            cn::USER_CREDIT_POINT_HISTORY_TEST_TYPE_COL => 'assessment',
                                                             cn::USER_CREDIT_POINT_HISTORY_SELF_LEARNING_TYPE_COL => 'test',
-                                                            cn::USER_CREDIT_POINT_HISTORY_CREDIT_POINT_TYPE_COL => 'accuracy_level',
+                                                            cn::USER_CREDIT_POINT_HISTORY_CREDIT_POINT_TYPE_COL => 'accuracy',
                                                             cn::USER_CREDIT_POINT_HISTORY_NO_OF_CREDIT_POINT_COL => $AccuracyCreditPoint
                                                         ]);
                                                     }
@@ -210,9 +209,9 @@ class UpdateUserCreditPointsJob implements ShouldQueue
                                                             cn::USER_CREDIT_POINT_HISTORY_CURRICULUM_YEAR_ID_COL => $ExamData->{cn::EXAM_CURRICULUM_YEAR_ID_COL},
                                                             cn::USER_CREDIT_POINT_HISTORY_EXAM_ID_COL => $ExamData->{cn::EXAM_TABLE_ID_COLS},
                                                             cn::USER_CREDIT_POINT_HISTORY_USER_ID_COL => $this->StudentId,
-                                                            cn::USER_CREDIT_POINT_HISTORY_TEST_TYPE_COL => 'self_learning',
+                                                            cn::USER_CREDIT_POINT_HISTORY_TEST_TYPE_COL => 'assessment',
                                                             cn::USER_CREDIT_POINT_HISTORY_SELF_LEARNING_TYPE_COL => 'test',
-                                                            cn::USER_CREDIT_POINT_HISTORY_CREDIT_POINT_TYPE_COL => 'ability_level',
+                                                            cn::USER_CREDIT_POINT_HISTORY_CREDIT_POINT_TYPE_COL => 'ability',
                                                             cn::USER_CREDIT_POINT_HISTORY_NO_OF_CREDIT_POINT_COL => $AbilityCreditPoint
                                                         ]);
                                                     }
@@ -240,8 +239,8 @@ class UpdateUserCreditPointsJob implements ShouldQueue
                                                     cn::USER_CREDIT_POINT_HISTORY_CURRICULUM_YEAR_ID_COL => $ExamData->{cn::EXAM_CURRICULUM_YEAR_ID_COL},
                                                     cn::USER_CREDIT_POINT_HISTORY_EXAM_ID_COL => $ExamData->{cn::EXAM_TABLE_ID_COLS},
                                                     cn::USER_CREDIT_POINT_HISTORY_USER_ID_COL => $this->StudentId,
-                                                    cn::USER_CREDIT_POINT_HISTORY_TEST_TYPE_COL => 'assignment',
-                                                    cn::USER_CREDIT_POINT_HISTORY_CREDIT_POINT_TYPE_COL => 'after_submission',
+                                                    cn::USER_CREDIT_POINT_HISTORY_TEST_TYPE_COL => 'exercise',
+                                                    cn::USER_CREDIT_POINT_HISTORY_CREDIT_POINT_TYPE_COL => 'submission',
                                                     cn::USER_CREDIT_POINT_HISTORY_NO_OF_CREDIT_POINT_COL => $SubmissionCreditPoint
                                                 ]);
                                             }
@@ -275,8 +274,8 @@ class UpdateUserCreditPointsJob implements ShouldQueue
                                                         cn::USER_CREDIT_POINT_HISTORY_CURRICULUM_YEAR_ID_COL => $ExamData->{cn::EXAM_CURRICULUM_YEAR_ID_COL},
                                                         cn::USER_CREDIT_POINT_HISTORY_EXAM_ID_COL => $ExamData->{cn::EXAM_TABLE_ID_COLS},
                                                         cn::USER_CREDIT_POINT_HISTORY_USER_ID_COL => $this->StudentId,
-                                                        cn::USER_CREDIT_POINT_HISTORY_TEST_TYPE_COL => 'assignment',
-                                                        cn::USER_CREDIT_POINT_HISTORY_CREDIT_POINT_TYPE_COL => 'accuracy_level',
+                                                        cn::USER_CREDIT_POINT_HISTORY_TEST_TYPE_COL => 'exercise',
+                                                        cn::USER_CREDIT_POINT_HISTORY_CREDIT_POINT_TYPE_COL => 'accuracy',
                                                         cn::USER_CREDIT_POINT_HISTORY_NO_OF_CREDIT_POINT_COL => $AccuracyCreditPoint
                                                     ]);
                                                 }
@@ -312,8 +311,8 @@ class UpdateUserCreditPointsJob implements ShouldQueue
                                                         cn::USER_CREDIT_POINT_HISTORY_CURRICULUM_YEAR_ID_COL => $ExamData->{cn::EXAM_CURRICULUM_YEAR_ID_COL},
                                                         cn::USER_CREDIT_POINT_HISTORY_EXAM_ID_COL => $ExamData->{cn::EXAM_TABLE_ID_COLS},
                                                         cn::USER_CREDIT_POINT_HISTORY_USER_ID_COL => $this->StudentId,
-                                                        cn::USER_CREDIT_POINT_HISTORY_TEST_TYPE_COL => 'assignment',
-                                                        cn::USER_CREDIT_POINT_HISTORY_CREDIT_POINT_TYPE_COL => 'ability_level',
+                                                        cn::USER_CREDIT_POINT_HISTORY_TEST_TYPE_COL => 'exercise',
+                                                        cn::USER_CREDIT_POINT_HISTORY_CREDIT_POINT_TYPE_COL => 'ability',
                                                         cn::USER_CREDIT_POINT_HISTORY_NO_OF_CREDIT_POINT_COL => $AbilityCreditPoint
                                                     ]);
                                                 }

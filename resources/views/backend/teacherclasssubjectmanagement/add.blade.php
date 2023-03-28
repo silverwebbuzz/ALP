@@ -54,10 +54,10 @@
                                     </div>
 
                                     <div class="form-group col-md-6">
-                                        <label for="class_id">{{ __('languages.grade') }}</label>
+                                        <label for="class_id">{{ __('languages.form') }}</label>
                                         <fieldset class="form-group">
                                             <select class="selectpicker form-control" data-show-subtext="true" data-live-search="true" name="class_id" id="class_id">
-                                            <option value=''>{{ __('languages.select_grade') }}</option>
+                                            <option value=''>{{ __('languages.select') }} {{__('languages.form')}}</option>
                                             @if(!empty($gradeList))
                                                 @foreach($gradeList as $itam)
                                                 <option value="{{$itam->grades->id}}" @if(old('class_id') == $itam->grades->id) selected @endif>{{$itam->grades->name}}</option>
@@ -73,7 +73,7 @@
 
                                 <div class="form-row select-data">
                                     <div class="form-group col-md-6 mb-50">
-                                        <label for="id_end_time">{{ __('languages.class') }}</label>
+                                        <label for="id_end_time">{{ __('languages.classes') }}</label>
                                         <select name="class_type[]" class="form-control select-option" id="classType-select-option" multiple></select>
                                         @if($errors->has('class_type'))<span class="validation_error">{{ $errors->first('class_type') }}</span>@endif
                                     </div>

@@ -27,23 +27,21 @@ class OrderingLearningUnit extends Controller{
         $postData =[];
         if(isset($request->finalOrdering) && !empty($request->finalOrdering)){
             $orderingFinalArray = explode(',',$request->finalOrdering);
-        }
-        
+        }        
         $schoolId = Auth::user()->school_id;
-       
         if(LearningUnitOrdering::where('school_id',Auth::user()->school_id)->exists()){
             if(isset($request->finalOrdering) && !empty($request->finalOrdering)){
-                $orderingUnitData = LearningUnitOrdering::where('school_id',Auth::user()->school_id)
-                                    ->where('strand_id',$request->strand)
-                                    ->get()->toArray();
-                foreach($orderingUnitData as $orderUnitKey => $unitData){
+                $orderingUnitData = LearningsUnits::where('strand_id',$request->strand)->first()->toArray();
+                $position = (int)$orderingUnitData['code'];
+                foreach($orderingFinalArray as $orderKey => $LearningUnitId){
                     LearningUnitOrdering::where('school_id',Auth::user()->school_id)
-                                            ->where('strand_id',$request->strand)
-                                            ->where('learning_unit_id',$unitData['id'])
-                                            ->update([
-                                                'position' => $orderingFinalArray[$orderUnitKey],
-                                                'index'    => (array_search($unitData['id'],$orderingFinalArray) + 1 )
-                                            ]);
+                                        ->where('strand_id',$request->strand)
+                                        ->where('learning_unit_id',$LearningUnitId)
+                                        ->update([
+                                                    'position'  =>  ($position),
+                                                    'index'  =>  ($position)
+                                                ]);
+                    $position++;
                 }
             }
         }else{
@@ -56,24 +54,24 @@ class OrderingLearningUnit extends Controller{
                                     'strand_id'         => $strand->id,
                                     'learning_unit_id'  => $learningUnit->id,
                                     'position'          => $learningUnit->id,
-                                    'index'             => ($learningUnitKey + 1) 
+                                    'index'          => $learningUnit->id, 
                                 ];
                     LearningUnitOrdering::create($postData);
                 }
             }
             if(isset($request->finalOrdering) && !empty($request->finalOrdering)){                
                 // Update Record
-                $orderingUnitData = LearningUnitOrdering::where('school_id',Auth::user()->school_id)
-                                    ->where('strand_id',$request->strand)
-                                    ->get()->toArray();
-                foreach($orderingUnitData as $orderUnitKey => $unitData){
+                $orderingUnitData = LearningsUnits::where('strand_id',$request->strand)->first()->toArray();
+                $position = (int)$orderingUnitData['code'];
+                foreach($orderingFinalArray as $orderKey => $LearningUnitId){
                     LearningUnitOrdering::where('school_id',Auth::user()->school_id)
-                    ->where('strand_id',$request->strand)
-                    ->where('learning_unit_id',$unitData['id'])
-                    ->update([
-                                'position'  =>  $orderingFinalArray[$orderUnitKey],
-                                'index'  =>  (array_search($unitData['id'],$orderingFinalArray) +1 ),
-                            ]);
+                                        ->where('strand_id',$request->strand)
+                                        ->where('learning_unit_id',$LearningUnitId)
+                                        ->update([
+                                                    'position'  =>  ($position),
+                                                    'index'  =>  ($position)
+                                                ]);
+                    $position++;
                 }
             }
         }

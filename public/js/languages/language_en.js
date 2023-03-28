@@ -14,7 +14,7 @@ var VALIDATIONS = {
     PLEASE_ENTER_THIRD_ANSWER_OF_CHINESE: "Please Enter Third Answer in Chinese",
     PLEASE_ENTER_FOURTH_ANSWER_OF_CHINESE: "Please Enter Fourth Answer in Chinese",
     PLEASE_SELECT_SCHOOL: "Please Select School",
-    PLEASE_SELECT_GRADE: "Please Select Grade",
+    PLEASE_SELECT_GRADE: "Please Select Form",
     PLEASE_SELECT_SECTION: "Please Select Section",
     PLEASE_ENTER_EMAIL: "Please Enter Email",
     PLEASE_ENTER_VALID_EMAIL: "Please Enter Valid Email",
@@ -29,7 +29,7 @@ var VALIDATIONS = {
     PLEASE_ENTER_TITLE: "Please Enter Title",
     PLEASE_ENTER_FROM_DATE: "Please Enter From Date",
     PLEASE_ENTER_TO_DATE: "Please Enter To Date",
-    PLEASE_ENTER_RESULT_DATE: "Please Enter Result Date",
+    PLEASE_ENTER_RESULT_DATE: "Please Enter Result Release Date",
     PLEASE_ENTER_TIME_DURATION: "Please Enter Time Duration",
     PLEASE_ENTER_ONLY_NUMERIC_VALUE: "Please Enter Only Numeric Value",
     MINIMUM_TEN_MINUTES_REQUIRED: "Minimum 10 Minutes Required",
@@ -50,12 +50,12 @@ var VALIDATIONS = {
     PLEASE_ENTER_CHINESE_TITLE: "Please Enter Chinese Title",
     PLEASE_ENTER_ENGLISH_WEAKNESS_NAME: "Please Enter English Weakness Name",
     PLEASE_ENTER_CHINESE_WEAKNESS_NAME: "Please Enter Chinese Weakness Name",
-    PLEASE_ENTER_STUDENT_NUMBER: "Please Enter Student Number",
+    PLEASE_ENTER_STUDENT_NUMBER: "Please Enter Class No.",
     PLEASE_ENTER_CLASS_NAME_AND_CLASS_NUMBER: "Please Enter Class Name And Class Number",
     PLEASE_ENTER_DIGITS_ONLY: "Please Enter Digits Only",
     PLEASE_ENTER_DIFFICULTY_VALUE: "Please Enter Difficulty Value",
-    PLEASE_ENTER_GRADE_NAME: "Please Enter Grade Name",
-    PLEASE_ENTER_GRADE_CODE: "Please Enter Grade Code",
+    PLEASE_ENTER_GRADE_NAME: "Please Enter Form Name",
+    PLEASE_ENTER_GRADE_CODE: "Please Enter Form Code",
     PLEASE_SELECT_CLASS: "Please Select Class",
     PLEASE_ENTER_SUBJECT_NAME: "Please Enter Subject Name",
     PLEASE_ENTER_SUBJECT_CODE: "Please Select Subject Code",
@@ -63,7 +63,7 @@ var VALIDATIONS = {
     PLEASE_SELECT_IMPORT_USER_ROLE: "Please Select Import User Role",
     PLEASE_UPLOAD_CSV_FILE: "Please Upload CSV File",
     INVALID_FILE_EXTENSION: "Invalid File Extension. Allowed Only File Types: [xls, csv]",
-    PLEASE_UPLOAD_ONLY_JPEG_JPG_OR_PNG_FILES: "Upload only jpeg,jpg or png files",
+    PLEASE_UPLOAD_ONLY_JPEG_JPG_OR_PNG_FILES: "Upload only media files Ex. JPEG | JPG | PNG | GIF",
     PLEASE_SELECT_LEARNING_TYPE: "Please Select Learning Type",
     PLEASE_ENTER_NAME: "Please Enter Name",
     PLEASE_SELECT_STRAND: "Please Select Strand",
@@ -97,10 +97,10 @@ var VALIDATIONS = {
     NUMBER_IS_NOT_PERMITTED: "Number Is Not Permitted",
     NO_AVAILABLE_DIFFICULTY_VALUE: "No Available Difficulty Value",
     PLEASE_SELECT_STUDENTS_OR_PEER_GROUP: "Please Select Students Or Peer Group",
-    PLEASE_SELECT_GRADE_AND_CLASSES: "Please Select Grade And Classes",
+    PLEASE_SELECT_GRADE_AND_CLASSES: "Please Select Form And Classes",
     PLEASE_SELECT_STUDENT: "Please Select Student",
     PLEASE_SELECT_GROUP: "Please Select Group",
-    PLEASE_SELECT_GRADE_CLASS_OR_PEER_GROUP: "Please Select Grade Class Or Peer Group",
+    PLEASE_SELECT_GRADE_CLASS_OR_PEER_GROUP: "Please Select Form Class Or Peer Group",
     PLEASE_ADD_CREDIT_POINT: "Please Add Credit Point",
     PLEASE_SELECT_STUDENTS: "Please Select Students",
     PLEASE_SELECT_END_DATE_OF_EXAM: "Please Select End Date of Exam",
@@ -129,8 +129,8 @@ var DIFFICULTY_LEVEL = "Difficulty Level";
 var SUBJECT = "Subject";
 var NODES_NOT_AVAILABLE = "Nodes Not Available";
 var CLASS_NOT_AVAILABLE = "Class Not Available";
-var GRADE_NOT_AVAILABLE = "Grade Not Available";
-var SELECT_GRADE = "Select Grade";
+var GRADE_NOT_AVAILABLE = "Form Not Available";
+var SELECT_GRADE = "Select Form";
 var SUBJECT_NOT_AVAILABLE = "Subject Not Available";
 var SELECT_STRAND = "Select Strand";
 var STRAND_NOT_AVAILABLE = "Strand Not Available";
@@ -139,7 +139,7 @@ var LEARNING_UNITS_NOT_AVAILABLE = "Learning Units Not Available";
 var SELECT_LEARNING_OBJECTIVES = "Select Learning Objectives";
 var LEARNING_OBJECTIVES_NOT_AVAILABLE = "Learning Objectives Not Available";
 var PLEASE_SELECT_LANGUAGE = "Please select language English / Chinese";
-var PLEASE_SELECT_GRADE_FIRST = "Please Select Grade First";
+var PLEASE_SELECT_GRADE_FIRST = "Please Select Form First";
 var PLEASE_SELECT_CLASS_FIRST = "Please Select Class First";
 var PLEASE_SELECT_STUDENT_FIRST = "Please Select Student First";
 var SELECT_STUDENT = "Select Student";
@@ -238,9 +238,18 @@ var SELECT_ALL = "Select all";
 var SEARCH = "Search";
 var SELECTED = "selected";
 var SELECT_LANGUAGE = "Select Language";
-var STUDENT_IMPORT_CSV_FILE_MESSAGE = 'Upload Data Validated. Please click "Commit" to Proceed.';
+var STUDENT_IMPORT_CSV_FILE_MESSAGE = 'Upload Data Validated. Please click "Submit" to Proceed.';
 var ARE_YOU_SURE_TO_REMOVE_THESE_RECORDS = 'Are you sure to remove these records';
 var PLEASE_ENTER_CALIBRATION_CONSTANT_PERCENTILE = 'Please Enter Calibration Constant Percentile';
 var SUBMIT_TEST_EXERCISE_CONFIRMATION_MESSAGE = 'Some questions are not Answered! Are you sure to submit?';
 var CONFIRMATION_BUTTON_TEXT = "Confirmation";
 var DELETE_SKILL = "Delete Skill ?";
+var PLEASE_SELECT_RECORD = "Please Select Record";
+var SELECT_STRANDS = "Select Strands";
+var PLEASE_SELECT_STAGES = "Select Stages";
+var FLAG_BUTTON_TEXT_EN = 'Flag';
+var FLAG_BUTTON_TEXT_CH = '旗幟';
+var UN_FLAG_BUTTON_TEXT_EN = 'Unflag';
+var UN_FLAG_BUTTON_TEXT_CH = '取消標記';
+var FLAG_VALIDATION_TEXT_EN = "Without selecting any answer you can't set flag";
+var FLAG_VALIDATION_TEXT_CH = "如果不選擇任何答案，您將無法設置標誌";

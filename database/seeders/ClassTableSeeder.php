@@ -38,8 +38,8 @@ class ClassTableSeeder extends Seeder
                     ]
                 ];
 
-            foreach ($data as $key => $value) {
-                ClassModel::create($value);
-            }
+        foreach ($data as $key => $value) {
+            ClassModel::create($value);
+        }
     }
 }

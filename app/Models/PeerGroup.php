@@ -10,7 +10,9 @@ use App\Constants\DbConstant as cn;
 use Illuminate\Validation\Rule;
 use App\Models\PeerGroupMember;
 use App\Models\Subjects;
+use App\Models\User;
 use App\Models\ExamGradeClassMappingModel;
+
 class PeerGroup extends Model
 {
     use SoftDeletes, HasFactory, Sortable;
@@ -35,6 +37,8 @@ class PeerGroup extends Model
     ];
 
     protected $appends = ['PeerGroupName'];
+
+    public $timestamps = true;
 
     /**
      * USE : Get language based group name
@@ -62,6 +66,36 @@ class PeerGroup extends Model
 
     public function ExamGradeClassMapping(){
         return $this->hasMany(ExamGradeClassMappingModel::class,'peer_group_id','id');
+    }
+
+    public function CreatedGroupUser(){
+        return $this->hasOne(User::class,cn::USERS_ID_COL,cn::PEER_GROUP_CREATED_BY_USER_ID_COL);
+    }
+
+    public function GetGroupCreatorRole($RoleId){
+        switch($RoleId){
+            case cn::SUPERADMIN_ROLE_ID:
+                return __('languages.super_admin');
+                break;
+            case cn::TEACHER_ROLE_ID:
+                return __('languages.teacher');
+                break;
+            case cn::STUDENT_ROLE_ID:
+                return __('languages.user_management.student');
+                break;
+            case cn::SCHOOL_ROLE_ID:
+                return __('languages.user_management.school');
+                break;
+            case cn::PRINCIPAL_ROLE_ID:
+                return __('languages.principal');
+                break;
+            case cn::PANEL_HEAD_ROLE_ID:
+                return __('languages.panel_head');
+                break;
+            case cn::CO_ORDINATOR_ROLE_ID:
+                return __('languages.coordinator');
+                break;
+        }
     }
 
     /**

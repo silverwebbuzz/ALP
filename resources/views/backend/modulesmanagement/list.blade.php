@@ -75,10 +75,10 @@
 										</td>
                                         <td class="btn-edit">
 											@if (in_array('modules_management_update', $permissions))
-													<a href="{{ route('modulesmanagement.edit', $module->id) }}" class="" title="{{__('languages.edit')}}"><i class="fa fa-pencil" aria-hidden="true"></i></a>
+													<a href="{{ route('modulesmanagement.edit', $module->id) }}" class="" title="{{__('languages.edit')}}"><i class="fa fa-pencil fa-lg" aria-hidden="true"></i></a>
 											@endif
 											@if (in_array('modules_management_delete', $permissions))
-													<a href="javascript:void(0);" class="pl-2" id="deleteModule" data-id="{{$module->id}}" title="{{__('languages.delete')}}"><i class="fa fa-trash" aria-hidden="true"></i></a>
+													<a href="javascript:void(0);" class="pl-2" id="deleteModule" data-id="{{$module->id}}" title="{{__('languages.delete')}}"><i class="fa fa-trash fa-lg" aria-hidden="true"></i></a>
 											@endif
 										</td>
                                     </tr>

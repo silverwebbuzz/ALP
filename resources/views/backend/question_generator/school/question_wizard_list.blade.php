@@ -20,13 +20,13 @@
 				<div class="container-fluid">
 					<div class="col-md-12">
 						<div class="sec-title">
-							<h2 class="mb-4 main-title">{{__('languages.test.test_detail')}}</h2>
+							<h2 class="mb-4 main-title">{{__('languages.generate_questions')}}</h2>
 							<div class="btn-sec">								
 								<!-- For Super admin -->
 								<a href="javascript:void(0);" class="btn-back dark-blue-btn btn btn-primary mb-4" id="backButton">{{__('languages.back')}}</a>
 								@if(in_array('exam_management_create', $permissions))
 									{{-- <a href="{{ route('school.generate-questions') }}" class="btn-search white-font">{{__('languages.question_generators')}}</a> --}}
-									<a href="{{ route('school.generate-questions') }}" class="btn-back dark-blue-btn btn btn-primary mb-4">{{__('languages.question_generators')}}</a>
+									<a href="{{ route('school.generate-questions') }}" class="btn-back dark-blue-btn btn btn-primary mb-4">{{__('languages.generate_questions')}}</a>
 								@endif
 								<!-- For Super admin -->
 								<!-- <button class="btn-search white-font" data-toggle="modal" data-target="#generateGenerateTestExerciseTestModal">{{__('languages.generate_test_and_exercise')}}</button> -->
@@ -49,19 +49,19 @@
 					@endif
 					<form class="" id="" method="get">	
 						<div class="row">
-						<div class="select-lng pt-2 pb-2 col-lg-2 col-md-4">
-							<select name="current_curriculum_year" id="current_curriculum_year" class="form-control select-option curriculum-select-option exam-search">
-								<option value="">{{ __('languages.current') }} {{ __('languages.curriculum_year') }}</option>
-								@if(!empty($CurriculumYears))
-									@foreach($CurriculumYears as $CurriculumYear)
-									<option value="{{$CurriculumYear['id']}}" {{ request()->get('current_curriculum_year') == $CurriculumYear['id'] ? 'selected' : '' }}>{{ $CurriculumYear['year']}}</option>
-									@endforeach
+							<div class="select-lng pt-2 pb-2 col-lg-2 col-md-4">
+								<select name="current_curriculum_year" id="current_curriculum_year" class="form-control select-option curriculum-select-option exam-search">
+									<option value="">{{ __('languages.school_year') }}</option>
+									@if(!empty($CurriculumYears))
+										@foreach($CurriculumYears as $CurriculumYear)
+										<option value="{{$CurriculumYear['id']}}" {{ request()->get('current_curriculum_year') == $CurriculumYear['id'] ? 'selected' : '' }}>{{ $CurriculumYear['year']}}</option>
+										@endforeach
+									@endif
+								</select>
+								@if($errors->has('current_curriculum_year'))
+									<span class="validation_error">{{ $errors->first('current_curriculum_year') }}</span>
 								@endif
-							</select>
-							@if($errors->has('current_curriculum_year'))
-								<span class="validation_error">{{ $errors->first('current_curriculum_year') }}</span>
-							@endif
-						</div>
+							</div>
 						<div class="select-lng pt-2 pb-2 col-lg-2 col-md-4">                            
 								<select name="test_type"  class="form-control select-option exam-search">
 									<option value="">{{ __('languages.test.select_test_type') }}</option>
@@ -103,7 +103,7 @@
 
 							<div class="col-lg-2 col-md-4">
 								<div class="select-lng pt-2 pb-2">
-									<label for="id_end_time">{{ __('languages.test.from_date') }}</label>
+									<label for="id_end_time">{{ __('languages.from') }}</label>
 									<div class="test-list-clandr">
 										<input type="text" class="form-control from-date-picker" name="from_date" value="{{ (request()->get('from_date')) }}" placeholder="{{__('languages.select_date')}}" autocomplete="off">
 										<div class="input-group-addon input-group-append">
@@ -119,7 +119,7 @@
 
 							<div class="col-lg-2 col-md-4">
 								<div class="select-lng pt-2 pb-2">
-									<label for="id_end_time">{{ __('languages.test.to_date') }}</label>
+									<label for="id_end_time">{{ __('languages.to') }}</label>
 									<div class="test-list-clandr">
 										<input type="text" class="form-control to-date-picker" name="to_date" value="{{ (request()->get('to_date'))}}" placeholder="{{__('languages.select_date')}}" autocomplete="off">
 										<div class="input-group-addon input-group-append">
@@ -148,15 +148,16 @@
 							          		<th>
 										  		<input type="checkbox" name="" class="checkbox" id="group-exam-ids">
 											</th>
-											<th>@sortablelink('curriculum_year_id',__('languages.curriculum_year'))</th>
-											<th>@sortablelink('exam_type',__('languages.test.test_type'))</th>
-											<th>@sortablelink('reference_no',__('languages.reference_number'))</th>
+											<th>@sortablelink('curriculum_year_id',__('languages.school_year'))</th>
+											<th>@sortablelink('exam_type',__('languages.type'))</th>
+											<th>@sortablelink('reference_no',__('languages.ref_no'))</th>
 							          		<th>@sortablelink('title',__('languages.test.title'))</th>
 											<th>@sortablelink('from_date',__('languages.start_date_time'))</th>
 											<th>@sortablelink('to_date',__('languages.end_date_time'))</th>
 											<th>{{__('languages.test.result_date')}}</th>
-											<th>{{__('languages.created_user')}}</th>
-											<th>@sortablelink('status',__('languages.status'))</th>
+											<th>{{__('languages.name')}}</th>
+											<th>{{__('languages.creator')}} {{__('languages.role')}}</th>
+											<th>@sortablelink('status',__('languages.modify_status'))</th>
 											<th>{{__('languages.test.update_status')}}</th>											
 											<th>{{__('languages.action')}}</th>
 							        	</tr>
@@ -186,7 +187,7 @@
 													$AllTeachers = App\Helpers\Helper::GetAllTeacherOfSchool(Auth::user()->school_id);
 												@endphp
 												<td>{{date('d/m/Y',strtotime($exam->to_date))}} {{!empty($exam->end_time) ? $exam->end_time.':00' : '00:00:00'}}
-													@if(($exam->ExamSchoolMapping[0]['status'] == 'publish') && ($exam->created_by == Auth::user()->id || (!empty($AllTeachers) && in_array($exam->created_by,$AllTeachers))))
+													@if(($exam->ExamSchoolMapping[0]['status'] == 'publish') && ($exam->created_by == Auth::user()->id || (!empty($AllTeachers) && in_array($exam->created_by,$AllTeachers))) || Auth::user()->role_id == 9)
 													<span class="badge badge-info end_date_pointer school_extend_exam_end_date" data-examid="{{$exam->id}}" 
 														examEndDate="{{date('d/m/Y',strtotime($exam->to_date))}}" refrence_no="{{$exam->reference_no}}"
 														title="{{$exam->title}}" dateType="EndDate"
@@ -195,15 +196,23 @@
 													@endif
 												</td>
 												{{-- <td>{{!empty($exam->result_date) ? date('d/m/Y',strtotime($exam->result_date)) : 'After Submit'}}</td> --}}
+												@php
+													$fromDate = date('d/m/Y',strtotime($exam->from_date));
+													$toDate = date('d/m/Y',strtotime($exam->to_date));
+												@endphp
 												<td>
 													{{ date('d/m/Y',strtotime($exam->result_date))}}
-													@if(($exam->ExamSchoolMapping[0]['status'] == 'publish') && ($exam->created_by == Auth::user()->id || (!empty($AllTeachers) && in_array($exam->created_by,$AllTeachers))))
+													@if(($exam->ExamSchoolMapping[0]['status'] == 'publish') && ($exam->created_by == Auth::user()->id || (!empty($AllTeachers) && in_array($exam->created_by,$AllTeachers)))|| Auth::user()->role_id == 9)
 													<span class="badge badge-info end_date_pointer change_end_date_of_exam" data-examid="{{$exam->id}}" 
 														examResultDate="{{date('d/m/Y',strtotime($exam->result_date))}}" refrence_no="{{$exam->reference_no}}"
-														title="{{$exam->title}}" dateType="ResultDate"
+														title="{{$exam->title}}" dateType="ResultDate" data-ReportType="{{$exam->report_type}}" data-startDate="{{$fromDate}}"
+														data-endDate="{{$toDate}}"
 														>{{__('languages.change_exam_date')}}
 													</span>
 													@endif
+												</td>
+												<td>
+													{{ App\Helpers\Helper::getUserName($exam->created_by) }}
 												</td>
 												<td>
 													{{ ucwords(str_replace('_',' ',$exam->created_by_user)) }}
@@ -236,13 +245,13 @@
 													@if(in_array('exam_management_update', $permissions))
 														@if($exam->ExamSchoolMapping[0]['status'] == 'draft' && ($exam->created_by_user == 'super_admin' || $exam->created_by_user == 'school_admin' || $exam->created_by_user == 'principal' || $exam->created_by_user == 'panel_head' || $exam->created_by_user == 'co_ordinator'))
 														<a href="{{ route('school.generate-questions-edit', $exam->id) }}" class="btn-edit pl-2" title="{{__('languages.edit')}}">
-															<i class="fa fa-pencil" aria-hidden="true"></i>
+															<i class="fa fa-pencil fa-lg" aria-hidden="true"></i>
 														</a>
 														@endif
 													@endif
 													@if(in_array('exam_management_delete', $permissions) && ($exam->ExamSchoolMapping[0]['status'] == 'draft' && ($exam->created_by_user == 'school_admin' || $exam->created_by_user == 'principal' || $exam->created_by_user == 'teacher' || $exam->created_by_user == 'panel_head' || $exam->created_by_user == 'co_ordinator')))
 														<a href="javascript:void(0);" class="pl-2 btn-delete" id="deleteExam" data-id="{{$exam->id}}" title="{{__('languages.delete')}}">
-															<i class="fa fa-trash" aria-hidden="true"></i>
+															<i class="fa fa-trash fa-lg" aria-hidden="true"></i>
 														</a>
 													@endif
 												@endif
@@ -251,13 +260,13 @@
 												@if($exam->ExamSchoolMapping[0]['status'] == 'publish')
 													@if($exam->created_by_user == 'super_admin' || $exam->created_by_user == 'school_admin' || $exam->created_by_user == 'principal' || $exam->created_by_user == 'teacher' || $exam->created_by_user == 'panel_head' || $exam->created_by_user == 'co_ordinator')
 														<span>
-															<i class="fa fa-user add-peer-group" aria-hidden="true" title="{{__('languages.add_students')}}" data-id={{$exam->id}}></i>
+															<i class="fa fa-user fa-lg add-peer-group" aria-hidden="true" title="{{__('languages.add_students')}}" data-id={{$exam->id}}></i>
 														</span>
 													@endif
 
 													@if (in_array('result_management_update', $permissions))
 													<a href="{{ route('getListAttemptedExamsStudents', $exam->id) }}" data-toggle="tooltip" title="{{__('languages.result_text')}}" class="pl-2">
-														<i class="fa fa-eye" aria-hidden="true"></i>
+														<i class="fa fa-eye fa-lg" aria-hidden="true"></i>
 													</a>
 													@endif
 
@@ -269,8 +278,8 @@
 														$previewUrl = route('exam-configuration-preview',$exam->id);
 													}
 													@endphp
-													<a href="{{$previewUrl}}" class="pl-2 btn-delete" id="configExam" data-id="{{$exam->id}}" title="{{__('languages.config')}}">
-														<i class="fa fa-gear" aria-hidden="true"></i>
+													<a href="{{$previewUrl}}" class="pl-2 btn-delete" id="configExam" data-id="{{$exam->id}}" title="{{__('languages.configurations')}}">
+														<i class="fa fa-gear fa-lg" aria-hidden="true"></i>
 													</a>
 													@endif
 												@endif
@@ -278,7 +287,7 @@
 												@if($exam->created_by_user == 'school_admin' || $exam->created_by_user == 'principal' || $exam->created_by_user == 'teacher' || $exam->created_by_user == 'panel_head' || $exam->created_by_user == 'co_ordinator')
 												<!-- Copy and create new test Action -->
 												<a class="pl-2" href="{{route('question-wizard.copy',$exam->id)}}" title="{{__('languages.copy_create_test')}}">
-													<i class="fa fa-copy"></i>
+													<i class="fa fa-copy fa-lg"></i>
 												</a>
 												<!-- End Copy and create new test Action -->
 												@endif

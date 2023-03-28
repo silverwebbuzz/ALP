@@ -39,6 +39,7 @@ class UpdateStudentOverAllAbility implements ShouldQueue
      */
     public function __construct(User $Student)
     {
+        $this->AIApiService = new AIApiService();
         $this->Student = $Student;
     }
 
@@ -81,15 +82,18 @@ class UpdateStudentOverAllAbility implements ShouldQueue
                         $noOfPassedLearningObjectives = 0;
                         foreach($learningObjectivesIds as $learningObjectivesId){
                             $accuracyAll = 0;
-                            $abilityAll = 0;
+                            $Ability = 0;
                             $learningObjectivesData = LearningsObjectives::where('stage_id','<>',3)->find($learningObjectivesId);
                             $StrandUnitsObjectivesMappingsId = StrandUnitsObjectivesMappings::where(cn::OBJECTIVES_MAPPINGS_STRAND_ID_COL,$strandId)
                                                                 ->where(cn::OBJECTIVES_MAPPINGS_LEARNING_UNIT_ID_COL,$learningUnitsId)
                                                                 ->where(cn::OBJECTIVES_MAPPINGS_LEARNING_OBJECTIVES_ID_COL,$learningObjectivesId)
                                                                 ->pluck(cn::OBJECTIVES_MAPPINGS_ID_COL)->toArray();
                             if(isset($StrandUnitsObjectivesMappingsId) && !empty($StrandUnitsObjectivesMappingsId)){
-                                $QuestionsList = Question::with('answers')->whereIn(cn::QUESTION_OBJECTIVE_MAPPING_ID_COL,$StrandUnitsObjectivesMappingsId)
-                                                    ->orderBy(cn::QUESTION_TABLE_ID_COL)->get()->toArray();
+                                $QuestionsList = Question::with('answers')
+                                                ->whereIn(cn::QUESTION_OBJECTIVE_MAPPING_ID_COL,$StrandUnitsObjectivesMappingsId)
+                                                ->orderBy(cn::QUESTION_TABLE_ID_COL)
+                                                ->get()
+                                                ->toArray();
                                 if(isset($QuestionsList) && !empty($QuestionsList)){
                                     $QuestionsDataList = array_column($QuestionsList,cn::QUESTION_TABLE_ID_COL);
                                     $ExamList = Exam::with(['attempt_exams' => fn($query) => $query->where('student_id', $stud_id)])
@@ -106,6 +110,7 @@ class UpdateStudentOverAllAbility implements ShouldQueue
                                                     })
                                                     ->get()->toArray();                                    
                                     if(isset($ExamList) && !empty($ExamList)){
+                                        $ApiRequestData = array();
                                         $accuracyData = 0;
                                         $abilityData = 0;
                                         foreach($ExamList as $ExamData){
@@ -124,9 +129,9 @@ class UpdateStudentOverAllAbility implements ShouldQueue
                                                     $QuestionsDataListFinal[] = $filterattempQuestionAnswervalue['question_id'];
                                                     $QuestionList = Question::with('answers')->where(cn::QUESTION_TABLE_ID_COL,$filterattempQuestionAnswervalue['question_id'])->get()->toArray();
                                                     if(isset($CalibrationId) && !empty($CalibrationId)){
-                                                        $exmdata['difficulty_list'][] = number_format($this->GetDifficultiesValueByCalibrationId($CalibrationId,$QuestionList[0][cn::QUESTION_TABLE_ID_COL]), 4, '.', '');
+                                                        $ApiRequestData['difficulty_list'][] = number_format($this->GetDifficultiesValueByCalibrationId($CalibrationId,$QuestionList[0][cn::QUESTION_TABLE_ID_COL]), 4, '.', '');
                                                     }else{
-                                                        $exmdata['difficulty_list'][] = number_format($QuestionList[0]['PreConfigurationDifficultyLevel']->title, 4, '.', '');
+                                                        $ApiRequestData['difficulty_list'][] = number_format($QuestionList[0]['PreConfigurationDifficultyLevel']->title, 4, '.', '');
                                                     }
                                                     
                                                     $anscount = 0;
@@ -135,33 +140,48 @@ class UpdateStudentOverAllAbility implements ShouldQueue
                                                             $anscount++;
                                                         }
                                                     }
-                                                    $exmdata['num_of_ans_list'][] = $anscount;
+                                                    $ApiRequestData['num_of_ans_list'][] = $anscount;
                                                     if($filterattempQuestionAnswervalue['answer'] == $QuestionList[0]['answers']['correct_answer_'.$ExamData['attempt_exams'][0]['language']]){
-                                                        $exmdata['questions_results'][] = true;
+                                                        $ApiRequestData['questions_results'][] = true;
                                                     }else{
-                                                        $exmdata['questions_results'][] = false;
+                                                        $ApiRequestData['questions_results'][] = false;
                                                     }
                                                 }
                                             }
 
-                                            $ability = 0;
-                                            if(isset($exmdata) && !empty($exmdata)){
-                                                $requestPayload = new \Illuminate\Http\Request();
-                                                $requestPayload = $requestPayload->replace([
-                                                    'questions_results'=> array(
-                                                        $exmdata['questions_results']
-                                                    ),
-                                                    'num_of_ans_list' => $exmdata['num_of_ans_list'],
-                                                    'difficulty_list' => array_map('floatval', $exmdata['difficulty_list']),
-                                                    'max_student_num' => 1
-                                                ]);
-                                                $AIApiService = new AIApiService;
-                                                $data = $AIApiService->getStudentProgressReport($requestPayload);
-                                                if(isset($data) && !empty($data) && isset($data[0]) && !empty($data[0])){
-                                                    $ability = $data[0];
-                                                }
+                                            // $ability = 0;
+                                            // if(isset($exmdata) && !empty($exmdata)){
+                                            //     $requestPayload = new \Illuminate\Http\Request();
+                                            //     $requestPayload = $requestPayload->replace([
+                                            //         'questions_results'=> array(
+                                            //             $exmdata['questions_results']
+                                            //         ),
+                                            //         'num_of_ans_list' => $exmdata['num_of_ans_list'],
+                                            //         'difficulty_list' => array_map('floatval', $exmdata['difficulty_list']),
+                                            //         'max_student_num' => 1
+                                            //     ]);
+                                            //     $AIApiService = new AIApiService;
+                                            //     $data = $AIApiService->getStudentProgressReport($requestPayload);
+                                            //     if(isset($data) && !empty($data) && isset($data[0]) && !empty($data[0])){
+                                            //         $ability = $data[0];
+                                            //     }
+                                            // }
+                                            // $abilityData = ($abilityData + $ability);
+                                        }
+
+                                        if(isset($ApiRequestData) && !empty($ApiRequestData)){
+                                            $requestPayload = new \Illuminate\Http\Request();
+                                            $requestPayload = $requestPayload->replace([
+                                                'questions_results'=> array($ApiRequestData['questions_results']),
+                                                'num_of_ans_list' => $ApiRequestData['num_of_ans_list'],
+                                                'difficulty_list' => array_map('floatval', $ApiRequestData['difficulty_list']),
+                                                'max_student_num' => 1
+                                            ]);
+                                            $AIApiService = new AIApiService;
+                                            $data = $AIApiService->getStudentProgressReport($requestPayload);
+                                            if(isset($data) && !empty($data) && isset($data[0]) && !empty($data[0])){
+                                                $Ability = $data[0];
                                             }
-                                            $abilityData = ($abilityData + $ability);
                                         }
 
                                         // Get the global configuration values
@@ -171,25 +191,25 @@ class UpdateStudentOverAllAbility implements ShouldQueue
                                                                                 
                                         $ExamListCount = sizeof($ExamList);
                                         $accuracyAll = round($accuracyData/$ExamListCount,1);
-                                        $abilityAll = $abilityData/$ExamListCount;
+                                        //$abilityAll = $Ability/$ExamListCount;
                                                                                 
                                         // Store array into student ability
                                         $reportDataAbilityArray[$strandId][$learningUnitsId][] = array(
                                             'learning_objective_number' => $learningObjectivesData->foci_number,
                                             'LearningsObjectives' => $learningObjectivesData->foci_number.' '.$this->setLearningObjectivesTitle($LearningsObjectivesLbl[$learningObjectivesId]),
-                                            'ability' => $abilityAll,
-                                            'normalizedAbility' => Helper::getNormalizedAbility($abilityAll),
-                                            'studystatus' => Helper::getAbilityType($abilityAll),
-                                            'studyStatusColor' => Helper::getGlobalConfiguration(Helper::getAbilityType($abilityAll))
+                                            'ability' => $Ability,
+                                            'normalizedAbility' => Helper::getNormalizedAbility($Ability),
+                                            'studystatus' => Helper::getAbilityType($Ability),
+                                            'studyStatusColor' => Helper::getGlobalConfiguration(Helper::getAbilityType($Ability))
                                         );
                                     }else{
                                         // Store array into student ability
                                         $reportDataAbilityArray[$strandId][$learningUnitsId][] = array(
                                             'learning_objective_number' => $learningObjectivesData->foci_number,
                                             'LearningsObjectives' => $learningObjectivesData->foci_number.' '.$this->setLearningObjectivesTitle($LearningsObjectivesLbl[$learningObjectivesId]),
-                                            'ability' => $abilityAll,
-                                            'normalizedAbility' => Helper::getNormalizedAbility($abilityAll),
-                                            'studystatus' => Helper::getAbilityType($abilityAll),
+                                            'ability' => $Ability,
+                                            'normalizedAbility' => Helper::getNormalizedAbility($Ability),
+                                            'studystatus' => Helper::getAbilityType($Ability),
                                             'studyStatusColor' => Helper::getGlobalConfiguration('incomplete_color')
                                         );
                                     }
@@ -197,9 +217,9 @@ class UpdateStudentOverAllAbility implements ShouldQueue
                                     $reportDataAbilityArray[$strandId][$learningUnitsId][] = array(
                                         'learning_objective_number' => $learningObjectivesData->foci_number,
                                         'LearningsObjectives' => $learningObjectivesData->foci_number.' '.$this->setLearningObjectivesTitle($LearningsObjectivesLbl[$learningObjectivesId]),
-                                        'ability' => $abilityAll,
-                                        'normalizedAbility' => Helper::getNormalizedAbility($abilityAll),
-                                        'studystatus' => Helper::getAbilityType($abilityAll),
+                                        'ability' => $Ability,
+                                        'normalizedAbility' => Helper::getNormalizedAbility($Ability),
+                                        'studystatus' => Helper::getAbilityType($Ability),
                                         'studyStatusColor' => Helper::getGlobalConfiguration('incomplete_color')
                                     );
                                 }

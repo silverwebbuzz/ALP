@@ -78,7 +78,9 @@ class CommonController extends Controller
     //     }
     // }
 
-    //Update Class Id 
+    /**
+     * USE : Update Class Id
+     */ 
     public function updateClassIdAsClassName(Request $request){
         ini_set('max_execution_time', -1);
         $UsersData = User::All();
@@ -90,7 +92,9 @@ class CommonController extends Controller
         }
     }
 
-    // Check Email Exists
+    /**
+     * USE : Check Email Exists
+     */  
     public function CheckEmailExists(Request $request){
         if(isset($request->uid) && $request->uid!=''){
             if(User::where(cn::USERS_EMAIL_COL,$request->email)->where(cn::USERS_ID_COL,'!=',$request->uid)->exists()){
@@ -103,6 +107,9 @@ class CommonController extends Controller
         }
     }
 
+    /**
+     * USE : Get Subjects On Grade Based
+     */ 
     public function getSubjectFromGrades(Request $request){
         try{
             if($this->isSchoolLogin() || $this->isPrincipalLogin() || $this->isPanelHeadLogin() || $this->isCoOrdinatorLogin()){
@@ -123,6 +130,10 @@ class CommonController extends Controller
         }
     }
 
+    
+    /**
+     * USE : Get Strands from Subject
+     */ 
     public function getStrandsFromSubject(Request $request){
         try{
             $SubjectsData = Subjects::where(cn::SUBJECTS_CODE_COL,cn::CODEMATHEMATICS)->first();
@@ -139,6 +150,9 @@ class CommonController extends Controller
         }
     }    
     
+    /**
+     * USE : Get LearningUnits From Strand
+     */
     public function getLearningUnitFromStrands(Request $request){
         try{
             $SubjectsData = Subjects::where(cn::SUBJECTS_CODE_COL,cn::CODEMATHEMATICS)->first();
@@ -157,19 +171,27 @@ class CommonController extends Controller
         }
     }
 
-
+    /**
+     * USE : Get LearningUnits From Strand (Sorted Order Learning Units)
+     */
     public function getMultiLearningUnitFromStrands(Request $request){
-        //try{
+        try{
             if(!empty($request->strand_id)){
                 $strandId = (is_array($request->strand_id)) ? $request->strand_id : [$request->strand_id];
                 $learningUnit = $this->GetLearningUnits($strandId);
                 if(!empty($learningUnit)){
-                    return $this->sendResponse($learningUnit);
+                    $learningUnitIds = array_column($learningUnit,'id');
+                    sort($learningUnitIds);
+                    $data = [
+                        'learningUnit'              =>  $learningUnit,
+                        'sortedLearningUnitIds'     =>  $learningUnitIds
+                    ];                    
+                    return $this->sendResponse($data);
                 }
             }
-        // }catch(\Exception $ex){
-        //     return $this->sendError($ex->getMessage(), 404);
-        // }
+        }catch(\Exception $ex){
+            return $this->sendError($ex->getMessage(), 404);
+        }
     }
 
     /**
@@ -198,6 +220,9 @@ class CommonController extends Controller
         }
     }
 
+    /**
+     * USE : Get Learning Objectives From Learning Unit
+     */
     public function getLearningObjectivesFromLearningUnits(Request $request){
         try{
             $SubjectsData = Subjects::where(cn::SUBJECTS_CODE_COL,cn::CODEMATHEMATICS)->first();
@@ -216,7 +241,10 @@ class CommonController extends Controller
             return $this->sendError($ex->getMessage(), 404);
         }
     }
-
+    
+    /**
+     * USE : Get LearningObjectives From Learning Units (Sorted Order Learning Objective)
+     */
     public function getMultiLearningObjectivesFromLearningUnits(Request $request){
         $StrandID = (is_array($request->strand_id)) ? $request->strand_id : [$request->strand_id];
         $learningUnitId = (is_array($request->learning_unit_id)) ? $request->learning_unit_id : [$request->learning_unit_id];        
@@ -318,10 +346,9 @@ class CommonController extends Controller
         }
     }
 
-    public function passwordCreate(Request $request){
-        echo Hash::make('527326');
-    }
-
+    /**
+     *  USE: Get Difficulty Value
+     */
     public function getDifficultyValue($difficultyLevel){
         if(isset($difficultyLevel) && !empty($difficultyLevel)){
             switch($difficultyLevel){
@@ -345,6 +372,9 @@ class CommonController extends Controller
         }
     }
 
+    /**
+     * USE: Get Particular School Grade
+     */
     public function getGradesBySchool(Request $request){
         $gradeName = '';
         $GradeData = GradeSchoolMappings::with('grades')->where(cn::GRADES_MAPPING_SCHOOL_ID_COL,$request->schoolid)->get();
@@ -356,9 +386,10 @@ class CommonController extends Controller
         }
         return $this->sendResponse($gradeName);
     }
-    /*
-        This function to used to get Difficulty Value in pre_configured_difficulty table 
-    */
+
+    /**
+     * USE: This function to used to get Difficulty Value in pre_configured_difficulty table
+     */  
     public function getAiDifficultyValue($difficultyLevel){
         if(isset($difficultyLevel) && !empty($difficultyLevel)){
             $PreConfigurationDifficultyLevelData = PreConfigurationDiffiltyLevel::where(cn::AI_CALCULATED_DIFFICULTY_DIFFICULTY_LEVEL_COL,$difficultyLevel)->get()->toArray();
@@ -422,7 +453,9 @@ class CommonController extends Controller
         return $this->sendResponse($TotalTime);
     }
 
-    // in Attempt Exam Table in json format add language parameter.
+    /**
+     * USE : in Attempt Exam Table in json format add language parameter.
+     */
     public function addLanguageTypeinJsonFormat(){
         $attemptExams = AttemptExams::all();
         if(!empty($attemptExams)){
@@ -439,6 +472,9 @@ class CommonController extends Controller
         }
     }
 
+    /**
+     * USE : Delete Self Learning Exam Attempted By Particular Students
+     */
     public function selfLearningExamStudentDelete(){
         $examData = Exam::where(cn::EXAM_TYPE_COLS,1)->get();
         if(!empty($examData)){
@@ -451,6 +487,9 @@ class CommonController extends Controller
         }
     }
 
+    /**
+     * USE : Get Particular Exam Configuration
+     */
     public function getExamInfo($examId){
         $exam_info = ExamConfigurationsDetails::where(cn::EXAM_CONFIGURATIONS_DETAILS_EXAM_ID_COL,$examId)->get()->toArray();
         if(isset($exam_info) && !empty($exam_info)){
@@ -461,7 +500,7 @@ class CommonController extends Controller
     }
 
     /**
-     * USE : Convert multi dimentional array to single array
+     * USE : Convert multi dimensional array to single array
      */
     public function array_flatten($array) { 
         if (!is_array($array)) { 
@@ -542,7 +581,9 @@ class CommonController extends Controller
         return $this->sendResponse($optionlist);
     }
 
-    // Check Email Exists
+    /**
+     * USE : Check Email Exists
+     */
     public function GetUserInfo(Request $request){
         if(isset($request->uid) && $request->uid!=''){
             $userDatalist = User::where(cn::USERS_ID_COL,$request->uid)->get()->toArray();
@@ -566,7 +607,10 @@ class CommonController extends Controller
         }
     }
 
-    // Cron Job For a Question math formula load 
+    
+    /**
+     * USE :  Cron Job For a Question math formula load 
+     */
     public function GenerateMathFormulaImage(Request $request){
         $questionData = '';
         $questionData = Question::with('answers')->skip(0)->take(200)->get();
@@ -642,7 +686,10 @@ class CommonController extends Controller
             return $this->sendError($ex->getMessage(), 404);
         }
     }
-
+    
+    /**
+     * USE : Get Role Based Peer Group Data
+     */
     public function getRoleBasedPeerGroupData($peerGroupIds){
         $peerGroupDataArray = array();
         $peerGroupData = PeerGroup::select(cn::PEER_GROUP_ID_COL,cn::PEER_GROUP_GROUP_NAME_COL)
@@ -656,7 +703,7 @@ class CommonController extends Controller
                                 cn::PEER_GROUP_SCHOOL_ID_COL => Auth::user()->{cn::USERS_SCHOOL_ID_COL},
                                 cn::PEER_GROUP_CREATED_BY_USER_ID_COL => Auth::user()->{cn::USERS_ID_COL}
                             ])->get();
-        }else if($this->isSchoolLogin() || isPrincipalLogin() || $this->isPanelHeadLogin() || $this->isCoOrdinatorLogin()){
+        }else if($this->isSchoolLogin() || $this->isPrincipalLogin() || $this->isPanelHeadLogin() || $this->isCoOrdinatorLogin()){
             $peerGroupData = $peerGroupData->select(cn::PEER_GROUP_ID_COL,cn::PEER_GROUP_GROUP_NAME_COL)
                             ->where([
                                 cn::PEER_GROUP_SCHOOL_ID_COL => Auth::user()->{cn::USERS_SCHOOL_ID_COL}
@@ -665,10 +712,12 @@ class CommonController extends Controller
         return $peerGroupData;
     }
 
-    // Generate Alp Chat User Id
+    /**
+     * USE : Generate Alp Chat User Id
+     */
     public function generateAlpChatUserId($userId){
         $newNumber='+852'.rand(10000000,90000000);
-        $oldIds=User::where(cn::USERS_ALP_CHAT_USER_ID_COL,$newNumber)->get()->toArray();
+        $oldIds = User::where(cn::USERS_ALP_CHAT_USER_ID_COL,$newNumber)->get()->toArray();
         if(isset($oldIds) && !empty($oldIds)){
             $this->generateAlpChatUserId($userId);
         }else{
@@ -774,6 +823,9 @@ class CommonController extends Controller
         return $this->sendResponse([$optionList]);
     }
 
+    /**
+     * USE : Update Student Exam Status
+     */
     public function UpdateAttemptedExamStudentMappings(){
         $AttemptExams = AttemptExams::get();
         if(isset($AttemptExams) && !empty($AttemptExams)){
@@ -787,6 +839,9 @@ class CommonController extends Controller
         }
     }
 
+    /**
+     * USE : Set School Year (Curriculum Year)
+     */
     public function AjaxSetCurriculumYear(Request $request){
         $this->SetCurriculumYear($request->CurriculumYearId);
         return $this->sendResponse(["role_id"=>Auth::user()->role_id]);
@@ -842,8 +897,8 @@ class CommonController extends Controller
     }
 
     /**
-    * USE : For Question Ai Calibration update difficulty value
-    */ 
+     * USE : For Question Ai Calibration update difficulty value
+     */ 
     public function updateQuestionDifficultyValue(Request $request){
         ini_set('max_execution_time',-1);
         dispatch(new UpdateQuestionAIDifficultyColumnJob())->delay(now()->addSeconds(1));
@@ -854,5 +909,20 @@ class CommonController extends Controller
      */
     public function updateAttemptExamQuestionAnswer(){
         dispatch(new UpdateAttemptExamQuestionAnswerColumnJob())->delay(now()->addSeconds(1));
+    }
+
+    /**
+     * USE : Get school Users ids
+     */
+    public function GetSchoolUserIds(){
+        $SchoolUserIds = User::where('school_id',Auth::user()->school_id)
+                        ->whereNotIn('id',[Auth::user()->id])
+                        ->whereIn('role_id',[
+                            cn::SCHOOL_ROLE_ID,
+                            cn::PRINCIPAL_ROLE_ID,
+                            cn::PANEL_HEAD_ROLE_ID,
+                            cn::CO_ORDINATOR_ROLE_ID
+                        ])->pluck('id');
+        return $this->sendResponse($SchoolUserIds);
     }
 }

@@ -43,7 +43,7 @@
                                     <div class="form-grade-section">
                                         <div class="student-grade-class-section row">
                                             <div class="form-grade-heading col-lg-3">
-                                                <label>{{__('languages.question_generators_menu.grade-classes')}}</label>
+                                                <label>{{__('languages.form')}}/{{__('languages.classes')}} </label>
                                             </div>
                                             <div class="form-grade-select-section col-lg-9">
                                                 @if(!empty($GradeClassData))
@@ -106,16 +106,16 @@
                                                 <label>{{__('languages.peer_group.prefix_group_name')}}</label>
                                             </div>
                                             <div class="col-lg-3">
-                                               <input type="text" id="prefix_group_name" name="prefix_group_name" placeholder="Prefix Group Names" class="form-control required" required />
+                                               <input type="text" id="prefix_group_name" name="prefix_group_name" placeholder="{{__('languages.peer_group.prefix_group_name')}}" class="form-control required" required />
                                             </div>
                                         </div>
                                         <div class="form-group student_peer_group_section mt-3 row">
                                             <div class="student_peer_group_heading col-lg-3">
-                                                <label>{{__('languages.peer_group.number_of_group')}}</label>
+                                                <label>{{__('languages.peer_group.number_of_groups')}}</label>
                                             </div>
                                             <div class="col-lg-3">
                                                 <select class="selectpicker form-control" data-show-subtext="true" data-live-search="true" name="no_of_group" id="no_of_group">
-                                                    <option value="">{{__('languages.peer_group.select_number_of_group')}}</option>
+                                                    <option value="">{{__('languages.peer_group.select_number_of_groups')}}</option>
                                                     @for($i=1;$i<=20;$i++)
                                                         <option value={{$i}}>{{$i}}</option>
                                                     @endfor
@@ -164,17 +164,13 @@
                         ClassIds.push($(this).val());
                     }
                 });
-
-                
                 // Function call to get student list
                 getStudents(GradeIds,ClassIds);
             });
             function getStudents(gradeIds, classIds){
 		    $("#cover-spin").show();
 		    $('#auto-peer-group-student-id').html('');
-		    if(gradeIds.length==0 && classIds.length==0)
-		    {
-
+		    if(gradeIds.length == 0 && classIds.length == 0){
 		        $('#auto-peer-group-student-id').html('');
 		        $("#auto-peer-group-student-id").multiselect("rebuild");
 		        $("#cover-spin").hide();
@@ -201,6 +197,7 @@
 		    });
 		    $("#cover-spin").hide();
 		}
+
         /**
         * USE : On click event click on the class checkbox
         */
@@ -225,159 +222,108 @@
         *   USE : Create Auto Peer Group using Ajax 
         */
         $(document).on('click', '.btn-create-auto-peergroup', function(){
+            $('label.error').remove();
+            var formIsValid = 0;
+            $(document).find('[name="studentIds[]"]').each(function(){
+                var element = $(this).closest('.form-group').css('display');
+                if($.trim($(this).val()) == '' && element != 'none'){
+                    var label = $(this).closest('.form-group').find('label:eq(0)').text();
+                    $('[name="studentIds[]"]').parent().append('<label class="error">'+VALIDATIONS.PLEASE_SELECT_STUDENTS_OR_PEER_GROUP+' </label>');
+                    formIsValid++;
+                }
+            });
+            $(document).find('[name=prefix_group_name],[name=no_of_group]').each(function(){
+                var element = $(this).closest('.form-group').css('display');
+                if($.trim($(this).val()) == '' && element != 'none' ){
+                    var label = $(this).closest('.form-group').find('label:eq(0)').text();
+                    $(this).parent().append('<label class="error">'+PLEASE_ENTER+label+'</label>');
+                    formIsValid++;
+                }
+            });
 
-             $('label.error').remove();
-            /*$('#createAutoPeerGroupForm').validate({
-                rules: {
-                    "studentIds[]": {
-                        required: true,
+            if(formIsValid == 0){
+                $("#cover-spin").show();
+                $.ajax({
+                    url: BASE_URL + '/create-auto-peer-group',
+                    type: 'POST',
+                    data: {
+                        _token: $('meta[name="csrf-token"]').attr("content"),
+                        formData : $('#createAutoPeerGroupForm').serialize(),
                     },
-                    peer_group_type:{
-                        required: true,
-                    },
-                    no_of_group: {
-                        required: true,
-                    },
-                },
-                messages: {
-                    "studentIds[]": {
-                        required: "Please Select Student First",
-                    },
-                    peer_group_type:{
-                        required: "Please Select Group Type",
-                    },
-                    no_of_group: {
-                        required: "Please Select Number of Group",
-                    },
-                },
-                submitHandler: function(form) {*/
-                    var formIsValid=0;
-                    $(document).find('[name="studentIds[]"]').each(function(){
-                        var element = $(this).closest('.form-group').css('display');
-                        if($.trim($(this).val()) == '' && element != 'none'){
-                            var label = $(this).closest('.form-group').find('label:eq(0)').text();
-                            $('[name="studentIds[]"]').parent().append('<label class="error">'+VALIDATIONS.PLEASE_SELECT_STUDENTS_OR_PEER_GROUP+' </label>');
-                            formIsValid++;
-                        }
-                    });
-                    $(document).find('[name=prefix_group_name],[name=no_of_group]').each(function(){
-                        var element = $(this).closest('.form-group').css('display');
-                        if($.trim($(this).val()) == '' && element != 'none' ){
-                            var label = $(this).closest('.form-group').find('label:eq(0)').text();
-                            $(this).parent().append('<label class="error">'+PLEASE_ENTER+label+'</label>');
-                            formIsValid++;
-                        }
-                    });
-                    if(formIsValid==0)
-                    {
-                        $("#cover-spin").show();
-                        $.ajax({
-                            url: BASE_URL + '/create-auto-peer-group',
-                            type: 'POST',
-                            data: {
-                                _token: $('meta[name="csrf-token"]').attr("content"),
-                                formData : $('#createAutoPeerGroupForm').serialize(),
-                            },
-                            success: function(response) {
-                                if(response.data){
-                                    if(response.data.length!=0)
-                                    {
-                                        $.each(response.data, function (k, v) {
-                                        console.log(v.id);
-                                        var gId=v.id;
-                                            var group_name=v.group_name
-                                            var GroupAdminData = "";
-                                            var currentuser = "";
-                                            var searchIDs = [];
-                                            var promises = [];
-
-                                            // create group admin start
-
-                                            GroupAdminData = rData={
+                    success: function(response) {
+                        if(response.data){
+                            if(response.data.length!=0){
+                                $.each(response.data, function (k, v) {
+                                    var gId = v.id;
+                                    var group_name=v.group_name
+                                    var GroupAdminData = "";
+                                    var currentuser = "";
+                                    var searchIDs = [];
+                                    var promises = [];
+                                    // create group admin start
+                                    GroupAdminData = rData = {
                                                                 alp_chat_user_id:v.group_admin.alp_chat_user_id,
                                                                 email:v.group_admin.email,
                                                                 mobile_no:v.group_admin.mobile_no,
                                                                 name_en:v.group_admin.name_en
-                                                                };
-                                            GroupAdminUser = addUser(GroupAdminData);
-                                            searchIDs.push(GroupAdminUser);
-
-                                            // create group admin end
-
-
-                                            // add group student start
-
-                                            for (
-                                                var gm = 0;
-                                                gm < v.student_list.length;
-                                                gm++
-                                            ) {
-                                                var userData = v.student_list[gm];
-                                               var rData={
+                                                            };
+                                    GroupAdminUser = addUser(GroupAdminData);
+                                    searchIDs.push(GroupAdminUser);
+                                    for (var gm = 0; gm < v.student_list.length; gm++) {
+                                        var userData = v.student_list[gm];
+                                        var rData = {
                                                         alp_chat_user_id:userData.alp_chat_user_id,
                                                         email:userData.email,
                                                         mobile_no:userData.mobile_no,
                                                         name_en:userData.name_en,
                                                     };
-                                                currentuser = addUser(rData);
-                                                searchIDs.push(currentuser);
-                                                promises.push(rData);
-                                            }
-
-                                            // add group student end
-
-                                            $.when.apply(null, promises).done(function () {
-                                                var new_group_title = group_name;
-                                                var searchIDData = searchIDs.filter(function (
-                                                    elem,
-                                                    index,
-                                                    self
-                                                ) {
-                                                    return index === self.indexOf(elem);
-                                                });
-                                                var new_group_description = "";
-                                                var Gdata = {
-                                                    currentuser: GroupAdminUser,
-                                                    new_group_title: new_group_title,
-                                                    searchIDData: searchIDData,
-                                                    new_group_description:
-                                                        new_group_description,
-                                                };
-                                                if (!new_group_title) {
-                                                } else if (searchIDs == "") {
-                                                } else {
-                                                    setTimeout(function () {
-                                                        addGroup(Gdata);
-                                                        var group_id=$("#dreamschat_group_id").val();
-                                                        console.log(gId);
-                                                        $.ajax({
-                                                            url: BASE_URL + '/update-group-id-auto-peer-group/'+gId+'/'+group_id,
-                                                            type: 'GET',
-                                                            success: function(response) {
-                                                                
-                                                            }
-                                                        });
-                                                    },500)
-                                                }
-                                                
-                                            });
-                                        });
+                                        currentuser = addUser(rData);
+                                        searchIDs.push(currentuser);
+                                        promises.push(rData);
                                     }
-                                   setTimeout(function () {
-                                    window.location.replace(BASE_URL+'/\peer-group');
-                                    $("#cover-spin").hide();
-                                    toastr.success(response.message);
-                                   },response.data.length*1000) 
-                                   
-                                }
-                            },
-                            error: function(response) {
-                                ErrorHandlingMessage(response);
+                                    // add group student end
+                                    $.when.apply(null, promises).done(function () {
+                                        var new_group_title = group_name;
+                                        var searchIDData = searchIDs.filter(function (elem,index,self){
+                                            return index === self.indexOf(elem);
+                                        });
+                                        var new_group_description = "";
+                                        var Gdata = {
+                                                        currentuser: GroupAdminUser,
+                                                        new_group_title: new_group_title,
+                                                        searchIDData: searchIDData,
+                                                        new_group_description : new_group_description,
+                                                    };
+                                        if(!new_group_title){
+                                        }else if (searchIDs == ""){
+                                        }else{
+                                            setTimeout(function () {
+                                                addGroup(Gdata);
+                                                var group_id = $("#dreamschat_group_id").val();
+                                                $.ajax({
+                                                    url: BASE_URL + '/update-group-id-auto-peer-group/'+gId+'/'+group_id,
+                                                    type: 'GET',
+                                                    success: function(response) {
+                                                    }
+                                                });
+                                            },500)
+                                        }
+                                    });
+                                });
                             }
-                        });
+                            setTimeout(function () {
+                                window.location.replace(BASE_URL+'/\peer-group');
+                                $("#cover-spin").hide();
+                                toastr.success(response.message);
+                            },response.data.length*1000) 
+                            
+                        }
+                    },
+                    error: function(response) {
+                        ErrorHandlingMessage(response);
                     }
-                //}
-            //});
-    });
+                });
+            }
+        });
         </script>
 @endsection

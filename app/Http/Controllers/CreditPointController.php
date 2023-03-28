@@ -10,6 +10,8 @@ use App\Models\User;
 use App\Models\PeerGroup;
 use App\Models\UserCreditPointHistory;
 use App\Models\UserCreditPoints;
+use App\Models\GradeSchoolMappings;
+use App\Models\GradeClassMapping;
 use Illuminate\Support\Facades\Auth;
 use App\Constants\DbConstant As cn;
 use App\Http\Services\TeacherGradesClassService;
@@ -49,8 +51,20 @@ class CreditPointController extends Controller
 
         if($this->isSchoolLogin() || $this->isPrincipalLogin() || $this->isPanelHeadLogin() || $this->isCoOrdinatorLogin()){    
             $schoolId = Auth::user()->{cn::USERS_SCHOOL_ID_COL};
-            $GradeMapping = GradeSchoolMappings::with('grades')->where(cn::GRADES_MAPPING_SCHOOL_ID_COL,$schoolId)->get()->pluck(cn::GRADES_MAPPING_GRADE_ID_COL);
-            $gradeClass = GradeClassMapping::where(cn::GRADE_CLASS_MAPPING_SCHOOL_ID_COL,$schoolId)->whereIn(cn::GRADE_CLASS_MAPPING_GRADE_ID_COL,$GradeMapping)->pluck(cn::GRADE_CLASS_MAPPING_ID_COL)->toArray();
+            $GradeMapping = GradeSchoolMappings::with('grades')
+                            ->where([
+                                cn::GRADES_MAPPING_SCHOOL_ID_COL => $schoolId,
+                                cn::GRADES_MAPPING_CURRICULUM_YEAR_ID_COL => $this->GetCurriculumYear()
+                            ])
+                            ->get()
+                            ->pluck(cn::GRADES_MAPPING_GRADE_ID_COL);
+            $gradeClass =   GradeClassMapping::where([
+                                cn::GRADE_CLASS_MAPPING_SCHOOL_ID_COL => $schoolId,
+                                cn::GRADE_CLASS_MAPPING_CURRICULUM_YEAR_ID_COL => $this->GetCurriculumYear()
+                            ])
+                            ->whereIn(cn::GRADE_CLASS_MAPPING_GRADE_ID_COL,$GradeMapping)
+                            ->pluck(cn::GRADE_CLASS_MAPPING_ID_COL)
+                            ->toArray();
             if(isset($gradeClass) && !empty($gradeClass)){
                 $gradeClass = implode(',', $gradeClass);
                 $gradeClassId = explode(',',$gradeClass);
@@ -62,9 +76,6 @@ class CreditPointController extends Controller
                                 ->whereIn(cn::GRADES_ID_COL,$GradeMapping)->get();
             
             // get student list
-            // $StudentList = User::where(cn::USERS_SCHOOL_ID_COL,Auth::user()->{cn::USERS_SCHOOL_ID_COL})
-            //                 ->where(cn::USERS_ROLE_ID_COL,'=',cn::STUDENT_ROLE_ID)
-            //                 ->with('grades')->get();
             $StudentList = User::where(cn::USERS_ID_COL,$this->curriculum_year_mapping_student_ids('','',Auth::user()->{cn::USERS_SCHOOL_ID_COL}))
                             ->where(cn::USERS_ROLE_ID_COL,'=',cn::STUDENT_ROLE_ID)
                             ->with('grades')->get();

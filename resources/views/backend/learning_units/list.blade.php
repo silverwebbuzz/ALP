@@ -21,11 +21,11 @@
 					<div class="row">
 						<div class="col-md-12">
 							<div class="sec-title">
-								<h2 class="mb-4 main-title">{{__('languages.learning_units_management.learning_units_detail')}}</h2>
+								<h2 class="mb-4 main-title">{{__('languages.learning_units_management.learning_unit_details')}}</h2>
 								<div class="btn-sec">
 									<a href="javascript:void(0);" class="btn-back dark-blue-btn btn btn-primary mb-4" id="backButton">{{__('languages.back')}}</a>
 								@if (in_array('learning_units_management_create', $permissions))
-									<a href="{{ route('learning_units.create') }}" class="dark-blue-btn btn btn-primary mb-4">{{__('languages.learning_units_management.add_new_learning_units')}}</a>
+									<a href="{{ route('learning_units.create') }}" class="dark-blue-btn btn btn-primary mb-4">{{__('languages.learning_units_management.add_new_learning_unit')}}</a>
 								@endif
 								</div>
 							</div>
@@ -101,7 +101,7 @@
 										<th><input type="checkbox" name="" class="checkbox" id="group-learning_units-ids"></th>
 										<th class="first-head"><span>@sortablelink('stage_id',__('languages.stage'))</span></th>
                                         <th class="first-head"><span>@sortablelink('name',__('languages.learning_units_management.name'))</span></th>
-                                        <th class="first-head"><span>@sortablelink('name',__('languages.learning_units_management.strand_id'))</span></th>
+                                        <th class="first-head"><span>@sortablelink('name',__('languages.strand'))</span></th>
                                         <th class="first-head"><span>@sortablelink('created_at',__('languages.created_at'))</span></th>
                                         <th class="first-head"><span>@sortablelink('status',__('languages.status'))</span></th>
                                         <th>{{__('languages.action')}}</th>
@@ -125,10 +125,10 @@
 											</td>
                                         <td class="btn-edit">
 											@if (in_array('learning_units_management_update', $permissions))
-													<a href="{{ route('learning_units.edit', $learning_units->id) }}" class="" title="{{__('languages.edit')}}"><i class="fa fa-pencil" aria-hidden="true"></i></a>
+													<a href="{{ route('learning_units.edit', $learning_units->id) }}" class="" title="{{__('languages.edit')}}"><i class="fa fa-pencil fa-lg" aria-hidden="true"></i></a>
 											@endif
 											@if (in_array('learning_units_management_delete', $permissions))
-													<a href="javascript:void(0);" class="pl-2" id="deleteLearning_units" data-id="{{$learning_units->id}}" title="{{__('languages.delete')}}"><i class="fa fa-trash" aria-hidden="true"></i></a>
+													<a href="javascript:void(0);" class="pl-2" id="deleteLearning_units" data-id="{{$learning_units->id}}" title="{{__('languages.delete')}}"><i class="fa fa-trash fa-lg" aria-hidden="true"></i></a>
 											@endif
 										</td>
                                     </tr>

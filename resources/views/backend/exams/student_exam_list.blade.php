@@ -21,7 +21,7 @@ if($user_id){
 				<div class="row">
 					<div class="col-md-12">
 						<div class="col-md-12 col-lg-12 col-sm-12 sec-title student-test-list-cls">
-							<h2 class="mb-2 main-title">{{__('languages.sidebar.my_study')}}</h2>
+							<h2 class="mb-2 main-title">{{__('languages.test_text')}}</h2>
 						</div>
 						<div class="col-md-12 col-lg-12 col-sm-12 test-color-info" style="display:none;">
 							<div class="exercise-clr">
@@ -233,7 +233,7 @@ if($user_id){
 														<!-- <a href="{{ route('studentAttemptExam', $exerciseExam->id) }}" class="" title="{{__('languages.test_text')}}">
 															<i class="fa fa-book" aria-hidden="true"></i>
 														</a> -->
-														<a href="{{route('StudentAttemptTestExercise', $exerciseExam->id)}}" class="" title="{{__('languages.test_text')}}">
+														<a href="{{route('StudentAttemptTestExercise', $exerciseExam->id)}}" class="" title="{{__('languages.test_do')}}">
 															<i class="fa fa-book" aria-hidden="true"></i>
 														</a>
 														@endif
@@ -373,7 +373,7 @@ if($user_id){
 															<i class="fa fa-book" aria-hidden="true"></i>
 														</a> -->
 
-														<a href="{{route('StudentAttemptTestExercise', $testExam->id)}}" class="" title="{{__('languages.test_text')}}">
+														<a href="{{route('StudentAttemptTestExercise', $testExam->id)}}" class="" title="{{__('languages.do')}}">
 															<i class="fa fa-book" aria-hidden="true"></i>
 														</a>
 														@endif
@@ -413,7 +413,7 @@ if($user_id){
 		<div class="modal-content">
 			<form method="post">
 				<div class="modal-header">
-					<h4 class="modal-title w-100">{{__('languages.question_difficulty_analysis')}}</h4>
+					<h4 class="modal-title w-100">{{__('languages.difficulty_analysis')}}</h4>
 					<button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
 				</div>
 				<div class="modal-body Graph-body">

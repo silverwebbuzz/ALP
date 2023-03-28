@@ -6,10 +6,11 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use App\Constants\DbConstant as cn;
 use Illuminate\Database\Eloquent\SoftDeletes;
+use Kyslik\ColumnSortable\Sortable;
 
 class LearningsUnits extends Model
 {
-    use HasFactory, SoftDeletes;
+    use HasFactory, SoftDeletes,Sortable;
 
     protected $table = cn::LEARNING_UNITS_TABLE_NAME;
     
@@ -33,7 +34,7 @@ class LearningsUnits extends Model
         cn::LEARNING_UNITS_STATUS_COL
     ];  
 
-    public $timestamps = true; 
+    public $timestamps = true;
 
     /**
     ** Validation Rules for school
@@ -94,5 +95,4 @@ class LearningsUnits extends Model
     public function Strands(){
         return $this->hasOne(Strands::Class,cn::STRANDS_ID_COL, cn::LEARNING_UNITS_STRANDID_COL);
     }
-
 }

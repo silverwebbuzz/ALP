@@ -128,6 +128,7 @@ class AttemptExamTestExerciseController extends Controller
                                 cn::HISTORY_STUDENT_QUESTION_ANSWER_EXAM_ID_COL     => $exam_id,
                                 cn::HISTORY_STUDENT_QUESTION_ANSWER_QUESTION_ID_COL => $QuestionId,
                                 cn::HISTORY_STUDENT_QUESTION_ANSWER_IS_TRIAL_NO_COL => 2,
+                                cn::HISTORY_STUDENT_QUESTION_ANSWER_IS_ANSWERED_FLAG_COL => null,
                                 cn::HISTORY_STUDENT_QUESTION_ANSWER_ANSWER_ORDERING_COL => implode(',',$RandomAnswerOrdering)
                             ]);
                         }
@@ -154,6 +155,7 @@ class AttemptExamTestExerciseController extends Controller
                                 cn::HISTORY_STUDENT_QUESTION_ANSWER_EXAM_ID_COL     => $exam_id,
                                 cn::HISTORY_STUDENT_QUESTION_ANSWER_QUESTION_ID_COL => $QuestionId,
                                 cn::HISTORY_STUDENT_QUESTION_ANSWER_IS_TRIAL_NO_COL => 1,
+                                cn::HISTORY_STUDENT_QUESTION_ANSWER_IS_ANSWERED_FLAG_COL => null,
                                 cn::HISTORY_STUDENT_QUESTION_ANSWER_ANSWER_ORDERING_COL => implode(',',$RandomAnswerOrdering)
                             ]);
                         }
@@ -664,6 +666,15 @@ class AttemptExamTestExerciseController extends Controller
                 // Selected all old question answers
                 if(isset($NewQuestionId) && !empty($NewQuestionId)){
                     $HistoryStudentQuestionAnswer = array();
+                    // Update previous selected flag
+                    HistoryStudentQuestionAnswer::where([
+                        cn::HISTORY_STUDENT_QUESTION_ANSWER_STUDENT_ID_COL => Auth::user()->id,
+                        cn::HISTORY_STUDENT_QUESTION_ANSWER_EXAM_ID_COL => $examId,
+                        cn::HISTORY_STUDENT_QUESTION_ANSWER_IS_TRIAL_NO_COL => 1,
+                        cn::HISTORY_STUDENT_QUESTION_ANSWER_IS_ANSWERED_FLAG_COL => 'false'
+                    ])->Update([
+                        cn::HISTORY_STUDENT_QUESTION_ANSWER_IS_ANSWERED_FLAG_COL => 'true'
+                    ]);
                     $HistoryStudentQuestionAnswer = HistoryStudentQuestionAnswer::where([
                                                         cn::HISTORY_STUDENT_QUESTION_ANSWER_STUDENT_ID_COL => Auth::user()->id,
                                                         cn::HISTORY_STUDENT_QUESTION_ANSWER_EXAM_ID_COL => $examId,
@@ -828,6 +839,7 @@ class AttemptExamTestExerciseController extends Controller
                             }
                         }
                     }else{
+                        $SelectedAnswer = 5;
                         $NoOfWrongAnswers = ($NoOfWrongAnswers + 1);
                         $apiData['questions_results'][] = false;
                     }
@@ -853,11 +865,11 @@ class AttemptExamTestExerciseController extends Controller
 
                 $QuestionAnswer[] = $FinalQuestionAnswer;
             }
-
+            
             if(isset($QuestionAnswer) && !empty($QuestionAnswer)){
                 $QuestionAnswer = json_encode($QuestionAnswer);
             }
-
+            
             // Create First Trial Question Answer Array
             $AttemptFirstTrialQuestions = $this->GetQuestionAnswerJson(1,$examId);
             if(isset($AttemptFirstTrialQuestions) && !empty($AttemptFirstTrialQuestions)){
@@ -910,7 +922,9 @@ class AttemptExamTestExerciseController extends Controller
                 Exam::find($examId)->update([cn::EXAM_TABLE_IS_TEACHING_REPORT_SYNC =>'true']);
                 
                 /** Start Update overall ability for the student **/
-                $this->CronJobController->UpdateStudentOverAllAbility();
+                if($examDetail->exam_type == 3 || ($examDetail->exam_type == 1 && $examDetail->self_learning_test_type == 2)){
+                    $this->CronJobController->UpdateStudentOverAllAbility();
+                }
 
                 /** Update My Teaching Table Via Cron Job */
                 $this->CronJobController->UpdateMyTeachingTable(Auth::user()->{cn::USERS_SCHOOL_ID_COL}, $examId);
@@ -920,6 +934,12 @@ class AttemptExamTestExerciseController extends Controller
                     $this->CronJobController->UpdateStudentCreditPoints($examId, Auth::user()->{cn::USERS_ID_COL});
                 }
                 /** End Update overall ability for the student **/
+
+                if($examDetail->exam_type == 3){
+                    // Start Learning Progress Learning Unit Job
+                    $this->CronJobController->UpdateLearningProgressJob(Auth::user()->{cn::USERS_ID_COL});
+                    // End Learning Progress Learning Unit Job
+                }
 
                 // Delete history table data
                 HistoryStudentExams::where([

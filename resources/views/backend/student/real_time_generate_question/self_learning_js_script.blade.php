@@ -48,6 +48,19 @@ $(function (){
         }
     });
 
+    // Emoji Select
+    $(document).on("click",".emojisButton",function () {
+        if($('#feedback_type').val()=='1'){
+            $("#before_emoji_id").val($(this).val());
+            $('#feedback_type').val('2');
+            $('#AttemptQuestionFeedback').modal('hide');
+        }else{
+            $("#after_emoji_id").val($(this).val());
+            $('#feedback_type').val('1');
+            $('#AttemptQuestionFeedback').modal('hide');
+        }
+    });
+
 
     // If type is exercise then no trials option is enabled and otherwise disabled
     if($('#test_type').find(":selected").val() == 2){
@@ -156,7 +169,7 @@ $(function (){
                                             <input type="checkbox" name="learning_unit['+this.learning_unit_id+'][learning_objective]['+this.id+']" value="'+this.learning_unit_id+'" class="learning_objective_checkbox" checked>';
                                             // <label>'+this.foci_number+' '+learningObjectivesTitle+'</label>';
                                             html+= '<label>'+ this.index+' '+learningObjectivesTitle+' ('+this.foci_number+ ')</label>';
-                                            html += '<input type="text" name="learning_unit['+this.learning_unit_id+'][learning_objective]['+this.id+'][get_no_of_question_learning_objectives]" value="'+data.data.getNoOfQuestionPerLearningObjective[this.id]+'" class="get_no_of_question_learning_objectives" min="'+data.data.getNoOfQuestionPerLearningObjective[this.id]+'" max="'+maximum_question_per_skill+'">\
+                                            html += '<input type="text" name="learning_unit['+this.learning_unit_id+'][learning_objective]['+this.id+'][get_no_of_question_learning_objectives]" value="'+data.data.getNoOfQuestionPerLearningObjective[this.id]+'" class="get_no_of_question_learning_objectives" min="'+data.data.getNoOfQuestionPerLearningObjective[this.id]+'" max="'+maximum_question_per_skill+'" readonly>\
                                         </div>';
 							});
                             $('.selection-learning-objectives-section').html(html);
@@ -282,10 +295,6 @@ $(function (){
                         QuestionSecondInterval = setInterval(function (){
                             PerQuestionTimer = secondsTimeSpanToHMS(++PerQuestionSecond);
                         }, 1000);
-                        
-                        //$("#question-generator button[type=submit]").prop('disabled',true);
-                        //toastr.success(SELF_LEARNING_CREATED_SUCCESSFULLY);
-                        //window.location.replace(BASE_URL+'/'+response.data.redirectUrl);
                     }else{
                         $("#cover-spin").hide();
                         toastr.error(response.message);
@@ -300,30 +309,39 @@ $(function (){
 
         // USE : Complete all question then store test into databse
         $(document).on("click","#submit-self-learning-test",function () {
-            $("#cover-spin").show();
-            $(this).prop('disabled',true);
-            $('#current_question_taking_timing').val(PerQuestionTimer);
-            $('#exam_taking_timing').val(timer);
-            var formData = $("#attempt-exams").serialize();
-            $.ajax({
-                url: BASE_URL + '/self-learning/test/save',
-                type: 'POST',
-                data:formData,
-                success: function(response) {
-                    var response = JSON.parse(JSON.stringify(response));                
-                    if(response.status === 'success'){
-                        $("#cover-spin").hide();
-                        toastr.success('Self Learning Test Submitted Successfully');
-                        window.location.replace(BASE_URL+'/'+response.data.redirectUrl);
-                    }else{
-                        $("#cover-spin").hide();
-                        toastr.error(response.message);
+            $('#AttemptQuestionFeedback').modal('show');
+            $('#AttemptQuestionFeedback').on('hidden.bs.modal', function() {
+                $("#cover-spin").show();
+                $(this).prop('disabled',true);
+                $('#current_question_taking_timing').val(PerQuestionTimer);
+                $('#exam_taking_timing').val(timer);
+                
+                $("<input />").attr("type", "hidden").attr("name", "before_emoji_id").attr("value", $('#before_emoji_id').val()).appendTo("#attempt-exams");
+                $("<input />").attr("type", "hidden").attr("name", "after_emoji_id").attr("value",$('#after_emoji_id').val()).appendTo("#attempt-exams");
+
+                var formData = $("#attempt-exams").serialize();
+                $.ajax({
+                    url: BASE_URL + '/self-learning/test/save',
+                    type: 'POST',
+                    data:formData,
+                    success: function(response) {
+                        var response = JSON.parse(JSON.stringify(response));                
+                        if(response.status === 'success'){
+                            $("#cover-spin").hide();
+                            closePopupModal('AttemptQuestionFeedback');
+                            toastr.success('Self Learning Test Submitted Successfully');
+                            window.location.replace(BASE_URL+'/'+response.data.redirectUrl);
+                        }else{
+                            $("#cover-spin").hide();
+                            toastr.error(response.message);
+                        }
+                    },
+                    error: function(response) {
+                        ErrorHandlingMessage(response);
                     }
-                },
-                error: function(response) {
-                    ErrorHandlingMessage(response);
-                }
+                });
             });
+            
         });
 
         /**
@@ -358,10 +376,6 @@ $(function (){
                         QuestionSecondInterval = setInterval(function (){
                             PerQuestionTimer = secondsTimeSpanToHMS(++PerQuestionSecond);
                         }, 1000);
-                        
-                        //$("#question-generator button[type=submit]").prop('disabled',true);
-                        //toastr.success(SELF_LEARNING_CREATED_SUCCESSFULLY);
-                        //window.location.replace(BASE_URL+'/'+response.data.redirectUrl);
                     }else{
                         $("#cover-spin").hide();
                         toastr.error(response.message);
@@ -402,6 +416,8 @@ $(function (){
                 if(response.status === 'success'){
                     examTimer();
                     $("#cover-spin").hide();
+                    // Set Emoji
+                    $('#AttemptQuestionFeedback').modal('show');
                     $('#self-learning-config-section').html(response.data.question_html);
                     MathJax.Hub.Queue(["Typeset",MathJax.Hub]);
 

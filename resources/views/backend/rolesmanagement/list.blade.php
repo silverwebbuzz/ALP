@@ -21,7 +21,7 @@
 					<div class="row">
 						<div class="col-md-12">
 							<div class="sec-title">
-								<h2 class="mb-4 main-title">{{__('languages.role_and_permission.role_detail')}}</h2>
+								<h2 class="mb-4 main-title">{{__('languages.role_and_permission.role_details')}}</h2>
 								<div class="btn-sec">
 									<a href="javascript:void(0);" class="btn-back dark-blue-btn btn btn-primary mb-4" id="backButton">{{__('languages.back')}}</a>
 								@if (in_array('roles_management_create', $permissions))
@@ -73,10 +73,10 @@
 											</td>
                                         <td class="btn-edit">
 											@if (in_array('roles_management_update', $permissions))
-													<a href="{{ route('rolesmanagement.edit', $roles->id) }}" class="" title="{{__('languages.edit')}}"><i class="fa fa-pencil" aria-hidden="true"></i></a>
+													<a href="{{ route('rolesmanagement.edit', $roles->id) }}" class="" title="{{__('languages.edit')}}"><i class="fa fa-pencil fa-lg" aria-hidden="true"></i></a>
 											@endif
 											@if (in_array('roles_management_delete', $permissions))
-													<a href="javascript:void(0);" class="pl-2" id="deleteRole" data-id="{{$roles->id}}" title="{{__('languages.delete')}}"><i class="fa fa-trash" aria-hidden="true"></i></a>
+													<a href="javascript:void(0);" class="pl-2" id="deleteRole" data-id="{{$roles->id}}" title="{{__('languages.delete')}}"><i class="fa fa-trash fa-lg" aria-hidden="true"></i></a>
 											@endif
 										</td>
                                     </tr>

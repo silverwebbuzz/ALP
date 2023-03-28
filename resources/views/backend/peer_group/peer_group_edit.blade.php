@@ -136,10 +136,10 @@
                                                             </th>
                                                             <th class="first-head"><span>{{__('languages.name_english')}}</span></th>
                                                             <th class="first-head"><span>{{__('languages.name_chinese')}}</span></th>
-                                                            <th class="sec-head selec-opt"><span>{{__('languages.email')}}</span></th>
-                                                            <th class="selec-head">{{__('languages.grade')}}</th>
+                                                            <th class="sec-head selec-opt"><span>{{__('languages.email_address')}}</span></th>
+                                                            <th class="selec-head">{{__('languages.form')}}</th>
                                                             <th class="selec-head">{{__('languages.class')}}</th>
-                                                            <th class="selec-head">{{__('languages.profile.class_student_number')}}</th>
+                                                            <th class="selec-head">{{__('languages.student_code')}}</th>
                                                             <th>{{__('languages.peer_group.action')}}</th>
                                                         </tr>
                                                     </thead>
@@ -211,6 +211,21 @@
             var GroupMemberDataList = [];
             var GroupMemberOldList = [];
             $(function () {
+                // Get Default School User Ids
+                $.ajax({
+                    url: BASE_URL + "/get/school-users",
+                    type: "GET",
+                    async: false,
+                    success: function (response) {
+                        var data = JSON.parse(JSON.stringify(response));
+                        if(data.data){
+                            // Mergr GroupMemberList and default School Users (Principal, Co-ordinator, Panel Head)
+                            GroupMemberOldList = $.merge( $.merge( [], GroupMemberOldList ), data.data );
+                        }
+                    },
+                });
+                // End School User code
+
                 var MemberIds = [];
                 $(document).ready(function(){
                     $('#peer-group-member-list-section .select-member-checkbox').each(function () {
@@ -225,9 +240,9 @@
                             var row = $(this.node());
                             row.closest('tr').find(".select-member-checkbox").prop('checked', true);
                             var memberid = row.closest('tr').find(".select-member-checkbox").val();
-                            if (MemberIds.indexOf(memberid) !== -1) {
+                            if(MemberIds.indexOf(memberid) !== -1){
                                 // Current value is exists in array
-                            } else {
+                            }else{
                                 MemberIds.push(memberid);
                                 GroupMemberOldList.push(memberid);
                             }
@@ -457,17 +472,15 @@
                                 GroupMemberList.push($(this).val());
                             })
                             $('#peer-group-member-list-section .select-member-checkbox:checked').each(function () {
-                                var uid=$(this).val();
-                                var alp_chat_user_id='';
-                                if($(this).attr('data-alp-chat-id')!="")
-                                {
-                                    alp_chat_user_id=$(this).attr('data-alp-chat-id');
+                                var uid = $(this).val();
+                                var alp_chat_user_id = '';
+                                if($(this).attr('data-alp-chat-id')!=""){
+                                    alp_chat_user_id = $(this).attr('data-alp-chat-id');
                                 }
-                                console.log(alp_chat_user_id);
-                                var trData=$(this).closest('tr');
-                                var email=trData.find('td:eq(3)').text();
-                                var name=trData.find('td:eq(1)').text();
-                                var memberData={
+                                var trData = $(this).closest('tr');
+                                var email = trData.find('td:eq(3)').text();
+                                var name = trData.find('td:eq(1)').text();
+                                var memberData = {
                                     id:uid,
                                     email:email,
                                     name_en:name,

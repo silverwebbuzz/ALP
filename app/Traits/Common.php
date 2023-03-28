@@ -50,6 +50,30 @@ use App\Models\LearningObjectiveOrdering;
 
 trait Common {
 
+    /**
+     * USE : Get Page Name
+     */
+    public function GetPageName($ExamId){
+        $menuItem = '';
+        $ExamData = Exam::find($ExamId);
+        switch($ExamData->exam_type){
+            case 1:
+                if($ExamData->{cn::EXAM_TABLE_SELF_LEARNING_TEST_TYPE_COL} == 1){
+                    $menuItem = 'self_learning';
+                }else{
+                    $menuItem = 'testing_zone';
+                }
+                break;
+            case 2:
+                $menuItem = 'exercise';
+                break;
+            case 3:
+                $menuItem = 'test';
+                break;
+        }
+        return $menuItem;
+    }
+
     // Get Learning Units
     public function GetLearningUnits($strandId){
         $finalArray = [];
@@ -57,18 +81,29 @@ trait Common {
         if(LearningUnitOrdering::where('school_id',Auth::user()->school_id)->exists()){
             $LearningUnitOrdering =  LearningUnitOrdering::where('school_id',Auth::user()->school_id)
                                     ->whereIn('strand_id',$strandId)
+                                    ->orderBy('position','ASC')
                                     ->get();
-            $positionArray = $LearningUnitOrdering->pluck('position')->toArray();
-            $IndexArray =   $LearningUnitOrdering->pluck('index')->toArray();
-            foreach($positionArray as $positionKey => $position){
-                $LearningsUnits =   LearningsUnits::where('id',$position)->where('stage_id','<>',3)->first();
-                if(isset($LearningsUnits) && !empty($LearningsUnits)){
-                    $FindLearningUnitIndex = $LearningUnitOrdering->where('learning_unit_id',$LearningsUnits->id)->first();
-                    $finalArray[$positionKey] = $LearningsUnits->toArray();
-                    $finalArray[$positionKey]['position'] = $position;
-                    $finalArray[$positionKey]['index'] = $FindLearningUnitIndex->index; //$IndexArray[$position - 1];
+            if(isset($LearningUnitOrdering) && !empty($LearningUnitOrdering)){
+                foreach($LearningUnitOrdering as $UnitOrderKey => $learningUnitData){
+                    $LearningsUnits = LearningsUnits::where('id',$learningUnitData->learning_unit_id)->where('stage_id','<>',3)->first();
+                    if(isset($LearningsUnits) && !empty($LearningsUnits)){
+                        $finalArray[$UnitOrderKey] = $LearningsUnits->toArray();
+                        $finalArray[$UnitOrderKey]['position'] = $learningUnitData->position;
+                        $finalArray[$UnitOrderKey]['index'] = $learningUnitData->index; //$IndexArray[$position - 1];
+                    }
                 }
             }
+            // $positionArray = $LearningUnitOrdering->pluck('position')->toArray();
+            // $IndexArray =   $LearningUnitOrdering->pluck('index')->toArray();
+            // foreach($positionArray as $positionKey => $position){
+            //     $LearningsUnits = LearningsUnits::where('id',$position)->where('stage_id','<>',3)->first();
+            //     if(isset($LearningsUnits) && !empty($LearningsUnits)){
+            //         $FindLearningUnitIndex = $LearningUnitOrdering->where('learning_unit_id',$LearningsUnits->id)->first();
+            //         $finalArray[$positionKey] = $LearningsUnits->toArray();
+            //         $finalArray[$positionKey]['position'] = $position;
+            //         $finalArray[$positionKey]['index'] = $FindLearningUnitIndex->index; //$IndexArray[$position - 1];
+            //     }
+            // }
         }else{
             $LearningUnits = LearningsUnits::where('stage_id','<>',3)->whereIn(cn::LEARNING_UNITS_STRANDID_COL, $strandId)->get();
             foreach($LearningUnits as $learningUnitKey => $UnitData){
@@ -87,7 +122,6 @@ trait Common {
             $learningObjectiveData = $this->OrderingObjectiveData($learningUnitIds,true);
         }else{
             $learningObjectiveData = $this->OrderingObjectiveData($learningUnitIds,false);
-            
         }
         return $learningObjectiveData;
     }
@@ -98,49 +132,56 @@ trait Common {
         $learningObjectiveData = [];
         $learningUnitId = (is_array($learningUnitId)) ? $learningUnitId : [$learningUnitId];
         if(LearningObjectiveOrdering::where('school_id',Auth::user()->school_id)->exists() && ($learningUnitExists==false || $learningUnitExists == 0)){
+
             $learningObjectiveOrdering = LearningObjectiveOrdering::where('school_id',Auth::user()->school_id)
                                 ->whereIn('learning_unit_id',$learningUnitId)
                                 ->get();
             $positionArray = $learningObjectiveOrdering->pluck('position')->toArray();
             $IndexArray = $learningObjectiveOrdering->pluck('index')->toArray();
+            $tempLearningUnitIds = [];
+            $counter = 0;
             foreach($positionArray as $positionKey => $position){
-                $LearningsObjectives =   LearningsObjectives::where('id',$position)->where('stage_id','<>',3)->first();
+                $LearningsObjectives =  LearningsObjectives::where('id',$position)->where('stage_id','<>',3)->first();
                 if(isset($LearningsObjectives) && !empty($LearningsObjectives)){
                     $FindLearningObjectiveIndex = $learningObjectiveOrdering->where('learning_objective_id',$LearningsObjectives->id)->first();
                     $finalArray[$positionKey] = $LearningsObjectives->toArray();
                     $finalArray[$positionKey]['position'] = $position;
-                    $finalArray[$positionKey]['index'] = $FindLearningObjectiveIndex->index; //$IndexArray[$position - 1];
+                    if(!in_array($LearningsObjectives->learning_unit_id,$tempLearningUnitIds)){
+                        $tempLearningUnitIds[] = $LearningsObjectives->learning_unit_id;
+                        $counter = 0;
+                    }
+                    $finalArray[$positionKey]['index'] = $LearningsObjectives->learning_unit_id.'.'.(++$counter);
                 }
             }
             return $finalArray;
         }elseif(LearningObjectiveOrdering::where('school_id',Auth::user()->school_id)->exists() && ($learningUnitExists == true || $learningUnitExists == 1)){
             foreach($learningUnitId as $unitKey => $unitId){
                 $learningObjectiveOrdering = LearningObjectiveOrdering::where('school_id',Auth::user()->school_id)
-                                ->where('learning_unit_id',$unitId)
-                                ->get();
-                $positionArray = $learningObjectiveOrdering->pluck('position')->toArray();
+                                            ->where('learning_unit_id',$unitId)
+                                            ->orderBy('position','ASC') // Manoj Added
+                                            ->get();
+                $positionArray = $learningObjectiveOrdering->pluck('learning_objective_id')->toArray();
                 foreach($positionArray as $positionKey => $position){
                     $LearningsObjectives =   LearningsObjectives::where('id',$position)->where('stage_id','<>',3)->first();
                     if(isset($LearningsObjectives) && !empty($LearningsObjectives)){
                         $FindLearningObjectiveIndex = $learningObjectiveOrdering->where('learning_objective_id',$LearningsObjectives['id'])->first();
                         $finalArray[$unitKey][$positionKey] = $LearningsObjectives->toArray();
                         $finalArray[$unitKey][$positionKey]['position'] = $position;
-                        $finalArray[$unitKey][$positionKey]['index'] = $FindLearningObjectiveIndex->index; //$IndexArray[$position - 1];
+                        $orderingLearningUnit = LearningUnitOrdering::where('school_id',Auth::user()->school_id)->where('learning_unit_id',$LearningsObjectives['learning_unit_id'])->first()->toArray();
+                        $finalArray[$unitKey][$positionKey]['index'] = ($orderingLearningUnit['position']).'.'.($positionKey + 1);
                     }
                 }
             }
             $learningObjectiveData = array_merge(...$finalArray);
             return $learningObjectiveData;
         }elseif(LearningObjectiveOrdering::where('school_id',Auth::user()->school_id)->doesntExist() && ($learningUnitExists == true || $learningUnitExists == 1)){
-            $orderingLearningUnit = LearningUnitOrdering::where('school_id',Auth::user()->school_id)->whereIn('learning_unit_id',$learningUnitId)->get();
+            $orderingLearningUnit = LearningUnitOrdering::where('school_id',Auth::user()->school_id)->whereIn('learning_unit_id',$learningUnitId)->orderBy('position','ASC')->get();
             foreach($learningUnitId as $unitKey => $unitId){
-                $learningObjectiveOrdering = LearningsObjectives::where('learning_unit_id',$unitId)
-                                ->get()->toArray();
+                $learningObjectiveOrdering = LearningsObjectives::where('learning_unit_id',$unitId)->get()->toArray();
                 foreach($learningObjectiveOrdering as $learningObjectiveOrderingKey => $learningObjective){
                     $finalArray[$unitKey][$learningObjectiveOrderingKey] = $learningObjective;
-                    // $finalArray[$unitKey][$learningObjectiveOrderingKey]['index'] =  $orderingLearningUnit[$unitKey]['index'].'.'.($learningObjectiveOrderingKey + 1); 
-                    $finalArray[$unitKey][$learningObjectiveOrderingKey]['index'] =  ($unitKey + 1).'.'.($learningObjectiveOrderingKey + 1); 
-                }                 
+                    $finalArray[$unitKey][$learningObjectiveOrderingKey]['index'] =  ($orderingLearningUnit[$this->searchForId($unitId, 'learning_unit_id',$orderingLearningUnit->toArray())]['position']).'.'.($learningObjectiveOrderingKey + 1);
+                }
             }
             $learningObjectiveData = array_merge(...$finalArray);
             return $learningObjectiveData;
@@ -148,16 +189,24 @@ trait Common {
             $indexingArray = [];
             foreach($learningUnitId as $unitKey => $unitIds){
                 $ObjectiveData = LearningsObjectives::where('learning_unit_id',$unitIds)->where('stage_id','<>',3)->get()->toArray();
-                
                 foreach($ObjectiveData as $objectiveKey => $objectiveData){
                     $indexingArray[$objectiveKey] = $objectiveData;
-                    $indexingArray[$objectiveKey]['index'] = ($unitKey+1).'.'.($objectiveKey+1);
+                    $indexingArray[$objectiveKey]['index'] = ($unitIds).'.'.($objectiveKey+1);
                     array_push($learningObjectiveData,$indexingArray[$objectiveKey]);
                 }
             }
             return $learningObjectiveData;
         }
     }
+
+    function searchForId($id, $column, $array) {
+        foreach ($array as $key => $val) {
+            if ($val[$column] == $id) {
+                return $key;
+            }
+        }
+        return null;
+     }
     
     /**
      * USE : Get current adjusted calibration id
@@ -479,32 +528,34 @@ trait Common {
             Self::SetCurriculumYear();
             switch (Auth::user()->roles['role_slug']) {
                 case "superadmin":
-                    //$redirectUrl = config()->get('app.url').'admin/dashboard';
-                    $redirectUrl = config()->get('app.url').'users';
+                    $redirectUrl = config()->get('app.url').'admin/dashboard';
+                    //$redirectUrl = config()->get('app.url').'users';
                     break;
                 case "principal":
                     $redirectUrl = config()->get('app.url').'principal/dashboard';
                     //$redirectUrl = config()->get('app.url').'report/class-test-reports/correct-incorrect-answer';
                     break;
                 case "panel_head" :
-                    $redirectUrl = config()->get('app.url').'report/class-test-reports/correct-incorrect-answer';
+                    $redirectUrl = config()->get('app.url').'panel-head/dashboard';
+                    //$redirectUrl = config()->get('app.url').'report/class-test-reports/correct-incorrect-answer';
                     break;
                 case "co-ordinator" :
-                    $redirectUrl = config()->get('app.url').'report/class-test-reports/correct-incorrect-answer';
+                    $redirectUrl = config()->get('app.url').'co-ordinator/dashboard';
+                    //$redirectUrl = config()->get('app.url').'report/class-test-reports/correct-incorrect-answer';
                     break;
                 case "teacher":
                     $redirectUrl = config()->get('app.url').'teacher/dashboard';
                     break;
                 case "student":
-                    //$redirectUrl = config()->get('app.url').'student/dashboard';
-                    $redirectUrl = config()->get('app.url').'student/test/exam';
+                    $redirectUrl = config()->get('app.url').'student/dashboard';
+                    //$redirectUrl = config()->get('app.url').'student/test/exam';
                     break;
                 case "parent":
                     $redirectUrl = config()->get('app.url').'parent/dashboard';
                     break;
                 case "school" :
-                    //$redirectUrl = config()->get('app.url').'schools/dashboard';
-                    $redirectUrl = config()->get('app.url').'report/class-test-reports/correct-incorrect-answer';
+                    $redirectUrl = config()->get('app.url').'schools/dashboard';
+                    //$redirectUrl = config()->get('app.url').'report/class-test-reports/correct-incorrect-answer';
                     break;
                 case "external_resource":
                     //$redirectUrl = config()->get('app.url').'schools/dashboard';
@@ -757,7 +808,7 @@ trait Common {
             }
             return $response;
         }
-        if(Auth::user()->role_id == cn::SCHOOL_ROLE_ID || Auth::user()->role_id == cn::PRINCIPAL_ROLE_ID){
+        if(Auth::user()->role_id == cn::SCHOOL_ROLE_ID || Auth::user()->role_id == cn::PRINCIPAL_ROLE_ID || Auth::user()->role_id == cn::PANEL_HEAD_ROLE_ID || Auth::user()->role_id == cn::CO_ORDINATOR_ROLE_ID){
             $classMappingData = GradeClassMapping::where([
                                     cn::GRADE_CLASS_MAPPING_CURRICULUM_YEAR_ID_COL => Self::GetCurriculumYear(),
                                     cn::EXAM_SCHOOL_GRADE_CLASS_MAPPING_SCHOOL_ID_COL => Auth::user()->{cn::USERS_SCHOOL_ID_COL}
@@ -1459,8 +1510,8 @@ trait Common {
      */
     public function getPeerGroupType(){
         return array(
-            ['id' => '0', 'name' => 'Round Robin'],
-            ['id' => '1', 'name' => 'Sequence']
+            ['id' => '0', 'name' => __('languages.similar').' '.__('languages.distribution')],
+            ['id' => '1', 'name' => __('languages.report.ability').'-'.__('languages.based')]
         );
     }
 
@@ -1566,10 +1617,11 @@ trait Common {
     public function ExamStatusList(){
         return array(
             // ['id'=>'pending', 'name' => 'Pending'],
-            ['id'=>'draft', 'name' => 'Draft'],
-            ['id'=>'publish', 'name' => 'Publish'],
+            ['id'=>'draft', 'name' => __('languages.draft')],
+            ['id'=>'publish', 'name' => __('languages.publish')],
             // ['id'=>'active', 'name' => 'Active'],
-            ['id'=>'inactive', 'name' => 'Inactive'],
+            ['id'=>'inactive', 'name' => __('languages.inactive')],
+            // ['id'=>'inactive', 'name' => __('languages.deactivate')],
             // ['id'=>'complete', 'name' => 'Complete']
         );
     }
@@ -2817,6 +2869,9 @@ trait Common {
                     'left_y_axis' => __('languages.aiapi_label.Plot_Analyze_My_Class_Ability.left_y_axis'),
                     'right_y_axis' => __('languages.aiapi_label.Plot_Analyze_My_Class_Ability.right_y_axis'),
                     'x_axis' => __('languages.aiapi_label.Plot_Analyze_My_Class_Ability.x_axis'),
+                    'median_label' => __('languages.aiapi_label.Plot_Analyze_My_School_Ability.median_label'),
+                    'mean_label' => __('languages.aiapi_label.Plot_Analyze_My_School_Ability.mean_label'),
+                    'std_label' => __('languages.aiapi_label.Plot_Analyze_My_School_Ability.std_label'),
                 ];
                 if($isGroup===true){
                     $labels['label_1'] = __('languages.aiapi_label.abilities_of_my_group');
@@ -2832,6 +2887,9 @@ trait Common {
                     'left_y_axis' => __('languages.aiapi_label.Plot_Analyze_My_School_Ability.left_y_axis'),
                     'right_y_axis' => __('languages.aiapi_label.Plot_Analyze_My_School_Ability.right_y_axis'),
                     'x_axis' => __('languages.aiapi_label.Plot_Analyze_My_School_Ability.x_axis'),
+                    'median_label' => __('languages.aiapi_label.Plot_Analyze_My_School_Ability.median_label'),
+                    'mean_label' => __('languages.aiapi_label.Plot_Analyze_My_School_Ability.mean_label'),
+                    'std_label' => __('languages.aiapi_label.Plot_Analyze_My_School_Ability.std_label'),
                 ];
                 if($isGroup===true){
                     $labels['label_1'] = __('languages.aiapi_label.abilities_of_my_group');
@@ -2847,11 +2905,26 @@ trait Common {
                     'left_y_axis' => __('languages.aiapi_label.Plot_Analyze_All_Schools_Ability.left_y_axis'),
                     'right_y_axis' => __('languages.aiapi_label.Plot_Analyze_All_Schools_Ability.right_y_axis'),
                     'x_axis' => __('languages.aiapi_label.Plot_Analyze_All_Schools_Ability.x_axis'),
+                    'median_label' => __('languages.aiapi_label.Plot_Analyze_My_School_Ability.median_label'),
+                    'mean_label' => __('languages.aiapi_label.Plot_Analyze_My_School_Ability.mean_label'),
+                    'std_label' => __('languages.aiapi_label.Plot_Analyze_My_School_Ability.std_label'),
                 ];
                 if($isGroup===true){
                     $labels['label_1'] = __('languages.aiapi_label.abilities_of_my_group');
                     $labels['plot_title'] = __('languages.aiapi_label.my_group_vs_my_school_vs_all_school');
                 }
+                break;
+            case config()->get('aiapi.api.Plot_Analyze_Test_Difficulty.uri'):
+                $labels = [
+                    'label_1' => __('languages.aiapi_label.Plot_Analyze_Test_Difficulty.label_1'),
+                    'plot_title' => __('languages.aiapi_label.Plot_Analyze_Test_Difficulty.plot_title'),
+                    'left_y_axis' => __('languages.aiapi_label.Plot_Analyze_Test_Difficulty.left_y_axis'),
+                    'right_y_axis' => __('languages.aiapi_label.Plot_Analyze_Test_Difficulty.right_y_axis'),
+                    'x_axis' => __('languages.aiapi_label.Plot_Analyze_Test_Difficulty.x_axis'),
+                    'median_label' => __('languages.aiapi_label.Plot_Analyze_Test_Difficulty.median_label'),
+                    'mean_label' => __('languages.aiapi_label.Plot_Analyze_Test_Difficulty.mean_label'),
+                    'std_label' => __('languages.aiapi_label.Plot_Analyze_Test_Difficulty.std_label'),
+                ];
                 break;
             default:
                 break;

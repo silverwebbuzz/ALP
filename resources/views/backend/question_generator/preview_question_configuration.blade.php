@@ -12,7 +12,7 @@
                 <div class="row">
                     <div class="col-md-12">
                         <div class="sec-title">
-                            <h2 class="mb-4 main-title">{{__('languages.question_generators_menu.question_generators')}}</h2>
+                            <h2 class="mb-4 main-title">{{__('languages.generate_questions')}}</h2>
                         </div>
                         <div class="sec-title back-button-margin">
 							<a href="javascript:void(0);" class="btn-back" id="backButton">{{__('languages.back')}}</a>
@@ -75,16 +75,15 @@
                                 <div class="question-generator-option-headings mb-3">
                                     <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12 pl-0 pr-0">
                                         <ul class="form-tab">
-                                            <li class="step-headings section-step1 admin-tab tab_active" data-tabid="1">1.{{__('languages.question_generators_menu.configuration')}}</li>
-                                            <li class="step-headings section-step2 admin-tab" data-tabid="2">2.{{__('languages.question_generators_menu.assigned_to_classes_and_peer_group')}}</li>
-                                            <li class="step-headings section-step3 admin-tab" data-tabid="3">3. {{__('languages.select_learning_objectives')}}</li>
+                                            <li class="step-headings section-step1 admin-tab tab_active" data-tabid="1">1.{{__('languages.configurations')}}</li>
+                                            <li class="step-headings section-step2 admin-tab" data-tabid="2">2.{{__('languages.classes_peer_groups')}}</li>
+                                            <li class="step-headings section-step3 admin-tab" data-tabid="3">3. {{__('languages.learning_objectives')}}</li>
                                             <li class="step-headings section-step4 admin-tab" data-tabid="4">4. {{__('languages.question_generators_menu.review_of_questions')}}</li>
                                         </ul>
                                     </div>
                                 </div>
                                 <section class="form-steps step1">
                                     <div class="form-row">
-
                                         <div class="form-group col-md-6 mb-50">
                                             <label class="text-bold-600">{{__('languages.question_generators_menu.test_mode')}}</label>
                                             <select name="test_type" class="form-control select-option" id="test_type" {{ $fieldDisabled }} >
@@ -330,18 +329,19 @@
                                     </div>
                                 </section>
                                 @php
-                                $existingSchoolIds = ($exam->school_id) ? explode(',',$exam->school_id) : [];
-                                $QuestionGeneratorController = new App\Http\Controllers\QuestionGeneratorController;
-                                $existingPeerGroupIds = $QuestionGeneratorController->GetCurrentSchoolAssignedTestPeerGroups($exam->id);
-                                if(isset($existingPeerGroupIds) && !empty($existingPeerGroupIds)){
-                                    $existingStudentIds = [];
-                                    $studentGradeData = [];
-                                    $studentClassData = [];
-                                }else{
-                                    $existingStudentIds = $QuestionGeneratorController->GetCurrentSchoolAssignedStudentsList($exam->id);
-                                }
-                                $studentClassData = ($examClassIds) ? $examClassIds : [];
+                                    $existingSchoolIds = ($exam->school_id) ? explode(',',$exam->school_id) : [];
+                                    $QuestionGeneratorController = new App\Http\Controllers\QuestionGeneratorController;
+                                    $existingPeerGroupIds = $QuestionGeneratorController->GetCurrentSchoolAssignedTestPeerGroups($exam->id);
+                                    if(isset($existingPeerGroupIds) && !empty($existingPeerGroupIds)){
+                                        $existingStudentIds = [];
+                                        $studentGradeData = [];
+                                        $studentClassData = [];
+                                    }else{
+                                        $existingStudentIds = $QuestionGeneratorController->GetCurrentSchoolAssignedStudentsList($exam->id);
+                                    }
+                                    $studentClassData = ($examClassIds) ? $examClassIds : [];
                                 @endphp
+
                                 <section class="form-steps step2" style="display:none">
                                     @if(App\Helpers\Helper::isAdmin())
                                         @php
@@ -370,7 +370,7 @@
                                         <div class="form-grade-section">
                                             <div class="student-grade-class-section row">
                                                 <div class="form-grade-heading col-lg-3">
-                                                    <label>{{ __('languages.question_generators_menu.grade-classes') }}</label>
+                                                    <label>{{__('languages.form')}}/{{__('languages.classes')}}</label>
                                                 </div>
                                                 <div class="form-grade-select-section col-lg-9">
                                                     @if(!empty($GradeClassData))
@@ -453,8 +453,8 @@
                                         <div class="form-group col-md-6 mb-50">
                                             <label>{{__('languages.stage')}}</label>
                                             <select name="stage_id" class="form-control select-option" id="stage-id" disabled>
-                                                <option value="3" @if($exam->stage_ids) selected @endif>{{__('3-XXX')}}</option>
-                                                <option value="4" @if($exam->stage_ids) selected @endif>{{__('4-XXX')}}</option>
+                                                <option value="3" @if($exam->stage_ids) selected @endif>{{__('3')}}</option>
+                                                <option value="4" @if($exam->stage_ids) selected @endif>{{__('4')}}</option>
                                             </select>
                                         </div>
                                         <div class="form-group col-md-6 mb-50">
@@ -496,7 +496,7 @@
                                         <div class="question-generator-objectives-labels">
                                             <label>{{ __('languages.question_generators_menu.learning_objectives') }}</label>
                                             <label>{{ __('languages.question_generators_menu.difficulty_level') }}</label>
-                                            <label>{{ __('languages.question_generators_menu.no_of_question_per_learning_objectives') }}</label>
+                                            <label>{{ __('languages.questions_per_learning_objective') }}</label>
                                         </div>
                                     </div>
                                     <div class="form-row selection-learning-objectives-section">
@@ -636,7 +636,10 @@
                                         <div class="sm-btn-sec form-row">
                                             <div class="form-group mb-50 btn-sec">
                                                 <button type="button" class="blue-btn btn btn-primary previous-button previous_btn_step_4" data-stepid="4">{{ __('languages.question_generators_menu.previous') }}</button>
-                                                <a class="blue-btn btn btn-primary" href="{{ route('question-wizard') }}">{{ __('languages.close') }}</a>
+                                                @if(auth()->user()->role_id != 3)
+                                                    <a class="blue-btn btn btn-primary" href="{{ route('question-wizard') }}">{{ __('languages.close') }}</a>
+                                                @endif
+                                                    <a href="javascript:void(0);" class="blue-btn btn btn-primary" id="backButton">{{__('languages.close')}}</a>
                                             </div>
                                         </div>
                                     </div>
@@ -822,7 +825,8 @@ $(function (){
 					'strands_ids': $strandIds
 				},
 				success: function(response) {
-					$('#learning_unit').html('');
+					// $('#learning_unit').html('');
+                    $(classNameLearningUnit).html('');
 					$("#cover-spin").hide();
 					var data = JSON.parse(JSON.stringify(response));
 					if(data){

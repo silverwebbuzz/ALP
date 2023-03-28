@@ -47,39 +47,39 @@
                                         </fieldset>
                                     </div>
                                     <div class="form-group col-md-6">
-                                        <label class="text-bold-600" for="exampleInputUsername1">{{ __('languages.nodes.nodes_id') }}</label>
+                                        <label class="text-bold-600" for="exampleInputUsername1">{{ __('languages.nodes.node_id') }}</label>
                                         <input type="text" class="form-control" name="node_id" id="node_id" placeholder="{{__('languages.nodes.node_id')}}" value="{{old('node_id')}}">
                                         @if($errors->has('node_id'))<span class="validation_error">{{ $errors->first('node_id') }}</span>@endif
                                     </div>
                                 </div>
                                 <div class="form-row">
                                     <div class="form-group col-md-6 mb-50">
-                                        <label class="text-bold-600">{{ __('languages.nodes.title_en') }}</label>
-                                        <input type="text" class="form-control" name="node_title_en" id="title_en" placeholder="{{ __('languages.nodes.title_en') }}" value="{{old('title_en')}}">
+                                        <label class="text-bold-600">{{ __('languages.title') }}</label>
+                                        <input type="text" class="form-control" name="node_title_en" id="title_en" placeholder="{{ __('languages.title') }}" value="{{old('title_en')}}">
                                         @if($errors->has('node_title_en'))<span class="validation_error">{{ $errors->first('node_title_en') }}</span>@endif
                                     </div>
                                     <div class="form-group col-md-6 mb-50">
                                         <label class="text-bold-600">{{ __('languages.nodes.title_ch') }}</label>
-                                        <input type="text" class="form-control" name="node_title_ch" id="title_ch" placeholder="{{ __('languages.nodes.title_ch') }}" value="{{old('title_ch')}}">
+                                        <input type="text" class="form-control" name="node_title_ch" id="title_ch" placeholder="{{ __('languages.title') }} ({{__('languages.chinese')}})" value="{{old('title_ch')}}">
                                         @if($errors->has('node_title_ch'))<span class="validation_error">{{ $errors->first('node_title_ch') }}</span>@endif
                                     </div>
                                 </div>
                                 <div class="form-row">
                                     <div class="form-group col-md-6">
-                                        <label class="text-bold-600">{{ __('languages.nodes.weakness_name_en') }}</label>
-                                        <input type="text" class="form-control" id="weakness_name_en" name="weakness_name_en" placeholder="{{ __('languages.nodes.weakness_name_en') }}" value="{{old('weakness_name_en')}}">
+                                        <label class="text-bold-600">{{ __('languages.questions.weakness_name') }} </label>
+                                        <input type="text" class="form-control" id="weakness_name_en" name="weakness_name_en" placeholder="{{ __('languages.questions.weakness_name') }}" value="{{old('weakness_name_en')}}">
                                         @if($errors->has('weakness_name_en'))<span class="validation_error">{{ $errors->first('weakness_name_en') }}</span>@endif
                                     </div>
                                     <div class="form-group col-md-6">
-                                        <label class="text-bold-600">{{ __('languages.nodes.weakness_name_ch') }}</label>
-                                        <input type="text" class="form-control" id="weakness_name_ch" name="weakness_name_ch" placeholder="{{ __('languages.nodes.weakness_name_ch') }}" value="{{old('weakness_name_ch')}}">
+                                        <label class="text-bold-600">{{ __('languages.weakness_name_chinese')}}</label>
+                                        <input type="text" class="form-control" id="weakness_name_ch" name="weakness_name_ch" placeholder="{{ __('languages.weakness_name_chinese')}}" value="{{old('weakness_name_ch')}}">
                                         @if($errors->has('weakness_name_ch'))<span class="validation_error">{{ $errors->first('weakness_name_ch') }}</span>@endif
                                     </div>
                                 </div>
                                 <div class="form-row">
                                     <div class="form-group col-md-6">
-                                        <label class="text-bold-600">{{ __('languages.nodes.description_en') }}</label>
-                                        <textarea class="form-control" name="description_en" id="description_en" placeholder="{{ __('languages.nodes.description_en') }}" value="">{{old('description_en')}}</textarea>
+                                        <label class="text-bold-600">{{ __('languages.description') }}</label>
+                                        <textarea class="form-control" name="description_en" id="description_en" placeholder="{{ __('languages.description') }}" value="">{{old('description_en')}}</textarea>
                                         @if($errors->has('description_en'))<span class="validation_error">{{ $errors->first('description_en') }}</span>@endif
                                     </div>
                                     <div class="form-group col-md-6">

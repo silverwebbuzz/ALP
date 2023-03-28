@@ -162,7 +162,7 @@
 										</div>
 										<form>
 											<div class="btn-sec en-to-ch-btn">
-												<input type="button" onclick="english_to_chinese()" value="{{__('languages.questions.english_to_chinese')}}" class="dark-blue-btn btn btn-primary mb-4"></button>
+												<input type="button" onclick="english_to_chinese()" value="{{__('languages.copy_en_to_ch')}}" class="m-4 dark-blue-btn btn btn-primary mb-4"></button>
 											</div>
 										</form>
 									</div>
@@ -181,7 +181,7 @@
 										</div>
 										<form>
 											<div class="btn-sec ch-to-en-btn">
-												<input type="button" onclick="chinese_to_english()" class="dark-blue-btn btn btn-primary mb-4" value="{{__('languages.questions.chinese_to_english')}}"></button>
+												<input type="button" onclick="chinese_to_english()" class="dark-blue-btn btn btn-primary mb-4" value="{{__('languages.copy_ch_to_en')}}"></button>
 											</div>
 										</form>
 									</div>
@@ -197,17 +197,22 @@
 								<div class="col-md-12">
 									<div class="right-ans-hints-sec">
 										<table class="table-for-right-ans">
-										    <thead>
-										        <tr>
-										          <th class="">{{__('languages.questions.right_ans')}}</th>
+										    {{-- <thead> --}}
+										        {{-- <tr> --}}
+										          {{-- <th class="">{{__('languages.questions.right_ans')}}</th>
 										          <th class="">{{__('languages.questions.ans')}}({{__('languages.questions.english')}})</th>
-										          <th class="">{{__('languages.questions.hints_of_wrong_ans')}} ({{__('languages.questions.english')}})</th>
-										        </tr>
-										    </thead>
+										          <th class="">{{__('languages.questions.hints_of_wrong_ans')}} ({{__('languages.questions.english')}})</th> --}}
+										        {{-- </tr> --}}
+										    {{-- </thead> --}}
 										    <tbody class="scroll-pane">
+												<th class="">{{__('languages.questions.possible_answers')}}</th>
+										        <th class=""></th>
+										        <th class="">{{__('languages.questions.hint_1')}}</th>
 										        <tr>
 										          	<td class="p-2 ans-radio-td">
-														<span class="option_label">{{__('languages.questions.ans_1')}}<input type="radio" name="correct_answer_en" value="1" class="radio" {{(old('correct_answer_en') == '1') ? 'checked' : 'checked'}}></span>
+														{{-- <span class="option_label">{{__('languages.questions.ans_1')}} --}}
+															<span class="option_label">{{__('languages.questions.answer_1')}}
+															<input type="radio" name="correct_answer_en" value="1" class="radio" {{(old('correct_answer_en') == '1') ? 'checked' : 'checked'}}></span>
 														@if($errors->has('correct_answer_en'))
 														<span class="validation_error">{{ $errors->first('correct_answer_en') }}</span>
 														@endif
@@ -223,7 +228,8 @@
 														@if($errors->has('hint_answer1_en'))
 														<span class="validation_error">{{ $errors->first('hint_answer1_en') }}</span>
 														@endif
-														<label>{{__('languages.questions.node_hint_answer_1_english')}}</label>
+														{{-- <label>{{__('languages.questions.node_hint_answer_1_english')}}</label> --}}
+														<label>{{__('languages.questions.hint_2')}}</label>
 														<textarea id="node_hint_answer1_en" class="sm-area" name="node_hint_answer1_en" data-sample-short>{{old('node_hint_answer1_en')}}</textarea>
 														@if($errors->has('node_hint_answer1_en'))
 														<span class="validation_error">{{ $errors->first('node_hint_answer1_en') }}</span>
@@ -231,13 +237,14 @@
 
 														<!-- Weakness sections -->
 														<label class="weak-label"><strong>{{__('languages.questions.weakness')}} :</strong></label>
-														<p class="know-p pl-2">{{__('languages.questions.knowledge_node_relation')}}
+														{{-- <p class="know-p pl-2">{{__('languages.questions.knowledge_node_relation')}} --}}
+															<p class="know-p pl-2">{{__('languages.questions.knowledge_node')}}
 															<img src="{{asset('images/Chain.png')}}" class="node-relation-img" data-toggle="modal" data-target="#nodeModal" onclick="check_ans('answer1_node_relation_id_en','answer1_weakness_en');">
 															<input type="hidden" name="answer1_node_relation_id_en" value="" id="answer1_node_relation_id_en">
 														</p>
 														<div class="weekness-input pl-2">
 															<label>{{__('languages.questions.weakness_name')}} :</label>
-															<input type="text" name="answer1_weakness_en" class="input-code" id="answer1_weakness_en" value="{{old('answer1_weakness_en')}}" placeholder="{{__('languages.questions.answer_weakness')}}" readonly>	
+															<input type="text" name="answer1_weakness_en" class="input-code" id="answer1_weakness_en" value="{{old('answer1_weakness_en')}}" placeholder="{{__('languages.questions.weakness_name')}}" readonly>	
 															@if($errors->has('answer1_weakness_en'))
 															<span class="validation_error">{{ $errors->first('answer1_weakness_en') }}</span>
 															@endif
@@ -245,9 +252,13 @@
 														<!-- End Weakness sections -->
 													</td>
 										        </tr>
+
+												<th class=""></th>
+										        <th class=""></th>
+										        <th class="">{{__('languages.questions.hint_1')}}</th>
 												<tr>
 										          	<td class="p-2">
-													  <span class="option_label">{{__('languages.questions.ans_2')}}<input type="radio" name="correct_answer_en" value="2" class="radio" {{(old('correct_answer_en') == '2') ? 'checked' : ''}}></span>
+													  <span class="option_label">{{__('languages.questions.answer_2')}}<input type="radio" name="correct_answer_en" value="2" class="radio" {{(old('correct_answer_en') == '2') ? 'checked' : ''}}></span>
 														@if($errors->has('correct_answer_en'))
 														<span class="validation_error">{{ $errors->first('correct_answer_en') }}</span>
 														@endif
@@ -263,7 +274,8 @@
 														@if($errors->has('hint_answer2_en'))
 														<span class="validation_error">{{ $errors->first('hint_answer2_en') }}</span>
 														@endif
-														<label>{{__('languages.questions.node_hint_answer_2_english')}}</label>
+														{{-- <label>{{__('languages.questions.node_hint_answer_2_english')}}</label> --}}
+														<label>{{__('languages.questions.hint_2')}}</label>
 														<textarea id="node_hint_answer2_en" class="sm-area" name="node_hint_answer2_en" data-sample-short>{{old('node_hint_answer2_en')}}</textarea>
 														<!-- <input type="text" name="node_hint_answer2_en" class="input-code" id="node_hint_answer2_en" value="{{old('node_hint_answer2_en')}}" placeholder="Node Hint Answer">	 -->
 														@if($errors->has('node_hint_answer2_en'))
@@ -272,23 +284,27 @@
 
 														<!-- Weakness sections -->
 														<label class="weak-label"><strong>{{__('languages.questions.weakness')}} :</strong></label>
-														<p class="know-p pl-2">{{__('languages.questions.knowledge_node_relation')}}
+														<p class="know-p pl-2">{{__('languages.questions.knowledge_node')}}
 															<img src="{{asset('images/Chain.png')}}" class="node-relation-img"  data-toggle="modal" data-target="#nodeModal" onclick="check_ans('answer2_node_relation_id_en','answer2_weakness_en');">
 															<input type="hidden" name="answer2_node_relation_id_en" value="" id="answer2_node_relation_id_en">
 														</p>
 														<div class="weekness-input pl-2">
 															<label>{{__('languages.questions.weakness_name')}} :</label>
-															<input type="text" name="answer2_weakness_en" class="input-code" id="answer2_weakness_en" value="{{old('answer2_weakness_en')}}" placeholder="{{__('languages.questions.answer_weakness')}}" readonly>
+															<input type="text" name="answer2_weakness_en" class="input-code" id="answer2_weakness_en" value="{{old('answer2_weakness_en')}}" placeholder="{{__('languages.questions.weakness_name')}}" readonly>
 															@if($errors->has('answer2_weakness_en'))
 															<span class="validation_error">{{ $errors->first('answer2_weakness_en') }}</span>
 															@endif
 														</div>
 														<!-- End Weakness sections -->
 													</td>
-										        </tr>	
+										        </tr>
+												
+												<th class=""></th>
+										        <th class=""></th>
+										        <th class="">{{__('languages.questions.hint_1')}}</th>
 												<tr>
 										          	<td class="p-2">
-													  <span class="option_label">{{__('languages.questions.ans_3')}}<input type="radio" name="correct_answer_en" value="3" class="radio"  {{(old('correct_answer_en') == '3') ? 'checked' : ''}}></span>
+													  <span class="option_label">{{__('languages.questions.answer_3')}}<input type="radio" name="correct_answer_en" value="3" class="radio"  {{(old('correct_answer_en') == '3') ? 'checked' : ''}}></span>
 														@if($errors->has('correct_answer_en'))
 														<span class="validation_error">{{ $errors->first('correct_answer_en') }}</span>
 														@endif
@@ -304,7 +320,7 @@
 														@if($errors->has('hint_answer3_en'))
 														<span class="validation_error">{{ $errors->first('hint_answer3_en') }}</span>
 														@endif
-														<label>{{__('languages.questions.node_hint_answer_3_english')}}</label>
+														<label>{{__('languages.questions.hint_2')}}</label>
 														<textarea id="node_hint_answer3_en" class="sm-area" name="node_hint_answer3_en" data-sample-short>{{old('node_hint_answer3_en')}}</textarea>
 														<!-- <input type="text" name="node_hint_answer3_en" class="input-code" id="node_hint_answer3_en" value="{{old('node_hint_answer3_en')}}" placeholder="Node Hint Answer">	 -->
 														@if($errors->has('node_hint_answer3_en'))
@@ -313,13 +329,13 @@
 
 														<!-- Weakness sections -->
 														<label class="weak-label"><strong>{{__('languages.questions.weakness')}} :</strong></label>
-														<p class="know-p pl-2">{{__('languages.questions.knowledge_node_relation')}}
+														<p class="know-p pl-2">{{__('languages.questions.knowledge_node')}}
 															<img src="{{asset('images/Chain.png')}}" class="node-relation-img" data-toggle="modal" data-target="#nodeModal" onclick="check_ans('answer3_node_relation_id_en','answer3_weakness_en');">
 															<input type="hidden" name="answer3_node_relation_id_en" value="" id="answer3_node_relation_id_en">
 														</p>
 														<div class="weekness-input pl-2">
 															<label>{{__('languages.questions.weakness_name')}} :</label>
-															<input type="text" name="answer3_weakness_en" class="input-code" id="answer3_weakness_en" value="{{old('answer3_weakness_en')}}" placeholder="{{__('languages.questions.answer_weakness')}}" readonly>
+															<input type="text" name="answer3_weakness_en" class="input-code" id="answer3_weakness_en" value="{{old('answer3_weakness_en')}}" placeholder="{{__('languages.questions.weakness_name')}}" readonly>
 															@if($errors->has('answer3_weakness_en'))
 															<span class="validation_error">{{ $errors->first('answer3_weakness_en') }}</span>
 															@endif
@@ -327,9 +343,13 @@
 														<!-- End Weakness sections -->
 													</td>
 												</tr>
+
+												<th class=""></th>
+										        <th class=""></th>
+										        <th class="">{{__('languages.questions.hint_1')}}</th>
 												<tr>
 										          	<td class="p-2">
-													  <span class="option_label">{{__('languages.questions.ans_4')}}<input type="radio" name="correct_answer_en" value="4" class="radio" {{(old('correct_answer_en') == '4') ? 'checked' : ''}}></span>
+													  <span class="option_label">{{__('languages.questions.answer_4')}}<input type="radio" name="correct_answer_en" value="4" class="radio" {{(old('correct_answer_en') == '4') ? 'checked' : ''}}></span>
 														@if($errors->has('correct_answer_en'))
 														<span class="validation_error">{{ $errors->first('correct_answer_en') }}</span>
 														@endif
@@ -345,7 +365,7 @@
 														@if($errors->has('hint_answer4_en'))
 														<span class="validation_error">{{ $errors->first('hint_answer4_en') }}</span>
 														@endif
-														<label>{{__('languages.questions.node_hint_answer_4_english')}}</label>
+														<label>{{__('languages.questions.hint_2')}}</label>
 														<textarea id="node_hint_answer4_en" class="sm-area" name="node_hint_answer4_en" data-sample-short>{{old('node_hint_answer4_en')}}</textarea>
 														<!-- <input type="text" name="node_hint_answer4_en" class="input-code" id="node_hint_answer4_en" value="{{old('node_hint_answer4_en')}}" placeholder="Node Hint Answer">	 -->
 														@if($errors->has('node_hint_answer4_en'))
@@ -353,13 +373,13 @@
 														@endif
 														<!-- Weakness sections -->
 														<label class="weak-label"><strong>{{__('languages.questions.weakness')}} :</strong></label>
-														<p class="know-p pl-2">{{__('languages.questions.knowledge_node_relation')}}
+														<p class="know-p pl-2">{{__('languages.questions.knowledge_node')}}
 															<img src="{{asset('images/Chain.png')}}" class="node-relation-img" data-toggle="modal" data-target="#nodeModal"  onclick="check_ans('answer4_node_relation_id_en','answer4_weakness_en');">
 															<input type="hidden" name="answer4_node_relation_id_en" value="" id="answer4_node_relation_id_en">
 														</p>
 														<div class="weekness-input pl-2">
 															<label>{{__('languages.questions.weakness_name')}} :</label>
-															<input type="text" name="answer4_weakness_en" class="input-code" id="answer4_weakness_en" value="{{old('answer4_weakness_en')}}" placeholder="{{__('languages.questions.answer_weakness')}}" readonly>
+															<input type="text" name="answer4_weakness_en" class="input-code" id="answer4_weakness_en" value="{{old('answer4_weakness_en')}}" placeholder="{{__('languages.questions.weakess_name')}}" readonly>
 															@if($errors->has('answer4_weakness_en'))
 															<span class="validation_error">{{ $errors->first('answer4_weakness_en') }}</span>
 															@endif
@@ -374,17 +394,20 @@
 								<div class="col-md-12">
 									<div class="right-ans-hints-sec">
 										<table class="table-for-right-ans">
-										    <thead>
-										        <tr>
-										          <th class="">{{__('languages.questions.right_ans')}}</th>
+										    {{-- <thead> --}}
+										        {{-- <tr> --}}
+										          {{-- <th class="">{{__('languages.questions.right_ans')}}</th>
 										          <th class="">{{__('languages.questions.ans')}} ({{__('languages.questions.chinese')}})</th>
-										          <th class="">{{__('languages.questions.hints_of_wrong_ans')}} ({{__('languages.questions.chinese')}})</th>
-										        </tr>
-										    </thead>
+										          <th class="">{{__('languages.questions.hints_of_wrong_ans')}} ({{__('languages.questions.chinese')}})</th> --}}
+										        {{-- </tr> --}}
+										    {{-- </thead> --}}
 										    <tbody class="scroll-pane">
+												<th class="">{{__('languages.questions.possible_answers')}}</th>
+												<th class=""></th>
+												<th class="">{{__('languages.questions.hint_1')}} ({{__('languages.chinese')}})</th>
 										        <tr>
 										          	<td class="p-2">
-													  <span class="option_label">{{__('languages.questions.ans_1')}}<input type="radio" name="correct_answer_ch" value="1" class="radio" {{(old('correct_answer_ch') == '1') ? 'checked' : 'checked'}}></span>
+													  <span class="option_label">{{__('languages.questions.answer_1')}}<input type="radio" name="correct_answer_ch" value="1" class="radio" {{(old('correct_answer_ch') == '1') ? 'checked' : 'checked'}}></span>
 														@if($errors->has('correct_answer_ch'))
 														<span class="validation_error">{{ $errors->first('correct_answer_ch') }}</span>
 														@endif
@@ -400,7 +423,7 @@
 														@if($errors->has('hint_answer1_ch'))
 														<span class="validation_error">{{ $errors->first('hint_answer1_ch') }}</span>
 														@endif
-														<label>{{__('languages.questions.node_hint_answer_1_chinese')}}</label>
+														<label>{{__('languages.questions.hint_2')}} ({{__('languages.chinese')}})</label>
 														<textarea id="node_hint_answer1_ch" class="sm-area" name="node_hint_answer1_ch" data-sample-short>{{old('node_hint_answer1_ch')}}</textarea>
 														<!-- <input type="text" name="node_hint_answer1_ch" class="input-code" id="node_hint_answer1_ch" value="{{old('node_hint_answer1_ch')}}" placeholder="Node Hint Answer"> -->
 														@if($errors->has('node_hint_answer1_ch'))
@@ -423,9 +446,13 @@
 														<!-- End Weakness sections -->
 													</td>
 										        </tr>
+
+												<th class=""></th>
+												<th class=""></th>
+												<th class="">{{__('languages.questions.hint_1')}} ({{__('languages.chinese')}})</th>
 												<tr>
 										          	<td class="p-2">
-													  <span class="option_label">{{__('languages.questions.ans_2')}}<input type="radio" name="correct_answer_ch" value="2" class="radio" {{(old('correct_answer_ch') == '2') ? 'checked' : ''}}></span>
+													  <span class="option_label">{{__('languages.questions.answer_2')}}<input type="radio" name="correct_answer_ch" value="2" class="radio" {{(old('correct_answer_ch') == '2') ? 'checked' : ''}}></span>
 														@if($errors->has('correct_answer_ch'))
 														<span class="validation_error">{{ $errors->first('correct_answer_ch') }}</span>
 														@endif
@@ -441,7 +468,7 @@
 														@if($errors->has('hint_answer2_ch'))
 														<span class="validation_error">{{ $errors->first('hint_answer2_ch') }}</span>
 														@endif
-														<label>{{__('languages.questions.node_hint_answer_2_chinese')}}</label>
+														<label>{{__('languages.questions.hint_2')}} ({{__('languages.chinese')}})</label>
 														<textarea id="node_hint_answer2_ch" class="sm-area" name="node_hint_answer2_ch" data-sample-short>{{old('node_hint_answer2_ch')}}</textarea>
 														<!-- <input type="text" name="node_hint_answer2_ch" class="input-code" id="node_hint_answer2_ch" value="{{old('node_hint_answer2_ch')}}" placeholder="Node Hint Answer">	 -->
 														@if($errors->has('node_hint_answer2_ch'))
@@ -464,9 +491,13 @@
 														<!-- End Weakness sections -->
 													</td>
 										        </tr>
+
+												<th class=""></th>
+												<th class=""></th>
+												<th class="">{{__('languages.questions.hint_1')}} ({{__('languages.chinese')}})</th>
 												<tr>
 										          	<td class="p-2">
-													  <span class="option_label">{{__('languages.questions.ans_3')}}<input type="radio" name="correct_answer_ch" value="3" class="radio" {{(old('correct_answer_ch') == '3') ? 'checked' : ''}}></span>
+													  <span class="option_label">{{__('languages.questions.answer_3')}}<input type="radio" name="correct_answer_ch" value="3" class="radio" {{(old('correct_answer_ch') == '3') ? 'checked' : ''}}></span>
 														@if($errors->has('correct_answer_ch'))
 														<span class="validation_error">{{ $errors->first('correct_answer_ch') }}</span>
 														@endif
@@ -482,7 +513,7 @@
 														@if($errors->has('hint_answer3_ch'))
 														<span class="validation_error">{{ $errors->first('hint_answer3_ch') }}</span>
 														@endif
-														<label>{{__('languages.questions.node_hint_answer_3_chinese')}}</label>
+														<label>{{__('languages.questions.hint_2')}} ({{__('languages.chinese')}})</label>
 														<textarea id="node_hint_answer3_ch" class="sm-area" name="node_hint_answer3_ch" data-sample-short>{{old('node_hint_answer3_ch')}}</textarea>
 														@if($errors->has('node_hint_answer3_ch'))
 														<span class="validation_error">{{ $errors->first('node_hint_answer3_ch') }}</span>
@@ -504,9 +535,13 @@
 														<!-- End Weakness sections -->
 													</td>													
 										        </tr>
+
+												<th class=""></th>
+												<th class=""></th>
+												<th class="">{{__('languages.questions.hint_1')}} ({{__('languages.chinese')}})</th>
 												<tr>
 										          	<td class="p-2">
-													  <span class="option_label">{{__('languages.questions.ans_4')}}<input type="radio" name="correct_answer_ch" value="4" class="radio" {{(old('correct_answer_ch') == '4') ? 'checked' : ''}}></span>
+													  <span class="option_label">{{__('languages.questions.answer_4')}}<input type="radio" name="correct_answer_ch" value="4" class="radio" {{(old('correct_answer_ch') == '4') ? 'checked' : ''}}></span>
 														@if($errors->has('correct_answer_ch'))
 														<span class="validation_error">{{ $errors->first('correct_answer_ch') }}</span>
 														@endif
@@ -522,7 +557,7 @@
 														@if($errors->has('hint_answer4_ch'))
 														<span class="validation_error">{{ $errors->first('hint_answer4_ch') }}</span>
 														@endif
-														<label>{{__('languages.questions.node_hint_answer_4_chinese')}}</label>
+														<label>{{__('languages.questions.hint_2')}} ({{__('languages.chinese')}})</label>
 														<textarea id="node_hint_answer4_ch" class="sm-area" name="node_hint_answer4_ch" data-sample-short>{{old('node_hint_answer4_ch')}}</textarea>
 														@if($errors->has('node_hint_answer4_ch'))
 														<span class="validation_error">{{ $errors->first('node_hint_answer4_ch') }}</span>
@@ -555,7 +590,7 @@
 									<div class="col-md-12">
 										<div class="sm-add-que">
 											<div class="btn-sec">
-												<p class="dark-blue-btn btn btn-primary mb-4">{{__('languages.questions.general_hints_english')}}</p>
+												<p class="dark-blue-btn btn btn-primary mb-4">{{__('languages.general_hints')}}</p>
 											</div>
 										</div>
 										<div class="sm-textarea">
@@ -571,7 +606,7 @@
 								<div class="row">
 									<div class="col-md-4">
 										<input type="hidden" name="question_video_id_en" id= "question_video_id_en" value=""/>
-										<button type="button" class="question-video-hint-btn" name="video_hint"  class="" onclick="question_video_hints('en')">{{__('languages.video_hint_en')}}</button>
+										<button type="button" class="question-video-hint-btn" name="video_hint"  class="" onclick="question_video_hints('en')">{{__('languages.common_sidebar.video')}}</button>
 									</div>
 								</div>
 							</div>
@@ -580,7 +615,7 @@
 									<div class="col-md-12">
 										<div class="sm-add-que">
 											<div class="btn-sec">
-												<p class="dark-blue-btn btn btn-primary mb-4">{{__('languages.questions.general_hints_chinese')}}</p>
+												<p class="dark-blue-btn btn btn-primary mb-4">{{__('languages.general_hints')}} ({{__('languages.chinese')}})</p>
 											</div>
 										</div>
 										<div class="sm-textarea">
@@ -596,7 +631,7 @@
 								<div class="row">
 									<div class="col-md-4">
 										<input type="hidden" name="question_video_id_ch" id= "question_video_id_ch" value=""/>
-										<button type="button" class="question-video-hint-btn" name="video_hint"  class="" onclick="question_video_hints('ch')">{{__('languages.video_hint_ch')}}</button>
+										<button type="button" class="question-video-hint-btn" name="video_hint"  class="" onclick="question_video_hints('ch')">{{__('languages.common_sidebar.video')}} ({{__('languages.chinese')}})</button>
 									</div>
 								</div>
 							</div>
@@ -605,7 +640,7 @@
 									<div class="col-md-12">
 										<div class="sm-add-que">
 											<div class="btn-sec">
-												<p class="dark-blue-btn btn btn-primary mb-4">{{__('languages.questions.full_solution_en')}}</p>
+												<p class="dark-blue-btn btn btn-primary mb-4">{{__('languages.full_solution')}}</p>
 											</div>
 										</div>
 										<div class="sm-textarea">
@@ -622,7 +657,7 @@
 									<div class="col-md-12">
 										<div class="sm-add-que">
 											<div class="btn-sec">
-												<p class="dark-blue-btn btn btn-primary mb-4">{{__('languages.questions.full_solution_ch')}}</p>
+												<p class="dark-blue-btn btn btn-primary mb-4">{{__('languages.full_solution')}} ({{__('languages.chinese')}})</p>
 											</div>
 										</div>
 										<div class="sm-textarea">
@@ -637,10 +672,10 @@
 							<div class="add-question-sec" style="padding-top:15px;">
 								<div class="row">
 									<div class="col-md-6">
-										<div class="sm-add-que">{{__('languages.is_approved_question')}}</div>
+										<div class="sm-add-que">{{__('languages.question_approved')}}</div>
 										<select name="is_approved"  class="form-control select-option selectpicker"  data-show-subtext="true" data-live-search="true" id="is_approved_question">
-											<option value="yes">{{ __('languages.approve') }}</option>
-											<option value="no" selected>{{ __('languages.not_approve') }}</option>
+											<option value="yes">{{ __('languages.approved') }}</option>
+											<option value="no" selected>{{ __('languages.not_approved') }}</option>
 										</select>
 									</div>
 								</div>
@@ -651,8 +686,8 @@
 								<div class="col-md-12">
 									<div class="btn-sec sm-add-que-btn">
 										<button type="submit" name="save_draft" value="save_draft" class="blue-btn-outline btn btn-outline-primary">{{__('languages.questions.save_draft')}}</button>
-										<button type="submit" name="publish" value="publish" class="blue-btn btn btn-primary ml-4">{{__('languages.publish')}}</button>
 										<button type="button" class="blue-btn btn btn-primary ml-4 preview_question" q-id="">{{__('languages.preview')}}</button>
+										<button type="submit" name="publish" value="publish" class="blue-btn btn btn-primary ml-4">{{__('languages.publish')}}</button>
 									</div>
 								</div>
 							</div>

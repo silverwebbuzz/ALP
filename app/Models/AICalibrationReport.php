@@ -47,8 +47,8 @@ class AICalibrationReport extends Model
 
     public function getReferenceAdjustedCalibrationAttribute(){
         $ReferenceAdjustedCalibration = null;
-        if($this->{cn::AI_CALIBRATION_REPORT_REFERENCE_CALIBRATION_COL} == 'initial_condition'){
-            $ReferenceAdjustedCalibration = 'Initial Condition';
+        if($this->{cn::AI_CALIBRATION_REPORT_REFERENCE_CALIBRATION_COL} == 'initial_conditions'){
+            $ReferenceAdjustedCalibration = __('languages.initial_condition');
         }else{
             $CalibrationData = Self::find($this->{cn::AI_CALIBRATION_REPORT_REFERENCE_CALIBRATION_COL});
             $ReferenceAdjustedCalibration = $CalibrationData->{cn::AI_CALIBRATION_REPORT_CALIBRATION_NUMBER_COL} ?? null;

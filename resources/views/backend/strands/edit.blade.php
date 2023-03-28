@@ -12,7 +12,7 @@
 					<div class="row">
 						<div class="col-md-12">
 							<div class="sec-title">
-								<h2 class="mb-4 main-title">{{__('languages.strands_management.update_strands')}}</h2>
+								<h2 class="mb-4 main-title">{{__('languages.role_and_permission.update')}} {{__('languages.strand')}}</h2>
 							</div>
                             <div class="sec-title">
                                 <a href="javascript:void(0);" class="btn-back" id="backButton">{{__('languages.back')}}</a>
@@ -38,13 +38,13 @@
                             @method('patch')
                                 <div class="form-row select-data">
                                     <div class="form-group col-md-6">
-                                        <label class="text-bold-600" for="exampleInputUsername1">{{ __('languages.user_activity.english_name') }}</label>
-                                        <input type="text" class="form-control" name="name_en" id="strand_name_en" placeholder="{{ __('languages.user_activity.english_name') }}" value="{{$StrandsData->name_en}}">
+                                        <label class="text-bold-600" for="exampleInputUsername1">{{ __('languages.name') }}</label>
+                                        <input type="text" class="form-control" name="name_en" id="strand_name_en" placeholder="{{ __('languages.name') }}" value="{{$StrandsData->name_en}}">
                                         @if($errors->has('name_en'))<span class="validation_error">{{ $errors->first('name_en') }}</span>@endif
                                     </div>
                                     <div class="form-group col-md-6">
-                                        <label class="text-bold-600" for="exampleInputUsername1">{{ __('languages.user_activity.chinese_name') }}</label>
-                                        <input type="text" class="form-control" name="name_ch" id="strand_name_ch" placeholder="{{ __('languages.user_activity.chinese_name') }}" value="{{$StrandsData->name_ch}}">
+                                        <label class="text-bold-600" for="exampleInputUsername1">{{ __('languages.name') }} ({{ __('languages.chinese') }})</label>
+                                        <input type="text" class="form-control" name="name_ch" id="strand_name_ch" placeholder="{{ __('languages.name') }} ({{ __('languages.chinese') }})" value="{{$StrandsData->name_ch}}">
                                         @if($errors->has('name_ch'))<span class="validation_error">{{ $errors->first('name_ch') }}</span>@endif
                                     </div>
                                 </div>

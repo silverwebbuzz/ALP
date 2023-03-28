@@ -66,7 +66,7 @@
                                 <div class="question-generator-option-headings mb-3">
                                     <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12 pl-0 pr-0">
                                         <ul class="form-tab">
-                                            <li class="student-self-learning-tab step-headings section-step1 admin-tab tab_active" data-tabid="1">1. {{__('languages.question_generators_menu.select_learning_objectives')}}</li>
+                                            <li class="student-self-learning-tab step-headings section-step1 admin-tab tab_active" data-tabid="1">1. {{__('languages.learning_objectives')}}</li>
                                         </ul>
                                     </div>
                                 </div>
@@ -112,7 +112,7 @@
                                     <div class="form-row">
                                         <div class="question-generator-objectives-labels">
                                             <label>{{__('languages.question_generators_menu.learning_objectives')}}</label>
-                                            <label>{{__('languages.question_generators_menu.no_of_question_per_learning_objectives')}}</label>
+                                            <label>{{__('languages.questions_per_learning_objective')}}</label>
                                         </div>
                                     </div>
                                     <div class="form-row selection-learning-objectives-section">
@@ -122,12 +122,12 @@
                                         </div>
                                         @foreach ($LearningObjectives as $learningObjectivesKey => $learningObjectives)
                                         @php
-                                            $noOfQuestionPerLearningObjective=App\Helpers\Helper::getNoOfQuestionPerLearningObjective($learningObjectives['learning_unit_id'],$learningObjectives['id']);
+                                            $noOfQuestionPerLearningObjective = App\Helpers\Helper::getNoOfQuestionPerLearningObjective($learningObjectives['learning_unit_id'],$learningObjectives['id']);
                                         @endphp
                                         <div class="selected-learning-objectives-difficulty">
                                             <input type="checkbox" name="learning_unit[{{$learningObjectives['learning_unit_id']}}][learning_objective][{{ $learningObjectives['id'] }}]" value="{{ $learningObjectives['id'] }}" class="learning_objective_checkbox" checked>
                                             <label>{{ $learningObjectives['foci_number'] }} {{ $learningObjectives['title_'.app()->getLocale()] }}</label>
-                                            <input type="text" name="learning_unit[{{$learningObjectives['learning_unit_id']}}][learning_objective][{{ $learningObjectives['id'] }}][get_no_of_question_learning_objectives]" value="{{ $noOfQuestionPerLearningObjective }}" class="get_no_of_question_learning_objectives" min="{{ $noOfQuestionPerLearningObjective }}" max="{{$RequiredQuestionPerSkill['maximum_question_per_skill']}}">
+                                            <input type="text" name="learning_unit[{{$learningObjectives['learning_unit_id']}}][learning_objective][{{ $learningObjectives['id'] }}][get_no_of_question_learning_objectives]" value="{{ $noOfQuestionPerLearningObjective }}" class="get_no_of_question_learning_objectives" min="{{ $noOfQuestionPerLearningObjective }}" max="{{$RequiredQuestionPerSkill['maximum_question_per_skill']}}" readonly>
                                         </div>
                                         @endforeach
                                         @endif
@@ -150,6 +150,31 @@
         </div>
     </div>
 </div>
+
+{{-- Emoji Modal --}}
+<div class="modal fade" id="AttemptQuestionFeedback" data-backdrop="static" data-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+    <div class="modal-dialog  modal-xl" style="max-width: 50%;">
+        <div class="modal-content">
+            <div class="modal-header">
+            <h5 class="modal-title" id="staticBackdropLabel">{{__('languages.how_do_you_feel_now')}}</h5>
+            </div>
+            <div class="modal-body " id="AttemptQuestionFeedbackBody">
+                <form class="smileys">
+                    <input type="hidden" id="feedback_type" value="1" /> 
+                    <!-- <input type="radio" name="smiley" value="1" class="sad emojisButton">
+                    <input type="radio" name="smiley" value="2" class="happy emojisButton"> -->
+                    <input type="radio" name="smiley" value="1" data-feedbackType="1" class="emoji_1 emojisButton">
+                    <input type="radio" name="smiley" value="2" data-feedbackType="2" class="emoji_2 emojisButton">
+                    <input type="radio" name="smiley" value="3" data-feedbackType="1" class="emoji_3 emojisButton">
+                    <input type="radio" name="smiley" value="4" data-feedbackType="2" class="emoji_4 emojisButton">
+                    <input type="radio" name="smiley" value="5" data-feedbackType="1" class="emoji_5 emojisButton">
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+{{-- End Emoji Modal --}}
+
 @include('backend.student.real_time_generate_question.self_learning_js_script')
 @include('backend.layouts.footer')
 @endsection

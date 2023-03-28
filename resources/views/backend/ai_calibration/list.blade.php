@@ -109,13 +109,13 @@
 										  <th>{{__('languages.reference_adjusted_calibration_number')}}</th>
 										  <th class="first-head"><span>@sortablelink('start_date',__('languages.start_date'))</span></th>
 										  <th><span>@sortablelink('end_date',__('languages.end_date'))</span></th>
-                                          <th><span>@sortablelink('school_ids',__('languages.no_of_school'))</span></th>
-                                          <th><span>@sortablelink('student_ids',__('languages.no_of_student'))</span></th>
+                                          <th><span>@sortablelink('school_ids',__('languages.schools'))</span></th>
+                                          <th><span>@sortablelink('student_ids',__('languages.students'))</span></th>
                                           <th><span>@sortablelink('test_type',__('languages.test.test_type'))</span></th>
-                                          <th><span>@sortablelink('included_question_ids',__('languages.count_included_questions'))</span></th>
-                                          <th><span>@sortablelink('excluded_question_ids',__('languages.count_excluded_questions'))</span></th>
-                                          <th><span>@sortablelink('included_student_ids',__('languages.count_included_students'))</span></th>
-                                          <th><span>@sortablelink('median_calibration_difficulties',__('languages.median_calibration_difficulties'))</span></th>
+                                          <th><span>@sortablelink('included_question_ids',__('languages.included_questions'))</span></th>
+                                          <th><span>@sortablelink('excluded_question_ids',__('languages.excluded_questions'))</span></th>
+                                          <th><span>@sortablelink('included_student_ids',__('languages.included_students'))</span></th>
+                                          <th><span>@sortablelink('median_calibration_difficulties',__('languages.median_calibration_difficulty'))</span></th>
                                           <th><span>@sortablelink('calibration_constant',__('languages.calibration_constant'))</span></th>
                                           <th><span>@sortablelink('median_calibration_ability',__('languages.median_calibration_ability'))</span></th>
 										  <th>@sortablelink('created_at',__('languages.start_date_time'))</th>
@@ -175,10 +175,10 @@
 											<td>
 												@if($calibrationData->status == 'complete' || $calibrationData->status == 'adjusted')
 												<a href="{{ route('ai-calibration.report', $calibrationData->id) }}" class="ml-1" title="{{__('languages.ai_calibration_report')}}">
-													<i class="fa fa-bar-chart" aria-hidden="true"></i>
+													<i class="fa fa-eye fa-lg" aria-hidden="true"></i>
 												</a>
 												<a href="{{ route('ai-calibration.question-log', $calibrationData->id) }}" class="ml-1" title="{{__('languages.calibration_log')}}">
-													<i class="fa fa-bar-chart" aria-hidden="true"></i>
+													<i class="fa fa-bar-chart fa-lg" aria-hidden="true"></i>
 												</a>
 												@endif
 											</td>

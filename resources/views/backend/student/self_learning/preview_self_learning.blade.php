@@ -70,8 +70,8 @@
                                 <div class="question-generator-option-headings mb-3">
                                     <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12 pl-0 pr-0">
                                         <ul class="form-tab">
-                                            <li class="student-self-learning-preview-tab step-headings section-step1 admin-tab tab_active " data-tabid="1">1. {{__('languages.question_generators_menu.configuration')}}</li>
-                                            <li class="student-self-learning-preview-tab step-headings section-step2 admin-tab" data-tabid="2">2. {{__('languages.question_generators_menu.select_learning_objectives')}}</li>
+                                            <li class="student-self-learning-preview-tab step-headings section-step1 admin-tab tab_active " data-tabid="1">1. {{__('languages.configurations')}}</li>
+                                            <li class="student-self-learning-preview-tab step-headings section-step2 admin-tab" data-tabid="2">2. {{__('languages.learning_objectives')}}</li>
                                             <li class="student-self-learning-preview-tab step-headings section-step3 admin-tab" data-tabid="3">3. {{__('languages.question_generators_menu.review_of_questions')}}</li>
                                         </ul>
                                     </div>
@@ -160,7 +160,7 @@
                                             @if($LearningObjectiveConfigurations->difficulty_mode != 'auto')
                                             <label>{{__('languages.question_generators_menu.difficulty_level')}}</label>
                                             @endif
-                                            <label>{{__('languages.question_generators_menu.no_of_question_per_learning_objectives')}}</label>
+                                            <label>{{__('languages.questions_per_learning_objective')}}</label>
                                         </div>
                                     </div>
                                     <div class="form-row selection-learning-objectives-section">

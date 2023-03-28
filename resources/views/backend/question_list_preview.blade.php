@@ -27,7 +27,7 @@
                                 @foreach($Questions as $key => $question)
                                     <div class="row">
                                         <div class="sm-que-option pl-3">
-                                            <p class="sm-title bold">{{__('languages.result.q_no')}}: {{$loop->iteration}} {{__('languages.question_code')}} : {{ $question->naming_structure_code }}
+                                            <p class="sm-title bold">{{__('languages.result.q_no')}}: {{$loop->iteration}} @if(Auth::user()->role_id == 1) : {{__('languages.question_code')}} : {{ $question->naming_structure_code }} @endif
                                                 {{-- Display Question types and with color code --}}
                                                 <?php 
                                                 $LevelName = \App\Helpers\Helper::getLevelNameBasedOnLanguage($question->dificulaty_level);

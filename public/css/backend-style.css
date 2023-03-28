@@ -709,8 +709,8 @@ button:focus {
     margin: 40px 0;
 }
 .sm-deskbord-main-sec #sidebar {
-    min-width: 270px;
-    max-width: 270px;
+    min-width: 305px;
+    max-width: 305px;
     background: #a5a6f6;
     color: #fff;
     -webkit-transition: all 0.3s;
@@ -825,6 +825,7 @@ button:focus {
 .sm-deskbord-main-sec .btn.btn-primary {
     background: #fff;
     border-color: #fff;
+    margin-left: 10px;/*Mukesh*/
 }
 .btn.btn-primary:hover,
 .btn.btn-primary:focus {
@@ -4674,14 +4675,24 @@ form .classPerformanceReportInline {
     border: none;
     cursor: pointer;
     transition: border 0.2s ease;
-    filter: grayscale(100%);
+    /* filter: grayscale(100%); */
     margin: 0 5px;
     transition: all 0.2s ease;
 }
-.smileys .emojisButton:hover,
+.smileys input{
+    height: 50px !important;
+    width: 50px !important;
+}
+/* .smileys .emojisButton:hover,
 .smileys .emojisButton:checked {
     filter: grayscale(0);
-}
+} */
+/* #AttemptQuestionFeedbackBody .smileys .emojisButton:checked{
+    filter: grayscale(100%);
+} */
+/* #AttemptQuestionFeedbackBody .smileys .emojisButton:hover:checked{
+    filter: grayscale(0);
+} */
 .smileys .emojisButton:focus {
     outline: 0;
 }
@@ -4696,6 +4707,32 @@ form .classPerformanceReportInline {
 .smileys .emojisButton.sad {
     background: url("../images/sad_bj1tuj.svg") center;
     background-size: cover;
+}
+
+.smileys .emojisButton.emoji_1 {
+    background: url("../images/emoji_1.png") center;
+    background-size: contain;
+    background-repeat: no-repeat;
+}
+.smileys .emojisButton.emoji_2 {
+    background: url("../images/emoji_2.png") center;
+    background-size: contain;
+    background-repeat: no-repeat;
+}
+.smileys .emojisButton.emoji_3 {
+    background: url("../images/emoji_3.png") center;
+    background-size: contain;
+    background-repeat: no-repeat;
+}
+.smileys .emojisButton.emoji_4 {
+    background: url("../images/emoji_4.png") center;
+    background-size: contain;
+    background-repeat: no-repeat;
+}
+.smileys .emojisButton.emoji_5 {
+    background: url("../images/emoji_5.png") center;
+    background-size: contain;
+    background-repeat: no-repeat;
 }
 
 .mtt {
@@ -4739,6 +4776,7 @@ form .classPerformanceReportInline {
 .select-option-sec .row p span img {
     width: auto !important;
     height: auto !important;
+    z-index: 1 !important;
 }
 .overlapping-text-option-prevent .MathJax_SVG {
     margin-right: 30px !important;
@@ -4993,6 +5031,16 @@ form .classPerformanceReportInline {
     display: inline-block;
     margin-right: 2px;
 }
+/*Second Trial Popup*/
+.secondTrialModal{
+    overflow-y: scroll;
+    max-height: 500px;
+    width: auto
+}
+.secondTrialPopupWidth{
+    max-width: 1030px !important;
+
+}
 
 /*  */
 .test-navigation-main #test_question_review ol{
@@ -5051,3 +5099,74 @@ li.ordering-unit-objective{
     to {transform:scale(1)}
 }
 /* End Modal Zoom CSS */
+.learning-progress-report .learning-progress-report-table-wrapper{
+    display: block;
+}
+.learning-progress-report-table th{
+    vertical-align: top !important;
+}
+.progress-bar-main{
+    display: flex;
+    align-content: space-between;
+    align-items: center;
+}
+.progress-bar-main .progress-count{
+    margin-left: 5px;
+}
+.view-peer-group-members-action{
+    margin-right: 10px;
+}
+.peer-group-detail-sec{
+    background-color: #fff;
+    padding: 12px;
+}
+.profile_data{
+    margin: 25px 0;
+}
+.profile_data p{
+    margin: 5px 30px;
+}
+.profile_data .dropdown_school_year p{
+margin-right: 0;
+}
+.profile_data .dropdown_school_year select{
+    width: 100px;
+}
+.btn-edit a{
+    padding: 0 5px;
+}
+
+/**/
+.addAdminExamFilterForm .fixed-position-current_curriculum_year .select2-container{
+    height: calc(2.25rem + 2px) !important;
+    margin-top: 32px;
+    padding-top: 0.5rem!important;
+}
+.addAdminExamFilterForm .fixed-position-current_curriculum_year .select2-container .select2-selection__arrow{
+    top: 10px;
+}
+.sidebar_icon{
+    height: 24px;
+    width:auto;
+}
+/*  */
+.sidebar_top_thumb_main{
+    align-items: center;
+}
+.sidebar_top_thumb_main .logo{
+    padding-right: 15px !important;
+}
+.sidebar_profile_user_data p{
+    font-size: 14px;
+    margin-bottom: 5px;
+}
+.active .sidebar_profile_user_data{
+    display: none;
+}
+.sidebar_profile_user_data{
+    padding-top: 10px;
+}
+
+.sidebar_profile_user_data a{
+    color: #fff;
+}

@@ -92,6 +92,7 @@
                 </div>
             </div>
         </div>
+        <input type="hidden" name="isQuestionFlagId" id="isQuestionFlagId" value="<?php if(isset($HistoryStudentQuestionAnswer) && $HistoryStudentQuestionAnswer->is_answered_flag == 'false'){echo 'yes';}elseif(isset($HistoryStudentQuestionAnswer) && $HistoryStudentQuestionAnswer->is_answered_flag == 'true'){echo 'no';} ?>">
         @if(isset($examDetail->exam_type) && $examDetail->exam_type == 2)
             <div class="attmp-main-explain">
                 <div class="attmp-expln-inner questionhint" style="display: none">
@@ -115,10 +116,18 @@
     <div class="col-md-12 col-lg-12 col-sm-12 attmp-all-button">
         <div class="flag-btn-main">
             <button type="button" class="btn btn-danger mr-2" id="attempt-test-flag-button" flag-question-id="{{$Question->id}}">
-            @if($examLanguage == 'en') 
-            {{__('languages.flag_en')}}
+            @if(isset($HistoryStudentQuestionAnswer) && $HistoryStudentQuestionAnswer->is_answered_flag == 'false')
+                @if($examLanguage == 'en') 
+                {{__('languages.unflag_en')}}
+                @else
+                {{__('languages.unflag_ch')}}
+                @endif
             @else
-            {{__('languages.flag_ch')}}
+                @if($examLanguage == 'en') 
+                {{__('languages.flag_en')}}
+                @else
+                {{__('languages.flag_ch')}}
+                @endif
             @endif
             </button>
         </div>

@@ -12,7 +12,7 @@
 					<div class="row">
 						<div class="col-md-12">
 							<div class="sec-title">
-								<h2 class="mb-4 main-title">{{__('languages.learning_units_management.add_new_learning_units')}}</h2>
+								<h2 class="mb-4 main-title">{{__('languages.learning_units_management.add_new_learning_unit')}}</h2>
 							</div>
                             <div class="sec-title">
                                 <a href="javascript:void(0);" class="btn-back" id="backButton">{{__('languages.back')}}</a>
@@ -51,13 +51,13 @@
                                     </div>
                                    
                                     <div class="form-group col-md-6">
-                                        <label class="text-bold-600" for="exampleInputUsername_en1">{{ __('languages.learning_units_management.name_en') }}</label>
-                                        <input type="text" class="form-control" name="name_en" id="name_en" placeholder="{{__('languages.learning_units_management.name_en')}}" value="{{old('name_en')}}">
+                                        <label class="text-bold-600" for="exampleInputUsername_en1">{{ __('languages.name') }}</label>
+                                        <input type="text" class="form-control" name="name_en" id="name_en" placeholder="{{__('languages.name')}}" value="{{old('name_en')}}">
                                         @if($errors->has('name_en'))<span class="validation_error">{{ $errors->first('name_en') }}</span>@endif
                                     </div>
                                     <div class="form-group col-md-6">
-                                        <label class="text-bold-600" for="exampleInputUsername_ch1">{{ __('languages.learning_units_management.name_ch') }}</label>
-                                        <input type="text" class="form-control" name="name_ch" id="name_ch" placeholder="{{__('languages.learning_units_management.name_ch')}}" value="{{old('name_ch')}}">
+                                        <label class="text-bold-600" for="exampleInputUsername_ch1">{{ __('languages.name') }} ({{__('languages.chinese')}})</label>
+                                        <input type="text" class="form-control" name="name_ch" id="name_ch" placeholder="{{__('languages.name')}} ({{__('languages.chinese')}})" value="{{old('name_ch')}}">
                                         @if($errors->has('name_ch'))<span class="validation_error">{{ $errors->first('name_ch') }}</span>@endif
                                     </div>
                                     <div class="form-group col-md-6">
@@ -66,9 +66,9 @@
                                         @if($errors->has('code'))<span class="validation_error">{{ $errors->first('code') }}</span>@endif
                                     </div>
                                     <div class="form-group col-md-6">
-                                        <label class="text-bold-600" for="strand_id">{{ __('languages.learning_units_management.strand_id') }}</label>
+                                        <label class="text-bold-600" for="strand_id">{{ __('languages.strand') }}</label>
                                         <select name="strand_id" class="form-control select-option" id="strand-id">
-                                            <option value="">{{ __('languages.strands') }}</option>
+                                            <option value="">{{ __('languages.strand') }}</option>
                                             @if(!empty($strands))
                                                 @foreach($strands as $strandKey => $strand)
                                                     <option value="{{$strand->id}}">{{$strand->name}}</option>

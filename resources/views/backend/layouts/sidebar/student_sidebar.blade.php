@@ -38,7 +38,7 @@ if(Auth::user()->role_id == 1){
 <!-- Super Admin Sidebar Menus -->
 @if(Auth::user()->role_id == 3)
     <nav id="sidebar" class="@if(!empty(Session::get('sidebar'))){{Session::get('sidebar')}}@endif" style="background-color:{{$color}};">
-        <h1>
+        <h1 class="d-flex sidebar_top_thumb_main">
             <a href="javascript:void(0);" class="logo">
             @if(Auth::user()->profile_photo!="")
                 <img src="{{ asset(Auth::user()->profile_photo) }}" alt="logo" class="logo-icon">
@@ -46,30 +46,46 @@ if(Auth::user()->role_id == 1){
                 <img src="{{ asset('images/profile_image.jpeg') }}" alt="logo" class="logo-icon">
             @endif
             </a>
+            @include('backend.layouts.sidebar.user_info_sidebar')
         </h1>
         <ul class="list-unstyled components mb-5">
             <li class="{{ (request()->is('student/dashboard')) ? 'active' : ''}}">
                 <a href="{{ route('student.dashboard') }}">
-                    <span class="fa fa-home"></span>
-                    <span class="text">{{__('languages.sidebar.dashboard')}}</span>
+                    <img class ="sidebar_icon" src="{{ asset('images/sidebar_icons/home.png') }}"  title="{{__('languages.common_sidebar.dashboard')}}" alt="{{__('languages.common_sidebar.dashboard')}}">
+                    <span class="text">{{__('languages.common_sidebar.dashboard')}}</span>
                 </a>
             </li>
             {{-- Profile --}}
             <li class="nav-item">
                 @if (in_array('my_account_read', $permissions))
-                    <a class="nav-link text-truncate {{ (request()->is('student-profile/*') || request()->is('profile') || request()->is('change-password') 
-                    || request()->is('credit-point-history/*') || request()->is('student/progress-report/learning-units/*') || request()->is('student/progress-report/learning-objective/*') || request()->is('student/leaderboard')) ? 'collapsed': '' }}" href="#myaccount" data-toggle="collapse" data-target="#myaccount">
-                        <span class="fa"><i class="fa fa-user"></i></span>
+                    <a class="nav-link text-truncate {{ (
+                            request()->is('student-profile/*') || 
+                            request()->is('profile') || 
+                            request()->is('change-password') ||
+                            request()->is('credit-point-history/*') || 
+                            request()->is('student/leaderboard')) 
+                        ? 'collapsed': '' }}" href="#myaccount" data-toggle="collapse" data-target="#myaccount">
+                        <img class ="sidebar_icon" src="{{ asset('images/sidebar_icons/user.png') }}"  title="{{__('languages.my_account')}}" alt="{{__('languages.my_account')}}">
                         <span class="text">{{__('languages.my_account')}}</span>
                     </a>
-                    <div class="collapse {{ (request()->is('student-profile/*') || request()->is('profile') || request()->is('change-password') || request()->is('credit-point-history/*') || request()->is('student/progress-report/learning-units/*') || request()->is('student/progress-report/learning-objective/*') || request()->is('student/leaderboard')) ? 'show': '' }}" id="myaccount" aria-expanded="false">
+                    <div class="collapse {{ (
+                                request()->is('student-profile/*') || 
+                                request()->is('profile') || 
+                                request()->is('change-password') || 
+                                request()->is('credit-point-history/*') || 
+                                request()->is('student/leaderboard')) 
+                            ? 'show': '' }}" id="myaccount" aria-expanded="false">
                         <ul class="flex-column pl-2 nav">
                             {{-- Profile --}}
                             @if(in_array('profile_management_read', $permissions))
-                                <li class="nav-item {{ (request()->is('student-profile/*') || request()->is('profile') || request()->is('credit-point-history/*') || request()->is('student/progress-report/learning-units/*') || request()->is('student/progress-report/learning-objective/*')) ? 'active': '' }}">
+                                <li class="nav-item {{ (
+                                            request()->is('student-profile/*') || 
+                                            request()->is('profile') || 
+                                            request()->is('credit-point-history/*')) 
+                                        ? 'active': '' }}">
                                     <a class="nav-link" href="{{route('student-profiles',auth::user()->id)}}">
-                                        <span class="fa fa-user"></span>
-                                        <span class="text">{{__('Profile')}}</span>
+                                        <img class ="sidebar_icon" src="{{ asset('images/sidebar_icons/user.png') }}"  title="{{__('languages.common_sidebar.profile')}}" alt="{{__('languages.common_sidebar.profile')}}">
+                                        <span class="text">{{__('languages.common_sidebar.profile')}}</span>
                                     </a>
                                 </li>
                             @endif
@@ -77,20 +93,20 @@ if(Auth::user()->role_id == 1){
                             @if (in_array('change_password_update', $permissions))
                                 <li class="nav-item {{ (request()->is('change-password')) ? 'active': '' }}">
                                     <a class="nav-link" href="{{route('change-password')}}">
-                                        <span class="fa fa-user"></span>
-                                        <span class="text">{{__('languages.change_password')}}</span>
+                                        <img class ="sidebar_icon" src="{{ asset('images/sidebar_icons/password.png') }}"  title="{{__('languages.common_sidebar.change_password')}}" alt="{{__('languages.common_sidebar.change_password')}}">
+                                        <span class="text">{{__('languages.common_sidebar.change_password')}}</span>
                                     </a>
                                 </li>
                             @endif
 
-                            @if (in_array('leaderboard_read', $permissions))
+                            <!-- @if(in_array('leaderboard_read', $permissions))
                             <li class="nav-item {{ (request()->is('student/leaderboard')) ? 'active': '' }}">
                                 <a class="nav-link" href="{{route('student/leaderboard')}}">
-                                    <span class="fa fa-user"></span>
-                                    <span class="text">{{__('languages.sidebar.leaderboard')}}</span>
+                                    <span class="fa fa-user" title="{{__('languages.common_sidebar.leaderboard')}}"></span>
+                                    <span class="text">{{__('languages.common_sidebar.leaderboard')}}</span>
                                 </a>
                             </li>
-                        @endif
+                            @endif -->
                         </ul>
                     </div>
                 @endif
@@ -98,90 +114,162 @@ if(Auth::user()->role_id == 1){
 
            {{-- Learning --}}
             <li class="nav-item">
-                <a class="nav-link text-truncate {{ (request()->is('student/self-learning/exercise') || ((isset($isSelfLearningExam) && $isSelfLearningExam == true && isset($isSelfLearningExercise) && $isSelfLearningExercise == true) ? request()->is('exams/result/*/*') : '') || request()->is('student/create/self-learning-exercise')
-                || request()->is('student/exercise/exam') || request()->is('student/test/exam') || request()->is('intelligent-tutor') || request()->is('my-peer-group')
-                || request()->is('student/testing-zone') || ((isset($isSelfLearningExam) && $isSelfLearningExam == true) || (isset($isSelfLearningTestingZone) && $isSelfLearningTestingZone == true) ? request()->is('exams/result/*/*') : '') || request()->is('student/create/self-learning-test')
-                || request()->is('student/attempt/test-exercise/*') || request()->is('exams/result/*') || request()->is('question-wizard/preview/*') 
-                ) ? 'collapsed': '' }}" href="#teaching_and_learning" data-toggle="collapse" data-target="#teaching_and_learning">
-                    <span class="fa"><i class="fa fa-book"></i></span>
-                    <span class="text">{{__('Learning')}}</span>
+                <a class="nav-link text-truncate {{ (
+                        request()->is('student/self-learning/exercise') || 
+                        ((isset($isSelfLearningExam) && $isSelfLearningExam == true && isset($isSelfLearningExercise) && $isSelfLearningExercise == true) ? request()->is('exams/result/*/*') : '') || 
+                        request()->is('student/create/self-learning-exercise') ||
+                        request()->is('student/exercise/exam') || 
+                        request()->is('student/test/exam') || 
+                        request()->is('intelligent-tutor') || 
+                        request()->is('my-peer-group')  || 
+                        request()->is('peer-group/view/members/*') || 
+                        request()->is('student/testing-zone') || 
+                        ((isset($isSelfLearningExam) && $isSelfLearningExam == true) || 
+                        (isset($isSelfLearningTestingZone) && $isSelfLearningTestingZone == true) ? request()->is('exams/result/*/*') : '') || 
+                        request()->is('student/create/self-learning-test') ||
+                        request()->is('student/attempt/test-exercise/*') || 
+                        request()->is('exams/result/*') || 
+                        request()->is('question-wizard/preview/*') || 
+                        request()->is('student/progress-report/learning-units/*') ||
+                        request()->is('student/progress-report/learning-objective/*')
+                    ) ? 'collapsed': '' }}" href="#teaching_and_learning" data-toggle="collapse" data-target="#teaching_and_learning">
+                    <img class ="sidebar_icon" src="{{ asset('images/sidebar_icons/question_wizard.png') }}"  title="{{__('languages.common_sidebar.teaching_and_learning')}}" alt="{{__('languages.common_sidebar.teaching_and_learning')}}">
+                    <span class="text">{{__('languages.common_sidebar.learning')}}</span>
                 </a>
-                <div class="collapse {{ (request()->is('student/self-learning/exercise') || ((isset($isSelfLearningExam) && $isSelfLearningExam == true && isset($isSelfLearningExercise) && $isSelfLearningExercise == true) ? request()->is('exams/result/*/*') : '') || request()->is('student/create/self-learning-exercise')
-                || request()->is('student/exercise/exam') || request()->is('student/test/exam') || request()->is('intelligent-tutor') || request()->is('my-peer-group')
-                || request()->is('student/testing-zone') || ((isset($isSelfLearningExam) && $isSelfLearningExam == true) || (isset($isSelfLearningTestingZone) && $isSelfLearningTestingZone == true) ? request()->is('exams/result/*/*') : '') || request()->is('student/create/self-learning-test') 
-                || request()->is('student/attempt/test-exercise/*') || request()->is('exams/result/*') || request()->is('question-wizard/preview/*')
-                ) ? 'show': ''  }}"
+                <div class="collapse {{ (
+                        request()->is('student/self-learning/exercise') || 
+                        ((isset($isSelfLearningExam) && $isSelfLearningExam == true && isset($isSelfLearningExercise) && $isSelfLearningExercise == true) ? request()->is('exams/result/*/*') : '') || 
+                        request()->is('student/create/self-learning-exercise') ||
+                        request()->is('student/exercise/exam') || 
+                        request()->is('student/test/exam') || 
+                        request()->is('intelligent-tutor') || 
+                        request()->is('my-peer-group') || 
+                        request()->is('peer-group/view/members/*') || 
+                        request()->is('student/testing-zone') || 
+                        ((isset($isSelfLearningExam) && $isSelfLearningExam == true) || (isset($isSelfLearningTestingZone) && $isSelfLearningTestingZone == true) ? request()->is('exams/result/*/*') : '') ||
+                        request()->is('student/create/self-learning-test') ||
+                        request()->is('student/attempt/test-exercise/*') || 
+                        request()->is('exams/result/*') || 
+                        request()->is('question-wizard/preview/*') || 
+                        request()->is('student/progress-report/learning-units/*') || 
+                        request()->is('student/progress-report/learning-objective/*')
+                    ) ? 'show': ''  }}"
                         id="teaching_and_learning" aria-expanded="false">
                     <ul class="flex-column pl-2 nav">
-
                         @if (in_array('exam_management_read', $permissions))
-                            <li class="nav-item {{ (request()->is('student/self-learning/exercise') || ((isset($isSelfLearningExam) && $isSelfLearningExam == true && isset($isSelfLearningExercise) && $isSelfLearningExercise == true) ? request()->is('exams/result/*/*') : '') || request()->is('student/create/self-learning-exercise')) ? 'active': ''  }}">
+                            <li class="nav-item {{ (
+                                    request()->is('student/self-learning/exercise') || 
+                                    ((isset($isSelfLearningExam) && $isSelfLearningExam == true && isset($isSelfLearningExercise) && $isSelfLearningExercise == true) ? request()->is('exams/result/*/*') : '') || 
+                                    request()->is('student/create/self-learning-exercise')) 
+                                ? 'active': ''  }}">
                                 <a href="{{ route('student.self-learning-exercise') }}">
-                                    <span class="fa fa-file"></span>
-                                    <span class="text"> {{__('Self Learning')}} </span>
+                                    <img class ="sidebar_icon" src="{{ asset('images/sidebar_icons/reports.png') }}"  title="{{__('languages.common_sidebar.self_learning')}}" alt="{{__('languages.common_sidebar.self_learning')}}">
+                                    <span class="text"> {{__('languages.common_sidebar.self_learning')}} </span>
                                 </a>
                             </li>
                         @endif
 
                         @if(in_array('my_classes_read', $permissions))
-                            <li class="nav-item {{ (request()->is('student/exercise/exam') || (isset($isExerciseExam) && $isExerciseExam== true)) ? 'active': '' }}">
+                            <li class="nav-item {{ (
+                                        request()->is('student/exercise/exam') || 
+                                        (isset($isExerciseExam) && $isExerciseExam== true)) 
+                                    ? 'active': '' }}">
                                 <a href="{{ route('getStudentExerciseExamList') }}">
-                                    <span class="fa fa-file"></span>
-                                    <span class="text">{{__('Exercise')}}</span>
+                                    <img class ="sidebar_icon" src="{{ asset('images/sidebar_icons/reports.png') }}"  title="{{__('languages.common_sidebar.exercises')}}" alt="{{__('languages.common_sidebar.exercises')}}">
+                                    <span class="text">{{__('languages.exercise')}}</span>
                                 </a>
                             </li>
                         @endif
 
-                        @if (in_array('peer_group_read', $permissions))
-                            <li class="nav-item {{ (request()->is('student/test/exam') || (isset($isTestExam) && $isTestExam == true)) ? 'active': '' }}">
+                        @if(in_array('peer_group_read', $permissions))
+                            <li class="nav-item {{ (
+                                        request()->is('student/test/exam') || 
+                                        (isset($isTestExam) && $isTestExam == true)
+                                    ) ? 'active': '' }}">
                                 <a href="{{ route('getStudentTestExamList') }}">
-                                    <span class="fa fa-file"></span>
-                                    <span class="text"> {{__('Test')}} </span>
+                                    <img class ="sidebar_icon" src="{{ asset('images/sidebar_icons/reports.png') }}"  title="{{__('languages.common_sidebar.test')}}" alt="{{__('languages.common_sidebar.test')}}">
+                                    <span class="text"> {{__('languages.common_sidebar.test')}} </span>
                                 </a>
                             </li>
                         @endif
 
-                        <li class="nav-item {{ (request()->is('student/testing-zone') || request()->is('student/create/self-learning-test') || (isset($isSelfLearningTestingZone) && $isSelfLearningTestingZone == true) 
+                        <li class="nav-item {{ (
+                            request()->is('student/testing-zone') || 
+                            request()->is('student/create/self-learning-test') || 
+                            (isset($isSelfLearningTestingZone) && $isSelfLearningTestingZone == true) 
                         ) ? 'active': ''}}">
                             <a href="{{ route('student.testing-zone') }}">
-                                <span class="fa fa-file"></span>
-                                <span class="text">{{__('AI-Based Assesement')}}</span>
+                                <img class ="sidebar_icon" src="{{ asset('images/sidebar_icons/reports.png') }}"  title="{{__('languages.common_sidebar.ai_based_assessment')}}" alt="{{__('languages.common_sidebar.ai_based_assessment')}}">
+                                <span class="text">{{__('languages.common_sidebar.ai_based_assessment')}}</span>
                             </a>
                         </li>
 
                         @if(in_array('intelligent_tutor_read',$permissions))
                             <li class="nav-item {{ (request()->is('intelligent-tutor')) ? 'active': ''  }}">
                                 <a class="nav-link" href="{{ route('intelligent-tutor.index') }}">
-                                    <span class="fa fa-sitemap"></span>
-                                    <span class="text">{{__('Intelligent Tutor')}}</span>
+                                    <span class="fa fa-user" title="{{__('languages.common_sidebar.intelligent_tutor')}}"></span>
+                                    <span class="text">{{__('languages.common_sidebar.intelligent_tutor')}}</span>
                                 </a>
                             </li>
                         @endif
 
                         @if (in_array('peer_group_read', $permissions))
-                        <li class="nav-item {{ (request()->is('my-peer-group')) ? 'active': ''  }}">
+                        <li class="nav-item {{ (request()->is('my-peer-group') ||  request()->is('peer-group/view/members/*')) ? 'active': ''  }}">
                             <a class="nav-link" href="{{ route('my-peer-group') }}">
-                                <span class="fa fa-sitemap"></span>
-                                <span class="text">{{__('Peer Group')}}</span>
+                                <img class ="sidebar_icon" src="{{ asset('images/sidebar_icons/knowledge_tree.png') }}"  title="{{__('languages.common_sidebar.peer_group')}}" alt="{{__('languages.common_sidebar.peer_group')}}">
+                                <span class="text">{{__('languages.common_sidebar.peer_group')}}</span>
                             </a>
                         </li>
-                    @endif
+                        @endif
+
+                        {{-- Learning Progress Report --}}
+                        <li class="nav-item">
+                            <a class="nav-link text-truncate {{ (
+                                    request()->is('student/progress-report/learning-units/*')|| 
+                                    request()->is('student/progress-report/learning-objective/*')
+                                ) ? 'show': ''  }}" 
+                                href="#learning-progress" data-toggle="collapse" data-target="#learning-progress">
+                                <img class ="sidebar_icon" src="{{ asset('images/sidebar_icons/school_management.png') }}"  title="{{__('languages.admin_sidebar.learning_progress')}}" alt="{{__('languages.admin_sidebar.learning_progress')}}">
+                                <span class="text">{{__('languages.common_sidebar.learning_progress')}}</span>
+                            </a>
+                            <div class="collapse {{ (
+                                    request()->is('student/progress-report/learning-units/*') || 
+                                    request()->is('student/progress-report/learning-objective/*')
+                                ) ? 'show': ''  }}"
+                                 id="learning-progress" aria-expanded="false">
+                                <ul class="flex-column pl-2 nav">
+                                    <li class="nav-item {{(request()->is('student/progress-report/learning-units/*')) ? 'active' : ''}}">
+                                        <a class="nav-link" href="{{route('student.progress-report.learning-units',auth::user()->id)}}">
+                                            <img class ="sidebar_icon" src="{{ asset('images/sidebar_icons/learning.png') }}"  title="{{__('languages.common_sidebar.learning_units')}}" alt="{{__('languages.common_sidebar.learning_units')}}">
+                                            <span class="text">{{__('languages.common_sidebar.learning_units')}}</span>
+                                        </a>
+                                    </li>
+                                    <li class="nav-item {{(request()->is('student/progress-report/learning-objective/*')) ? 'active' : ''}}">
+                                        <a class="nav-link" href="{{route('student.progress-report.learning-objective',auth::user()->id)}}">
+                                            <img class ="sidebar_icon" src="{{ asset('images/sidebar_icons/learning.png') }}"  title="{{__('languages.common_sidebar.learning_objectives')}}" alt="{{__('languages.common_sidebar.learning_objectives')}}">
+                                            <span class="text">{{__('languages.common_sidebar.learning_objectives')}}</span>
+                                        </a>
+                                    </li>
+                                </ul>
+                            </div>
+                        </li>
                     </ul>
                 </div>
             </li>
         
             <li>
                 <a href="#" id="game">
-                    <span class="fa fa-file"></span>
-                    <span class="text">{{__('Game')}}</span>
+                    <span class="fa fa-user" title="{{__('languages.common_sidebar.game')}}"></span>
+                    <img class ="sidebar_icon" src="{{ asset('images/sidebar_icons/intelligent_tutor.png') }}"  title="{{__('languages.common_sidebar.game')}}" alt="{{__('languages.common_sidebar.game')}}">
+                    <span class="text">{{__('languages.common_sidebar.game')}}</span>
                 </a>
             </li>
 
             {{-- Logout --}}
             <li>
                 <a href="javascript:void(0);" id="logout">
-                    <span class="fa fa-sign-out"></span>
-                    <span class="text">{{__('languages.sidebar.logout')}}</span>
+                    <span class="fa fa-sign-out" title="{{__('languages.common_sidebar.logout')}}"></span>
+                    <span class="text">{{__('languages.common_sidebar.logout')}}</span>
                 </a>
             </li>
         </ul>

@@ -24,7 +24,7 @@
                         <hr class="blue-line">
                     </div>
                 </div>
-                <div class="alert alert-warning mb-5">{{\App\Helpers\Helper::getGlobalConfiguration('attempt_exam_restrict_notification_'.app()->getLocale())}}</div>
+                {{-- <div class="alert alert-warning mb-5">{{\App\Helpers\Helper::getGlobalConfiguration('attempt_exam_restrict_notification_'.app()->getLocale())}}</div> --}}
                 @if($examType == 'single')
                 <form class="changeLanguageExamForm" id="changeLanguageExamForm" method="post">
                     @csrf()
@@ -232,13 +232,19 @@
     <div class="modal-dialog  modal-xl" style="max-width: 50%;">
         <div class="modal-content">
             <div class="modal-header">
-            <h5 class="modal-title" id="staticBackdropLabel">{{__('Exam Survey')}}</h5>
+            <h5 class="modal-title" id="staticBackdropLabel">{{__('languages.how_do_you_feel_now')}}</h5>
             </div>
             <div class="modal-body " id="AttemptQuestionFeedbackBody">
                 <form class="smileys">
                     <input type="hidden" id="isAfterSubmit" value="" /> 
-                    <input type="radio" name="smiley" value="1" class="sad emojisButton" onChange="Emoji();">
-                    <input type="radio" name="smiley" value="2" class="happy emojisButton" onChange="Emoji();">
+                    <!-- <input type="radio" name="smiley" value="1" class="sad emojisButton" onChange="Emoji();">
+                    <input type="radio" name="smiley" value="2" class="happy emojisButton" onChange="Emoji();"> -->
+
+                    <input type="radio" name="smiley" value="1" data-feedbackType="1" class="emoji_1 emojisButton" onChange="Emoji();">
+                    <input type="radio" name="smiley" value="2" data-feedbackType="2" class="emoji_2 emojisButton" onChange="Emoji();">
+                    <input type="radio" name="smiley" value="3" data-feedbackType="1" class="emoji_3 emojisButton" onChange="Emoji();">
+                    <input type="radio" name="smiley" value="4" data-feedbackType="2" class="emoji_4 emojisButton" onChange="Emoji();">
+                    <input type="radio" name="smiley" value="5" data-feedbackType="1" class="emoji_5 emojisButton" onChange="Emoji();">
                 </form>
             </div>
         </div>

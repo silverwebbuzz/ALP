@@ -41,10 +41,10 @@
 											<p class="detail-s"><strong>{{ __('languages.user_activity.chinese_name') }} :</strong></p>
 											<p class="detail-p"> {{ ($profile->name_ch) ? App\Helpers\Helper::decrypt($profile->name_ch) :'N/A'}} </p>
 										</div>
-										<div class="detail-sec">
+										{{-- <div class="detail-sec">
 											<p class="detail-s"><strong>{{ __('languages.name') }} :</strong></p>
 											<p class="detail-p"> {{($profile->name) ? $profile->name :'N/A' }} </p>
-										</div>
+										</div> --}}
 										<div class="detail-sec">
 											<p class="detail-s"><strong>{{ __('languages.email') }} :</strong> </p>
 											<p class="detail-p">{{$profile->email}} </p>
@@ -71,13 +71,13 @@
 											<p class="detail-p"> {{$profile->gender}}  </p>
 										</div>
 									</div>
-									<div class="contact_detail_main create_line">
+									{{-- <div class="contact_detail_main create_line">
 										<h5>{{__('languages.my_class.contact_information') }}</h5>
 										<div class="detail-sec">
 											<p class="detail-s"><strong>{{ __('languages.contact_no') }} :</strong>  </p>
 											<p class="detail-p"> {{($profile->mobile_no) ?  App\Helpers\Helper::decrypt($profile->mobile_no) : 'N/A'}}  </p>
 										</div>
-									</div>
+									</div> --}}
 								</div>
 							</div>
 						</div>

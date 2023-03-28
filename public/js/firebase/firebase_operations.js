@@ -8,7 +8,6 @@ function AddUserFirebase(data){
     var PhoneNumber = generateMobileNumber();
     var alp_chat_id = checkUserNumber(data,PhoneNumber);
     return alp_chat_id;
-    
 }
 
 /**
@@ -16,7 +15,7 @@ function AddUserFirebase(data){
  */
 function addUser(data) {
     var PhoneNumber = data.alp_chat_user_id;
-    if (PhoneNumber == "") {
+    if(PhoneNumber == ""){
         $.ajax({
             url: BASE_URL + "/get-user-info",
             type: "GET",
@@ -39,7 +38,7 @@ function addUser(data) {
                         .orderByChild("e-mail")
                         .equalTo(data.email);
                     ref.once("value", (snapshot) => {
-                        if (snapshot.exists()) {
+                        if(snapshot.exists()){
                             snapshotData = Object.keys(snapshot.val());
                             CurrentUser = snapshotData[0];
                             firebase
@@ -51,7 +50,7 @@ function addUser(data) {
                                     username: data.name_en,
                                 });
                             return CurrentUser;
-                        } else {
+                        }else{
                             firebase
                                 .database()
                                 .ref("data/users/" + CurrentUser)
@@ -215,9 +214,7 @@ function deleteGroupMember(data, grpExitUserIds, dreamschat_group_id) {
             if (snapshot.exists()) {
                 snapshotData = Object.keys(snapshot.val());
                 CurrentUsers = snapshotData[0];
-                var remRef = firebase
-                    .database()
-                    .ref("data/groups/" + dreamschat_group_id);
+                var remRef = firebase.database().ref("data/groups/" + dreamschat_group_id);
                 remRef.once("value", function (snapshot) {
                     var userarray = snapshot.val().userIds;
                     if (snapshot.val().grpExitUserIds != undefined) {

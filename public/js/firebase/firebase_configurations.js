@@ -2,6 +2,18 @@
  * Alp-Chat configurations
  * ************************************************************************/
 switch (ALP_SERVER) {
+    case "alptest":
+        var FIREBASE_CONFIG = {
+            apiKey: "AIzaSyDr90Bw3GZSJuTJCroVpTwxNpw11UYefMY",
+            authDomain: "alp-chat-alptest.firebaseapp.com",
+            databaseURL: "https://alp-chat-alptest-default-rtdb.firebaseio.com",
+            projectId: "alp-chat-alptest",
+            storageBucket: "alp-chat-alptest.appspot.com",
+            messagingSenderId: "741806115894",
+            appId: "1:741806115894:web:e4e5b87d231fd3f970dc97",
+            measurementId: "G-R7DMB60Q00",
+        };
+        break;
     case "localhost":
         var FIREBASE_CONFIG = {
             apiKey: "AIzaSyC8HgrhDACWkvBmiRtE-wNXOvTl80IXYFc",

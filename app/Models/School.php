@@ -10,6 +10,7 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Validation\Rule;
 use App\Traits\Common;
 use App\Models\User;
+use App\Models\Regions;
 use Illuminate\Support\Facades\Auth;
 
 class School extends Model
@@ -28,6 +29,7 @@ class School extends Model
         cn::SCHOOL_SCHOOL_ADDRESS_EN_COL,
         cn::SCHOOL_SCHOOL_ADDRESS_CH_COL,
         cn::SCHOOL_SCHOOL_CITY,
+        cn::SCHOOL_REGION_ID_COL,
         cn::SCHOOL_DESCRIPTION_EN_COL,
         cn::SCHOOL_DESCRIPTION_CH_COL,
         cn::SCHOOL_STARTTIME_COL,
@@ -154,6 +156,10 @@ class School extends Model
                 break;
         }
         return $messages;
+    }
+
+    public function Region(){
+        return $this->hasOne(Regions::Class,cn::REGIONS_ID_COL,cn::SCHOOL_REGION_ID_COL);
     }
 }
 

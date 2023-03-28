@@ -26,7 +26,7 @@
                                 <input type="hidden" name="calibration_report_id" id="calibration_report_id" value="{{$CalibrationReport->id}}">
                                 <div class="row">
                                     <div class="col-lg-4 col-md-4 col-sm-4 col-xs-4">
-                                        <label>{{__('languages.current_calibration_number')}} :</label>
+                                        <label>{{__('languages.calibration_number')}} :</label>
                                         <span>{{$CalibrationReport->calibration_number}}</span>
                                     </div>
                                     <div class="col-lg-4 col-md-4 col-sm-4 col-xs-4">
@@ -46,21 +46,21 @@
                                         @php
                                             $no_of_involved_school = (!empty($CalibrationReport->school_ids)) ? count(explode(',',$CalibrationReport->school_ids)) : 0;
                                         @endphp
-                                        <label>{{__('languages.no_of_involved_school')}} :</label>
+                                        <label>{{__('languages.schools')}} :</label>
                                         <span>{{$no_of_involved_school}}</span>
                                     </div>
                                     <div class="col-lg-4 col-md-4 col-sm-4 col-xs-4">
                                         @php
                                             $no_of_involved_question_seed = (!empty($CalibrationReport->included_question_ids)) ? count(explode(',',$CalibrationReport->included_question_ids)) : 0;
                                         @endphp
-                                        <label>{{__('languages.no_of_involved_question_seeds')}} :</label>
+                                        <label>{{__('languages.question_seeds')}} :</label>
                                         <span>{{$no_of_involved_question_seed}}</span>
                                     </div>
                                     <div class="col-lg-4 col-md-4 col-sm-4 col-xs-4">
                                         @php
                                             $no_of_involved_student = (!empty($CalibrationReport->included_student_ids)) ? count(explode(',',$CalibrationReport->included_student_ids)) : 0;
                                         @endphp
-                                        <label>{{__('languages.no_of_involved_students')}} :</label>
+                                        <label>{{__('languages.students')}} :</label>
                                         <span>{{$no_of_involved_student}}</span>
                                     </div>
                                     <div class="col-lg-4 col-md-4 col-sm-4 col-xs-4">
@@ -80,7 +80,7 @@
                                 @if(!empty($median_difficulty_levels))
                                     @foreach($median_difficulty_levels as $level => $LevelDifficulty)
                                     <div>
-                                        <label>{{__('languages.median_of_difficulty_of')}} {{$level}}-{{__('languages.level_of_difficulty')}} :</label>
+                                        <label>{{__('languages.median')}} {{$level}}-{{__('languages.level_of_difficulty')}} :</label>
                                         <span>{{round((exp($LevelDifficulty)/(1+exp($LevelDifficulty)) * 10), 3)}} ({{$LevelDifficulty}})</span>
                                     </div>
                                     @endforeach
@@ -94,7 +94,8 @@
                                 @if(!empty($standard_deviation_difficulty_levels))
                                     @foreach($standard_deviation_difficulty_levels as $level => $StandardDeviationDifficultyLevel)
                                     <div>
-                                        <label>{{__('languages.standard_deviation_of')}} {{$level}}-{{__('languages.level_difficulty')}} :</label>
+                                        <!-- <label>{{__('languages.standard_deviation_of')}} {{$level}}-{{__('languages.level_difficulty')}} :</label> -->
+                                        <label>{{$level}}-{{__('languages.level_difficulty')}} {{__('languages.standard_deviation_of')}} :</label>
                                         <span>{{round((exp($StandardDeviationDifficultyLevel)/(1+exp($StandardDeviationDifficultyLevel)) * 10), 3)}} ({{$StandardDeviationDifficultyLevel}})</span>
                                     </div>
                                     @endforeach
@@ -103,7 +104,7 @@
 
                             @if(!empty($AICalibrationReport['calibration_questions']))
                                 <div class="ai-calibration-table mb-3">
-                                    <h2>{{__('languages.involved_question_seeds')}}</h2>
+                                    <h2>{{__('languages.question_seeds')}}</h2>
                                     <table class="styled-table">
                                     <thead>
                                         <tr>

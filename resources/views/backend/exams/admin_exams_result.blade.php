@@ -127,7 +127,7 @@
                                     $bg_correct_color='background-color:'.App\Helpers\Helper::getGlobalConfiguration('question_correct_color');
                                     $bg_incorrect_color='background-color:'.App\Helpers\Helper::getGlobalConfiguration('question_incorrect_color');
                                     @endphp
-                                    <h5>{{__('languages.questions_by_difficulties')}}</h5>
+                                    <h5>{{__('languages.difficulty_levels_of_questions')}}</h5>
                                     @if(!empty($difficultyLevels))
                                         @php $i=1; $difficultyColor= []; @endphp
                                         @foreach($difficultyLevels as $difficultyLevel)
@@ -152,13 +152,13 @@
                                 </div>
                                 <div class="col-sm-9 col-md-9 col-lg-9">
                                     <h5>{{__('languages.speed')}}</h5>
-                                    <p><?php echo App\Helpers\Helper::getQuestionPerSpeed($ExamData->id,$studentId); ?> {{__('languages.sec_per_question')}}</p>
+                                    <p><?php echo App\Helpers\Helper::getQuestionPerSpeed($ExamData->id,$studentId); ?> {{__('languages.min_per_question')}}</p>
                                 </div>
                                 <div class="col-sm-12 col-md-12 col-lg-12">
                                     <span class="dot-color" style="background-color:{{ App\Helpers\Helper::getGlobalConfiguration('question_correct_color')}};border-radius: 50%;display: inline-block;"></span>
-                                    <label>{{__('languages.correct_questions')}}</label>
+                                    <label>{{__('languages.correctly_answered_questions')}}</label>
                                     <span class="dot-color" style="background-color:{{ App\Helpers\Helper::getGlobalConfiguration('question_incorrect_color')}};border-radius: 50%;display: inline-block;"></span>
-                                    <label>{{__('languages.incorrect_questions')}}</label>
+                                    <label>{{__('languages.incorrectly_answered_questions')}}</label>
                                 </div>
                             </div>
                             <hr>
@@ -181,7 +181,9 @@
                                     @endphp
                                     <div class="row">
                                         <div class="sm-que-option pl-3">
-                                            <p class="sm-title bold">{{__('languages.result.q_no')}} {{$loop->iteration}}: {{__('languages.question_code')}} : {{ $question->naming_structure_code }}
+                                            <p class="sm-title bold">{{__('languages.result.q_no')}} {{$loop->iteration}} 
+                                                @if(auth::user()->role_id == 1) :{{__('languages.question_code')}} : {{ $question->naming_structure_code }} 
+                                                @endif
                                                 {{-- Display Question types and with color code --}}
                                                     @if($question->dificulaty_level == 1)
                                                         @if(isset($difficultyColor['Level1']) && !empty($difficultyColor['Level1']))
@@ -411,7 +413,7 @@
         <div class="modal-content">
             <form method="post">
                 <div class="modal-header">
-                    <h4 class="modal-title w-100">{{__('languages.student_performance_graph')}}</h4>
+                    <h4 class="modal-title w-100">{{__('languages.performance_graph')}}</h4>
                     <button type="button" class="close" onclick="destroyCanvas()" data-dismiss="modal" aria-hidden="true">&times;</button>
                 </div>
                 <div class="modal-body">

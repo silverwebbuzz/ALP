@@ -12,7 +12,7 @@
                 <div class="row">
                     <div class="col-md-12">
                         <div class="sec-title">
-                            <h2 class="mb-4 main-title">{{__('languages.question_generators_menu.question_generators')}}</h2>
+                            <h2 class="mb-4 main-title">{{__('languages.generate_questions')}}</h2>
                         </div>
                         <hr class="blue-line">
                     </div>
@@ -57,7 +57,7 @@
                         font-family: inherit;
                     }
                 </style>
-                <form name="question-generator" id="question-generator" action="{{ route('super-admin.generate-questions') }}" method="POST">
+                <form name="question-generator" id="question-generator" action="{{ route('super-admin.generate-questions') }}" method="POST" onsubmit="ShowLoader();">
                     @csrf
                     <div class="sm-add-user-sec card">
                         <div class="select-option-sec pb-5 card-body">
@@ -65,9 +65,9 @@
                                 <div class="question-generator-option-headings mb-3">
                                     <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12 pl-0 pr-0">
                                         <ul class="form-tab">
-                                            <li class="step-headings section-step1 admin-tab tab_active" data-tabid="1">1. {{__('languages.question_generators_menu.configuration')}}</li>
-                                            <li class="step-headings section-step2 admin-tab" data-tabid="2">2.{{__('languages.question_generators_menu.to_schools')}}</li>
-                                            <li class="step-headings section-step3 admin-tab" data-tabid="3">3.{{__('languages.question_generators_menu.select_learning_objectives')}}</li>
+                                            <li class="step-headings section-step1 admin-tab tab_active" data-tabid="1">1. {{__('languages.configurations')}}</li>
+                                            <li class="step-headings section-step2 admin-tab" data-tabid="2">2.{{__('languages.schools')}}</li>
+                                            <li class="step-headings section-step3 admin-tab" data-tabid="3">3.{{__('languages.learning_objectives')}}</li>
                                             <li class="step-headings section-step4 admin-tab" data-tabid="4">4.{{__('languages.question_generators_menu.review_of_questions')}}</li>
                                         </ul>
                                     </div>
@@ -75,16 +75,17 @@
                                 <section class="form-steps step1">
                                     <div class="form-row">
                                         <div class="form-group col-md-6 mb-50">
-                                            <label class="text-bold-600">{{__('languages.question_generators_menu.use_of_mode')}}</label>
+                                            {{-- <label class="text-bold-600">{{__('languages.question_generators_menu.use_of_mode')}}</label> --}}
+                                            <label class="text-bold-600">{{__('languages.mode')}}</label>
                                             <select name="use_of_modes" class="form-control select-option" id="use_of_modes">
-                                                <option value="">{{__('languages.question_generators_menu.select_use_of_mode')}}</option>
+                                                <option value="">{{__('languages.select_mode')}}</option>
                                                 <option value="1" @if(request()->get('type') == 1) selected @endif>{{__('languages.question_generators_menu.as_a_test_exercise')}}</option> 
                                                 <option value="2" @if(request()->get('type') == 2) selected @endif>{{__('languages.question_generators_menu.as_a_collection_of_questions')}}</option>
                                             </select>
                                         </div>
 
                                         <div class="form-group col-md-6 mb-50">
-                                            <label class="text-bold-600">Test Mode</label>
+                                            <label class="text-bold-600">{{__('languages.type')}}</label>
                                             <select name="test_type" class="form-control select-option" id="test_type">
                                                 <option value="2" @if(request()->get('type') == 2) selected @endif>{{__('languages.excercise')}}</option> 
                                                 <option value="3" @if(request()->get('type') == 3) selected @endif>{{__('languages.test_text')}}</option>
@@ -188,7 +189,7 @@
                                         </div> -->
 
                                         <div class="form-group col-md-6 mb-50">
-                                            <label>{{__('languages.difficulty_mode')}}</label>
+                                            <label>{{__('languages.difficulty')}} {{__('languages.setting')}}</label>
                                             <select name="difficulty_mode" class="form-control select-option" id="difficulty_mode">
                                                 <option value="manual">{{__('languages.manual')}}</option>
                                                 <!-- <option value="auto">Auto Fit</option> -->
@@ -260,7 +261,7 @@
                                     <div class="form-group col-md-6 mb-50">
                                         <select name="schoolIds[]" class="form-control select-option" id="school-select-option" multiple>
                                             @if(isset($schoolList) && !empty($schoolList))
-                                                <label>Select School</label>
+                                                <label>{{__('languages.question_generators_menu.select_school')}}</label>
                                                 @foreach($schoolList as $school)
                                                 <option value="{{$school->id}}">
                                                     @if(app()->getLocale() == 'en')
@@ -271,7 +272,7 @@
                                                 </option>
                                                 @endforeach
                                             @else
-                                                <option value="">{{ __('No any school available') }}</option>
+                                                <option value="">{{ __('languages.question_generators_menu.no_any_school_available') }}</option>
                                             @endif
                                         </select>
                                     </div>
@@ -327,7 +328,7 @@
                                         <div class="question-generator-objectives-labels">
                                             <label>{{__('languages.question_generators_menu.learning_objectives')}}</label>
                                             <label>{{__('languages.question_generators_menu.difficulty_level')}}</label>
-                                            <label>{{__('languages.question_generators_menu.no_of_question_per_learning_objectives')}}</label>
+                                            <label>{{__('languages.questions_per_learning_objective')}}</label>
                                         </div>
                                     </div>
                                     <div class="form-row selection-learning-objectives-section">
@@ -384,13 +385,13 @@
                                                 <div class="tab-pane fade" id="Q3">
                                                     <div class="pb-3">
                                                         <div class="question-strand-detail pl-3">
-                                                            <label><b>{{__('languages.upload_document.strands')}} :</b> </label><span>some text</span>
+                                                            <label><b>{{__('languages.strand')}} :</b> </label><span>some text</span>
                                                         </div>
                                                         <div class="question-learning-unit-detail">
-                                                            <label><b>{{__('languages.upload_document.learning_units')}} :</b> </label><span>some text</span>
+                                                            <label><b>{{__('languages.learning_unit')}} :</b> </label><span>some text</span>
                                                         </div>
                                                         <div class="question-learning-objectives-detail pl-3">
-                                                            <label><b>{{ __('languages.learning_objectives') }} :</b> </label><span>some text</span>
+                                                            <label><b>{{ __('languages.learning_objective') }} :</b> </label><span>some text</span>
                                                         </div>
                                                         <div class="question-difficulty-detail">
                                                             <label><b>{{__('languages.questions.difficulty_level')}} :</b> </label><span>Level 1</span>
@@ -486,13 +487,13 @@
                                                 <div class="tab-content">
                                                     <div class="pb-3">
                                                         <div class="question-strand-detail pl-3">
-                                                            <label><b>{{__('languages.upload_document.strands')}} :</b> </label><span>some text</span>
+                                                            <label><b>{{__('languages.strand')}} :</b> </label><span>some text</span>
                                                         </div>
                                                         <div class="question-learning-unit-detail">
-                                                            <label><b>{{__('languages.upload_document.learning_units')}} :</b> </label><span>some text</span>
+                                                            <label><b>{{__('languages.learning_unit')}} :</b> </label><span>some text</span>
                                                         </div>
                                                         <div class="question-learning-objectives-detail pl-3">
-                                                            <label><b>{{ __('languages.learning_objectives') }} :</b> </label><span>some text</span>
+                                                            <label><b>{{ __('languages.learning_objective') }} :</b> </label><span>some text</span>
                                                         </div>
                                                         <div class="question-difficulty-detail">
                                                             <label><b>{{__('languages.questions.difficulty_level')}} :</b> </label><span>Level 1</span>
@@ -546,8 +547,8 @@
                                         <div class="btn_group mb-3 review-question-position-button">
                                             <button type="button" class="btn-search bg-pink btn-up"><i class="fa fa-arrow-up mr-1" aria-hidden="true"></i>{{__('languages.question_generators_menu.up')}}</button>
                                             <button type="button" class="btn-search bg-pink  btn-down"><i class="fa fa-arrow-down mr-1" aria-hidden="true"></i>{{__('languages.question_generators_menu.down')}}</button>
-                                            <button type="button" class="btn-search bg-pink set-top"><i class="fa fa-arrow-up" aria-hidden="true"></i><i class="fa fa-arrow-up mr-1" aria-hidden="true"></i>{{__('languages.question_generators_menu.set_top')}}</button>
-                                            <button type="button" class="btn-search set-bottom bg-pink"><i class="fa fa-arrow-down" aria-hidden="true"></i><i class="fa fa-arrow-down mr-1" aria-hidden="true"></i>{{__('languages.question_generators_menu.set_bottom')}}</button>
+                                            <button type="button" class="btn-search bg-pink set-top"><i class="fa fa-arrow-up" aria-hidden="true"></i><i class="fa fa-arrow-up mr-1" aria-hidden="true"></i>{{__('languages.question_generators_menu.set_to_top')}}</button>
+                                            <button type="button" class="btn-search set-bottom bg-pink"><i class="fa fa-arrow-down" aria-hidden="true"></i><i class="fa fa-arrow-down mr-1" aria-hidden="true"></i>{{__('languages.question_generators_menu.set_to_bottom')}}</button>
                                             <button type="button" class="btn-search btn-remove-tab set-bottom bg-pink"><i class="fa fa-trash  mr-1" aria-hidden="true"></i>{{__('languages.question_generators_menu.remove')}}</button>
                                         </div>
                                     </div>
@@ -753,7 +754,8 @@ $(function (){
 					'strands_ids': $strandIds
 				},
 				success: function(response) {
-					$('#learning_unit').html('');
+                    // $('#learning_unit').html('');
+					$(classNameLearningUnit).html('');
 					var data = JSON.parse(JSON.stringify(response));
 					if(data){
 						if(data.data){
@@ -1058,9 +1060,9 @@ function getLearningObjectivesOptionList(){
                         <div class="d-flex pb-3">\
                         <div class="question-content pl-2">\
                             <div class="row">\
-                                <div class="col-md-6"><b>{{__('languages.upload_document.strands')}}</b> : <span class="q-strand-name" data-q-strand-id="'+Q.objective_mapping.strand_id+'">'+Q.objective_mapping.strandName+'</span></div>\
-                                <div class="col-md-6"><b>{{__('languages.upload_document.learning_units')}}</b> : <span class="q-learning-units-name" data-q-learning-units-id="'+Q.objective_mapping.learning_unit_id+'">'+Q.objective_mapping.learningUnitsName+'</span></div>\
-                                <div class="col-md-6"><b>{{ __('languages.learning_objectives') }}</b> : <span class="q-learning-objectives-title" data-q-learning-objectives-id="'+Q.objective_mapping.learning_objectives_id+'">'+Q.objective_mapping.learningObjectivesTitle+'</span></div>\
+                                <div class="col-md-6"><b>{{__('languages.strand')}}</b> : <span class="q-strand-name" data-q-strand-id="'+Q.objective_mapping.strand_id+'">'+Q.objective_mapping.strandName+'</span></div>\
+                                <div class="col-md-6"><b>{{__('languages.learning_unit')}}</b> : <span class="q-learning-units-name" data-q-learning-units-id="'+Q.objective_mapping.learning_unit_id+'">'+Q.objective_mapping.learningUnitsName+'</span></div>\
+                                <div class="col-md-6"><b>{{ __('languages.learning_objective') }}</b> : <span class="q-learning-objectives-title" data-q-learning-objectives-id="'+Q.objective_mapping.learning_objectives_id+'">'+Q.objective_mapping.learningObjectivesTitle+'</span></div>\
                                 <div class="col-md-6"><b>{{__('languages.questions.difficulty_level')}}</b> : <span class="q-difficulty-level" data-q-difficulty-level-id="'+Q.dificulaty_level+'">'+difficultyLevelName+'</span></div>\
                             </div>\
                             <div class="question-heading">\

@@ -7,6 +7,7 @@ use App\Models\Role;
 use App\Models\User;
 use App\Models\Settings;
 use App\Models\Grades;
+use App\Models\School;
 use App\Models\GradeClassMapping;
 use App\Models\PreConfigurationDiffiltyLevel;
 use App\Constants\DbConstant As cn;
@@ -26,6 +27,8 @@ use Illuminate\Support\Facades\Session;
 use App\Models\RemainderUpdateSchoolYearData;
 use App\Models\LearningsUnits;
 use App\Models\LearningObjectivesSkills;
+use App\Models\PeerGroupMember;
+use App\Models\PeerGroup;
 use URL;
 use Cookie;
 use Carbon\Carbon;
@@ -353,7 +356,7 @@ class Helper{
     }
 
     public static function getNormalizedAbility($ability){
-        $ability = exp($ability) / (1 + exp($ability)) * 100;
+        $ability = (exp($ability) / (1 + exp($ability)) * 100);
         return round($ability,2);
     }
 
@@ -666,20 +669,36 @@ class Helper{
         }
     }
 
+    // Convert time to minutes
+    public static function ConvertTimeToMinutes(string $time=""){
+        $Minutes = 0;
+        if(isset($time)){
+            sscanf($time, "%d:%d:%d", $hours, $minutes, $seconds);
+            if($seconds >= 60){
+                $minutes = ($minutes + 1);
+            }
+            $Minutes = (($hours * 60) + $minutes);
+        }
+        return $Minutes;
+    }
+
     // time to minutes
     public static function timeToSecond(string $time=""){
         if(isset($time)){
-            $arr = explode(':', $time);
-            if (count($arr) === 3) {
-                $timeArr = explode(':', $time);
-                $time_minutes = ($timeArr[0]*60) + ($timeArr[1]) + ($timeArr[2]/60);
-                return $time_minutes;
-            }
-            if (count($arr) === 3) {
-                $timeArr = explode(':', $time);
-                $time_minutes = ($timeArr[0]*60) + ($timeArr[1]) + ($timeArr[2]/60);
-                return $time_minutes;
-            }
+            sscanf($time, "%d:%d:%d", $hours, $minutes, $seconds);
+            $time_seconds = isset($seconds) ? $hours * 3600 + $minutes * 60 + $seconds : $hours * 60 + $minutes;
+            return $time_seconds;
+            // $arr = explode(':', $time);
+            // if (count($arr) === 3) {
+            //     $timeArr = explode(':', $time);
+            //     $time_minutes = ($timeArr[0]*60) + ($timeArr[1]) + ($timeArr[2]/60);
+            //     return $time_minutes;
+            // }
+            // if (count($arr) === 3) {
+            //     $timeArr = explode(':', $time);
+            //     $time_minutes = ($timeArr[0]*60) + ($timeArr[1]) + ($timeArr[2]/60);
+            //     return $time_minutes;
+            // }
         }
         return 0;
     }
@@ -699,14 +718,21 @@ class Helper{
         if(empty($studentId)){
             $studentId = Auth::user()->{cn::USERS_ID_COL};
         }
-        $exam = Exam::where(cn::EXAM_TABLE_ID_COLS,$exam_id)->whereRaw("find_in_set($studentId,student_ids)")->get()->toArray();
-        $attempt_exams = AttemptExams::where(cn::ATTEMPT_EXAMS_EXAM_ID,$exam_id)->where(cn::ATTEMPT_EXAMS_STUDENT_STUDENT_ID,$studentId)->get()->toArray();
+        $exam = Exam::where(cn::EXAM_TABLE_ID_COLS,$exam_id)
+                ->whereRaw("find_in_set($studentId,student_ids)")
+                ->get()
+                ->toArray();
+        $attempt_exams =    AttemptExams::where(cn::ATTEMPT_EXAMS_EXAM_ID,$exam_id)
+                            ->where(cn::ATTEMPT_EXAMS_STUDENT_STUDENT_ID,$studentId)
+                            ->get()
+                            ->toArray();
         $question_ids = $exam[0][cn::EXAM_TABLE_QUESTION_IDS_COL];
         $exam_taking_timing = $attempt_exams[0][cn::ATTEMPT_EXAMS_EXAM_TAKING_TIMING];
         $exam_taking_timing_second = \App\Helpers\Helper::timeToSecond($exam_taking_timing ?? "00:00:00");
+        //$exam_taking_timing_second = \App\Helpers\Helper::ConvertTimeToMinutes($exam_taking_timing ?? "00:00:00");
         if($question_ids != "" && !empty($question_ids)){
             $question_ids_size = sizeof(explode(',',$question_ids));
-            $per_question_time = round($exam_taking_timing_second/$question_ids_size,2);
+            $per_question_time = number_format(floatval(($exam_taking_timing_second/$question_ids_size) / 60),1, '.', '');
         }
         return $per_question_time;
     }
@@ -996,5 +1022,61 @@ class Helper{
     public static function getLearningUnits($strandId){
         $LearningUnitsList = LearningsUnits::where('strand_id',$strandId)->where('stage_id','<>',3)->get();
         return $LearningUnitsList;
+    }
+
+     /**
+     * USE: Check Any Group Exists or not
+     */
+    public static function IsPeerGroupExists($roleId,$userId){
+        switch($roleId){
+            case cn::TEACHER_ROLE_ID :
+            case cn::PRINCIPAL_ROLE_ID:
+            case cn::SUB_ADMIN_ROLE_ID:
+            case cn::PANEL_HEAD_ROLE_ID:
+            case cn::CO_ORDINATOR_ROLE_ID:
+
+                $getPeerGroupData = PeerGroup::where(cn::PEER_GROUP_CREATED_BY_USER_ID_COL,$userId)->get();
+                if($getPeerGroupData->isNotEmpty()){
+                    return true;
+                } 
+                return false;  
+                break;
+
+            case cn::STUDENT_ROLE_ID :
+                $getPeerGroupData = PeerGroupMember::where(cn::PEER_GROUP_MEMBERS_MEMBER_ID_COL,$userId)->get();
+                if($getPeerGroupData->isNotEmpty()){
+                    return true;
+                } 
+                return false;
+                break;
+            default :
+                break;
+        }
+    }
+
+    /**
+     * USE : Get User Name
+     */
+    public static function getUserName($userId){
+        $userData = User::find($userId);
+        if(!empty($userData)){
+            $userName = self::decrypt($userData->{'name_'.app()->getLocale()});
+            if(!empty($userName) && isset($userName)){
+                return self::decrypt($userData->{'name_'.app()->getLocale()});
+            }else{
+                return $userData->name;
+            }   
+        }
+        return '';
+    }
+    /**
+     * USE : Get User School  Name
+     */
+    public static function getSchoolName($schoolId){
+        $schoolData = School::find($schoolId);
+        if(!empty($schoolData)){
+            return self::decrypt($schoolData->{'school_name_'.app()->getLocale()});
+        }
+        return '';
     }
 }

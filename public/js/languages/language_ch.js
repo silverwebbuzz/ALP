@@ -14,7 +14,7 @@ var VALIDATIONS = {
     PLEASE_ENTER_THIRD_ANSWER_OF_CHINESE: "請以中文輸入第三個答案",
     PLEASE_ENTER_FOURTH_ANSWER_OF_CHINESE: "請以中文輸入第四個答案",
     PLEASE_SELECT_SCHOOL: "請選擇學校",
-    PLEASE_SELECT_GRADE: "請選擇年級",
+    PLEASE_SELECT_GRADE: "請選擇表格",
     PLEASE_SELECT_SECTION: "請選擇欄目",
     PLEASE_ENTER_EMAIL: "請輸入電子郵箱地址",
     PLEASE_ENTER_VALID_EMAIL: "請輸入有效電子郵箱地址",
@@ -29,7 +29,7 @@ var VALIDATIONS = {
     PLEASE_ENTER_TITLE: "請輸入標題",
     PLEASE_ENTER_FROM_DATE: "請輸入起始日期",
     PLEASE_ENTER_TO_DATE: "請輸入截止日期",
-    PLEASE_ENTER_RESULT_DATE: "請輸入發佈結果日期",
+    PLEASE_ENTER_RESULT_DATE: "請輸入結果發佈日期",
     PLEASE_ENTER_TIME_DURATION: "請輸入時限",
     PLEASE_ENTER_ONLY_NUMERIC_VALUE: "請只輸入數值",
     MINIMUM_TEN_MINUTES_REQUIRED: "至少需要 10 分鐘",
@@ -50,12 +50,12 @@ var VALIDATIONS = {
     PLEASE_ENTER_CHINESE_TITLE: "請輸入中文標題",
     PLEASE_ENTER_ENGLISH_WEAKNESS_NAME: "請輸入英文弱點名稱",
     PLEASE_ENTER_CHINESE_WEAKNESS_NAME: "請輸入中文弱點名稱",
-    PLEASE_ENTER_STUDENT_NUMBER: "請輸入學生編號",
+    PLEASE_ENTER_STUDENT_NUMBER: "請輸入班號",
     PLEASE_ENTER_CLASS_NAME_AND_CLASS_NUMBER: "請輸入班別名稱和班別編號",
     PLEASE_ENTER_DIGITS_ONLY: "請只輸入數字",
     PLEASE_ENTER_DIFFICULTY_VALUE: "請輸入難度值",
-    PLEASE_ENTER_GRADE_NAME: "請輸入年級名稱",
-    PLEASE_ENTER_GRADE_CODE: "請輸入年級編號",
+    PLEASE_ENTER_GRADE_NAME: "請輸入表格名稱",
+    PLEASE_ENTER_GRADE_CODE: "請輸入表格代碼",
     PLEASE_SELECT_CLASS: "請選擇班別",
     PLEASE_ENTER_SUBJECT_NAME: "請輸入科目名稱",
     PLEASE_ENTER_SUBJECT_CODE: "請選擇科目編號",
@@ -63,7 +63,7 @@ var VALIDATIONS = {
     PLEASE_SELECT_IMPORT_USER_ROLE: "請選擇導入用戶角色",
     PLEASE_UPLOAD_CSV_FILE: "請上傳 CSV 文件",
     INVALID_FILE_EXTENSION: "文件擴展名稱無效， 僅允許的文件類型 :[xls, csv]",
-    PLEASE_UPLOAD_ONLY_JPEG_JPG_OR_PNG_FILES: "請僅上傳 jpeg、jpg 或 png 文件",
+    PLEASE_UPLOAD_ONLY_JPEG_JPG_OR_PNG_FILES: "僅上傳媒體文件 圖片 | 圖片 | PNG | 動圖",
     PLEASE_SELECT_LEARNING_TYPE: "請選擇學習類型",
     PLEASE_ENTER_NAME: "請輸入姓名",
     PLEASE_SELECT_STRAND: "請選擇章節",
@@ -97,10 +97,10 @@ var VALIDATIONS = {
     NUMBER_IS_NOT_PERMITTED: "號碼不允許",
     NO_AVAILABLE_DIFFICULTY_VALUE: "沒有適用的難度值",
     PLEASE_SELECT_STUDENTS_OR_PEER_GROUP: "請選擇學生或同輩群組",
-    PLEASE_SELECT_GRADE_AND_CLASSES: "請選擇年級和班別",
+    PLEASE_SELECT_GRADE_AND_CLASSES: "請選擇表格和課程",
     PLEASE_SELECT_STUDENT: "請選擇學生",
     PLEASE_SELECT_GROUP: "請選擇群組",
-    PLEASE_SELECT_GRADE_CLASS_OR_PEER_GROUP: "請選擇年級班級或同儕組",
+    PLEASE_SELECT_GRADE_CLASS_OR_PEER_GROUP: "請選擇表格類或對等組",
     PLEASE_ADD_CREDIT_POINT: "請添加信用點",
     PLEASE_SELECT_STUDENTS: "請選擇學生",
     PLEASE_SELECT_END_DATE_OF_EXAM: "請選擇考試結束日期",
@@ -129,8 +129,8 @@ var DIFFICULTY_LEVEL = "難度級別";
 var SUBJECT = "科目";
 var NODES_NOT_AVAILABLE = "沒有適用的節點";
 var CLASS_NOT_AVAILABLE = "沒有適用的班別";
-var GRADE_NOT_AVAILABLE = "沒有適用的年級";
-var SELECT_GRADE = "選擇年級";
+var GRADE_NOT_AVAILABLE = "表格不可用";
+var SELECT_GRADE = "選擇表格";
 var SUBJECT_NOT_AVAILABLE = "沒有適用的科目";
 var SELECT_STRAND = "選擇章節";
 var STRAND_NOT_AVAILABLE = "沒有適用的章節";
@@ -139,7 +139,7 @@ var LEARNING_UNITS_NOT_AVAILABLE = "沒有適用的學習重點";
 var SELECT_LEARNING_OBJECTIVES = "選擇學習重點";
 var LEARNING_OBJECTIVES_NOT_AVAILABLE = "沒有適用的學習重點";
 var PLEASE_SELECT_LANGUAGE = "請選擇語言 英文/中文";
-var PLEASE_SELECT_GRADE_FIRST = "請先選擇年級";
+var PLEASE_SELECT_GRADE_FIRST = "請先選擇表格";
 var PLEASE_SELECT_CLASS_FIRST = "請先選擇班別";
 var PLEASE_SELECT_STUDENT_FIRST = "請先選擇學生";
 var SELECT_STUDENT = "選擇學生";
@@ -244,3 +244,12 @@ var PLEASE_ENTER_CALIBRATION_CONSTANT_PERCENTILE = '請輸入校準常數百分�
 var SUBMIT_TEST_EXERCISE_CONFIRMATION_MESSAGE = '有些問題還未答！ 你確定提交嗎？';
 var CONFIRMATION_BUTTON_TEXT = "確認";
 var DELETE_SKILL = "刪除技能？";
+var PLEASE_SELECT_RECORD = "請選擇記錄";
+var SELECT_STRANDS = "選擇股";
+var PLEASE_SELECT_STAGES = "選擇階段";
+var FLAG_BUTTON_TEXT_EN = 'Flag';
+var FLAG_BUTTON_TEXT_CH = '旗幟';
+var UN_FLAG_BUTTON_TEXT_EN = 'Unflag';
+var UN_FLAG_BUTTON_TEXT_CH = '取消標記';
+var FLAG_VALIDATION_TEXT_EN = "Without selecting any answer you can't set flag";
+var FLAG_VALIDATION_TEXT_CH = "如果不選擇任何答案，您將無法設置標誌";

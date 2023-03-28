@@ -56,8 +56,8 @@
 										  		<input type="checkbox" name="" class="checkbox">
 											</th>
 							          		<th><span>@sortablelink('teacher',__('languages.teacher'))</span></th>
-							          		<th><span>@sortablelink('class',__('languages.grade'))</span></th>
-											<th><span>{{__('languages.class')}}</span></th> 
+							          		<th><span>@sortablelink('class',__('languages.form'))</span></th>
+											<th><span>{{__('languages.classes')}}</span></th> 
 							          		<!-- <th><span>@sortablelink('subject',__('languages.subject'))</span></th> -->
 											<th>@sortablelink('status',__('languages.status'))</th>
 											<th>{{__('languages.action')}}</th>
@@ -90,7 +90,7 @@
 												<a href="{{ route('teacher-class-subject-assign.edit', $data->id) }}" class="" title="{{__('languages.edit')}}"><i class="fa fa-pencil" aria-hidden="true"></i></a>
 											@endif -->
 											@if (in_array('teacher_class_and_subject_assign_delete', $permissions))
-												<a href="javascript:void(0);" class="pl-2" id="deleteTeacherClassSubject" data-id="{{$data->id}}" title="{{__('languages.delete')}}"><i class="fa fa-trash" aria-hidden="true"></i></a>
+												<a href="javascript:void(0);" class="pl-2" id="deleteTeacherClassSubject" data-id="{{$data->id}}" title="{{__('languages.delete')}}"><i class="fa fa-trash fa-lg" aria-hidden="true"></i></a>
 											@endif
 											</td>
 										</tr>

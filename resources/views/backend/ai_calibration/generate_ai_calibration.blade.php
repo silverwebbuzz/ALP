@@ -38,7 +38,7 @@
                                 <div class="question-generator-option-headings mb-3">
                                     <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12 pl-0 pr-0">
                                         <ul class="form-tab">
-                                            <li class="step-headings section-step1 calibration-preview-tab admin-tab tab_active" data-tabid="1">1. {{__('languages.question_generators_menu.configuration')}}</li>
+                                            <li class="step-headings section-step1 calibration-preview-tab admin-tab tab_active" data-tabid="1">1. {{__('languages.configurations')}}</li>
                                             <li class="step-headings section-step2 calibration-preview-tab admin-tab" data-tabid="2">2.{{__('languages.ai_calibration_report')}}</li>
                                             <li class="step-headings section-step3 calibration-preview-tab admin-tab" data-tabid="3">3.{{__('languages.calibration_log')}}</li>
                                         </ul>

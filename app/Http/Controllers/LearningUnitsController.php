@@ -24,7 +24,7 @@ class LearningUnitsController extends Controller
             $statusList = $this->getStatusOptions();
             $strands = Strands::where(cn::STRANDS_STATUS_COL, 1)->get();
             $items = $request->items ?? 10;
-            $LearningsUnitsList = LearningsUnits::with('Strands')->where('stage_id','<>',3)->orderBy(cn::LEARNING_UNITS_ID_COL,'DESC')->paginate($items);
+            $LearningsUnitsList = LearningsUnits::with('Strands')->where('stage_id','<>',3)->sortable()->orderBy(cn::LEARNING_UNITS_ID_COL,'DESC')->paginate($items);
             //Filteration on Node ID and Node Title
             $Query = LearningsUnits::with('Strands')->select('*')->where('stage_id','<>',3);
             if(isset($request->filter)){

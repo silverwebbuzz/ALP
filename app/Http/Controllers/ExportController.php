@@ -46,19 +46,19 @@ class ExportController extends Controller
                 $user->created_at           = $user->created_at;
             });
             $csvExporter->build($userList, [
-                'id'                 => 'User ID',
-                'roles.role_name'    => 'Role Name',
-                'name'               => 'User Name',
-                'email'              => 'Email',
-                'mobile_no'          => 'Mobile No.',
-                'dob'                => 'Date of Birth',
-                'city'               => 'City',
-                'address'            => 'Address',
-                'gender'             => 'Gender',
-                'grades.name'        => 'Grade',
-                'schools.school_name'=> 'School Name',
-                'status'             => 'Status',
-                'created_at'         => 'Joining Date'
+                'id'                 => __('languages.user').' '.__('languages.id'),
+                'roles.role_name'    => __('languages.role').' '.__('languages.name'),
+                'name'               => __('languages.user').' '.__('languages.name'),
+                'email'              =>  __('languages.email_address'),
+                'mobile_no'          =>  __('languages.phone_number'),
+                'dob'                => __('languages.user_management.date_of_birth'),
+                'city'               => __('languages.region'),
+                'address'            => __('languages.user_management.address'),
+                'gender'             => __('languages.gender'),
+                'grades.name'        => __('languages.form'),
+                'schools.school_name'=> __('languages.school').' '.__('languages.name'),
+                'status'             => __('languages.status'),
+                'created_at'         => __('languages.joining_date')
             ])->download('Users.CSV');
         }catch(Exception $exception){
            return back()->withError($exception->getMessage());
@@ -108,21 +108,21 @@ class ExportController extends Controller
             });
             $csvExporter->build($questionList, 
             [
-                'id'                    => "Question ID",
-                'question_code'         => "Question Code",
-                'naming_structure_code' => "Naming Structure Code",
-                'question_unique_code'  => "Question Unique Code",
-                'question_en'           => "Question in English",
-                'question_ch'           => "Question in Chinese",
-                'question_type'         => "Question Type",
-                'dificulaty_level'      => "Difficulty Level",
-                'general_hints'         => "General Hints",
-                'e'                     => "E",
-                'f'                     => "F",
-                'g'                     => "G",
+                'id'                    => __('languages.question').' '.__('languages.id'),
+                'question_code'         => __('languages.question_code'),
+                'naming_structure_code' => __('languages.naming_structure_code'),
+                'question_unique_code'  => __('languages.question').' '.__('languages.unique').' '.__('languages.code'),
+                'question_en'           => __('languages.question'),
+                'question_ch'           => __('languages.question').' '.'('.__('languages.chinese').')',
+                'question_type'         => __('languages.question').' '.__('languages.type'),
+                'dificulaty_level'      => __('languages.difficulty_level'),
+                'general_hints'         => __('languages.general_hints'),
+                'e'                     => __('languages.questions.e'),
+                'f'                     =>__('languages.questions.f'),
+                'g'                     => __('languages.questions.g'),
                 // 'schools.school_name'   => "School Name",
-                'status'                => "Status",
-                'created_at'            => "Created Date"
+                'status'                => __('languages.status'),
+                'created_at'            => __('languages.created_date')
             ])->download('Questions.CSV');
         }catch(Exception $exception){
             return back()->withError($exception->getMessage());
@@ -152,20 +152,20 @@ class ExportController extends Controller
         $groupIds = $request->groupIds;
         //Set Main Header Row
         $header = [
-            'Class',
-            'Student No. Within Class'
+            __('languages.class'),
+            __('languages.student_number')
         ];
 
         //Set Correct Answer Row
         $correctAnswerArray = [
             '',
-            'Correct Answers'
+           __('languages.correct_answers')
         ];
 
         //Set Sub Main Header
         $QuestionHeaders = [
             '',
-            'Questions'
+            __('languages.questions_text')
         ];
         //Get Exam Data
         $ExamData = Exam::find($examId);
@@ -183,12 +183,12 @@ class ExportController extends Controller
 
             //Set Header And Correct Answer Array
             foreach($QuestionList as $questionKey =>  $question){
-                $header[] = 'Q'.($questionKey + 1);
+                $header[] = __('languages.q').($questionKey + 1);
                 $QuestionHeaders[] = ($questionKey + 1);
                 $correctAnswerArray[] = $this->setOptionBasedAlphabet($question->answers->correct_answer_en);
             }
             if($ExamData->exam_type != 1){
-                $header[] = 'Overall Percentile';
+                $header[] = __('languages.overall_percentile');
             }
             // Store in first row headings
             $records[] = $correctAnswerArray;
@@ -366,11 +366,11 @@ class ExportController extends Controller
 
                 
                 //Set Selected Answers Row On Based Question
-                $HeadingIndexArray = ['1','2','3','4','N','1%','2%','3%','4%','N%','Correct %'];
+                $HeadingIndexArray = ['1','2','3','4','N','1%','2%','3%','4%','N%',__('languages.report.correct').'%'];
                 for($row = 1;$row <= count($HeadingIndexArray);$row++){
                     $rowArray = [];
                     if($row == 1){
-                        $rowArray[] = 'Total Students : '.$totalStudent;
+                        $rowArray[] = __('languages.total_students').': '.$totalStudent;
                         $rowArray[] = ($HeadingIndexArray[$row-1]);
                     }else{
                         $rowArray[] = '';
@@ -467,14 +467,14 @@ class ExportController extends Controller
             $student->student_number_within_class   = $student->CurriculumYearData['student_number_within_class'];
         });        
         $csvExporter->build($userList, [
-            'email'                                 => 'Email',
-            'password'                              => 'Password',
-            'name_en'                               => 'English Name',
-            'name_ch'                               => 'Chinese Name',
-            'permanent_reference_number'            => 'Student Permanent Reference Number',
-            'grade_id'                              => 'Grade',
-            'class_id'                              => 'Class With Grade',
-            'student_number_within_class'           => 'Student Number within Class',
+            'email'                                 => __('languages.email_address'),
+            'password'                              => __('languages.password'),
+            'name_en'                               => __('languages.name'),
+            'name_ch'                               => __('languages.name').' '.'('.__('languages.chinese').')',
+            'permanent_reference_number'            => __('languages.std_number'),
+            'grade_id'                              => __('languages.form'),
+            'class_id'                              => __('languages.class'),
+            'student_number_within_class'           => __('languages.student_number'),
         ])->download('Students.CSV');
     }
 }

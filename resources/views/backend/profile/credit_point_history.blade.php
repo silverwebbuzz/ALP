@@ -43,26 +43,39 @@
                                         <table  class="display" style="width:100%">
                                             <thead>
                                                 <tr>
-                                                    <th>#{{__('languages.no')}}</th>
-                                                    <th class="first-head"><span>@sortablelink('exam_id',__('languages.exam_name'))</span></th>
-                                                    <th class="first-head"><span>@sortablelink('test_type',__('languages.exam_type'))</span></th>
-                                                    <th class="first-head"><span>@sortablelink('self_learning_type',__('languages.self_learning_test_type'))</span></th>
-                                                    <th class="first-head"><span>{{ __('languages.credit_point_history') }}</span></th>
-                                                    <th class="first-head"><span>{{ __('languages.achieve_no_of_credit_point') }}</span></th>
-                                                    <th class="first-head"><span>{{ __('languages.achieve_date') }}</span></th>
+                                                    <th>#{{__('languages.id')}}</th>
+                                                    <th class="first-head"><span>@sortablelink('exam_id',__('languages.title'))</span></th>
+                                                    <th class="first-head"><span>@sortablelink('test_type',__('languages.assignment_type'))</span></th>
+                                                    <!-- <th class="first-head"><span>@sortablelink('self_learning_type',__('languages.self_learning_type'))</span></th> -->
+                                                    <th class="first-head"><span>{{ __('languages.details') }}</span></th>
+                                                    <th class="first-head"><span>{{ __('languages.credits') }}</span></th>
+                                                    <th class="first-head"><span>{{ __('languages.date') }}</span></th>
                                                 </tr>
                                             </thead>
                                             <tbody class="scroll-pane">
                                             @if(!empty($CreditPointHistoryList))
                                                 @foreach($CreditPointHistoryList as $data)
                                                     @php
-                                                        $CreditPointDetail= \App\Helpers\Helper::getUserCreditPointType($data->id,$data->user_id,$data->exam_id);
+                                                    $CreditPointDetail = \App\Helpers\Helper::getUserCreditPointType($data->id,$data->user_id,$data->exam_id);
                                                     @endphp
                                                     <tr>
                                                         <td>{{ $loop->iteration }}</td>
                                                         <td>{{ $data->getExam->title ?? '--' }}</td>
-                                                        <td>{{ ($data->test_type!="" ? __('languages.'.$data->test_type) : '--' ) }}</td>
-                                                        <td>{{ ($data->self_learning_type!="" ? __('languages.my_studies.'.$data->self_learning_type) : '--' ) }}</td>
+                                                        <!-- <td>{{ ($data->test_type!="" ? __('languages.'.$data->test_type) : '--' ) }}</td> -->
+                                                        <td>
+                                                            @if($data->test_type == 'exercise')
+                                                            {{ __('languages.exercise')}}
+                                                            @elseif($data->test_type == 'test')
+                                                            {{ __('languages.test_text')}}
+                                                            @elseif($data->test_type == 'self_learning')
+                                                            {{ __('languages.self_learning')}}
+                                                            @elseif($data->test_type == 'assessment')
+                                                            {{ __('languages.assessment')}}
+                                                            @else
+                                                            --
+                                                            @endif
+                                                        </td>
+                                                        <!-- <td>{{ ($data->self_learning_type!="" ? __('languages.my_studies.'.$data->self_learning_type) : '--' ) }}</td> -->
                                                         <td>{!! $CreditPointDetail['examCreditPointHtml'] !!}</td>
                                                         <td>{{ $CreditPointDetail['examAchieveCreditPoint'] }}</td>
                                                         <td>{{ date('d/m/Y', strtotime($data->created_at)) }}</td>

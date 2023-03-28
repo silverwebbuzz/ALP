@@ -59,7 +59,7 @@
 					<div class="row">
 						<div class="col-lg-4 col-md-4">
 							<div class="select-lng pb-2">
-								<label for="users-list-role">{{ __('languages.user_management.grade') }}</label>
+								<label for="users-list-role">{{ __('languages.form') }}</label>
 								<select class="form-control" data-show-subtext="true" data-live-search="true" name="grade_id[]" id="student_multiple_grade_id" multiple required >
 									@if(!empty($gradesList))
 									@foreach($gradesList as $grade)
@@ -148,8 +148,8 @@
                                         <th class="selec-opt"><span>{{__('languages.publish_date_time')}}</span></th>
                                         <th><span>{{__('languages.report.student_name')}}</span></th>
                                         <th>{{__('languages.reference_number')}}</th>
-                                        <th>{{__('languages.grade')}} - {{__('languages.class')}}</th>
-                                        <th>{{__('languages.progress')}}</th>
+                                        <th>{{__('languages.form')}} - {{__('languages.class')}}</th>
+                                        {{-- <th>{{__('languages.progress')}}</th> --}}
                                         <th>{{__('languages.report.accuracy')}}</th>
                                         <th>{{__('languages.study_status')}}</th>
                                         <th>{{__('languages.question_difficulties')}}</th>
@@ -174,11 +174,11 @@
                                                 $progress = json_decode($selflearningTest->student_progress, true);
                                                 $accuracy = json_decode($selflearningTest->average_accuracy, true);
                                             @endphp
-                                            <td>
+                                            {{-- <td>
                                                 <div class="progress student-progress-report" data-examid="{{$selflearningTest->exam_id}}"  data-studentids="{{$selflearningTest->student_ids}}">
                                                     <div class="progress-bar" role="progressbar" data-toggle="tooltip" data-placement="top" title="{{$progress['progress_tooltip']}}"style="width:{{$progress['progress_percentage']}}%;display: -webkit-box !important;display: -ms-flexbox !important;display: flex !important;" aria-valuenow="{{$progress['progress_percentage']}}" aria-valuemin="0" aria-valuemax="100">{{$progress['progress_percentage']}}%</div>
                                                 </div>
-                                            </td>
+                                            </td> --}}
                                             <td>
                                                 <div class="progress">
                                                     <div class="progress-bar" role="progressbar" data-toggle="tooltip" data-placement="top" title="{{$accuracy['average_accuracy_tooltip']}}" style="width: {{$accuracy['average_accuracy']}}%;display: -webkit-box !important;display: -ms-flexbox !important;display: flex !important;" aria-valuenow="{{$accuracy['average_accuracy']}}" aria-valuemin="0" aria-valuemax="100">{{$accuracy['average_accuracy']}}%</div>
@@ -225,12 +225,12 @@
                                                 </div>
                                             </td>
                                             <td class="btn-edit">
-                                                <a href="{{ route('report.class-test-reports.correct-incorrect-answer', ['exam_id' => $selflearningTest->exam_id,'filter' => 'filter']) }}" title="{{__('languages.performance_report')}}"><i class="fa fa-bar-chart" aria-hidden="true"></i></a>
+                                                <a href="{{ route('report.class-test-reports.correct-incorrect-answer', ['exam_id' => $selflearningTest->exam_id,'filter' => 'filter']) }}" title="{{__('languages.performance_report')}}"><i class="fa fa-bar-chart fa-lg" aria-hidden="true"></i></a>
                                                 {{-- <a href="javascript:void(0);" title="Class Ability Analysis" class="getClassAbilityAnalysisReport" data-examid="{{$selfLearningTest['id']}}" data-studentids="{{$selfLearningTest['student_ids']}}">
                                                     <i class="fa fa-bar-chart" aria-hidden="true"></i>
                                                 </a> --}}
                                                 <a href="javascript:void(0);" title="{{__('languages.difficulty_analysis')}}" class="getTestDifficultyAnalysisReport" data-examid="{{$selflearningTest->exam_id}}">
-                                                    <i class="fa fa-bar-chart ml-2" aria-hidden="true"></i>
+                                                    <i class="fa fa-bar-chart ml-2 fa-lg" aria-hidden="true"></i>
                                                 </a>
 
                                                 @php
@@ -238,12 +238,12 @@
                                                     $gradesClass=explode('-',$selflearningTest->grade_with_class);
                                                 }
                                                 @endphp
-                                                <a href="javascript:void(0);" class="exam_questions-info ml-2" data-examid="{{$selflearningTest->exam_id}}" title="{{__('languages.preview')}}"><i class="fa fa-book" aria-hidden="true"></i></a>
-                                                <a href="javascript:void(0);" class="result_summary ml-2" data-examid="{{$selflearningTest->exam_id}}" data-studentids="{{$selflearningTest->student_ids}}" title="{{__('languages.result_summary')}}"><i class="fa fa-bar-chart" aria-hidden="true"></i></a>
+                                                <a href="javascript:void(0);" class="exam_questions-info ml-2" data-examid="{{$selflearningTest->exam_id}}" title="{{__('languages.preview')}}"><i class="fa fa-book fa-lg" aria-hidden="true"></i></a>
+                                                <a href="javascript:void(0);" class="result_summary ml-2" data-examid="{{$selflearningTest->exam_id}}" data-studentids="{{$selflearningTest->student_ids}}" title="{{__('languages.result_summary')}}"><i class="fa fa-bar-chart fa-lg" aria-hidden="true"></i></a>
 
                                                 @if(isset($selflearningTest->exams) && !empty($selflearningTest->exams->learning_objectives_configuration))
-                                                <a href="{{route('self_learning.preview',$selflearningTest->exams->id)}}" class="ml-2" title="{{__('languages.config')}}">
-                                                    <i class="fa fa-gear" aria-hidden="true"></i>
+                                                <a href="{{route('self_learning.preview',$selflearningTest->exams->id)}}" class="ml-2" title="{{__('languages.configurations')}}">
+                                                    <i class="fa fa-gear fa-lg" aria-hidden="true"></i>
                                                 </a>
                                                 @endif
 
@@ -306,7 +306,7 @@
 		<div class="modal-content">
 			<form method="post">
 				<div class="modal-header">
-					<h4 class="modal-title w-100">{{__('languages.question_difficulty_analysis')}}</h4>
+					<h4 class="modal-title w-100">{{__('languages.difficulty_analysis')}}</h4>
 					<button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
 				</div>
 				<div class="modal-body Graph-body">

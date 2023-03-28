@@ -21,7 +21,7 @@ if($user_id){
 				<div class="row">
 					<div class="col-md-12">
 						<div class="col-md-12 col-lg-12 col-sm-12 sec-title student-test-list-cls">
-							<h2 class="mb-2 main-title">{{__('languages.sidebar.my_study')}}</h2>
+							<h2 class="mb-2 main-title">{{__('languages.test_text')}}</h2>
 						</div>
 						<div class="col-md-12 col-lg-12 col-sm-12 test-color-info" style="display:none;">
 							<div class="exercise-clr">
@@ -123,7 +123,6 @@ if($user_id){
 								<table id="test-table">
 									<thead>
 										<tr>
-											<th class="selec-opt">{{__('languages.publish_date_time')}}</th>
 											<th>{{__('languages.report.start_date')}}</th>
 											<th>{{__('languages.report.end_date')}}</th>
 											<th>{{__('languages.reference_number')}}</th>
@@ -141,7 +140,6 @@ if($user_id){
 										@php $examArray = $exerciseExam->toArray(); 
 										@endphp
 										<tr @if($data['testExam']) class='test-exam' @endif>
-											<td>{{date('d/m/Y H:i:s',strtotime($exerciseExam->publish_date)) }}</td>
 											<td>{{date('d/m/Y',strtotime($examArray['exam_school_grade_class'][0]['start_date'])) }} {{ !empty($examArray['exam_school_grade_class'][0]['start_time']) ? $examArray['exam_school_grade_class'][0]['start_time'] : '00:00:00' }}</td>
 											<td>{{date('d/m/Y',strtotime($examArray['exam_school_grade_class'][0]['end_date'])) }} {{ !empty($examArray['exam_school_grade_class'][0]['end_time']) ?  $examArray['exam_school_grade_class'][0]['end_time'] : '00:00:00' }}</td>
 											<td>{{$exerciseExam->reference_no}}</td>
@@ -232,23 +230,25 @@ if($user_id){
 													<!-- <a href="{{ route('studentAttemptExam', $exerciseExam->id) }}" class="" title="{{__('languages.test_text')}}">
 														<i class="fa fa-book" aria-hidden="true"></i>
 													</a> -->
-													<a href="{{route('StudentAttemptTestExercise', $exerciseExam->id)}}" class="" title="{{__('languages.test_text')}}">
-														<i class="fa fa-book" aria-hidden="true"></i>
+													<a href="{{route('StudentAttemptTestExercise', $exerciseExam->id)}}" class="" title="{{__('languages.do')}}">
+														<i class="fa fa-check-circle-o fa-lg" aria-hidden="true"></i>
 													</a>
 													@endif
 												@endif
 												@if (in_array('result_management_read', $permissions))
 													@if((isset($examArray['attempt_exams']) && in_array(Auth::id(),array_column($examArray['attempt_exams'],'student_id'))) && ($examArray['status'] == "publish") && date('Y-m-d',strtotime($examArray['result_date'])) <= date('Y-m-d'))
 													<a href="{{route('exams.result',['examid' => $exerciseExam->id, 'studentid' => Auth::user()->id])}}" class="view-result-btn" title="{{__('languages.result_text')}}">
-														<i class="fa fa-eye" aria-hidden="true" ></i>
+														<i class="fa fa-eye fa-lg" aria-hidden="true" ></i>
 													</a>
 													@endif
 												@endif
 
+												{{-- <a href="javascript:void(0);" class="exam_questions-info ml-2" data-examid="{{$exerciseExam->id}}" title="{{__('languages.preview')}}"><i class="fa fa-book fa-lg" aria-hidden="true"></i></a> --}}
+
 												@if((isset($examArray['attempt_exams']) && in_array(Auth::id(),array_column($examArray['attempt_exams'],'student_id'))) && ($examArray['status'] == "publish") && date('Y-m-d',strtotime($examArray['result_date'])) <= date('Y-m-d'))
 													{{-- Test Difficulty Analysis Link --}}
 													<a href="javascript:void(0);" title="{{__('languages.difficulty_analysis')}}" class="getTestDifficultyAnalysisReport" data-examid="{{$exerciseExam->id}}">
-														<i class="fa fa-bar-chart" aria-hidden="true"></i>
+														<i class="fa fa-bar-chart fa-lg" aria-hidden="true"></i>
 													</a>
 												@endif
 											</td>
@@ -272,7 +272,7 @@ if($user_id){
 		<div class="modal-content">
 			<form method="post">
 				<div class="modal-header">
-					<h4 class="modal-title w-100">{{__('languages.question_difficulty_analysis')}}</h4>
+					<h4 class="modal-title w-100">{{__('languages.difficulty_analysis')}}</h4>
 					<button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
 				</div>
 				<div class="modal-body Graph-body">

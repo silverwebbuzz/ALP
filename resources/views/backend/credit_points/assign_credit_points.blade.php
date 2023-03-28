@@ -17,7 +17,7 @@
 					<div class="row">
 						<div class="col-md-12">
 							<div class="sec-title">
-								<h2 class="mb-4 main-title">{{__('languages.assign_credit_points')}}</h2>
+								<h2 class="mb-4 main-title">{{__('languages.common_sidebar.assign_credit')}}</h2>
 							</div>
 							<hr class="blue-line">
 						</div>
@@ -38,7 +38,7 @@
                                 @csrf
                                 <div class="student-grade-class-section row">
                                     <div class="form-grade-heading col-lg-3">
-                                        <label>{{__('languages.question_generators_menu.grade-classes')}}</label>
+                                        <label>{{__('languages.form')}}/{{__('languages.classes')}}</label>
                                     </div>
                                     <div class="form-grade-select-section col-lg-9">
                                         @if(!empty($GradeClassData))
@@ -66,7 +66,7 @@
                                 </div>
                                 <div class="form-group student_peer_group_section mt-3 row">
                                     <div class="student_peer_group_heading col-lg-3">
-                                        <label>{{__('languages.question_generators_menu.student_peer_groups')}}</label>
+                                        <label>{{__('languages.sidebar.peer_groups')}}</label>
                                     </div>
                                     <div class="student_peer_group_option col-lg-3">
                                         <select class="form-control select-option" data-show-subtext="true" data-live-search="true" name="peerGroupIds[]" id="question-generator-peer-group-options"  multiple>
@@ -82,10 +82,10 @@
 
                                 <div class="form-group student_peer_group_section mt-3 row">
                                     <div class="col-md-3">
-                                        <label>{{__('languages.no_of_credit_point')}}</label>
+                                        <label>{{__('languages.credits')}}</label>
                                     </div>
                                     <div class="col-md-3">
-                                        <input type="text" name="number_of_credit_point" id="number_of_credit_point" class="form-control" placeholder="{{__('languages.no_of_credit_point')}}" />
+                                        <input type="text" name="number_of_credit_point" id="number_of_credit_point" class="form-control" placeholder="{{__('languages.credits')}}" />
                                     </div>
                                 </div>
                                 <div class="form-group mt-3">

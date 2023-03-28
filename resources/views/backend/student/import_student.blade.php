@@ -52,10 +52,9 @@
                                 </fieldset>
                             </div> 
                             <div class="form-group col-md-3">
-                                <label for="users-list-role">{{ __('languages.select_curriculum') }}</label>                                
+                                <label for="users-list-role">{{ __('languages.select_school_year') }}</label>                                
                                 <?php
-                                    // $CurriculumYearList = \App\Traits\Common::GetCurriculumCurrentYear();
-                                    $CurriculumYearList = \App\Traits\Common::GetCurriculumCurrentFutureYear(\App\Traits\Common::getGlobalConfiguration('current_curriculum_year'));
+                                $CurriculumYearList = \App\Traits\Common::GetCurriculumCurrentFutureYear(\App\Traits\Common::getGlobalConfiguration('current_curriculum_year'));
                                 ?>
                                 <fieldset class="form-group">
                                     <select class="form-control" name="curriculum_year_id" id="curriculum">

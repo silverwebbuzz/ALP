@@ -232,7 +232,7 @@
                                                 @endphp
                                                 
                                                 @if(isset($selflearningTest->exams) && !empty($selflearningTest->exams->learning_objectives_configuration))
-                                                <a href="{{route('self_learning.preview',$selflearningTest->exams->id)}}" class="ml-2" title="{{__('languages.config')}}">
+                                                <a href="{{route('self_learning.preview',$selflearningTest->exams->id)}}" class="ml-2" title="{{__('languages.configurations')}}">
                                                     <i class="fa fa-gear" aria-hidden="true"></i>
                                                 </a>
                                                 @endif
@@ -304,7 +304,7 @@
 				<input type="hidden" name="exam_ids" id="exam_ids" value="">
 				<input type="hidden" name="student_ids" id="student_ids" value="">
 				<div class="modal-header">
-					<h4 class="modal-title w-100">{{__('languages.class_ability_analysis')}}</h4>
+					<h4 class="modal-title w-100">{{__('languages.ability_analysis')}}</h4>
 					<button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
 				</div>
 				<div class="modal-body">
@@ -338,7 +338,7 @@
 		<div class="modal-content">
 			<form method="post">
 				<div class="modal-header">
-					<h4 class="modal-title w-100">{{__('languages.question_difficulty_analysis')}}</h4>
+					<h4 class="modal-title w-100">{{__('languages.difficulty_analysis')}}</h4>
 					<button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
 				</div>
 				<div class="modal-body Graph-body">

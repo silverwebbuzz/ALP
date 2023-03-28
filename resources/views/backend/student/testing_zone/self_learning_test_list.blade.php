@@ -21,7 +21,7 @@ if($user_id){
 				<div class="row">
 					<div class="col-md-12">
 						<div class="col-md-12 col-lg-12 col-sm-12 sec-title student-test-list-cls">
-							<h2 class="mb-2 main-title">{{__('languages.testing_zone')}}</h2>							
+							<h2 class="mb-2 main-title">{{__('languages.common_sidebar.ai_based_assessment')}}</h2>							
 						</div>
 						<div class="col-md-12 col-lg-12 col-sm-12 test-color-info" style="display:none;">
 							<div class="exercise-clr">
@@ -172,16 +172,16 @@ if($user_id){
 														<td class="btn-edit">
 															@if(in_array('attempt_exam_update', $permissions))
 																@if(!isset($examArray['attempt_exams']) || (isset($examArray['attempt_exams']) && !in_array(Auth::id(),array_column($examArray['attempt_exams'],'student_id'))) && $selfLearningTest->status == 'publish' && (App\Helpers\Helper::CheckExamStudentMapping($selfLearningTest->id) == false))
-																<a href="{{ route('studentAttemptExam', $selfLearningTest->id) }}" class="" title="{{__('languages.test_text')}}">
-																	<i class="fa fa-book" aria-hidden="true"></i>
+																<a href="{{ route('studentAttemptExam', $selfLearningTest->id) }}" class="" title="{{__('languages.do')}}">
+																	<i class="fa fa-check-circle-o fa-lg" aria-hidden="true"></i>
 																</a>
 																@endif
 															@endif
 
 															@if(in_array('result_management_read', $permissions))
 																@if((isset($examArray['attempt_exams']) && in_array(Auth::id(),array_column($examArray['attempt_exams'],'student_id'))) && ($examArray['status'] == "publish") && date('Y-m-d',strtotime($examArray['result_date'])) <= date('Y-m-d'))
-																<a href="{{route('exams.result',['examid' => $selfLearningTest->id, 'studentid' => Auth::user()->id])}}" class="view-result-btn" title={{__('languages.result_text')}}>
-																	<i class="fa fa-eye" aria-hidden="true" ></i>
+																<a href="{{route('exams.result',['examid' => $selfLearningTest->id, 'studentid' => Auth::user()->id])}}" class="view-result-btn" title="{{__('languages.result_text')}}">
+																	<i class="fa fa-eye fa-lg" aria-hidden="true" ></i>
 																</a>
 																@endif
 															@endif
@@ -189,11 +189,14 @@ if($user_id){
 															@if((isset($examArray['attempt_exams']) && in_array(Auth::id(),array_column($examArray['attempt_exams'],'student_id'))) && ($examArray['status'] == "publish") && date('Y-m-d',strtotime($examArray['result_date'])) <= date('Y-m-d'))
 																{{-- Test Difficulty Analysis Link --}}
 																<a href="javascript:void(0);" title="{{__('languages.difficulty_analysis')}}" class="getTestDifficultyAnalysisReport" data-examid="{{$selfLearningTest->id}}">
-																	<i class="fa fa-bar-chart" aria-hidden="true"></i>
+																	<i class="fa fa-bar-chart fa-lg" aria-hidden="true"></i>
 																</a>
 															@endif
+
+															{{-- <a href="javascript:void(0);" class="exam_questions-info ml-2" data-examid="{{$selfLearningTest->id}}" title="{{__('languages.preview')}}"><i class="fa fa-book fa-lg" aria-hidden="true"></i></a> --}}
+
 															@if(isset($selfLearningTest->learning_objectives_configuration) && !empty($selfLearningTest->learning_objectives_configuration))
-															<a href="{{route('self_learning.preview',$selfLearningTest->id)}}" class="exam_info ml-2" title="{{__('languages.config')}}"><i class="fa fa-gear" aria-hidden="true"></i></a>
+															<a href="{{route('self_learning.preview',$selfLearningTest->id)}}" class="exam_info ml-2" title="{{__('languages.configurations')}}"><i class="fa fa-gear fa-lg" aria-hidden="true"></i></a>
 															@endif
 														</td>
 													</tr>
@@ -205,7 +208,7 @@ if($user_id){
 										<div class="col-md-3 col-lg-6 col-sm-2">
 											<!-- <button type="button" class="btn btn-success" id="student_create_self_learning_test" data-self_learning_type="2">{{__('languages.create_self_learning_test')}}</button> -->
 											<a href="{{route('student.create.self-learning-test')}}">
-												<button type="button" class="btn btn-success">{{__('languages.create_self_learning_test')}}</button>
+												<button type="button" class="btn btn-success">{{__('languages.create')}} {{__('languages.common_sidebar.ai_based_assessment')}}</button>
 											</a>
 										</div>
 									</div>
@@ -226,7 +229,7 @@ if($user_id){
 		<div class="modal-content">
 			<form method="post">
 				<div class="modal-header">
-					<h4 class="modal-title w-100">{{__('languages.question_difficulty_analysis')}}</h4>
+					<h4 class="modal-title w-100">{{__('languages.difficulty_analysis')}}</h4>
 					<button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
 				</div>
 				<div class="modal-body">
@@ -240,5 +243,6 @@ if($user_id){
 	</div>
 </div>
 <!-- End list of difficulties of the questions in the test Analysis Popup -->
+
 @include('backend.layouts.footer')
 @endsection

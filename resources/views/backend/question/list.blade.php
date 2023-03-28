@@ -64,7 +64,7 @@
 								<span class="validation_error">{{ $errors->first('grade_id') }}</span>
 							@endif -->
 							<select name="stage_id"  class="form-control select-option selectpicker"  data-show-subtext="true" data-live-search="true" id="question_filter_grade">
-								<option value="">{{ __('languages.select_stage') }}</option>
+								<option value="">{{ __('languages.stage') }}</option>
 								@php
 								$StageList = array(1,2,3,4);
 								@endphp
@@ -126,9 +126,9 @@
 						<div class="col-lg-2 col-md-4">
 							<div class="select-lng pt-2 pb-2">
 								<select class="selectpicker form-control selectpicker"  data-show-subtext="true" data-live-search="true" name="question_approve" id="question_approve">
-										<option value="">{{__('languages.is_approved_question')}}</option>
-										<option value="yes" {{ request()->get('question_approve') == 'yes' ? 'selected' : '' }}>{{__('languages.approve')}}</option>
-										<option value="no" {{ request()->get('question_approve') == 'no' ? 'selected' : '' }}>{{__('languages.not_approve')}}</option>
+										<option value="">{{__('languages.question_approved')}}</option>
+										<option value="yes" {{ request()->get('question_approve') == 'yes' ? 'selected' : '' }}>{{__('languages.approved')}}</option>
+										<option value="no" {{ request()->get('question_approve') == 'no' ? 'selected' : '' }}>{{__('languages.not_approved')}}</option>
 								</select>
 								@if($errors->has('question_approve'))
 									<span class="validation_error">{{ $errors->first('question_approve') }}</span>
@@ -147,11 +147,11 @@
 					<div class="row">
 						<div class="col-lg-2 col-md-4">
 							<div class="select-lng pt-2 pb-2">
-								<label>{{__('languages.update_question_verification')}}</label>
+								<label>{{__('languages.bulk_approve')}}</label>
 								<select class="selectpicker form-control selectpicker"  data-show-subtext="true" data-live-search="true" name="question_verification_status" id="question_verification_status">
-										<option value="">{{__('languages.is_approved_question')}}</option>
-										<option value="yes" {{ request()->get('question_approve') == 'yes' ? 'selected' : '' }}>{{__('languages.approve')}}</option>
-										<option value="no" {{ request()->get('question_approve') == 'no' ? 'selected' : '' }}>{{__('languages.not_approve')}}</option>
+										<option value="">{{__('languages.question_approved')}}</option>
+										<option value="yes" {{ request()->get('question_approve') == 'yes' ? 'selected' : '' }}>{{__('languages.approved')}}</option>
+										<option value="no" {{ request()->get('question_approve') == 'no' ? 'selected' : '' }}>{{__('languages.not_approved')}}</option>
 								</select>
 							</div>
 						</div>
@@ -172,7 +172,7 @@
 											</th>
 											<th>@sortablelink('question_en',__('languages.questions.question'))</th>
 											<th class="selec-opt">
-												<span>@sortablelink('is_approved',__('languages.is_approved_question'))</span>
+												<span>@sortablelink('is_approved',__('languages.question_approved'))</span>
 											</th>
 											<th class="selec-opt question-difficulty-level">
 												<span>@sortablelink('dificulaty_level',__('languages.questions.difficulty_level'))</span>
@@ -226,22 +226,22 @@
 											@if(!App\Helpers\Helper::isExternalUserLogin())
 												<td class="btn-edit">
 													<a href="javascript:void(0);" class="pl-2 preview_question_list"  data-id="{{$Question->id}}" title="{{__('languages.questions.preview_question')}}">
-														<i class="fa fa-eye" aria-hidden="true"></i>
+														<i class="fa fa-eye fa-lg" aria-hidden="true"></i>
 													</a>
 												@if (in_array('question_bank_update', $permissions))
 													<a href="{{ route('questions.edit', $Question->id) }}" class="pl-2" title="{{__('languages.edit')}}">
-														<i class="fa fa-pencil" aria-hidden="true"></i>
+														<i class="fa fa-pencil fa-lg" aria-hidden="true"></i>
 													</a>
 												@endif
 												@if (in_array('question_bank_delete', $permissions))
 													<a href="javascript:void(0);" class="pl-2" id="deleteQuestion" data-id="{{$Question->id}}" title="{{__('languages.delete')}}">
-														<i class="fa fa-trash" aria-hidden="true"></i>
+														<i class="fa fa-trash fa-lg" aria-hidden="true"></i>
 													</a>
 												@endif
 												{{-- @if (in_array('question_bank_delete', $permissions)) --}}
 												@if(count(explode('-',$Question->naming_structure_code)) == 7)
 													<a href="{{route('question.calibration-log',$Question->id)}}" class="pl-2" id="QuestionPreview" data-id="{{$Question->id}}" title="{{__('languages.question_calibration_adjustment_log')}}">
-														<i class="fa fa-file" aria-hidden="true"></i>
+														<i class="fa fa-file fa-lg" aria-hidden="true"></i>
 													</a>
 												@endif
 												{{-- @endif --}}

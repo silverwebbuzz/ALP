@@ -22,7 +22,6 @@ use App\Models\CalibrationQuestionLog;
 use Illuminate\Support\Facades\View;
 use App\Jobs\AICalibrationJob;
 
-
 class AI_CalibrationController extends Controller
 {
     use Common,ResponseFormat;
@@ -242,7 +241,7 @@ class AI_CalibrationController extends Controller
         ini_set('max_execution_time', -1);
         $CalibrationReport = array();
 
-        if($params['reference_adjusted_calibration'] == 'initial_condition'){
+        if($params['reference_adjusted_calibration'] == 'initial_conditions'){
             $this->isInitialCondition = true;
         }else{
             $this->SelectedAdjustedCalibrationId = $params['reference_adjusted_calibration'];
@@ -788,7 +787,6 @@ class AI_CalibrationController extends Controller
     public function GetCalibrationReportDetail(Request $request,$id){
         $CalibrationReport = AICalibrationReport::find($id);
         $QuestionIds = explode(',',$CalibrationReport->included_question_ids);
-        
         if(isset($QuestionIds) && !empty($QuestionIds)){
             foreach($QuestionIds as $QuestionId){
                 $QuestionData = Question::find($QuestionId);

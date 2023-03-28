@@ -9,6 +9,9 @@
     </div>
     <form class="attempt-exams" method="post" id="attempt-exams">
         @csrf()
+        <input type="hidden" id="before_emoji_id" value="" /> 
+        <input type="hidden" id="after_emoji_id" value="" /> 
+        
         <div class="row">
             <div class="col-md-12 col-lg-12 col-sm-12 attmp-main-timer">
                 <div class="select-lng w-25">

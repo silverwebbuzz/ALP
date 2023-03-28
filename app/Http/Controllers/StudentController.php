@@ -32,18 +32,19 @@ use DB;
 use App\Models\ExamSchoolMapping;
 use App\Jobs\DeleteUserDataJob;
 use App\Models\LearningObjectivesSkills;
+use App\Models\Regions;
 
 class StudentController extends Controller
 {
     use common, ResponseFormat;
+
     protected $currentUserSchoolId;
     protected $DefaultStudentOverAllAbility;
     protected $CurrentCurriculumYearId;
-    
+        
     public function __construct(){
         $this->AIApiService = new AIApiService();
         $this->CurrentCurriculumYearId = $this->getGlobalConfiguration('current_curriculum_year');
-
         // Store global variable into current user schhol id
         $this->currentUserSchoolId = null;
         $this->DefaultStudentOverAllAbility = 0.1;
@@ -72,11 +73,11 @@ class StudentController extends Controller
                                 cn::USERS_SCHOOL_ID_COL => auth()->user()->school_id,
                                 cn::USERS_ROLE_ID_COL => cn::STUDENT_ROLE_ID,
                             ])->count();
-            $UsersList = User::where([
+            $UsersList = User::with('Region')->where([
                             cn::USERS_SCHOOL_ID_COL => auth()->user()->school_id,
                             cn::USERS_ROLE_ID_COL => cn::STUDENT_ROLE_ID,
                         ])
-                        ->whereIn('id',$this->curriculum_year_mapping_student_ids('','',auth()->user()->school_id,$this->GetCurriculumYear()))
+                        ->whereIn(cn::USERS_ID_COL,$this->curriculum_year_mapping_student_ids('','',auth()->user()->school_id,$this->GetCurriculumYear()))
                         ->sortable()
                         ->orderBy(cn::USERS_ID_COL,'DESC')
                         ->paginate($items);
@@ -86,7 +87,7 @@ class StudentController extends Controller
                                     cn::GRADE_CLASS_MAPPING_SCHOOL_ID_COL => $this->LoggedUserSchoolId()
                                 ])->get();
             
-            $Query = User::select('*');
+            $Query = User::select('*')->with('Region');
             if(isset($request->filter_data)){
                 if(isset($request->search) && !empty($request->search)){
                     $Query->where(function($q) use ($Query, $request){
@@ -98,30 +99,30 @@ class StudentController extends Controller
                 if(isset($request->student_grade_id) && !empty($request->student_grade_id) && isset($request->class_type_id) && !empty($request->class_type_id)){
                     $Query->where(cn::USERS_GRADE_ID_COL,$request->student_grade_id)
                     ->whereIn(cn::USERS_CLASS_ID_COL,$request->class_type_id)
-                    ->whereIn('id',$this->curriculum_year_mapping_student_ids($request->student_grade_id,$request->class_type_id,auth()->user()->school_id));
+                    ->whereIn(cn::USERS_ID_COL,$this->curriculum_year_mapping_student_ids($request->student_grade_id,$request->class_type_id,auth()->user()->school_id));
                 }
                 if(isset($request->student_grade_id) && !empty($request->student_grade_id)){
                     $Query->where(cn::USERS_GRADE_ID_COL,$request->student_grade_id)
-                    ->whereIn('id',$this->curriculum_year_mapping_student_ids($request->student_grade_id,'',auth()->user()->school_id));
+                    ->whereIn(cn::USERS_ID_COL,$this->curriculum_year_mapping_student_ids($request->student_grade_id,'',auth()->user()->school_id));
                 }
                 if(isset($request->classStudentNumber) && !empty($request->classStudentNumber)){
-                    $Query->where(cn::USERS_CLASS_CLASS_STUDENT_NUMBER,$request->classStudentNumber);
-                } 
+                    $Query->where(cn::USERS_CLASS_STUDENT_NUMBER,'Like','%'.$request->classStudentNumber.'%');
+                }
                 if(isset($request->status)){
                     $Query->where(cn::USERS_STATUS_COL,$request->status);
                 }
                 if(!empty($GradeClassMapping)){
                     foreach($GradeClassMapping as $class){
                         if(!empty($request->class_type_id) && in_array($class->id, $request->class_type_id)){
-                                $classTypeOptions .= '<option value='.strtoupper($class->id).' selected>'.strtoupper($class->name).'</option>';
+                            $classTypeOptions .= '<option value='.strtoupper($class->id).' selected>'.strtoupper($class->name).'</option>';
                         }else{
                             $classTypeOptions .= '<option value='.strtoupper($class->id).'>'.strtoupper($class->name).'</option>';
-                        }                   
+                        }
                     }
                 }
                 $TotalFilterData = $Query->where([cn::USERS_SCHOOL_ID_COL => auth()->user()->school_id,cn::USERS_ROLE_ID_COL => cn::STUDENT_ROLE_ID])->count();
                 $UsersList = $Query->where([cn::USERS_SCHOOL_ID_COL => auth()->user()->school_id,cn::USERS_ROLE_ID_COL => cn::STUDENT_ROLE_ID])
-                            ->whereIn('id',$this->curriculum_year_mapping_student_ids('','',auth()->user()->school_id))
+                            ->whereIn(cn::USERS_ID_COL,$this->curriculum_year_mapping_student_ids('','',auth()->user()->school_id))
                             ->sortable()->paginate($items);
                 $this->StoreAuditLogFunction($request->all(),'User',cn::USERS_ID_COL,'','Student Details Filter',cn::USERS_TABLE_NAME,'');
             }
@@ -136,9 +137,10 @@ class StudentController extends Controller
             if(!in_array('student_management_create', Helper::getPermissions(Auth::user()->{cn::USERS_ID_COL}))) {
                 return  redirect(Helper::redirectRoleBasedDashboard(Auth::user()->{cn::USERS_ID_COL}));
             }
+            $Regions = Regions::where(cn::REGIONS_STATUS_COL,'active')->get();
             $gradeData = GradeSchoolMappings::where([cn::GRADES_MAPPING_SCHOOL_ID_COL=>Auth::user()->{cn::USERS_SCHOOL_ID_COL}])->pluck(cn::GRADES_MAPPING_GRADE_ID_COL)->toArray();
             $grades = Grades::whereIn(cn::GRADES_ID_COL,$gradeData)->get();
-            return view('backend.studentmanagement.add',compact('grades')); 
+            return view('backend.studentmanagement.add',compact('grades','Regions')); 
         } catch (\Exception $exception) {
             return redirect('Student')->withError($exception->getMessage())->withInput();
         }
@@ -172,6 +174,18 @@ class StudentController extends Controller
             if(User::where([cn::USERS_SCHOOL_ID_COL => Auth::user()->{cn::USERS_SCHOOL_ID_COL},cn::USERS_PERMANENT_REFERENCE_NUMBER => $request->permanent_refrence_number,cn::USERS_ROLE_ID_COL => 3])->exists()){
                 return back()->withInput()->with('error_msg', __('languages.permanent_reference_already_exists'));
             }
+
+            // Check student number is exists or not
+            if(CurriculumYearStudentMappings::where([
+                cn::CURRICULUM_YEAR_STUDENT_MAPPING_CURRICULUM_YEAR_ID_COL => $this->GetCurriculumYear(),
+                cn::CURRICULUM_YEAR_STUDENT_MAPPING_SCHOOL_ID_COL => auth()->user()->school_id,
+                cn::CURRICULUM_YEAR_STUDENT_MAPPING_GRADE_ID_COL => $Grades->id,
+                cn::CURRICULUM_YEAR_STUDENT_MAPPING_CLASS_ID_COL => $classData->id,
+                cn::CURRICULUM_YEAR_STUDENT_NUMBER_WITHIN_CLASS_COL => $request->student_number
+            ])->exists()){
+                return back()->withInput()->with('error_msg', __('Student number duplicate with existing data'));
+            }
+
             // Store user detail
             $PostData = array(
                 cn::USERS_CURRICULUM_YEAR_ID_COL    => $this->GetCurriculumYear(),
@@ -181,14 +195,14 @@ class StudentController extends Controller
                 cn::STUDENT_NUMBER_WITHIN_CLASS     => $request->student_number,
                 cn::USERS_PERMANENT_REFERENCE_NUMBER => $request->permanent_refrence_number,
                 cn::USERS_CLASS                     => $Grades->name.$classData->name,
-                cn::USERS_CLASS_ID_COL                 => $classData->id,
+                cn::USERS_CLASS_ID_COL              => $classData->id,
                 cn::USERS_NAME_EN_COL               =>  $this->encrypt($request->name_en),
                 cn::USERS_NAME_CH_COL               => $this->encrypt($request->name_ch),
                 cn::USERS_EMAIL_COL                 => $request->email,
                 cn::USERS_MOBILENO_COL              => ($request->mobile_no) ? $this->encrypt($request->mobile_no) : null,
                 cn::USERS_ADDRESS_COL               => ($request->address) ? $this->encrypt($request->address) : null,
                 cn::USERS_GENDER_COL                => $request->gender ?? null,
-                cn::USERS_CITY_COL                  => ($request->city) ? $this->encrypt($request->city) : null,
+                cn::USERS_REGION_ID_COL             => ($request->region_id) ? $request->region_id : null,
                 cn::USERS_DATE_OF_BIRTH_COL         => ($request->date_of_birth) ? $this->DateConvertToYMD($request->date_of_birth) : null,                
                 cn::USERS_PASSWORD_COL              => Hash::make($request->password),
                 cn::USERS_STATUS_COL                => $request->status ?? 'active',
@@ -201,8 +215,9 @@ class StudentController extends Controller
             }
             $Users = User::create($PostData);
             if($Users){
-            $this->StoreAuditLogFunction($PostData,'User',cn::USERS_ID_COL,'','Create Student',cn::USERS_TABLE_NAME,'');
-            //in student curriculum year table in side user not exist then create record.
+                $this->StoreAuditLogFunction($PostData,'User',cn::USERS_ID_COL,'','Create Student',cn::USERS_TABLE_NAME,'');
+
+                //in student curriculum year table in side user not exist then create record.
                 if(!(CurriculumYearStudentMappings::where(cn::CURRICULUM_YEAR_STUDENT_MAPPING_USER_ID_COL,$Users->id)->exists())){
                     $curriculumStudentMapping = CurriculumYearStudentMappings::create([
                         cn::CURRICULUM_YEAR_STUDENT_MAPPING_CURRICULUM_YEAR_ID_COL => $this->GetCurriculumYear(),
@@ -240,6 +255,7 @@ class StudentController extends Controller
             if(!in_array('student_management_update', Helper::getPermissions(Auth::user()->{cn::USERS_ID_COL}))) {
                 return  redirect(Helper::redirectRoleBasedDashboard(Auth::user()->{cn::USERS_ID_COL}));
             }
+            $Regions = Regions::where(cn::REGIONS_STATUS_COL,'active')->get();
             $gradeData = GradeSchoolMappings::where([
                             cn::GRADES_MAPPING_CURRICULUM_YEAR_ID_COL => $this->GetCurriculumYear(),
                             cn::GRADES_MAPPING_SCHOOL_ID_COL => Auth::user()->{cn::USERS_SCHOOL_ID_COL}
@@ -247,7 +263,7 @@ class StudentController extends Controller
                         ->pluck(cn::GRADES_MAPPING_GRADE_ID_COL)->toArray();
             $grades = Grades::whereIn(cn::GRADES_ID_COL,$gradeData)->get();
             $user = User::find($id);
-            return view('backend.studentmanagement.edit',compact('user','grades'));
+            return view('backend.studentmanagement.edit',compact('user','grades','Regions'));
         }catch(\Exception $exception){
             return back()->withError($exception->getMessage())->withInput();
         }
@@ -293,6 +309,19 @@ class StudentController extends Controller
                 return back()->withInput()->with('error_msg', __('languages.permanent_reference_already_exists'));
             }
 
+            // Check student number is exists or not
+            if(CurriculumYearStudentMappings::where([
+                cn::CURRICULUM_YEAR_STUDENT_MAPPING_CURRICULUM_YEAR_ID_COL => $this->GetCurriculumYear(),
+                cn::CURRICULUM_YEAR_STUDENT_MAPPING_SCHOOL_ID_COL => auth()->user()->school_id,
+                cn::CURRICULUM_YEAR_STUDENT_MAPPING_GRADE_ID_COL => $Grades->id,
+                cn::CURRICULUM_YEAR_STUDENT_MAPPING_CLASS_ID_COL => $classData->id,
+                cn::CURRICULUM_YEAR_STUDENT_NUMBER_WITHIN_CLASS_COL => $request->student_number
+            ])
+            ->whereNotIn(cn::CURRICULUM_YEAR_STUDENT_MAPPING_USER_ID_COL,[$id])
+            ->exists()){
+                return back()->withInput()->with('error_msg', __('Student number duplicate with existing data'));
+            }
+
             // Update user detail
             $PostData = array(
                 cn::USERS_ROLE_ID_COL               => cn::STUDENT_ROLE_ID,
@@ -308,7 +337,7 @@ class StudentController extends Controller
                 cn::USERS_MOBILENO_COL              => ($request->mobile_no) ? $this->encrypt($request->mobile_no) : null,
                 cn::USERS_ADDRESS_COL               => ($request->address) ? $this->encrypt($request->address) : null,
                 cn::USERS_GENDER_COL                => $request->gender ?? null,
-                cn::USERS_CITY_COL                  => ($request->city) ? $this->encrypt($request->city) : null,
+                cn::USERS_REGION_ID_COL             => ($request->region_id) ? $request->region_id : null,
                 cn::USERS_DATE_OF_BIRTH_COL         => ($request->date_of_birth) ? $this->DateConvertToYMD($request->date_of_birth) : null,                
                 cn::USERS_PASSWORD_COL              => Hash::make($request->password),
                 cn::USERS_STATUS_COL                => $request->status ?? 'active',
@@ -326,6 +355,19 @@ class StudentController extends Controller
             }
             $Update = User::where(cn::USERS_ID_COL,$id)->Update($PostData);
             if($Update){
+                CurriculumYearStudentMappings::where([
+                    cn::CURRICULUM_YEAR_STUDENT_MAPPING_CURRICULUM_YEAR_ID_COL => $this->GetCurriculumYear(),
+                    cn::CURRICULUM_YEAR_STUDENT_MAPPING_SCHOOL_ID_COL => auth()->user()->school_id,
+                    cn::CURRICULUM_YEAR_STUDENT_MAPPING_USER_ID_COL => $id
+                ])->update([
+                    cn::CURRICULUM_YEAR_STUDENT_MAPPING_GRADE_ID_COL => $Grades->id,
+                    cn::CURRICULUM_YEAR_STUDENT_MAPPING_CLASS_ID_COL => $classData->id,
+                    cn::CURRICULUM_YEAR_STUDENT_CLASS => $Grades->name.$classData->name ?? null,
+                    cn::CURRICULUM_YEAR_CLASS_STUDENT_NUMBER => $request->student_number_with_class ?? null,
+                    cn::CURRICULUM_YEAR_STUDENT_MAPPING_STATUS_COL => ($request->status == 'active') ? 1 : 0,
+                    cn::CURRICULUM_YEAR_STUDENT_NUMBER_WITHIN_CLASS_COL => $request->student_number
+                ]);
+
                 return redirect('Student')->with('success_msg', __('languages.student_updated_successfully'));
             }else{
                 return back()->with('error_msg', __('languages.problem_was_occur_please_try_again'));
@@ -345,14 +387,7 @@ class StudentController extends Controller
             }
             $this->StoreAuditLogFunction('','User','','','Delete Student ID '.$id,cn::USERS_TABLE_NAME,'');
             // Remove Using Cronjob 
-            // dispatch(new DeleteStudentDataJob($id))->delay(now()->addSeconds(1));
             dispatch(new DeleteUserDataJob($id))->delay(now()->addSeconds(1));
-            // $User = User::find($id);
-            // if($User->delete()){
-            //     return $this->sendResponse([], __('languages.student_deleted_successfully'));
-            // }else{
-            //     return $this->sendError(__('languages.problem_was_occur_please_try_again'), 422);
-            // }
             return $this->sendResponse([], __('languages.student_deleted_successfully'));
         }catch (\Exception $exception) {
             return $this->sendError($exception->getMessage(), 404);

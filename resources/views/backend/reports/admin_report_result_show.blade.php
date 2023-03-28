@@ -10,7 +10,7 @@
                     $bg_correct_color='background-color:'.\App\Helpers\Helper::getGlobalConfiguration('question_correct_color');
                     $bg_incorrect_color='background-color:'.\App\Helpers\Helper::getGlobalConfiguration('question_incorrect_color');
                 @endphp
-                <h5>{{__('languages.questions_by_difficulties')}}</h5>
+                <h5>{{__('languages.difficulty_levels_of_questions')}}</h5>
                
                 @if(!empty($difficultyLevels))
                     @php $i=1; $difficultyColor= []; @endphp
@@ -30,21 +30,25 @@
                             @endif
                         </div>
                         @endif
-
                         @php $difficultyColor['Level'.$i] = $difficultyLevel->difficulty_level_color;  $i+=1;@endphp
                     @endforeach
                 @endif
             </div>
             <div class="question-attempt-second-cls">
                 <h5>{{__('languages.speed')}}</h5>
-                <p>{{$PerQuestionSpeed ?? 0}} {{__('Min/Qn')}}</p>
+                <p>{{$PerQuestionSpeed ?? 0}} {{__('languages.min_per_question')}}</p>
             </div>
             <div class="question-difficulty-color-cls">
                 <span class="dot-color" style="background-color: {{ App\Helpers\Helper::getGlobalConfiguration('question_correct_color')}};border-radius: 50%;display: inline-block;"></span>
-                <label>{{__('languages.correct_questions')}}</label>
+                <label>{{__('languages.correctly_answered_questions')}}</label>
                 <span class="dot-color" style="background-color: {{ App\Helpers\Helper::getGlobalConfiguration('question_incorrect_color')}};border-radius: 50%;display: inline-block;"></span>
-                <label>{{__('languages.incorrect_questions')}}</label>
+                <label>{{__('languages.incorrectly_answered_questions')}}</label>
             </div>
+            {{-- @if(!empty($AttemptExamData->attempt_second_trial))
+                <div class="col-md-4 pb-2">
+                    <button type="button" class="btn btn-success second_trial" data-studentid="{{$studentId}}" data-examid="{{$ExamData->id}}">{{__('languages.second_trial')}}</button>
+                </div>
+            @endif --}}
         </div>
         <div class="sm-add-user-sec statistics-result-main card">
             <div class="select-option-sec pb-2 card-body">
@@ -68,8 +72,8 @@
                         <div class="row result-statistics">
                             <div class="sm-que-option pl-3">
                                 <p class="sm-title bold">
-                                    {{__('languages.result.q_no')}} {{$loop->iteration}}:
-                                    {{__('languages.question_code')}} : {{ $question->naming_structure_code }}
+                                    {{__('languages.result.q_no')}} {{$loop->iteration}}
+                                    @if(auth()->user()->role_id == 1):{{__('languages.question_code')}} : {{ $question->naming_structure_code }}@endif
                                     <?php $LevelName = \App\Helpers\Helper::getLevelNameBasedOnLanguage($question->dificulaty_level); ?>
                                     {{-- Display Question types and with color code --}}
                                     @if($question->dificulaty_level == 1)
@@ -393,9 +397,11 @@
                                 </div>
                             </div>
                             <div class="sm-answer pl-5 pt-2">
+                                @if($ExamData->exam_type != 1)
                                 <button type="button" class="btn btn-sm btn-success question_graph" data-graphtype="currentstudent" data-studentid="{{ $AttemptExamData->student_id }}" data-questionid="{{ $question->id }}" data-examid="{{ $AttemptExamData->exam_id }}">
                                     <i class="fa fa-bar-chart" aria-hidden="true"></i>{{ __('languages.question_analysis') }}
                                 </button>
+                                @endif
 
                                 <?php if(isset($AnswerNumber[key($AnswerNumber)]) && $AnswerNumber[key($AnswerNumber)]->answer == $question->answers->{'correct_answer_'.$AttemptExamData->language}){ ?>
                                 <span class="badge badge-success">{{__('languages.result.correct_answer')}}</span>

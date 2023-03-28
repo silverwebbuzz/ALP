@@ -23,9 +23,9 @@
 							<div class="sec-title">
 								<div class="btn-sec">
 								@if (in_array('strands_management_create', $permissions))
-								<h2 class="mb-4 main-title">{{__('languages.strands_management.strands_detail')}}</h2>
+								<h2 class="mb-4 main-title">{{__('languages.strand_details')}}</h2>
 									<a href="javascript:void(0);" class="btn-back dark-blue-btn btn btn-primary mb-4" id="backButton">{{__('languages.back')}}</a>
-									<a href="{{ route('strands.create') }}" class="dark-blue-btn btn btn-primary mb-4">{{__('languages.strands_management.add_strand')}}</a>
+									<a href="{{ route('strands.create') }}" class="dark-blue-btn btn btn-primary mb-4">{{__('languages.strands_management.add_new_strand')}}</a>
 								@endif
 								</div>
 							</div>
@@ -98,8 +98,7 @@
 										  		<input type="checkbox" name="" class="checkbox">
 											</th>
 											<th class="first-head"><span>@sortablelink('name',__('languages.name'))</span></th>
-							          		<th class="first-head"><span>@sortablelink('name_en',__('languages.user_activity.english_name'))</span></th>
-											<th class="sec-head selec-opt"><span>@sortablelink('name_ch',__('languages.user_activity.chinese_name'))</span></th>
+											<th class="sec-head selec-opt"><span>@sortablelink('name_ch',__('languages.name_chinese'))</span></th>
                                             <th class="selec-opt"><span>@sortablelink('code',__('languages.code'))</span></th>
                                             <th>@sortablelink('status',__('languages.status'))</th>
 											<th>{{__('languages.action')}}</th>
@@ -111,7 +110,6 @@
 							        	<tr>
 											<td><input type="checkbox" name="" class="checkbox"></td>
 											<td>{{ $strand->name}}</td>
-											<td>{{ $strand->name_en}}</td>
                                             <td>{{ ($strand->name_ch)}}</td>
                                             <td>{{ ($strand->code) }}</td>
                                             <td>
@@ -123,10 +121,10 @@
 											</td>
 											<td class="btn-edit">
 											@if (in_array('strands_management_update', $permissions))
-												<a href="{{ route('strands.edit', $strand->id) }}" class="" title="{{__('languages.edit')}}"><i class="fa fa-pencil" aria-hidden="true"></i></a>
+												<a href="{{ route('strands.edit', $strand->id) }}" class="" title="{{__('languages.edit')}}"><i class="fa fa-pencil fa-lg" aria-hidden="true"></i></a>
 											@endif
 											@if (in_array('strands_management_delete', $permissions))
-												<a href="javascript:void(0);" class="pl-2" id="deleteStrnad" data-id="{{$strand->id}}" title="{{__('languages.delete')}}"><i class="fa fa-trash" aria-hidden="true"></i></a>
+												<a href="javascript:void(0);" class="pl-2" id="deleteStrnad" data-id="{{$strand->id}}" title="{{__('languages.delete')}}"><i class="fa fa-trash fa-lg" aria-hidden="true"></i></a>
 											@endif
 											</td>
 										</tr>

@@ -23,9 +23,9 @@
 							<div class="sec-title">
 								<div class="btn-sec">
 								@if (in_array('strands_management_create', $permissions))
-								<h2 class="mb-4 main-title">{{__('languages.learning_objectives_management.learning_objectives_detail')}}</h2>
+								<h2 class="mb-4 main-title">{{__('languages.learning_objectives_management.learning_objective_details')}}</h2>
 									<a href="javascript:void(0);" class="btn-back dark-blue-btn btn btn-primary mb-4" id="backButton">{{__('languages.back')}}</a>
-									<a href="{{ route('learning-objective.create') }}" class="dark-blue-btn btn btn-primary mb-4">{{__('languages.learning_objectives_management.add_learning_objectives')}}</a>
+									<a href="{{ route('learning-objective.create') }}" class="dark-blue-btn btn btn-primary mb-4">{{__('languages.learning_objectives_management.add_learning_objective')}}</a>
 								@endif
 								</div>
 							</div>
@@ -110,9 +110,9 @@
 										  		<input type="checkbox" name="" class="checkbox">
 											</th>
 											<th class="first-head"><span>@sortablelink('stage_id',__('languages.stage'))</span></th>
-                                            <th class="first-head"><span>@sortablelink('foci_number',__('languages.learning_objectives_management.foci_number'))</span></th>
-							          		<th class="first-head"><span>@sortablelink('title_en',__('languages.user_activity.english_name'))</span></th>
-											<th class="sec-head selec-opt"><span>@sortablelink('title_ch',__('languages.user_activity.chinese_name'))</span></th>
+                                            <th class="first-head"><span>@sortablelink('foci_number',__('languages.objective_number'))</span></th>
+							          		<th class="first-head"><span>@sortablelink('title_en',__('languages.name'))</span></th>
+											<th class="sec-head selec-opt"><span>@sortablelink('title_ch',__('languages.name_chinese'))</span></th>
                                             <th class="selec-opt"><span>@sortablelink('code',__('languages.code'))</span></th>
                                             <th>@sortablelink('is_available_questions',__('languages.having_question'))</th>
 											<th>@sortablelink('status',__('languages.status'))</th>
@@ -145,10 +145,10 @@
 											</td>
 											<td class="btn-edit">
 											@if (in_array('learning_objectives_management_update', $permissions))
-												<a href="{{ route('learning-objective.edit', $learningObjective->id) }}" class="" title="{{__('languages.edit')}}"><i class="fa fa-pencil" aria-hidden="true"></i></a>
+												<a href="{{ route('learning-objective.edit', $learningObjective->id) }}" class="" title="{{__('languages.edit')}}"><i class="fa fa-pencil fa-lg" aria-hidden="true"></i></a>
 											@endif
 											@if (in_array('learning_objectives_management_delete', $permissions))
-												<a href="javascript:void(0);" class="pl-2" id="deleteLearningObjective" data-id="{{$learningObjective->id}}" title="{{__('languages.delete')}}"><i class="fa fa-trash" aria-hidden="true"></i></a>
+												<a href="javascript:void(0);" class="pl-2" id="deleteLearningObjective" data-id="{{$learningObjective->id}}" title="{{__('languages.delete')}}"><i class="fa fa-trash fa-lg" aria-hidden="true"></i></a>
 											@endif
 											</td>
 										</tr>

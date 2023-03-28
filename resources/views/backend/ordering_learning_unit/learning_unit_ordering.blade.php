@@ -63,8 +63,8 @@
                                         <div class="btn_group mb-3 review-question-position-button">
                                                 <button type="button" class="btn-search bg-pink btn-up"><i class="fa fa-arrow-up mr-1" aria-hidden="true"></i>{{__('languages.question_generators_menu.up')}}</button>
                                                 <button type="button" class="btn-search bg-pink  btn-down"><i class="fa fa-arrow-down mr-1" aria-hidden="true"></i>{{__('languages.question_generators_menu.down')}}</button>
-                                                <button type="button" class="btn-search bg-pink set-top"><i class="fa fa-arrow-up" aria-hidden="true"></i><i class="fa fa-arrow-up mr-1" aria-hidden="true"></i>{{__('languages.question_generators_menu.set_top')}}</button>
-                                                <button type="button" class="btn-search set-bottom bg-pink"><i class="fa fa-arrow-down" aria-hidden="true"></i><i class="fa fa-arrow-down mr-1" aria-hidden="true"></i>{{__('languages.question_generators_menu.set_bottom')}}</button>
+                                                <button type="button" class="btn-search bg-pink set-top"><i class="fa fa-arrow-up" aria-hidden="true"></i><i class="fa fa-arrow-up mr-1" aria-hidden="true"></i>{{__('languages.question_generators_menu.set_to_top')}}</button>
+                                                <button type="button" class="btn-search set-bottom bg-pink"><i class="fa fa-arrow-down" aria-hidden="true"></i><i class="fa fa-arrow-down mr-1" aria-hidden="true"></i>{{__('languages.question_generators_menu.set_to_bottom')}}</button>
                                         </div>
                                     </div>
                                 </div>
@@ -105,19 +105,19 @@
                     position1_array = [];
                     var data = JSON.parse(JSON.stringify(response));
                     if (data.data) {
+                        
                         var tab_left = '';
                         var tab_right = '';
                         var qIndex = 1;
                         html +='<ul class="nav nav-pills mb-3" id="pills-tab" role="tablist" aria-orientation="vertical">';
-                           
-                        $.each(data.data, function(K,Q) {
+                        $.each(data.data.learningUnit, function(K,Q) {
                             var tab_active = '';
                             var tab_active_contact = '';
                             if(qIndex == 1){
                                 tab_active = 'active';
                                 tab_active_contact = 'show active';
                             }
-                            html+= '<span class="w-10 nav-link ordering-unit-objective Indexing d-inline-block '+tab_active+'" >'+qIndex+'</span>';
+                            html+= '<span class="w-10 nav-link ordering-unit-objective Indexing d-inline-block '+tab_active+'" >'+data.data.sortedLearningUnitIds[qIndex - 1]+'</span>';
                             html+='<li class="w-90 ordering-unit-objective nav-item">';
                             html+='<p class="nav-link learning_unit_ordering '+tab_active+'" data-id="'+this.id+'" >'+ this["name_"+APP_LANGUAGE]+' ('+ this.id +')</p>';
                             html+='</li>';
@@ -126,7 +126,6 @@
                         });
                         html += "</ul>";
                         $(".review-question-left-section").html(html);
-                        console.log(position1_array);
                     }
                 },
                 error: function (response) {

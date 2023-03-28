@@ -9,7 +9,7 @@
 					<div class="row">
 						<div class="col-md-12">
 							<div class="sec-title">
-								<h5 class="mb-4">{{__('languages.report.class_performance')}}</h5>
+								<h5 class="mb-4">{{__('languages.performance_report')}}</h5>
 							</div>
 							<div class="row">
 								<div class="col-md-12">
@@ -32,9 +32,9 @@
 							@endphp
 							<form class="class-test-report" id="class-test-report row" method="get">
 								<div class="select-lng pt-2 pb-2 col-lg-4 col-md-4">
-									<label>{{ __('languages.select_test') }}</label>
+									<label> {{ __('languages.exercise') }} / {{ __('languages.test_text') }}</label>
 									<select name="exam_id" id="exam_id" class="form-control select-option performance_exam_id">
-										<option value="">{{ __('languages.select_test') }}</option>
+										<option value="">{{ __('languages.exercise') }}/{{ __('languages.test_text') }}</option>
 										@php
 											$school_id = '';
 											if(App\Helpers\Helper::isSchoolLogin()){
@@ -64,7 +64,7 @@
 									@endif
 								</div>
 								<div class="select-lng pt-2 pb-2 col-lg-2 col-md-2 exam-school-list" @if(isset($schoolList) && empty($schoolList)) style="display:none;" @endif>
-									<label>{{__('languages.select_school')}}</label>
+									<label>{{__('languages.school')}}</label>
 									<select name="exam_school_id"  id="exam_school_id" class="form-control select-option exam_school_id">
 										@if(!empty($schoolList))
 										@foreach($schoolList as $school)
@@ -76,10 +76,10 @@
 
 								<div class="pt-2 pb-2 col-lg-3 col-md-3 class-performance-grade-section" @if(null ==request()->get('grade_id')) style="display:none;" @endif>
 									<div class="select-lng  pb-2">
-										<label>{{__('languages.select_grade')}}</label>
+										<label>{{__('languages.form')}}</label>
 										<!-- <label for="users-list-role">{{ __('languages.user_management.grade') }}</label> -->
 										<select @php if(empty($grade_id)){ echo 'disabled'; } @endphp class="form-control" data-show-subtext="true" data-live-search="true" name="grade_id" id="student_performance_grade_id" data-school-id = {{$school_id}}>
-											<option value="">{{ __('languages.select_grade') }}</option>
+											<option value="">{{ __('languages.form') }}</option>
 											@foreach($GradeList as $grade)
 											<option value="{{$grade->id}}" {{ ( $grade->id==request()->get('grade_id') ? 'selected' : '') }}>{{ $grade->name}}</option>
 											@endforeach
@@ -89,7 +89,7 @@
 
 								<div class="pt-2 pb-2 col-lg-3 col-md-3 class-performance-class-section" @if(null ==request()->get('grade_id')) style="display:none;" @endif>
 									<div class="select-lng pb-2">
-										<label>{{__('languages.select_class')}}</label>
+										<label>{{__('languages.class')}}</label>
 										<!-- <label for="users-list-role">{{ __('languages.class') }}</label> -->
 										{{-- <select @php if(empty($class_type_id)){ echo 'disabled'; } @endphp name="class_type_id[]" class="form-control" id="classType-select-option" multiple> --}}
 										<select  name="class_type_id[]" class="form-control" id="classType-select-option" multiple>
@@ -101,7 +101,7 @@
 								</div>
 
 								<div class="select-lng pt-2 pb-2 col-lg-4 col-md-4 class-performance-group-section" @if(null ==request()->get('group_id')) style="display:none;" @endif>
-									<label>{{__('languages.question_generators_menu.select_peer_groups')}}</label>
+									<label>{{__('languages.common_sidebar.peer_group')}}</label>
 									<select name="group_id" id="group_id" class="form-control select-option performance_group_id">
 										@foreach($PeerGroupList as $PeerGroup)
 										<option value="{{$PeerGroup->id}}" {{($PeerGroup->id == $group_id ? 'selected' : '')}}>{{$PeerGroup->group_name}}</option>
@@ -123,7 +123,7 @@
 					<div class="row main-date-sec">
 						@if(!empty($ExamData->publish_date))
 						<div class="col-lg-3 col-md-3 ">
-							<label><b>{{__('languages.report.date_of_release')}}: </b><span> {{!empty($ExamData->publish_date) ? date('d/m/Y H:i:s',strtotime($ExamData->publish_date)) : ''}}</span></label>
+							<label><b>{{__('languages.report.release_date')}}: </b><span> {{!empty($ExamData->publish_date) ? date('d/m/Y H:i:s',strtotime($ExamData->publish_date)) : ''}}</span></label>
 						</div>
 						@endif
 						<div class="col-lg-3 col-md-3">
@@ -139,38 +139,40 @@
 					
 					<!-- All Reports Menu -->
 					<div class="row">
+						@if($ExamData->exam_type == 2 || $ExamData->exam_type == 3)
 						<div class="col-lg-2 col-md-2 col-sm-2 col-xs-2">
-							<button class="btn-search class-performance-progress-report w-100">{{__('languages.progress_report')}}</button>
+							<button class="btn-search class-performance-progress-report w-100">{{__('languages.submission')}} {{__('languages.status')}}</button>
 						</div>
+						@endif
 						
 						<div class="col-lg-2 col-md-2 col-sm-2 col-xs-2">
-							<button class="btn-search getTestDifficultyAnalysisReport w-100" data-examid="{{$ExamData->id}}">{{__('languages.question_difficulty_analysis')}}</button>
+							<button class="btn-search getTestDifficultyAnalysisReport w-100" data-examid="{{$ExamData->id}}">{{__('languages.difficulty_analysis')}}</button>
 						</div>
 						
 						@if($ExamData->exam_type == 1)
 							<!-- Self Learning Exam Configuration -->
 							@if( !empty($ExamData->learning_objectives_configuration))
 								<div class="col-lg-2 col-md-2 col-sm-2 col-xs-2">
-									<a href="{{route('self_learning.preview',$ExamData->id)}}" class="ml-2" title="{{__('languages.config')}}">
-										<button class="btn-search w-100">{{__('languages.exam_configurations')}}</button>
+									<a href="{{route('self_learning.preview',$ExamData->id)}}" class="ml-2" title="{{__('languages.configurations')}}">
+										<button class="btn-search w-100">{{__('languages.configurations')}}</button>
 									</a>
 								</div>
 							@endif
 						@else
 							<!-- If Exam Not Self Learning Exam Configuration -->
 							<div class="col-lg-2 col-md-2 col-sm-2 col-xs-2">
-								<a href="{{route('exam-configuration-preview',$ExamData->id)}}" class="ml-2" title="{{__('languages.config')}}">
-									<button class="btn-search w-100">{{__('languages.exam_configurations')}}</button>
+								<a href="{{route('exam-configuration-preview',$ExamData->id)}}" class="ml-2" title="{{__('languages.configurations')}}">
+									<button class="btn-search w-100">{{__('languages.configurations')}}</button>
 								</a>
 							</div>
 						@endif
 
 						<div class="col-lg-2 col-md-2 col-sm-2 col-xs-2">
-							<button class="btn-search class-performance-student-summary-report w-100" data-examid="{{$ExamData->id}}">{{__('languages.student_summary_report')}}</button>
+							<button class="btn-search class-performance-student-summary-report w-100" data-examid="{{$ExamData->id}}">{{__('languages.result_summary')}}</button>
 						</div>
 						@if($ExamData->exam_type != 1)
 							<div class="col-lg-2 col-md-2 col-sm-2 col-xs-2">
-								<button class="btn-search class-performance-class-ability-report w-100">{{__('languages.class_ability_analysis')}}</button>
+								<button class="btn-search class-performance-class-ability-report w-100">{{__('languages.ability_analysis')}}</button>
 							</div>
 						@endif
 					</div>
@@ -178,9 +180,11 @@
 					
 					<div class="row correct-incorrect-row mt-2 mb-2">
 						<div class="col-md-12 correct-incorrect-col classPerformanceReportRightJustify-export-btn">
+							@if(Auth::user()->role_id==1)
 							<div class="select-lng">
-								<button type="submit" name="filter" value="filter" class="btn-search remove-radius active">{{ __('languages.report.class_performance') }}</button>
+								<button type="submit" name="filter" value="filter" class="btn-search remove-radius btn-primary active">{{ __('languages.performance_report') }}</button>
 							</div>
+							@endif
 							{{-- <form id="exam-details-reports" action="{{ route('report.exams.student-test-performance')}}" method="get">
 							<input type="hidden" name="details_report_exam_id" id="details_report_exam_id" value="{{ request()->get('exam_id')}}">
 							<div class="select-lng">
@@ -205,7 +209,7 @@
 
 							{{-- @if(Auth::user()->role_id != 1) --}}
 							<div class="select-lng classPerformanceReportInline classPerformanceReportInline-export-btn pl-2 pb-2">
-								<button type="button" name="exportPerformaceReport"  class="btn-search exportPerformanceReportPopup" data-exam_type="{{$examType}}"><i class="fa fa-download" aria-hidden="true"> {{ __('languages.report.export_performance_report') }} </i></button>
+								<button type="button" name="exportPerformaceReport"  class="btn-search exportPerformanceReportPopup" data-exam_type="{{$examType}}"><i class="fa fa-download" aria-hidden="true"> {{ __('languages.export') }} {{ __('languages.result_summary') }}</i></button>
 							</div>
 							{{-- @endif --}}
 							
@@ -244,12 +248,12 @@
 														@endif
 														</span>
 													</th>
-													<th>{{ __('languages.class_student_number') }}</th>
+													<th>{{ __('languages.student_code') }}</th>
 													<th>{{ __('languages.performance_graph') }}</th>
-													<th class="selec-opt"><span>{{__('languages.report.no_of_correct_answers')}}</span></th>
+													<th class="selec-opt"><span>{{__('languages.correctly_answered_questions')}}</span></th>
 													<th class="selec-opt"><span>{{__('languages.report.ability')}}</span></th>
 													<th class="selec-opt"><span>{{__('languages.report.completion_time')}} ({{__('languages.report.h_m_s')}})</span></th>
-													<th class="selec-opt sorting_column" data-sort-type="student_rank" data-sort="<?php if(isset($_GET['sort_by_type']) && $_GET['sort_by_type'] == 'student_rank'){ echo $_GET['sort_by_value'];}?>">
+													{{-- <th class="selec-opt sorting_column" data-sort-type="student_rank" data-sort="<?php if(isset($_GET['sort_by_type']) && $_GET['sort_by_type'] == 'student_rank'){ echo $_GET['sort_by_value'];}?>">
 														<span>{{__('languages.ranking_correct_incorrect')}}</span>
 														<span class="student-rank-sorting-icon">
 														@if(isset($_GET['sort_by_type']) && $_GET['sort_by_type'] == 'student_rank')
@@ -258,7 +262,7 @@
 															<i class="fa fa-sort"></i>
 														@endif
 														</span>
-													</th>
+													</th> --}}
 													<th class="selec-opt sorting_column" data-sort-type="accuracy_rank" data-sort="<?php if(isset($_GET['sort_by_type']) && $_GET['sort_by_type'] == 'accuracy_rank'){ echo $_GET['sort_by_value'];}?>">
 														<span>{{__('languages.accuracy_rank')}}</span>
 														<span class="student-accuracy-rank-sorting-icon">
@@ -320,8 +324,8 @@
 															{{App\Helpers\Helper::GetShortPercentage($result['student_normalize_ability'])}}
 														@endif
 													</td>
-													<td>{{$result['completion_time']}}</td>											
-													<td>{{$result['student_ranking']}}</td>
+													<td>{{$result['completion_time']}}</td>
+													<!-- <td>{{$result['student_ranking']}}</td> -->
 													<td>{{$result['accuracy_ranking']}}</td>
 													<td>{{$result['ability_ranking']}}</td>
 													{{-- overall percentile --}}
@@ -360,16 +364,18 @@
 												@endforeach
 												
 												<tr>
-													<td>{{__('languages.report.number_of_students_answer_correctly')}}</td>
+													<td>{{__('languages.correctly_answering_students')}}</td>
 													<td></td>
 													<td></td>
 													<td></td>
 													<td></td>
 													<td></td>
+													{{-- <td></td> --}}
 													<td></td>
 													<td></td>
+													@if($ExamData->exam_type != 1)
 													<td></td>
-													<td></td>
+													@endif
 													@for($i=0; $i < $result['countQuestions']; ++$i)
 														@if(isset($CorrectAnswer[$i]) && !empty($CorrectAnswer[$i]))
 															<td class="text-center-table">{{$CorrectAnswer[$i]}}</td>
@@ -385,10 +391,12 @@
 													<td></td>
 													<td></td>
 													<td></td>
+													{{-- <td></td> --}}
 													<td></td>
 													<td></td>
+													@if($ExamData->exam_type != 1)
 													<td></td>
-													<td></td>
+													@endif
 													@for($i=0; $i < $result['countQuestions']; ++$i)
 														@if(isset($QuestionAnswerData[$i]) && !empty($QuestionAnswerData[$i]))
 															<td class="text-center-table">
@@ -430,10 +438,12 @@
 													<td></td>
 													<td></td>											
 													<td></td>
+													{{-- <td></td> --}}
 													<td></td>
 													<td></td>
+													@if($ExamData->exam_type != 1)
 													<td></td>
-													<td></td>
+													@endif
 													@for($i=0; $i < $result['countQuestions']; ++$i)
 														@if(isset($CorrectAnswer[$i]) && !empty($CorrectAnswer[$i]))
 															<!-- <td class="text-center-table">{{ round(((100 * $CorrectAnswer[$i]) / $result['countStudent']), 2); }}%</td> -->
@@ -465,7 +475,7 @@
 				<div class="modal-content">
 					<form method="post">
 						<div class="modal-header">
-							<h4 class="modal-title w-100">{{__('languages.student_performance_graph')}}</h4>
+							<h4 class="modal-title w-100">{{__('languages.performance_graph')}}</h4>
 							<button type="button" class="close" onclick="destroyCanvas()" data-dismiss="modal" aria-hidden="true">&times;</button>
 						</div>
 						<div class="modal-body">
@@ -488,7 +498,7 @@
 				<div class="modal-content">
 					<form method="post">
 						<div class="modal-header">
-							<h4 class="modal-title w-100">{{__('languages.student_question_analysis_graph')}}</h4>
+							<h4 class="modal-title w-100">{{__('languages.question_analysis')}}</h4>
 							<button type="button" class="close" onclick="destroyCanvas()" data-dismiss="modal" aria-hidden="true">&times;</button>
 						</div>
 						<div class="modal-body">
@@ -516,7 +526,6 @@
 						</div>
 						<div class="modal-body">
 							@if(isset($getClasses['class']) && !empty($getClasses['class']))
-							{{-- @if(isset($class_type_id) && !empty($class_type_id)) --}}
 								<div class="form-row">
 									<div class="col-md-4 col-lg-4 col-sm-4">
 										<label><input type="checkbox" value="" name="checkAllClasses" id="checkAllClasses"/> {{__('languages.all_classes')}}</label>
@@ -535,18 +544,8 @@
 										<label><input type="checkbox" value="{{$GradeClassId}}" {{ in_array($GradeClassId,$class_type_id) ? 'selected' : '' }} name="classNameIds[]" class="getCheckedClass"/> {{$grade_id}}{{ $GradeClassValue }}</label>
 									</div>
 									@endforeach
-									{{-- Old 24-11-2022 In All Grade Class Display so in comment --}}
-									{{-- New Code 24-111-2022 --}}
-									{{-- @foreach($GradeClassListData as  $GradeClassValue)
-									<div class="col-md-1 col-lg-1 col-sm-1">
-										<label><input type="checkbox" value="{{$GradeClassValue}}" {{ in_array($GradeClassValue,$class_type_id) ? 'selected' : '' }} name="classNameIds[]" class="getCheckedClass"/> {{$grade_id}}{{ App\Helpers\Helper::getSingleClassName($GradeClassValue) }}</label>
-									</div>
-									@endforeach --}}
-									{{-- New Code 24-111-2022 --}}
-									{{-- @endif --}}
 								</div>
 							@endif
-							{{-- @if($peerGroupData->isNotEmpty()) --}}
 							@if(isset($group_id) && !empty($group_id))
 								<div class="form-row">
 									<div class="col-md-4 col-lg-4 col-sm-4">
@@ -636,7 +635,7 @@
 				<div class="modal-content">
 					<form method="post">
 						<div class="modal-header">
-							<h4 class="modal-title w-100">{{__('languages.progress_report')}}</h4>
+							<h4 class="modal-title w-100">{{__('languages.submission')}} {{__('languages.status')}}</h4>
 							<button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
 						</div>
 						<div class="modal-body">
@@ -668,7 +667,7 @@
 				<div class="modal-content">
 					<form method="post">
 						<div class="modal-header">
-							<h4 class="modal-title w-100">{{__('languages.class_ability_analysis')}}</h4>
+							<h4 class="modal-title w-100">{{__('languages.ability_analysis')}}</h4>
 							<button type="button" class="close class-ability-analysis-report-close-pop" data-dismiss="modal" aria-hidden="true">&times;</button>
 						</div>
 						<div class="modal-body">
@@ -704,7 +703,7 @@
 				<div class="modal-content">
 					<form method="post">
 						<div class="modal-header">
-							<h4 class="modal-title w-100">{{__('languages.question_difficulty_analysis')}}</h4>
+							<h4 class="modal-title w-100">{{__('languages.difficulty_analysis')}}</h4>
 							<button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
 						</div>
 						<div class="modal-body Graph-body">
@@ -1006,9 +1005,9 @@
 					var isGroup = false;
 					if(PeerGroupId){
 						isGroup = true;
-						$('.my_class_group_button').html('My Group');
+						$('.my_class_group_button').html("{{__('languages.My Group')}}");
 					}else{
-						$('.my_class_group_button').html('My Class');
+						$('.my_class_group_button').html("{{__('languages.My Class')}}");
 					}
 					$('.class-ability-graph-btn').attr('data-classAbilityIsGroup',isGroup);
 					

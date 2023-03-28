@@ -35,10 +35,8 @@
                     <!-- Start Student List -->
 					<div class="sm-add-user-sec card">
 						<div class="select-option-sec pb-2 card-body">
-                            @if(!empty($AttemptExamData) && !empty($AttemptExamData->server_details))
-                            @php 
-                            $ServerDetails = json_decode($AttemptExamData->server_details);
-                            @endphp
+                            @if(!empty($AttemptExamData) && !empty($AttemptExamData->server_details) && Auth::user()->role_id != 3)
+                            @php $ServerDetails = json_decode($AttemptExamData->server_details); @endphp
                             <div class="row all-information-sec">
                                 <div class="col-sm-12 col-md-12 col-lg-12">
                                     <h5>{{__('languages.result.server_details')}}</h5>
@@ -64,21 +62,24 @@
                                 <div class="col-lg-3 col-md-4 col-sm-12">
                                     <label>{{__('languages.reference_number')}} : {{ $ExamData->reference_no }}</label>
                                 </div>
-                                @if(!empty($ExamData->publish_date))
+                                @if($ExamData->exam_type == 1 && !empty($ExamData->publish_date))
                                 <div class="col-lg-3 col-md-4 col-sm-12">
                                     <label>{{__('languages.result.date_of_release')}} : {{date('d/m/Y',strtotime($ExamData->publish_date))}}</label>
                                 </div>
                                 @endif
+                                
+                                @if($ExamData->exam_type != 1)
                                 <div class="col-lg-3 col-md-4 col-sm-12">
                                     <label>{{__('languages.result.start_date')}} : {{date('d/m/Y',strtotime($ExamData->from_date))}}</label>
                                 </div>
                                 <div class="col-lg-3 col-md-4 col-sm-12">
                                     <label>{{__('languages.result.end_date')}} : {{date('d/m/Y',strtotime($ExamData->to_date))}}</label>
                                 </div>
+                                @endif
                                 <div class="col-lg-3 col-md-4 col-sm-12">
                                     <label>{{__('languages.result.result_date')}} : {{date('d/m/Y',strtotime($ExamData->result_date))}}</label>
                                 </div>
-                                <div class="col-lg-3 col-md-4 col-sm-12">
+                                <!-- <div class="col-lg-3 col-md-4 col-sm-12">
                                     <label>{{__('languages.result.number_of_questions')}} : {{ count($Questions) }}</label>
                                 </div>
                                 <div class="col-lg-3 col-md-4 col-sm-12">
@@ -89,7 +90,7 @@
                                 </div>
                                 <div class="col-lg-3 col-md-4 col-sm-12">
                                     <label>{{__('languages.result.test_time_taken')}} : {{ $AttemptExamData->exam_taking_timing }}</label>
-                                </div>
+                                </div> -->
                                 @php $accuracy = 0; @endphp
                                 <div class="col-lg-3 col-md-4 col-sm-12">
                                     <label>{{__('languages.report.accuracy')}} : 
@@ -99,44 +100,74 @@
                                         @endif
                                     </label>
                                 </div>
-                                <div class="col-lg-3 col-md-4 col-sm-12">
-                                    {{-- <label>{{__('languages.report.ability')}} : {{round($AttemptExamData->student_ability,2)}} ({{(!empty($AttemptExamData->student_ability)) ? App\Helpers\Helper::GetShortPercentage(App\Helpers\Helper::getNormalizedAbility($AttemptExamData->student_ability)) : 0}}%)</label> --}}
+                                <!-- <div class="col-lg-3 col-md-4 col-sm-12">
                                     <label> {{__('languages.report.ability')}} :
-                                         {{(!empty($AttemptExamData->student_ability)) ? App\Helpers\Helper::GetShortPercentage(App\Helpers\Helper::getNormalizedAbility($AttemptExamData->student_ability)) : 0}}
+                                        {{(!empty($AttemptExamData->student_ability)) ? App\Helpers\Helper::GetShortPercentage(App\Helpers\Helper::getNormalizedAbility($AttemptExamData->student_ability)) : 0}}
                                     </label>
-                                </div>
+                                </div> -->
                                 <div class="col-lg-3 col-md-4 col-sm-12">
                                     {{-- <label>{{__('languages.credit_points')}} : {{$AttemptExamData->credit_point_history_sum_no_of_credit_point ?? 0}}</label> --}}
                                     <label>{{__('languages.credit_points')}} : 
                                         {{App\Helpers\Helper::GetCountCrediPointsStudent($AttemptExamData->exam_id,Auth::user()->id)}}
                                     </label>
                                 </div>
-                                @if($isSelfLearningExam != true)
+                                <!-- @if($isSelfLearningExam != true)
                                 <div class="col-lg-3 col-md-4 col-sm-12">
                                     <label>{{__('languages.overall_percentile')}} : 
                                         {{$studentOverAllPercentile}}%
                                     </label>
                                 </div>
-                                @endif
+                                @endif -->
                             </div>
+
+                            <div class="row all-information-sec">
+                                <div class="col-sm-12 col-md-12 col-lg-12">
+                                    <div class="ip-address-main information" style="width: 20%">
+                                        <h5>{{__('languages.correctly_answered_questions')}} </h5>
+                                        <p>{{$AttemptExamData->total_correct_answers}}/{{count($Questions)}}</p>
+                                    </div>
+                                    <div class="ip-address-main information" style="width: 20%">
+                                        <h5>{{__('languages.report.ability')}} </h5>
+                                        <p>
+                                        {{(!empty($AttemptExamData->student_ability)) ? App\Helpers\Helper::GetShortPercentage(App\Helpers\Helper::getNormalizedAbility($AttemptExamData->student_ability)) : 0}}
+                                        </p>
+                                    </div>
+                                    <div class="ip-address-main information" style="width: 20%">
+                                        <h5>{{__('languages.report.completion_time')}} ({{__('languages.report.h_m_s')}}) </h5>
+                                        <p>{{$AttemptExamData->exam_taking_timing}}</p>
+                                    </div>
+                                    @if($isSelfLearningExam != true)
+                                    <div class="ip-address-main information" style="width: 20%">
+                                        <h5>{{__('languages.overall_percentile')}} </h5>
+                                        <p>{{$studentOverAllPercentile}}%</p>
+                                    </div>
+                                    @endif
+                                </div>
+                            </div>
+
                             <div class="row">
                                 @if($ExamData->exam_type == 1)
-                                        <div class="col-md-4 pb-2">
-                                            <button type="button" class="btn btn-success performance_graph" data-studentid="{{$studentId}}" data-examid="{{$ExamData->id}}">{{__('languages.performance_graph')}}</button>
+                                <div class="col-md-4 pb-2">
+                                    <button type="button" class="btn btn-success performance_graph" data-studentid="{{$studentId}}" data-examid="{{$ExamData->id}}">{{__('languages.performance_graph')}}</button>
                                     @if(!empty($ExamData->learning_objectives_configuration))      
-                                            <a href="{{route('self_learning.preview',$ExamData->id)}}">
-                                                <button type="button" class="btn btn-success">{{__('languages.exam_configurations')}}</button>
-                                            <a>
-                                        </div>
+                                    <a href="{{route('self_learning.preview',$ExamData->id)}}">
+                                        <button type="button" class="btn btn-success">{{__('languages.exam_configurations')}}</button>
+                                    </a>
                                     @endif
+                                </div>
                                 @else
-                                    <div class="col-md-4 pb-2">
-                                        <button type="button" class="btn btn-success performance_graph" data-studentid="{{$studentId}}" data-examid="{{$ExamData->id}}">{{__('languages.performance_graph')}}</button>
-                                        <a href="{{route('exam-configuration-preview',$ExamData->id)}}">
-                                            <button type="button" class="btn btn-success">{{__('languages.exam_configurations')}}</button>
-                                        <a>
-                                    </div>
+                                <div class="col-md-4 pb-2">
+                                    <button type="button" class="btn btn-success performance_graph" data-studentid="{{$studentId}}" data-examid="{{$ExamData->id}}">{{__('languages.performance_graph')}}</button>
+                                    <a href="{{route('exam-configuration-preview',$ExamData->id)}}">
+                                        <button type="button" class="btn btn-success">{{__('languages.exam_configurations')}}</button>
+                                    </a>
+                                </div>
                                 @endif
+                                {{-- @if(!empty($AttemptExamData->attempt_second_trial))
+                                    <div class="col-md-4 pb-2">
+                                        <button type="button" class="btn btn-success second_trial" data-studentid="{{$studentId}}" data-examid="{{$ExamData->id}}">{{__('languages.second_trial')}}</button>
+                                    </div>
+                                @endif --}}
                             </div>
                             <div class="row all-information-sec">
                                 <div class="col-sm-3 col-md-3 col-lg-3">
@@ -144,7 +175,7 @@
                                     $bg_correct_color='background-color:'.App\Helpers\Helper::getGlobalConfiguration('question_correct_color');
                                     $bg_incorrect_color='background-color:'.App\Helpers\Helper::getGlobalConfiguration('question_incorrect_color');
                                     @endphp
-                                    <h5>{{__('languages.questions_by_difficulties')}}</h5>
+                                    <h5>{{__('languages.difficulty_levels_of_questions')}}</h5>
                                     @if(!empty($difficultyLevels))
                                         @php $i=1; $difficultyColor= []; @endphp
                                         @foreach($difficultyLevels as $difficultyLevel)
@@ -169,7 +200,7 @@
                                 </div>
                                 <div class="col-sm-9 col-md-9 col-lg-9">
                                     <h5>{{__('languages.speed')}}</h5>
-                                    <p><?php echo App\Helpers\Helper::getQuestionPerSpeed($ExamData->id,$studentId); ?> {{__('languages.sec_per_question')}}</p>
+                                    <p><?php echo App\Helpers\Helper::getQuestionPerSpeed($ExamData->id,$studentId); ?> {{__('languages.min_per_question')}}</p>
                                 </div>
                                 <div class="col-sm-12 col-md-12 col-lg-12">
                                     <span class="dot-color" style="background-color:{{ App\Helpers\Helper::getGlobalConfiguration('question_correct_color')}};border-radius: 50%;display: inline-block;"></span>
@@ -198,7 +229,7 @@
                                     @endphp
                                     <div class="row">
                                         <div class="sm-que-option pl-3">
-                                            <p class="sm-title bold">{{__('languages.result.q_no')}}: {{$loop->iteration}} {{__('languages.question_code')}} : {{ $question->naming_structure_code }}
+                                            <p class="sm-title bold">{{__('languages.result.q_no')}} : {{$loop->iteration}} @if(Auth::user()->role_id == 1) {{__('languages.question_code')}} : {{ $question->naming_structure_code }} @endif
                                                 {{-- Display Question types and with color code --}}
                                                 <?php 
                                                 $LevelName = \App\Helpers\Helper::getLevelNameBasedOnLanguage($question->dificulaty_level);
@@ -318,8 +349,7 @@
                                                 <input type="radio" name="ans_que_{{$question->id}}" value="5" class="radio mr-2" <?php if(isset($AnswerNumber[key($AnswerNumber)]) && $AnswerNumber[key($AnswerNumber)]->answer == 5){ echo 'checked';} ?> disabled>
                                                 <div class="answer-title mr-2 incorrect-answer" style="{{$bg_incorrect_color}}">N</div>
                                                 <div class="progress">
-                                                    {{-- <div class="progress-bar ans-incorrect" role="progressbar"  aria-valuemin="0" aria-valuemax="100" style="{{$bg_incorrect_color}};"> --}}
-                                                        <div class="progress-bar  @if($AnswerNumber[key($AnswerNumber)]->answer == 5) ans-incorrect @endif" role="progressbar"  aria-valuemin="0" aria-valuemax="100" style="@if($AnswerNumber[key($AnswerNumber)]->answer == 5) {{$bg_incorrect_color}} @endif;width:{{$percentageOfAnswer[$question->id][5]}}%">
+                                                    <div class="progress-bar  @if($AnswerNumber[key($AnswerNumber)]->answer == 5) ans-incorrect @else ans-incorrect @endif" role="progressbar"  aria-valuemin="0" aria-valuemax="100" style="@if($AnswerNumber[key($AnswerNumber)]->answer == 5) {{$bg_incorrect_color}} @endif;width:{{$percentageOfAnswer[$question->id][5]}}%">
                                                         <div class="anser-detail no-answer-fontsize pl-2">
                                                             {{__('languages.no_answer')}}
                                                         </div>
@@ -442,7 +472,7 @@
         <div class="modal-content">
             <form method="post">
                 <div class="modal-header">
-                    <h4 class="modal-title w-100">{{__('languages.student_performance_graph')}}</h4>
+                    <h4 class="modal-title w-100">{{__('languages.performance_graph')}}</h4>
                     <button type="button" class="close" onclick="destroyCanvas()" data-dismiss="modal" aria-hidden="true">&times;</button>
                 </div>
                 <div class="modal-body">
@@ -458,6 +488,7 @@
     </div>
 </div>
 <!-- End Performance Analysis Popup -->
+
 
 @include('backend.layouts.footer')
 
@@ -506,7 +537,6 @@ $(function() {
         }
     });
 
-    
 });
 
 </script>

@@ -21,11 +21,11 @@
 					<div class="row">
 						<div class="col-md-12">
 							<div class="sec-title">
-								<h2 class="mb-4 main-title">{{__('languages.grade_management.grade_class_management')}}</h2>
+								<h2 class="mb-4 main-title">{{__('languages.form')}}/{{__('languages.class')}}</h2>
 								<div class="btn-sec">
 									<a href="javascript:void(0);" class="btn-back dark-blue-btn btn btn-primary mb-4" id="backButton">{{__('languages.back')}}</a>
 									@if (in_array('grade_management_create', $permissions))
-										<a href="{{ route('class.create') }}" class="dark-blue-btn btn btn-primary mb-4">{{__('languages.grade_management.add_new_class')}}</a>
+										<a href="{{ route('class.create') }}" class="dark-blue-btn btn btn-primary mb-4">{{__('languages.add_new_form')}}</a>
 									@endif
 								</div>
 							</div>
@@ -54,8 +54,8 @@
 							          		<th>
 										  		<input type="checkbox" name="" class="checkbox">
 											</th>
-											<th>#{{__('languages.no')}}</th>
-							          		<th class="first-head"><span>@sortablelink('name',__('languages.grade'))</span></th>
+											<th>#{{__('languages.id')}}</th>
+							          		<th class="first-head"><span>@sortablelink('name',__('languages.form'))</span></th>
 											<th class="first-head"><span>{{__('languages.class')}}</span></th>
 											<th class="selec-head">@sortablelink('status',__('languages.class'))</th>
 											<th class="selec-head">{{__('languages.action')}}</th>
@@ -78,10 +78,10 @@
 											</td>
 											<td class="btn-edit">
 											@if (in_array('grade_management_update', $permissions))
-												<a href="{{ route('class.edit', $data->id) }}" class="" title="{{__('languages.edit')}}"><i class="fa fa-pencil" aria-hidden="true"></i></a>
+												<a href="{{ route('class.edit', $data->id) }}" class="" title="{{__('languages.edit')}}"><i class="fa fa-pencil fa-lg" aria-hidden="true"></i></a>
 											@endif
 											@if (in_array('grade_management_delete', $permissions))
-												<a href="javascript:void(0);" class="pl-2" id="deleteClass" data-id="{{$data->id}}" title="{{__('languages.delete')}}"><i class="fa fa-trash" aria-hidden="true"></i></a>
+												<a href="javascript:void(0);" class="pl-2" id="deleteClass" data-id="{{$data->id}}" title="{{__('languages.delete')}}"><i class="fa fa-trash fa-lg" aria-hidden="true"></i></a>
 											@endif
 											</td>
 										</tr>

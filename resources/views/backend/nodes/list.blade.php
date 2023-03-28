@@ -21,7 +21,7 @@
 					<div class="row">
 						<div class="col-md-12">
 							<div class="sec-title">
-								<h2 class="mb-4 main-title">{{__('languages.nodes.node_detail')}}</h2>
+								<h2 class="mb-4 main-title">{{__('languages.nodes.node_tree')}}</h2>
 								<div class="btn-sec">
 									<a href="javascript:void(0);" class="btn-back dark-blue-btn btn btn-primary mb-4" id="backButton">{{__('languages.back')}}</a>
 								@if (in_array('node_management_create', $permissions))
@@ -59,7 +59,7 @@
                         </div>
 						<div class="col-lg-3 col-md-3">
                             <div class="select-lng pt-2 pb-2">
-                                <input type="text" class="input-search-box mr-2" name="SearchParentNode" value="{{request()->get('SearchParentNode')}}" placeholder="{{__('languages.nodes.parent_node_name')}}">
+                                <input type="text" class="input-search-box mr-2" name="SearchParentNode" value="{{request()->get('SearchParentNode')}}" placeholder="{{__('languages.questions.parent_node_id')}}">
 								@if($errors->has('SearchParentNode'))
                                 	<span class="validation_error">{{ $errors->first('SearchParentNode') }}</span>
                             	@endif
@@ -98,12 +98,12 @@
 										  		<input type="checkbox" name="" class="checkbox">
 											</th>
                                             <th class="first-head"><span>@sortablelink('node_id',__('languages.nodes.node_id'))</span></th>
-                                            <th class="first-head"><span>{{__('languages.nodes.parent_node_name')}}</span></th>
-											<th class="first-head"><span>@sortablelink('node_title_en',__('languages.nodes.node_title_english'))</span></th>
-											<th class="first-head"><span>@sortablelink('node_title_ch',__('languages.nodes.node_title_chinese'))</span></th>
+                                            <th class="first-head"><span>{{__('languages.questions.parent_node_id')}}</span></th>
+											<th class="first-head"><span>@sortablelink('node_title_en',__('languages.node_title'))</span></th>
+											<th class="first-head"><span>@sortablelink('node_title_ch',__('languages.node_title_chinese'))</span></th>
 							          		<!-- <th class="first-head"><span>@sortablelink('node_description','Description')</span></th> -->
-											<th class="sec-head selec-opt"><span>@sortablelink('weakness_name_en',__('languages.nodes.weakness_name_english'))</span></th>
-											<th class="sec-head selec-opt"><span>@sortablelink('weakness_name_ch',__('languages.nodes.weakness_name_chinese'))</span></th>
+											<th class="sec-head selec-opt"><span>@sortablelink('weakness_name_en',__('languages.questions.weakness_name'))</span></th>
+											<th class="sec-head selec-opt"><span>@sortablelink('weakness_name_ch',__('languages.weakness_name_chinese'))</span></th>
                                             <th>@sortablelink('status',__('languages.status'))</th>
 											<th>{{__('languages.action')}}</th>
 							        	</tr>
@@ -129,10 +129,10 @@
 											</td>
 											<td class="btn-edit">
 											@if (in_array('node_management_update', $permissions))
-												<a href="{{ route('nodes.edit', $node->id) }}" class="" title="{{__('languages.edit')}}"><i class="fa fa-pencil" aria-hidden="true"></i></a>
+												<a href="{{ route('nodes.edit', $node->id) }}" class="" title="{{__('languages.edit')}}"><i class="fa fa-pencil fa-lg" aria-hidden="true"></i></a>
 											@endif
 											@if (in_array('node_management_delete', $permissions))
-												<a href="javascript:void(0);" class="pl-2" id="deleteNode" data-id="{{$node->id}}" title="{{__('languages.delete')}}"><i class="fa fa-trash" aria-hidden="true"></i></a>
+												<a href="javascript:void(0);" class="pl-2" id="deleteNode" data-id="{{$node->id}}" title="{{__('languages.delete')}}"><i class="fa fa-trash fa-lg" aria-hidden="true"></i></a>
 											@endif
 											</td>
 										</tr>

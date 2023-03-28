@@ -103,9 +103,11 @@ class UpdateAttemptExamsTableJob implements ShouldQueue
                                 ]);
                         if($update){
                             /** Start Update overall ability for the student **/
-                           // $this->CronJobController->UpdateStudentOverAllAbility();
-                           $studentData = User::find($AttemptExams->{cn::ATTEMPT_EXAMS_STUDENT_STUDENT_ID});
-                           $this->CronJobController->UpdateStudentOverAllAbilityNew($studentData);
+                            // $this->CronJobController->UpdateStudentOverAllAbility();
+                            if($examDetail->exam_type == 3 || ($examDetail->exam_type == 1 && $examDetail->self_learning_test_type == 2)){
+                                $studentData = User::find($AttemptExams->{cn::ATTEMPT_EXAMS_STUDENT_STUDENT_ID});
+                                $this->CronJobController->UpdateStudentOverAllAbilityNew($studentData);
+                            }
 
                             /** Update My Teaching Table Via Cron Job */
                             $this->CronJobController->UpdateMyTeachingTable($studentData->{cn::USERS_SCHOOL_ID_COL}, $examId);

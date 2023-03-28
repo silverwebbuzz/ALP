@@ -221,7 +221,7 @@
                                         <div class="question-generator-objectives-labels">
                                             <label>{{__('languages.question_generators_menu.learning_objectives')}}</label>
                                             <label>{{__('languages.question_generators_menu.difficulty_level')}}</label>
-                                            <label>{{__('languages.question_generators_menu.no_of_question_per_learning_objectives')}}</label>
+                                            <label>{{__('languages.questions_per_learning_objective')}}</label>
                                         </div>
                                     </div>
                                     <div class="form-row selection-learning-objectives-section">

@@ -57,10 +57,10 @@
                             </th>
                             <th class="first-head"><span>{{__('languages.name_english')}}</span></th>
                             <th class="first-head"><span>{{__('languages.name_chinese')}}</span></th>
-                            <th class="sec-head selec-opt"><span>{{__('languages.email')}}</span></th>
-                            <th class="selec-head">{{__('languages.grade')}}</th>
+                            <th class="sec-head selec-opt"><span>{{__('languages.email_address')}}</span></th>
+                            <th class="selec-head">{{__('languages.form')}}</th>
                             <th class="selec-head">{{__('languages.class')}}</th>
-                            <th class="selec-head">{{__('languages.profile.class_student_number')}}</th>
+                            <th class="selec-head">{{__('languages.student_code')}}</th>
                             <th>{{__('languages.peer_group.action')}}</th>
                         </tr>
                     </thead>

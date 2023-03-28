@@ -9,8 +9,11 @@
                         @if(Auth::user()->role_id == 2)
                             <option value="{{$grade->getClass->id}}" {{ (request()->get('student_grade_id')) == $grade->getClass->id ? 'selected' : '' }}>{{ $grade->getClass->name}}</option>
                         @endif
-                        @if(Auth::user()->role_id == 5)
-                            <option value="{{$grade->id}}" {{ (request()->get('student_grade_id')) == $grade->id ? 'selected' : '' }}>{{ $grade->name}}</option>
+                        @if(Auth::user()->role_id == 5
+						|| Auth::user()->role_id == 7
+						|| Auth::user()->role_id == 8
+						|| Auth::user()->role_id == 9)
+                        <option value="{{$grade->id}}" {{ (request()->get('student_grade_id')) == $grade->id ? 'selected' : '' }}>{{ $grade->name}}</option>
                         @endif
                         @endforeach
                     @endif
@@ -25,14 +28,14 @@
             </div>
         </div>
         <!-- For a Filtration on name,email & city -->
-        <div class="col-lg-4 col-md-5">
+        {{-- <div class="col-lg-4 col-md-5">
             <div class="select-lng pt-2 pb-2">
                 <input type="text" class="input-search-box mr-2" name="searchtext" id="searchtext" value="{{request()->get('searchtext')}}" placeholder="{{__('languages.search_by_name')}},{{__('languages.email')}},{{__('languages.user_management.city')}}">
                 @if($errors->has('searchtext'))
                     <span class="validation_error">{{ $errors->first('searchtext') }}</span>
                 @endif
             </div>
-        </div>
+        </div> --}}
         
         <div class="col-lg-2 col-md-3">
             <div class="select-lng pt-2 pb-2">
@@ -50,12 +53,12 @@
                             <th>
                                 <input type="checkbox" name="" class="all-select-member-checkbox" class="checkbox">
                             </th>
-                            <th class="first-head"><span>{{__('languages.name_english')}}</span></th>
-                            <th class="first-head"><span>{{__('languages.name_chinese')}}</span></th>
-                            <th class="sec-head selec-opt"><span>{{__('languages.email')}}</span></th>
-                            <th class="selec-head">{{__('languages.grade')}}</th>
+                            <th class="first-head"><span>{{__('languages.name')}}</span></th>
+                            <th class="first-head"><span>{{__('languages.name')}} ({{__('languages.chinese')}})</span></th>
+                            <th class="sec-head selec-opt"><span>{{__('languages.email_address')}}</span></th>
+                            <th class="selec-head">{{__('languages.form')}}</th>
                             <th class="selec-head">{{__('languages.class')}}</th>
-                            <th class="selec-head">{{__('languages.profile.class_student_number')}}</th>
+                            <th class="selec-head">{{__('languages.student_code')}}</th>
                         </tr>
                     </thead>
                     <tbody class="scroll-pane">

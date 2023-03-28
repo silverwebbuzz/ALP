@@ -109,6 +109,11 @@ class SchoolDashboardController extends Controller
         $SchoolData = [];
         if($ID){
             $SchoolData = School::find($ID);
+            if(isset($SchoolData) && !empty($SchoolData) && $SchoolData->SchoolProfileImage == asset('uploads/settings/image_not_found.gif')){
+                $SchoolData->SchoolLogo = '';
+            }else{
+                $SchoolData->SchoolLogo = $SchoolData->SchoolProfileImage;
+            }
         }
         return $SchoolData;
     }

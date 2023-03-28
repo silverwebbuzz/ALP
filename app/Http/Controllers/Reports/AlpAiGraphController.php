@@ -300,12 +300,9 @@ class AlpAiGraphController extends Controller
                 $examData = Exam::find($request->examid);
                 $QuestionArray = explode(',',$examData->question_ids);
                 if(isset($QuestionArray) && !empty($QuestionArray)){
-                    foreach($QuestionArray as $questionId){
-                        //$QuestionData = Question::with('PreConfigurationDifficultyLevel')->find($questionId);
+                    foreach($QuestionArray as $questionId){                        
                         $QuestionData = Question::find($questionId);
                         if(isset($QuestionData) && !empty($QuestionData)){
-                            //$difficultyArray[] = $QuestionData->PreConfigurationDifficultyLevel['title'];
-                            //$difficultyArray[] = $QuestionData->PreConfigurationDifficultyLevel->title;
                             $difficultyArray[] = $this->GetDifficultiesValueByCalibrationId($examData->{cn::EXAM_CALIBRATION_ID_COL},$QuestionData->id);
                         }
                     }
@@ -316,7 +313,8 @@ class AlpAiGraphController extends Controller
                     $requestPayload = new Request();
                     $requestPayload = $requestPayload->replace([
                         'data_list' => array_map('floatval', $difficultyArray),
-                        "format" => "base64"
+                        "format" => "base64",
+                        'labels' => $this->GetAiApiLabels(config()->get('aiapi.api.Plot_Analyze_Test_Difficulty.uri'))
                     ]);
                     $response = $this->AIApiService->getPloatAnalyzeTestDifficulty($requestPayload);
                 }

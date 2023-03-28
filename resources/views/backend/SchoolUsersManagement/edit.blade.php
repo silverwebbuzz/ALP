@@ -95,27 +95,41 @@
                                             </li>
                                         </ul>                                        
                                     </div>
+                                    <div class="form-group col-md-6">
+                                        <label for="users-list-role">{{ __('languages.region') }}</label>
+                                        <fieldset class="form-group">
+                                            <select class="selectpicker form-control" data-show-subtext="true" data-live-search="true" name="region_id" id="region_id">
+                                                @if(isset($Regions) && !empty($Regions))
+                                                    @foreach($Regions as $region)
+                                                    <option value="{{$region->id}}" @if(isset($user->region_id) && $user->region_id == $region->id) selected @endif><?php echo $region->{'region_'.app()->getLocale()}; ?></option>
+                                                    @endforeach
+                                                @endif
+                                            </select>
+                                        </fieldset>
+                                        <span id="error-status"></span>
+                                        @if($errors->has('region_id'))<span class="validation_error">{{ $errors->first('region_id') }}</span>@endif
+                                    </div>
                                 </div>
                                 <div class="form-row">                                
                                     <div class="form-group col-md-6 mb-50">
-                                        <label class="text-bold-600" for="name_en">{{ __('languages.user_management.name_english') }}</label>
-                                        <input type="text" class="form-control" name="name_en" id="name_en" placeholder="{{__('languages.user_management.enter_english_name')}}" value="{{App\Helpers\Helper::decrypt($user->name_en)}}">
+                                        <label class="text-bold-600" for="name_en">{{ __('languages.name') }}</label>
+                                        <input type="text" class="form-control" name="name_en" id="name_en" placeholder="{{ __('languages.name') }}" value="{{App\Helpers\Helper::decrypt($user->name_en)}}">
                                         @if($errors->has('name_en'))<span class="validation_error">{{ $errors->first('name_en') }}</span>@endif
                                     </div>
                                     <div class="form-group col-md-6 mb-50">
-                                        <label class="text-bold-600" for="name_ch">{{ __('languages.user_management.name_chinese') }}</label>
-                                        <input type="text" class="form-control" id="name_ch" name="name_ch" placeholder="{{__('languages.user_management.enter_chinese_name')}}" value="{{App\Helpers\Helper::decrypt($user->name_ch)}}">
+                                        <label class="text-bold-600" for="name_ch">{{ __('languages.name') }} ({{__('languages.chinese')}})</label>
+                                        <input type="text" class="form-control" id="name_ch" name="name_ch" placeholder="{{ __('languages.name') }} ({{__('languages.chinese')}})" value="{{App\Helpers\Helper::decrypt($user->name_ch)}}">
                                         @if($errors->has('name_ch'))<span class="validation_error">{{ $errors->first('name_ch') }}</span>@endif
                                     </div>
                                 
                                     <div class="form-group col-md-6 mb-50">
-                                        <label class="text-bold-600" for="exampleInputUsername1">{{ __('languages.user_management.email') }}</label>
-                                        <input type="email" class="form-control" id="email" name="email" placeholder="{{ __('languages.user_management.email') }}" value="{{$user->email}}">
+                                        <label class="text-bold-600" for="exampleInputUsername1">{{ __('languages.email_address') }}</label>
+                                        <input type="email" class="form-control" id="email" name="email" placeholder="{{ __('languages.email_address') }}" value="{{$user->email}}">
                                         @if($errors->has('email'))<span class="validation_error">{{ $errors->first('email') }}</span>@endif
                                     </div>
                                     <div class="form-group col-md-6 mb-50">
-                                        <label class="text-bold-600" for="exampleInputUsername1">{{ __('languages.user_management.mobile_number') }}</label>
-                                       <input type="text" class="form-control" name="mobile_no" id="mobile_no" placeholder="{{__('languages.user_management.enter_the_number')}}" value="{{App\Helpers\Helper::decrypt($user->mobile_no)}}" maxlength="8">
+                                        <label class="text-bold-600" for="exampleInputUsername1">{{ __('languages.phone_number') }}</label>
+                                       <input type="text" class="form-control" name="mobile_no" id="mobile_no" placeholder="{{ __('languages.phone_number') }}" value="{{App\Helpers\Helper::decrypt($user->mobile_no)}}" maxlength="8">
                                        @if($errors->has('mobile_no'))<span class="validation_error">{{ $errors->first('mobile_no') }}</span>@endif
                                     </div>
                                     <div class="form-group col-md-6 mb-50">
@@ -148,5 +162,14 @@
                 var isUserPanalEdit = 1;
                 var oldUserData = JSON.parse('{!! json_encode(Session()->getOldInput()) !!}');                
             @endif      
+        </script>
+        <script>
+             $(document).on("change", "#role", function () {
+                if(this.value == 7){
+                    $('#yes').prop('checked',true);
+                }else{
+                    $('#no').prop('checked',true);
+                }
+            }) 
         </script>
 @endsection

@@ -51,10 +51,10 @@
                             </div>
 
                             <div class="form-group col-md-6">
-                                <label for="users-list-role">{{ __('languages.grade') }}</label>
+                                <label for="users-list-role">{{ __('languages.form') }}</label>
                                 <fieldset class="form-group">
                                     <select class="selectpicker form-control" data-show-subtext="true" data-live-search="true" name="class_id" id="class_id">
-                                    <option value='' disabled>{{ __('languages.select_grade') }}</option>
+                                    <option value='' disabled>{{ __('languages.form') }}</option>
                                     @if(!empty($gradeList))
                                         @foreach($gradeList as $itam)
                                         <option value="{{$itam->grades->id}}" {{$itam->grades->id == $data->class_id ? 'selected' : ''}} disabled>{{$itam->grades->name}}</option>
@@ -73,7 +73,7 @@
                         @endphp
                         <div class="form-row select-data">
                             <div class="form-group col-md-6 mb-50">
-                                <label for="id_end_time">{{ __('languages.class') }}</label>
+                                <label for="id_end_time">{{ __('languages.classes') }}</label>
                                 @php
                                 $className = [];
                                 if(!empty($data->class_name_id)){

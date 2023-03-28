@@ -21,7 +21,7 @@
 					<div class="row">
 						<div class="col-md-12">
 							<div class="sec-title">
-								<h2 class="mb-4 main-title">{{__('languages.school_management.school_detail')}}</h2>
+								<h2 class="mb-4 main-title">{{__('languages.school_management.school_details')}}</h2>
 								<div class="btn-sec">
 									<a href="javascript:void(0);" class="btn-back dark-blue-btn btn btn-primary mb-4" id="backButton">{{__('languages.back')}}</a>
 								@if (in_array('school_management_create', $permissions))
@@ -77,7 +77,7 @@
 							<div class="col-lg-2 col-md-4">
 								<div class="select-lng pt-2 pb-2">
 									<select class="selectpicker form-control" data-show-subtext="true" data-live-search="true" name="Status" id="Status">
-										<option value=''>{{ __('languages.select_status') }}</option>
+										<option value=''>{{ __('languages.status') }}</option>
 										@if(!empty($statusList))
 											@foreach($statusList as $status)
 											<option value="{{$status['id']}}" {{ request()->get('Status') == $status['id'] ? 'selected' : '' }}>{{ $status['name']}}</option>
@@ -107,11 +107,12 @@
 										  		<input type="checkbox" name="" class="checkbox">
 											</th>
 											<th class="first-head"><span>@sortablelink('school_name',__('languages.school_management.school_name'))</span></th>
+											<th class="first-head"><span>@sortablelink('school_name',__('languages.school_name_chinese'))</span></th>
 							          		<th class="first-head"><span>@sortablelink('school_code',__('languages.school_management.school_code'))</span></th>
-											<th class="first-head"><span>@sortablelink('school_email',__('languages.school_management.email'))</span></th>
-											<th class="sec-head selec-opt"><span>{{__('languages.school_management.address_en')}}</span></th>
-											<th class="sec-head selec-opt"><span>{{__('languages.school_management.address_ch')}}</span></th>
-                                            <th class="selec-opt"><span>{{__('languages.school_management.city')}}</span></th>
+											<th class="first-head"><span>@sortablelink('school_email',__('languages.email_address'))</span></th>
+											<th class="sec-head selec-opt"><span>{{__('languages.address')}}</span></th>
+											<th class="sec-head selec-opt"><span>{{__('languages.address_chinese')}}</span></th>
+                                            <th class="selec-opt"><span>{{ __('languages.region') }}</span></th>
                                             <th>@sortablelink('status',__('languages.status'))</th>
 											<th>{{__('languages.action')}}</th>
 							        	</tr>
@@ -122,11 +123,12 @@
 							        	<tr>
 											<td><input type="checkbox" name="" class="checkbox"></td>
 											<td>{{ ($school->school_name_en) ? App\Helpers\Helper::decrypt($school->school_name_en) : $school->school_name}}</td>
+											<td>{{ ($school->school_name_ch) ? App\Helpers\Helper::decrypt($school->school_name_ch) : $school->school_name}}</td>
 											<td>{{ ($school->school_code) ? $school->school_code : '' }}</td>
 											<td>{{ ($school->school_email) ? $school->school_email : '' }}</td>
                                             <td>{{ ($school->school_address_en) ? App\Helpers\Helper::decrypt($school->school_address_en) : 'N/A' }}</td>
 											<td>{{ ($school->school_address_ch) ? App\Helpers\Helper::decrypt($school->school_address_ch) : 'N/A' }}</td>
-                                            <td>{{ ($school->city) ? App\Helpers\Helper::decrypt($school->city) : 'N/A' }}</td>
+                                            <td>{{ ($school->region) ? $school->Region->{'region_'.app()->getLocale()} : 'N/A' }}</td>
                                             <td>
 												@if($school->status=="active")
 													<span class="badge badge-success">{{__('languages.active')}}</span>
@@ -136,10 +138,10 @@
 											</td>
 											<td class="btn-edit">
 											@if (in_array('school_management_update', $permissions))
-												<a href="{{ route('schoolmanagement.edit', $school->id) }}" class="" title="{{__('languages.edit')}}"><i class="fa fa-pencil" aria-hidden="true"></i></a>
+												<a href="{{ route('schoolmanagement.edit', $school->id) }}" class="" title="{{__('languages.edit')}}"><i class="fa fa-pencil fa-lg" aria-hidden="true"></i></a>
 											@endif
 											@if (in_array('school_management_delete', $permissions))
-												<a href="javascript:void(0);" class="pl-2" id="deleteSchool" data-id="{{$school->id}}" title="{{__('languages.delete')}}"><i class="fa fa-trash" aria-hidden="true"></i></a>
+												<a href="javascript:void(0);" class="pl-2" id="deleteSchool" data-id="{{$school->id}}" title="{{__('languages.delete')}}"><i class="fa fa-trash fa-lg" aria-hidden="true"></i></a>
 											@endif
 											</td>
 										</tr>

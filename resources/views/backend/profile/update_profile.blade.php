@@ -81,13 +81,13 @@
                             </div>
                             <div class="form-row">
                                 <div class="form-group col-md-6 mb-50">
-                                    <label class="text-bold-600" for="name_en">{{ __('languages.profile.english_name') }}</label>
-                                    <input type="text" class="form-control" name="name_en" id="name_en" placeholder="{{__('languages.name_english')}}" value="{{App\Helpers\Helper::decrypt($user->name_en)}}">
+                                    <label class="text-bold-600" for="name_en">{{ __('languages.profile.name') }}</label>
+                                    <input type="text" class="form-control" name="name_en" id="name_en" placeholder="{{ __('languages.profile.name') }}" value="{{App\Helpers\Helper::decrypt($user->name_en)}}">
                                     @if($errors->has('name_en'))<span class="validation_error">{{ $errors->first('name_en') }}</span>@endif
                                 </div>
                                 <div class="form-group col-md-6 mb-50">
-                                    <label class="text-bold-600" for="name_ch">{{ __('languages.profile.chinese_name') }}</label>
-                                    <input type="text" class="form-control" id="name_ch" name="name_ch" placeholder="{{__('languages.name_chinese')}}" value="{{App\Helpers\Helper::decrypt($user->name_ch)}}">
+                                    <label class="text-bold-600" for="name_ch">{{ __('languages.profile.name') }} ({{__('languages.chinese')}})</label>
+                                    <input type="text" class="form-control" id="name_ch" name="name_ch" placeholder="{{ __('languages.profile.name') }} ({{__('languages.chinese')}})" value="{{App\Helpers\Helper::decrypt($user->name_ch)}}">
                                     @if($errors->has('name_ch'))<span class="validation_error">{{ $errors->first('name_Ch') }}</span>@endif
                                 </div>
                             </div>
@@ -98,13 +98,13 @@
                                     @if($errors->has('user_name'))<span class="validation_error">{{ $errors->first('user_name') }}</span>@endif
                                 </div> -->
                                 <div class="form-group col-md-6 mb-50">
-                                    <label class="text-bold-600">{{ __('languages.profile.email') }}</label>
-                                    <input type="email" class="form-control" id="email" name="email" placeholder="{{__('languages.email')}}" value="{{$user->email}}" readonly>
+                                    <label class="text-bold-600">{{ __('languages.email_address')}}</label>
+                                    <input type="email" class="form-control" id="email" name="email" placeholder="{{__('languages.email_address')}}" value="{{$user->email}}" readonly>
                                     @if($errors->has('email'))<span class="validation_error">{{ $errors->first('email') }}</span>@endif
                                 </div>
                                 <div class="form-group col-md-6 mb-50">
-                                        <label class="text-bold-600">{{ __('languages.profile.mobile_number') }}</label>
-                                    <input type="text" class="form-control" name="mobile_no" id="mobile_no" placeholder="{{__('languages.enter_the_mobile_number')}}" value="{{App\Helpers\Helper::decrypt($user->mobile_no)}}" maxLength="8">
+                                        <label class="text-bold-600">{{ __('languages.phone_number') }}</label>
+                                    <input type="text" class="form-control" name="mobile_no" id="mobile_no" placeholder="{{ __('languages.phone_number') }}" value="{{App\Helpers\Helper::decrypt($user->mobile_no)}}" maxLength="8">
                                     @if($errors->has('mobile_no'))<span class="validation_error">{{ $errors->first('mobile_no') }}</span>@endif
                                 </div>
                             </div>
@@ -159,10 +159,24 @@
                             </div>
                             <div class="form-row">
                                 
-                                <div class="form-group col-md-6 mb-50">
+                                {{-- <div class="form-group col-md-6 mb-50">
                                     <label class="text-bold-600">{{ __('languages.profile.city') }}</label>
                                     <input type="text" class="form-control" name="city" id="city" placeholder="{{__('languages.enter_the_city')}}" value="{{App\Helpers\Helper::decrypt($user->city)}}">
                                     @if($errors->has('city'))<span class="validation_error">{{ $errors->first('city') }}</span>@endif
+                                </div> --}}
+                                <div class="form-group col-md-6">
+                                    <label for="users-list-role">{{ __('languages.region') }}</label>
+                                    <fieldset class="form-group">
+                                        <select class="selectpicker form-control" data-show-subtext="true" data-live-search="true" name="region_id" id="region_id">
+                                            @if(isset($Regions) && !empty($Regions))
+                                                @foreach($Regions as $region)
+                                                <option value="{{$region->id}}" @if(isset($user->region_id) && $user->region_id == $region->id) selected @endif><?php echo $region->{'region_'.app()->getLocale()}; ?></option>
+                                                @endforeach
+                                            @endif
+                                        </select>
+                                    </fieldset>
+                                    <span id="error-status"></span>
+                                    @if($errors->has('region_id'))<span class="validation_error">{{ $errors->first('region_id') }}</span>@endif
                                 </div>
                                 <div class="form-group col-md-6 mb-50">
                                         <label class="text-bold-600">{{ __('languages.profile.profile_photo') }}</label>

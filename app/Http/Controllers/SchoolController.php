@@ -14,6 +14,7 @@ use App\Models\StrandUnitsObjectivesMappings;
 use App\Models\GradeSchoolMappings;
 use App\Models\SubjectSchoolMappings;
 use App\Models\ClassSubjectMapping;
+use App\Models\Regions;
 use Illuminate\Support\Facades\Hash;
 use App\Jobs\StrandsUnitsMapping;
 use App\Constants\DbConstant As cn;
@@ -39,10 +40,10 @@ class SchoolController extends Controller
             $items = $request->items ?? 10;
             $TotalFilterData = '';
             $countSchoolData = School::all()->count();
-            $schoolList = School::sortable()->orderBy(cn::SCHOOL_ID_COLS,'DESC')->paginate($items);
+            $schoolList = School::with('Region')->sortable()->orderBy(cn::SCHOOL_ID_COLS,'DESC')->paginate($items);
             $statusList = $this->getStatusList();
             //Filteration on School code and School Name
-            $Query = School::select('*');
+            $Query = School::select('*')->with('Region');
             if(isset($request->filter)){
                 if(isset($request->searchtext) && !empty($request->searchtext)){
                     $Query->where(cn::SCHOOL_SCHOOL_NAME_COL,'Like','%'.$this->encrypt($request->searchtext).'%')
@@ -71,8 +72,9 @@ class SchoolController extends Controller
         try{
             if(!in_array('school_management_create', Helper::getPermissions(Auth::user()->{cn::USERS_ID_COL}))) {
                 return  redirect(Helper::redirectRoleBasedDashboard(Auth::user()->{cn::USERS_ID_COL}));
-            } 
-            return view('backend.schools.add');
+            }
+            $Regions = Regions::where(cn::REGIONS_STATUS_COL,'active')->get();
+            return view('backend.schools.add',compact('Regions'));
         }catch(Exception $exception){
            return back()->with('error_msg', __('languages.problem_was_occur_please_try_again'));
         }
@@ -104,6 +106,7 @@ class SchoolController extends Controller
                 cn::SCHOOL_SCHOOL_ADDRESS_EN_COL  => ($request->address_en) ? $this->encrypt($request->address_en) : null,
                 cn::SCHOOL_SCHOOL_ADDRESS_CH_COL  => ($request->address_ch) ? $this->encrypt($request->address_ch) : null,
                 cn::SCHOOL_SCHOOL_CITY     => ($request->city) ? $this->encrypt($request->city) : null,
+                cn::SCHOOL_REGION_ID_COL    =>  ($request->region_id) ? $request->region_id : null,
                 cn::SCHOOL_SCHOOL_STATUS   => $request->status
             );
             $this->StoreAuditLogFunction($PostData,'School','','','Create School',cn::SCHOOL_TABLE_NAME,'');
@@ -171,6 +174,7 @@ class SchoolController extends Controller
                     cn::USERS_EMAIL_COL     => $request->email,
                     cn::USERS_ADDRESS_COL   => ($request->address_en) ? $this->encrypt($request->address_en) : null,
                     cn::USERS_CITY_COL      => ($request->city) ? $this->encrypt($request->city) : null,
+                    cn::USERS_REGION_ID_COL => ($request->region_id) ? $request->region_id : null,
                     cn::USERS_PASSWORD_COL  => Hash::make($request->password),
                     cn::USERS_STATUS_COL    => $request->status,
                     cn::USERS_CREATED_BY_COL => Auth::user()->{cn::USERS_ID_COL}
@@ -277,6 +281,7 @@ class SchoolController extends Controller
             } 
             $Schoolemail['email'] = '';
             $SchoolData = School::where(cn::SCHOOL_ID_COLS,$id)->first();
+            $Regions = Regions::where(cn::REGIONS_STATUS_COL,'active')->get();
             //$UserData = User::where(cn::USERS_NAME_COL,$SchoolData->school_name)->first();
             $UserData = User::where(cn::USERS_SCHOOL_ID_COL,$id)->first();
             if(isset($UserData) && !empty($UserData)){
@@ -284,7 +289,7 @@ class SchoolController extends Controller
             }
             $UserOtherData = User::where(cn::USERS_SCHOOL_ID_COL,$id)->where(cn::USERS_ROLE_ID_COL,cn::SCHOOL_ROLE_ID)->orderBy(cn::USERS_ID_COL,'asc')->get()->toArray();
 
-            return view('backend.schools.edit',compact('SchoolData','Schoolemail','UserOtherData'));
+            return view('backend.schools.edit',compact('SchoolData','Schoolemail','UserOtherData','Regions'));
         }catch(Exception $exception){
             return redirect('schoolmanagement')->withError($exception->getMessage())->withInput(); 
         }
@@ -312,6 +317,7 @@ class SchoolController extends Controller
                 cn::SCHOOL_SCHOOL_ADDRESS_EN_COL  => ($request->address_en) ? $this->encrypt($request->address_en) : null,
                 cn::SCHOOL_SCHOOL_ADDRESS_CH_COL  => ($request->address_ch) ? $this->encrypt($request->address_ch) : null,
                 cn::SCHOOL_SCHOOL_CITY     => ($request->city) ? $this->encrypt($request->city) : null,
+                cn::SCHOOL_REGION_ID_COL => ($request->region_id) ? $request->region_id : null,
                 cn::SCHOOL_SCHOOL_STATUS   => $request->status
             );
             $this->StoreAuditLogFunction($PostData,'School',cn::SCHOOL_ID_COLS,$id,'Update School',cn::SCHOOL_TABLE_NAME,'');
@@ -326,6 +332,7 @@ class SchoolController extends Controller
                         cn::USERS_EMAIL_COL     => $request->email,
                         cn::USERS_ADDRESS_COL   => ($request->address) ? $this->encrypt($request->address_en) : null,
                         cn::USERS_CITY_COL      => ($request->city) ? $this->encrypt($request->city) : null,
+                        cn::USERS_REGION_ID_COL => ($request->region_id) ? $request->region_id : null,
                         cn::USERS_STATUS_COL    => $request->status
                     );
                     $this->StoreAuditLogFunction($school_add_in_user_table,'User',cn::USERS_SCHOOL_ID_COL,$id,'Update School',cn::USERS_TABLE_NAME,'');
@@ -339,6 +346,7 @@ class SchoolController extends Controller
                         cn::USERS_EMAIL_COL     => $request->email,
                         cn::USERS_ADDRESS_COL   => ($request->address_en) ? $this->encrypt($request->address_en) : null,
                         cn::USERS_CITY_COL      => ($request->city) ? $this->encrypt($request->city) : null,
+                        cn::USERS_REGION_ID_COL => ($request->region_id) ? $request->region_id : null,
                         cn::USERS_STATUS_COL    => $request->status
                     );
                     $this->StoreAuditLogFunction($school_add_in_user_table,'User',cn::USERS_SCHOOL_ID_COL,$id,'Update School',cn::USERS_TABLE_NAME,'');

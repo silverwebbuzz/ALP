@@ -826,7 +826,9 @@ class ExamController extends Controller
                 Exam::find($examId)->update([cn::EXAM_TABLE_IS_TEACHING_REPORT_SYNC =>'true']);
                 
                 /** Start Update overall ability for the student **/
-                $this->CronJobController->UpdateStudentOverAllAbility();
+                if($examDetail->exam_type == 3 || ($examDetail->exam_type == 1 && $examDetail->self_learning_test_type == 2)){
+                    $this->CronJobController->UpdateStudentOverAllAbility();
+                }
 
                 /** Update My Teaching Table Via Cron Job */
                 $this->CronJobController->UpdateMyTeachingTable(Auth::user()->{cn::USERS_SCHOOL_ID_COL}, $examId);
@@ -1315,7 +1317,7 @@ class ExamController extends Controller
      * USE : Get Result for exams
      */
     public function getExamResult(Request $request, $examId, $studentId = 0){
-        // try {
+        try {
             $totalQuestionDifficulty = ['Level1' => 0,'Level2' => 0,'Level3' => 0,'Level4' => 0,'Level5' => 0,'correct_Level1' => 0,'correct_Level2' => 0,'correct_Level3' => 0,'correct_Level4' => 0,'correct_Level5' => 0];
             //$difficultyLevels = PreConfigurationDiffiltyLevel::all();
             $difficultyLevels = PreConfigurationDiffiltyLevel::get();
@@ -1501,12 +1503,42 @@ class ExamController extends Controller
                 return view('backend.exams.exams_result',compact('studentOverAllPercentile','isExerciseExam','isTestExam','difficultyLevels','isSelfLearningExam','isSelfLearningExercise',
                 'isSelfLearningTestingZone','studentId','nodeWeaknessList','nodeWeaknessListCh','Questions','AttemptExamData','ExamData','percentageOfAnswer',
                 'AllWeakness','questionDifficultyGraph'));
+                
             }
-        // } catch (Exception $ex) {
-        //     return back()->withError($ex->getMessage());
-        // }
+        } catch (Exception $ex) {
+            return back()->withError($ex->getMessage());
+        }
     }
 
+    public function getSecondTrialResult(Request $request,$examId,$studentId){
+        $ExamData = Exam::find($examId);
+        $difficultyLevels = PreConfigurationDiffiltyLevel::get();
+        $isSelfLearningExam = ($ExamData->{cn::EXAM_TYPE_COLS} == '1') ? true : false;
+        $percentageOfAnswer = $this->getPercentageOfSelectedAnswer($examId);
+        $AttemptExamData =  AttemptExams::where([
+            cn::ATTEMPT_EXAMS_EXAM_ID => $examId,
+            cn::ATTEMPT_EXAMS_STUDENT_STUDENT_ID => $studentId
+        ])->first();
+        $secondAttemptQuestionIdsData =json_decode($AttemptExamData->attempt_second_trial,true);
+        $questionIds = array_column($secondAttemptQuestionIdsData,'question_id');
+
+        $Questions = Question::with(['answers'])->whereIn(cn::QUESTION_TABLE_ID_COL,$questionIds)->get();
+        if(isset($Questions) && !empty($Questions)){
+            foreach($Questions as $QueKey => $QuestionsVal){
+                $difficultiesValue = $this->GetDifficultiesValueByCalibrationId($ExamData->{cn::EXAM_CALIBRATION_ID_COL},$QuestionsVal->id);
+                $difficultValue = [
+                    'natural_difficulty' => $difficultiesValue ?? '',
+                    'normalized_difficulty' => $this->getNormalizedAbility($difficultiesValue)
+                ];
+                $Questions[$QueKey]['difficultyValue'] = $difficultValue ?? [];
+            }
+        }
+        if(!empty($AttemptExamData)){
+            // echo "<pre>";print_r($ExamData->toArray());
+            // echo "<pre>";print_r($AttemptExamData->toArray());die;
+            return (string)View::make('backend.exams.student_result_progress',compact('difficultyLevels','studentId','Questions','AttemptExamData','ExamData','percentageOfAnswer'));
+        }
+    }
     /**
      * USE : Get Admin Result for exams
      */
@@ -1682,7 +1714,12 @@ class ExamController extends Controller
             if(!empty($AttemptExamData)){
                 // Get Percentage of difficulty level
                 $questionDifficultyGraph = $this->GetPercentageQuestionDifficultyLevel($totalQuestionDifficulty);
-                return view('backend.exams.admin_exams_result',compact('difficultyLevels','isSelfLearningExam','studentId','nodeWeaknessList','nodeWeaknessListCh','Questions','AttemptExamData','ExamData','percentageOfAnswer','AllWeakness','questionDifficultyGraph'));
+                // Get Page name
+                $menuItem = '';
+                if(isset($ExamData->id) && !empty($ExamData->id)){
+                    $menuItem = $this->GetPageName($ExamData->id);
+                }
+                return view('backend.exams.admin_exams_result',compact('difficultyLevels','isSelfLearningExam','studentId','nodeWeaknessList','nodeWeaknessListCh','Questions','AttemptExamData','ExamData','percentageOfAnswer','AllWeakness','questionDifficultyGraph','menuItem'));
             }
         } catch (Exception $ex) {
             return back()->withError($ex->getMessage());

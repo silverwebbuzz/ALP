@@ -394,7 +394,8 @@ class RealTimeAIQuestionGeneratorController extends Controller
             cn::EXAM_TABLE_SELF_LEARNING_TEST_TYPE_COL      => $request->self_learning_test_type,
             cn::EXAM_TABLE_CREATED_BY_COL                   => $this->LoggedUserId(),
             cn::EXAM_TABLE_CREATED_BY_USER_COL              => 'student',
-            cn::EXAM_TABLE_STATUS_COLS => 'publish'
+            cn::EXAM_TABLE_STATUS_COLS                      => 'publish',
+           
         ];
         $exams = Exam::create($examData);
         if($exams){
@@ -452,7 +453,9 @@ class RealTimeAIQuestionGeneratorController extends Controller
                 cn::ATTEMPT_EXAMS_TOTAL_WRONG_ANSWERS           => $NoOfWrongAnswers,
                 cn::ATTEMPT_EXAMS_EXAM_TAKING_TIMING            => $request->exam_taking_timing,
                 cn::ATTEMPT_EXAMS_STUDENT_ABILITY_COL           => ($StudentAbility!='') ? $StudentAbility : null,
-                cn::ATTEMPT_EXAMS_SERVER_DETAILS_COL            => json_encode($this->serverData()) ?? null
+                cn::ATTEMPT_EXAMS_SERVER_DETAILS_COL            => json_encode($this->serverData()) ?? null,
+                cn::ATTEMPT_EXAMS_BEFORE_EXAM_SURVEY_COL        => $request->before_emoji_id ?? 0,
+                cn::ATTEMPT_EXAMS_AFTER_EXAM_SURVEY_COL         => $request->after_emoji_id ?? 0,
             ];
             $save = AttemptExams::create($PostData);
             if($save){
@@ -460,13 +463,19 @@ class RealTimeAIQuestionGeneratorController extends Controller
                 Exam::find($exams->id)->update([cn::EXAM_TABLE_IS_TEACHING_REPORT_SYNC =>'true']);
                 
                 /** Start Update overall ability for the student **/
-                $this->CronJobController->UpdateStudentOverAllAbility();
+                if($exams->exam_type == 3 || ($exams->exam_type == 1 && $exams->self_learning_test_type == 2)){
+                    $this->CronJobController->UpdateStudentOverAllAbility();
+                }
 
                 /** Update My Teaching Table Via Cron Job */
                 $this->CronJobController->UpdateMyTeachingTable(Auth::user()->{cn::USERS_SCHOOL_ID_COL}, $exams->id);
 
                 /** Update Student Credit Points via cron job */
-                $this->CronJobController->UpdateStudentCreditPoints($exams->id, Auth::user()->id);
+                $this->CronJobController->UpdateStudentCreditPoints($exams->id, Auth::user()->{cn::USERS_ID_COL});
+
+                // Start Learning Progress Learning Unit Job
+                $this->CronJobController->UpdateLearningProgressJob(Auth::user()->{cn::USERS_ID_COL});
+                // End Learning Progress Learning Unit Job
                 
                 /** End Update overall ability for the student **/
                 $this->StoreAuditLogFunction('','Exams','','','Attempt Exam',cn::EXAM_TABLE_NAME,'');
@@ -926,7 +935,9 @@ class RealTimeAIQuestionGeneratorController extends Controller
                 Exam::find($exams->id)->update([cn::EXAM_TABLE_IS_TEACHING_REPORT_SYNC =>'true']);
                 
                 /** Start Update overall ability for the student **/
-                $this->CronJobController->UpdateStudentOverAllAbility();
+                if($exams->exam_type == 3 || ($exams->exam_type == 1 && $exams->self_learning_test_type == 2)){
+                    $this->CronJobController->UpdateStudentOverAllAbility();
+                }
 
                 /** Update My Teaching Table Via Cron Job */
                 $this->CronJobController->UpdateMyTeachingTable(Auth::user()->{cn::USERS_SCHOOL_ID_COL}, $exams->id);
@@ -1046,8 +1057,12 @@ class RealTimeAIQuestionGeneratorController extends Controller
             $questionListHtml = (string)View::make('backend.question_generator.school.question_list_preview',compact('question_list','difficultyLevels'));
 
             // Set the page title : 1 = Exercise, 2 = Testing Zone
-            $pageTitle = ($ExamData->self_learning_test_type == 1) ? __('languages.preview').' '.__('languages.self_learning_exercise') : __('languages.preview').' '.__('languages.self_learning_test');
-
+            if($ExamData->self_learning_test_type == 1){
+                $pageTitle = __('languages.self_learning');
+            }else{
+                $pageTitle = __('languages.ai_based_assessment');
+            }
+            //$pageTitle = ($ExamData->self_learning_test_type == 1) ? __('languages.preview').' '.__('languages.self_learning_exercise') : __('languages.preview').' '.__('languages.self_learning_test');
             return view('backend.student.self_learning.preview_self_learning',compact('pageTitle','LearningObjectiveConfigurations','difficultyLevels','strandsList','LearningUnits','LearningObjectives','questionListHtml','learningObjectivesConfiguration'));
         }
     }

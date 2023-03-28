@@ -22,7 +22,7 @@ if($user_id){
 					<div class="col-md-12">
 						<div class="col-md-12 col-lg-12 col-sm-12 sec-title student-test-list-cls">
 							@if(auth()->user()->role_id != 3)
-							<h2 class="mb-2 main-title">{{__('languages.exercises')}}</h2>
+							<h2 class="mb-2 main-title">{{__('languages.exercise')}}</h2>
 							@else
 							<h2 class="mb-2 main-title">{{__('languages.sidebar.my_study')}}</h2>
 							@endif
@@ -62,7 +62,7 @@ if($user_id){
 					<div class="row">
 						<div class="col-lg-4 col-md-4">
 							<div class="select-lng pb-2">
-								<label for="users-list-role">{{ __('languages.user_management.grade') }}</label>
+								<label for="users-list-role">{{ __('languages.form') }}</label>
 								<select class="form-control" data-show-subtext="true" data-live-search="true" name="grade_id[]" id="student_multiple_grade_id" multiple required >
 									@if(!empty($gradesList))
 									@foreach($gradesList as $grade)
@@ -164,9 +164,9 @@ if($user_id){
                                 <th>{{__('languages.report.end_date')}} & {{__('languages.time')}}</th>
 								<th>{{__('languages.reference_number')}}</th>
                                 <th>{{__('languages.title')}}</th>
-                                <th>{{__('languages.grade')}} - {{__('languages.class')}}</th>
-                                <th>{{__('languages.no_of_students')}}</th>
-                                <th>{{__('languages.progress')}}</th>
+                                <th>{{__('languages.form')}} - {{__('languages.class')}}</th>
+                                <th>{{__('languages.students')}}</th>
+                                <th>{{__('languages.submission')}} {{__('languages.status')}}</th>
                                 <th>{{__('languages.average_accuracy')}}</th>
                                 <th>{{__('languages.study_status')}}</th>
                                 <th>{{__('languages.question_difficulties')}}</th>
@@ -286,13 +286,13 @@ if($user_id){
                                     </td>
                                     <td class="btn-edit">
                                         <a href="{{ route('report.class-test-reports.correct-incorrect-answer', ['exam_id' => $assignmentExcercise->exam_id, 'filter' => 'filter', 'grade_id' => $assignmentExcercise->grade_id, 'class_type_id' => array($assignmentExcercise->class_id), 'group_id' => $assignmentExcercise->peer_group_id]) }}" title="{{__('languages.performance_report')}}" >
-											<i class="fa fa-bar-chart ml-2" aria-hidden="true"></i>
+											<i class="fa fa-bar-chart fa-lg ml-2" aria-hidden="true"></i>
 										</a>
                                         <a href="javascript:void(0);" title="{{__('languages.ability_analysis')}}" class="getClassAbilityAnalysisReport" data-examid="{{$assignmentExcercise->exam_id}}" data-studentids="{{$assignmentExcercise->student_ids}}" data-isGroup="{{!empty($assignmentTest->peer_group_id) ? true : false}}" data-buttonText="{{!empty($assignmentExcercise->peer_group_id) ? __('languages.My Group') : __('languages.My Class')}}">
-                                            <i class="fa fa-bar-chart ml-2" aria-hidden="true"></i>
+                                            <i class="fa fa-bar-chart fa-lg ml-2" aria-hidden="true"></i>
                                         </a>
                                         <a href="javascript:void(0);" title="{{__('languages.difficulty_analysis')}}" class="getTestDifficultyAnalysisReport" data-examid="{{$assignmentExcercise->exam_id}}">
-                                            <i class="fa fa-bar-chart ml-2" aria-hidden="true"></i>
+                                            <i class="fa fa-bar-chart fa-lg ml-2" aria-hidden="true"></i>
                                         </a>
                                         @php
                                             if(isset($assignmentExcercise->grade_with_class) && !empty($assignmentExcercise->grade_with_class)){
@@ -301,11 +301,11 @@ if($user_id){
 												$gradesClass = [];
 											}
                                         @endphp
-                                        <a href="{{route('exam-configuration-preview', $assignmentExcercise->exam_id)}}" class="ml-2" title="{{__('languages.config')}}">
-											<i class="fa fa-gear" aria-hidden="true"></i>
+                                        <a href="{{route('exam-configuration-preview', $assignmentExcercise->exam_id)}}" class="ml-2" title="{{__('languages.configurations')}}">
+											<i class="fa fa-gear fa-lg" aria-hidden="true"></i>
 										</a>
-                                        <a href="javascript:void(0);" class="exam_questions-info ml-2" data-examid="{{$assignmentExcercise->exam_id}}" title="{{__('languages.preview')}}"><i class="fa fa-book" aria-hidden="true"></i></a>
-										<a href="javascript:void(0);" class="result_summary ml-2" data-examid="{{$assignmentExcercise->exam_id}}" data-studentids="{{$assignmentExcercise->student_ids}}" title="{{__('languages.result_summary')}}"><i class="fa fa-bar-chart" aria-hidden="true"></i></a>
+                                        <a href="javascript:void(0);" class="exam_questions-info fa-lg ml-2" data-examid="{{$assignmentExcercise->exam_id}}" title="{{__('languages.preview')}}"><i class="fa fa-book" aria-hidden="true"></i></a>
+										<a href="javascript:void(0);" class="result_summary fa-lg ml-2" data-examid="{{$assignmentExcercise->exam_id}}" data-studentids="{{$assignmentExcercise->student_ids}}" title="{{__('languages.result_summary')}}"><i class="fa fa-bar-chart" aria-hidden="true"></i></a>
 
                                     </td>
                                 </tr>
@@ -487,7 +487,7 @@ if($user_id){
 				<input type="hidden" name="exam_ids" id="exam_ids" value="">
 				<input type="hidden" name="student_ids" id="student_ids" value="">
 				<div class="modal-header">
-					<h4 class="modal-title w-100">{{__('languages.class_ability_analysis')}}</h4>
+					<h4 class="modal-title w-100">{{__('languages.ability_analysis')}}</h4>
 					<button type="button" class="close class-ability-analysis-report-close-pop" data-dismiss="modal" aria-hidden="true">&times;</button>
 				</div>
 				<div class="modal-body">
@@ -523,7 +523,7 @@ if($user_id){
 		<div class="modal-content">
 			<form method="post">
 				<div class="modal-header">
-					<h4 class="modal-title w-100">{{__('languages.question_difficulty_analysis')}}</h4>
+					<h4 class="modal-title w-100">{{__('languages.difficulty_analysis')}}</h4>
 					<button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
 				</div>
 				<div class="modal-body Graph-body">
@@ -545,7 +545,7 @@ if($user_id){
 		<div class="modal-content">
 			<form method="post">
 				<div class="modal-header">
-					<h4 class="modal-title w-100">{{__('languages.progress_report')}}</h4>
+					<h4 class="modal-title w-100">{{__('languages.submission')}} {{__('languages.status')}}</h4>
 					<button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
 				</div>
 				<div class="modal-body">
@@ -553,9 +553,9 @@ if($user_id){
 	                    <thead>
 	                        <tr>
 	                            <th class="first-head"><span>{{__('languages.name')}}</span></th>
-								<th class="first-head"><span>{{__('languages.class_student_number')}}</span></th>
-	                            <th class="sec-head selec-opt"><span>{{__('languages.email')}}</span></th>
-	                            <th class="selec-head">{{__('languages.report.exam_status')}}</th>
+								<th class="first-head"><span>{{__('languages.student_code')}}</span></th>
+	                            <th class="sec-head selec-opt"><span>{{__('languages.email_address')}}</span></th>
+	                            <th class="selec-head">{{__('languages.report.status')}}</th>
 	                        </tr>
 	                    </thead>
 	                    <tbody class="scroll-pane">

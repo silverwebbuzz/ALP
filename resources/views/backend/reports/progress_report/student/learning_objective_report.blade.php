@@ -32,7 +32,7 @@
 					<div class="col-md-12">
 						<div class="sec-title">
 							{{-- <h2 class="mb-4 main-title">{{__('languages.sidebar.learning')}}</h2> --}}
-							<h2 class="mb-4 main-title">{{ __('languages.learning_objectives') }} {{__('languages.report_text')}}</h2>
+							<h2 class="mb-4 main-title">{{ __('languages.learning_objectives') }} {{__('languages.progress')}}</h2>
 							
 						</div>
 						<div class="sec-title">

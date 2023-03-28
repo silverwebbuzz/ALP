@@ -92,7 +92,7 @@
                 <div class="modal-content">
                     <form method="post">
                         <div class="modal-header">
-                            <h4 class="modal-title w-100">{{__('Member List')}}</h4>
+                            <h4 class="modal-title w-100">{{__('languages.member_list')}}</h4>
                             <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
                         </div>
                         <div class="modal-body" id="add-member-listing-section">

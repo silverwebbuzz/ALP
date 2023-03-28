@@ -21,7 +21,7 @@
 					<div class="row">
 						<div class="col-md-12">
 							<div class="sec-title">
-								<h2 class="mb-4 main-title">{{__('languages.pre_configure_difficulty.pre_configure_difficulty_detail')}}</h2>
+								<h2 class="mb-4 main-title">{{__('languages.pre_configure_difficulty.pre_defined_difficulty_details')}}</h2>
 								<div class="btn-sec">
 									<a href="javascript:void(0);" class="btn-back dark-blue-btn btn btn-primary mb-4" id="backButton">{{__('languages.back')}}</a>
 								 @if (in_array('pre_configure_difficulty_create', $permissions)) 
@@ -105,8 +105,8 @@
 							          		<th>
 										  		<input type="checkbox" name="" class="checkbox">
 											</th>
-											<th class="first-head"><span>@sortablelink('difficulty_level_name_en',__('languages.english_name'))</span></th>
-											<th class="first-head"><span>@sortablelink('difficulty_level_name_ch',__('languages.chinese_name'))</span></th>
+											<th class="first-head"><span>@sortablelink('difficulty_level_name_en',__('languages.difficulty_name'))</span></th>
+											<th class="first-head"><span>@sortablelink('difficulty_level_name_ch',__('languages.difficulty_name_chinese'))</span></th>
 											<th class="first-head"><span>@sortablelink('difficulty_level',__('languages.difficulty_level'))</span></th>
 											<th class="first-head"><span>{{__('languages.difficulty_value')}}</span></th>
 											<th class="first-head"><span>{{__('languages.color')}}</span></th>
@@ -142,10 +142,10 @@
 											</td>
 											<td class="btn-edit">
 											 @if (in_array('pre_configure_difficulty_update', $permissions)) 
-												<a href="{{ route('pre-configure-difficulty.edit', $preConfigureList->id) }}" class="" title="{{__('languages.edit')}}"><i class="fa fa-pencil" aria-hidden="true"></i></a>
+												<a href="{{ route('pre-configure-difficulty.edit', $preConfigureList->id) }}" class="" title="{{__('languages.edit')}}"><i class="fa fa-pencil fa-lg" aria-hidden="true"></i></a>
 											 @endif 
 											@if (in_array('pre_configure_difficulty_delete', $permissions)) 
-												<a href="javascript:void(0);" class="pl-2" id="deletePreconfigureDifficulty" data-id="{{$preConfigureList->id}}" title="{{__('languages.delete')}}"><i class="fa fa-trash" aria-hidden="true"></i></a>
+												<a href="javascript:void(0);" class="pl-2" id="deletePreconfigureDifficulty" data-id="{{$preConfigureList->id}}" title="{{__('languages.delete')}}"><i class="fa fa-trash fa-lg" aria-hidden="true"></i></a>
 											 @endif 
 											</td>
 										</tr>

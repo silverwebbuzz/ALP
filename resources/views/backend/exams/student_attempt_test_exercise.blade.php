@@ -187,6 +187,7 @@
                                             </div>
                                         </div>
                                     </div>
+                                    <input type="hidden" name="isQuestionFlagId" id="isQuestionFlagId" value="<?php if(in_array($Question->id,$not_attempted_flag_question_ids)){ echo 'yes';}; ?>">
                                 </div>
                                 @if (isset($examDetail->exam_type) && $examDetail->exam_type == 2)
                                 <div class="attmp-main-explain">
@@ -203,10 +204,18 @@
                             <div class="col-md-12 col-lg-12 col-sm-12 attmp-all-button">
                                 <div class="flag-btn-main">
                                     <button type="button" class="btn btn-danger mr-2" id="attempt-test-flag-button" flag-question-id="{{$Question->id}}">
-                                    @if($examLanguage == 'en') 
-                                    {{__('languages.flag_en')}}
+                                    @if(in_array($Question->id,$not_attempted_flag_question_ids))
+                                        @if($examLanguage == 'en') 
+                                        {{__('languages.unflag_en')}}
+                                        @else
+                                        {{__('languages.unflag_ch')}}
+                                        @endif
                                     @else
-                                    {{__('languages.flag_ch')}}
+                                        @if($examLanguage == 'en') 
+                                        {{__('languages.flag_en')}}
+                                        @else
+                                        {{__('languages.flag_ch')}}
+                                        @endif
                                     @endif
                                     </button>
                                 </div>
@@ -315,13 +324,18 @@
     <div class="modal-dialog  modal-xl" style="max-width: 50%;">
         <div class="modal-content">
             <div class="modal-header">
-            <h5 class="modal-title" id="staticBackdropLabel">{{__('Exam Survey')}}</h5>
+            <h5 class="modal-title" id="staticBackdropLabel">{{__('languages.how_do_you_feel_now')}}</h5>
             </div>
             <div class="modal-body " id="AttemptQuestionFeedbackBody">
                 <form class="smileys">
                     <input type="hidden" name="feedbackType" id="feedbackType" value=""/>
-                    <input type="radio" name="smiley" value="1" data-feedbackType="1" class="sad emojisButton">
-                    <input type="radio" name="smiley" value="2" data-feedbackType="2" class="happy emojisButton">
+                    <!-- <input type="radio" name="smiley" value="1" data-feedbackType="1" class="sad emojisButton">
+                    <input type="radio" name="smiley" value="2" data-feedbackType="2" class="happy emojisButton"> -->
+                    <input type="radio" name="smiley" value="1" data-feedbackType="1" class="emoji_1 emojisButton">
+                    <input type="radio" name="smiley" value="2" data-feedbackType="2" class="emoji_2 emojisButton">
+                    <input type="radio" name="smiley" value="3" data-feedbackType="1" class="emoji_3 emojisButton">
+                    <input type="radio" name="smiley" value="4" data-feedbackType="2" class="emoji_4 emojisButton">
+                    <input type="radio" name="smiley" value="5" data-feedbackType="1" class="emoji_5 emojisButton">
                 </form>
             </div>
         </div>
@@ -342,6 +356,15 @@
     //var totalSeconds = '@php echo $ExamMaximumSeconds; @endphp';
     var totalSeconds = '@php echo $RemainingSeconds; @endphp';
 </script>
+
+<?php
+if(isset($not_attempted_flag_question_ids) && !empty($not_attempted_flag_question_ids)){
+foreach($not_attempted_flag_question_ids as $not_attempted_flag_question_ids1){ ?>
+<script>
+    FlaggedQuestionIds.push(parseInt(<?php echo $not_attempted_flag_question_ids1;?>));
+</script>
+<?php }
+} ?>
 
 <script>
 <?php if($IsAttemptTrialNo == 1){?>
@@ -415,20 +438,52 @@
 
         // Set on click trigger flagged questions
         $(document).on("click","#attempt-test-flag-button",function () {
-            var FlagQuestionId = $(this).attr('flag-question-id');
-            if(FlaggedQuestionIds.indexOf(FlagQuestionId) !== -1)  {
-                // We will add flagged question id into array
-                removeFlaggedQuestionIds(FlaggedQuestionIds, FlagQuestionId);
-                $('.test-navigation-item-'+FlagQuestionId).removeClass('flagged-item');
-                $("#nextquestionarea .checkanswer[value=5]" ).prop("checked", false);
+            if($(".test-all .checkanswer:checked").val() === undefined){
+                if($('#student-select-attempt-exam-language').val() == 'en'){
+                    toastr.error(FLAG_VALIDATION_TEXT_EN);
+                }
+                if($('#student-select-attempt-exam-language').val() == 'ch'){
+                    toastr.error(FLAG_VALIDATION_TEXT_CH);
+                }
+                return false;
             }else{
-                // If value is already exists the we remove flag
-                FlaggedQuestionIds.push(FlagQuestionId);
-                $('.test-navigation-item-'+FlagQuestionId).removeClass('selected_question_item');
-                $('.test-navigation-item-'+FlagQuestionId).addClass('flagged-item');
-                $("#nextquestionarea .checkanswer[value=5]" ).prop("checked", true);
-                $(".test-all .checkanswer:checked").trigger('change');
+                var FlagQuestionId = parseInt($(this).attr('flag-question-id'));
+                if(FlaggedQuestionIds.indexOf(FlagQuestionId) !== -1){
+                    if($('#student-select-attempt-exam-language').val() == 'en'){
+                        $(this).text(FLAG_BUTTON_TEXT_EN);
+                    }
+                    if($('#student-select-attempt-exam-language').val() == 'ch'){
+                        $(this).text(FLAG_BUTTON_TEXT_CH);
+                    }
+                    $('#isQuestionFlagId').val('');
+                    // We will add flagged question id into array
+                    removeFlaggedQuestionIds(FlaggedQuestionIds, FlagQuestionId);
+                    $('.test-navigation-item-'+FlagQuestionId).removeClass('flagged-item');
+                    // if($(".test-all .checkanswer:checked").val() == ""){
+                    //     $("#nextquestionarea .checkanswer[value=5]" ).prop("checked", false);
+                    // }
+                    $(".test-all .checkanswer:checked").trigger('change');
+                    //$("#nextquestionarea .checkanswer[value=5]" ).prop("checked", false);
+                }else{
+                    if($('#student-select-attempt-exam-language').val() == 'en'){
+                        $(this).text(UN_FLAG_BUTTON_TEXT_EN);
+                    }
+                    if($('#student-select-attempt-exam-language').val() == 'ch'){
+                        $(this).text(UN_FLAG_BUTTON_TEXT_CH);
+                    }
+                    $('#isQuestionFlagId').val('yes');
+                    // If value is already exists the we remove flag
+                    FlaggedQuestionIds.push(FlagQuestionId);
+                    $('.test-navigation-item-'+FlagQuestionId).removeClass('selected_question_item');
+                    $('.test-navigation-item-'+FlagQuestionId).addClass('flagged-item');
+                    // if($(".test-all .checkanswer:checked").val() == ""){
+                    //     $("#nextquestionarea .checkanswer[value=5]" ).prop("checked", true);
+                    // }
+                    //$("#nextquestionarea .checkanswer[value=5]" ).prop("checked", true);
+                    $(".test-all .checkanswer:checked").trigger('change');
+                }
             }
+            
         });
     });
 
@@ -483,7 +538,8 @@
         var no_of_second = 10;
         var selected_answer_id = $(this).val();
         // Set Question navigation color
-        if(selected_answer_id=='5'){
+        //if(selected_answer_id == '5'){
+        if($('#isQuestionFlagId').val() == 'yes'){
             $('.test-navigation-item-'+current_question_id).removeClass('answered-item');
             $('.test-navigation-item-'+current_question_id).addClass('flagged-item');
             var is_answered_flag = false;
@@ -639,131 +695,6 @@
         }
     }
 
-    // Trigger on click form submit event
-    // $(document).on("click","#submitquestion",function (e) {
-    //     $(".test-all .checkanswer:checked").trigger('change');
-    //     if(APP_LANGUAGE == 'en'){
-    //         var confirm_button_yes_text = BUTTONYESTEXTEN;
-    //     }else{
-    //         var confirm_button_yes_text = BUTTONYESTEXTCH;
-    //     }
-    //     $.confirm({
-    //         title: CONFIRMATION_BUTTON_TEXT,
-    //         content: SUBMIT_TEST_EXERCISE_CONFIRMATION_MESSAGE,
-    //         autoClose: 'No|5000',
-    //         buttons: {
-    //             TryAgain: {
-    //                 text: confirm_button_yes_text,
-    //                 action: function () {
-    //                     var questionspos = "";
-    //                     var ExamType = $("#nextquestionarea .checkanswer").attr("question-type");
-    //                     var language = $("#student-select-attempt-exam-language").val();
-    //                     var no_of_trial_exam = $("input[name=no_of_trial_exam]").val();
-    //                     var exam_id = $("input[name=exam_id]").val();
-    //                     if(ExamType == 2){
-    //                         // Exam type => 2 = Excercise  & 1 = self learning
-    //                         if(isReAttempt === false){
-    //                             AfterCompleteTestFeedback();
-    //                         }else{
-    //                             $("#cover-spin").show();
-    //                             // The logic is second trial attempt test
-    //                             $.ajax({
-    //                                 url: BASE_URL + "/verify/question-answer/test-exercise",
-    //                                 type: "POST",
-    //                                 data:{
-    //                                     _token: $('meta[name="csrf-token"]').attr("content"),
-    //                                     exam_id: exam_id,
-    //                                     no_of_trial_exam: no_of_trial_exam,
-    //                                 },
-    //                                 success: function (response) {
-    //                                     $("#cover-spin").hide();
-    //                                     var Response = JSON.parse(JSON.stringify(response));
-    //                                     if(Response.data.questionNo !=""){
-    //                                         $.each(Response.data.questionNo, function (key, value) {
-    //                                             questionspos += "Q-" + value;
-    //                                             if(Response.data.questionNo - 1 != key){
-    //                                                 questionspos += ", ";
-    //                                             }
-    //                                         });
-    //                                         if(language == "ch"){
-    //                                             questionspos += "<br />" + POPMESSAGE_CH1;
-    //                                             $setPoptitle = POPMESSAGETITLE_CH;
-    //                                             $setYesButtonText = BUTTONYESTEXTCH;
-    //                                             setNoButtonText = BUTTONNOTEXTCH;
-    //                                         }else{
-    //                                             questionspos += "<br />" + POPMESSAGE_EN1;
-    //                                             $setPoptitle = POPMESSAGETITLE_EN;
-    //                                             $setYesButtonText = BUTTONYESTEXTEN;
-    //                                             setNoButtonText = BUTTONNOTEXTEN;
-    //                                         }
-    //                                         $.confirm({
-    //                                             title: $setPoptitle,
-    //                                             content: questionspos,
-    //                                             //autoClose: 'Cancellation|8000',
-    //                                             buttons: {
-    //                                                 TryAgain: {
-    //                                                     text: $setYesButtonText,
-    //                                                     action: function () {
-    //                                                         isReAttempt = false;
-    //                                                         var exam_id = $("input[name=exam_id]").val();
-    //                                                         $("input[name=no_of_trial_exam]").val(2);
-    //                                                         var no_of_trial_exam = $("input[name=no_of_trial_exam]").val();
-    //                                                         var WrongQuestionIds = Response.data.WrongQuestionIds;
-    //                                                         $("#cover-spin").show();
-    //                                                         $.ajax({
-    //                                                             url:BASE_URL + "/student/attempt/exercise/second-trial",
-    //                                                             type: "POST",
-    //                                                             data: {
-    //                                                                 _token: $('meta[name="csrf-token"]').attr("content"),
-    //                                                                 exam_id: exam_id,
-    //                                                                 WrongQuestionIds:WrongQuestionIds,
-    //                                                                 examaction: "Next",
-    //                                                                 language: language,
-    //                                                                 no_of_trial_exam:no_of_trial_exam,
-    //                                                                 second:second
-    //                                                             },
-    //                                                             success: function (Second_Trial_Response) {
-    //                                                                 var SecondTrialResponse = JSON.parse(JSON.stringify(Second_Trial_Response));
-    //                                                                 $('#test_question_review').html(SecondTrialResponse.data.IndexingHtml);
-    //                                                                 $("#nextquestionarea").html(SecondTrialResponse.data.html);
-    //                                                                 MathJax.Hub.Queue(["Typeset",MathJax.Hub]);
-    //                                                                 var FlaggedQuestionIds = new Array();
-    //                                                                 var answered_flag_question_ids = new Array();
-    //                                                                 clearInterval(examTimerInterval);
-    //                                                                 second = SecondTrialResponse.data.second;
-    //                                                                 examTimer();
-    //                                                             }
-    //                                                         });
-    //                                                         $("#cover-spin").hide();
-    //                                                     },
-    //                                                 },
-    //                                                 No: function () {
-    //                                                     $("#cover-spin").hide();
-    //                                                     isReAttempt = false;
-    //                                                     AfterCompleteTestFeedback();
-    //                                                     // $("#attempt-exams").submit();
-    //                                                     // return true;
-    //                                                 }
-    //                                             },
-    //                                         });
-    //                                     }
-    //                                 }
-    //                             });
-    //                         }
-    //                     }else{
-    //                         $("#cover-spin").hide();
-    //                         AfterCompleteTestFeedback();
-    //                     }
-    //                 },
-    //             },
-    //             No: function () {
-    //                 $("#cover-spin").hide();
-    //             }
-    //         },
-    //     });
-    //     //return false;
-    // });
-
     /**
      * USE : Trigger click on event submit button
      */
@@ -788,6 +719,7 @@
         if(ExamType == 2){
             // Exam type => 2 = Excercise  & 1 = self learning
             if(isReAttempt === false){
+                $("#cover-spin").hide();
                 AfterCompleteTestFeedback();
             }else{
                 $("#cover-spin").show();

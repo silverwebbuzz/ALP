@@ -33,14 +33,14 @@
 							@csrf()
                                 <div class="form-row select-data">
                                     <div class="form-group col-md-6">
-                                        <label class="text-bold-600">{{ __('languages.school_management.school_name_en') }}</label>
-                                        <input type="text" class="form-control" name="school_name_en" id="school_name_en" placeholder="{{__('languages.school_management.school_name_en')}}" value="{{old('school_name_en')}}">
+                                        <label class="text-bold-600">{{__('languages.school')}} {{ __('languages.name') }}</label>
+                                        <input type="text" class="form-control" name="school_name_en" id="school_name_en" placeholder="{{__('languages.school')}} {{ __('languages.name') }}" value="{{old('school_name_en')}}">
                                         @if($errors->has('school_name_en'))<span class="validation_error">{{ $errors->first('school_name_en') }}</span>@endif
                                     </div>
 
                                     <div class="form-group col-md-6">
-                                        <label class="text-bold-600">{{ __('languages.school_management.school_name_ch') }}</label>
-                                        <input type="text" class="form-control" name="school_name_ch" id="school_name_ch" placeholder="{{__('languages.school_management.school_name_ch')}}" value="{{old('school_name_ch')}}">
+                                        <label class="text-bold-600">{{__('languages.school')}} {{ __('languages.name') }} ({{__('languages.chinese')}})</label>
+                                        <input type="text" class="form-control" name="school_name_ch" id="school_name_ch" placeholder="{{__('languages.school')}} {{ __('languages.name') }} ({{__('languages.chinese')}})" value="{{old('school_name_ch')}}">
                                         @if($errors->has('school_name_ch'))<span class="validation_error">{{ $errors->first('school_name_ch') }}</span>@endif
                                     </div>
 
@@ -50,27 +50,36 @@
                                         @if($errors->has('school_code'))<span class="validation_error">{{ $errors->first('school_code') }}</span>@endif
                                     </div>
 
-                                    <div class="form-group col-md-6 mb-50">
-                                        <label class="text-bold-600">{{ __('languages.school_management.city') }}</label>
-                                        <input type="text" class="form-control" name="city" id="city" placeholder="{{__('languages.enter_the_city')}}" value="{{old('city')}}">
-                                        @if($errors->has('city'))<span class="validation_error">{{ $errors->first('city') }}</span>@endif
+                                    <div class="form-group col-md-6">
+                                        <label for="users-list-role">{{ __('languages.region') }}</label>
+                                        <fieldset class="form-group">
+                                            <select class="selectpicker form-control" data-show-subtext="true" data-live-search="true" name="region_id" id="region_id">
+                                                @if(isset($Regions) && !empty($Regions))
+                                                    @foreach($Regions as $region)
+                                                    <option value="{{$region->id}}"><?php echo $region->{'region_'.app()->getLocale()}; ?></option>
+                                                    @endforeach
+                                                @endif
+                                            </select>
+                                        </fieldset>
+                                        <span id="error-status"></span>
+                                        @if($errors->has('region_id'))<span class="validation_error">{{ $errors->first('region_id') }}</span>@endif
                                     </div>
 
                                     <div class="form-group col-md-6">
-                                        <label class="text-bold-600">{{ __('languages.school_management.address_en') }}</label>
-                                        <textarea class="form-control" name="address_en" id="address_en" placeholder="{{__('languages.school_management.enter_the_address_en')}}" value="" rows=5>{{old('address_en')}}</textarea>
+                                        <label class="text-bold-600">{{ __('languages.address') }}</label>
+                                        <textarea class="form-control" name="address_en" id="address_en" placeholder="{{ __('languages.address') }}" value="" rows=5>{{old('address_en')}}</textarea>
                                         @if($errors->has('address_en'))<span class="validation_error">{{ $errors->first('address_en') }}</span>@endif
                                     </div>
 
                                     <div class="form-group col-md-6">
-                                        <label class="text-bold-600">{{ __('languages.school_management.address_ch') }}</label>
-                                        <textarea class="form-control" name="address_ch" id="address_ch" placeholder="{{__('languages.school_management.enter_the_address_ch')}}" value="" rows=5>{{old('address_ch')}}</textarea>
+                                        <label class="text-bold-600">{{ __('languages.address') }} ({{__('languages.chinese')}})</label>
+                                        <textarea class="form-control" name="address_ch" id="address_ch" placeholder="{{ __('languages.address') }} ({{__('languages.chinese')}})" value="" rows=5>{{old('address_ch')}}</textarea>
                                         @if($errors->has('address_ch'))<span class="validation_error">{{ $errors->first('address_ch') }}</span>@endif
                                     </div>
 
                                     <div class="form-group col-md-6">
-                                        <label class="text-bold-600">{{ __('languages.school_management.email') }}</label>
-                                        <input type="email" class="form-control" id="email" name="email" placeholder="{{__('languages.email')}}" value="{{old('email')}}">
+                                        <label class="text-bold-600">{{ __('languages.email_address') }} </label>
+                                        <input type="email" class="form-control" id="email" name="email" placeholder="{{ __('languages.email_address') }}" value="{{old('email')}}">
                                         @if($errors->has('email'))<span class="validation_error">{{ $errors->first('email') }}</span>@endif
                                     </div>
                                     <div class="form-group col-md-6 mb-50">
@@ -87,7 +96,7 @@
                                         @if($errors->has('confirm_password'))<span class="validation_error">{{ $errors->first('confirm_password') }}</span>@endif
                                     </div>
                                     <div class="form-group col-md-6">
-                                    <label for="users-list-role">{{ __('languages.status') }}</label>
+                                        <label for="users-list-role">{{ __('languages.status') }}</label>
                                         <fieldset class="form-group">
                                             <select class="selectpicker form-control" data-show-subtext="true" data-live-search="true" name="status" id="status">
                                                 <!-- <option value=''>{{ __('Select Status') }}</option> -->

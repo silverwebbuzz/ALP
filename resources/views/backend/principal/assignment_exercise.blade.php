@@ -22,7 +22,7 @@ if($user_id){
 					<div class="col-md-12">
 						<div class="col-md-12 col-lg-12 col-sm-12 sec-title student-test-list-cls">
 							@if(auth()->user()->role_id != 3  )
-							<h2 class="mb-2 main-title">{{__('languages.exercises')}}</h2>
+							<h2 class="mb-2 main-title">{{__('languages.exercise')}}</h2>
 							@else
 							<h2 class="mb-2 main-title">{{__('languages.sidebar.my_study')}}</h2>
 							@endif
@@ -151,7 +151,7 @@ if($user_id){
 								<th><span>{{__('languages.reference_number')}}</span></th>
                                 <th><span>{{__('languages.title')}}</span></th>
                                 <th>{{__('languages.grade')}} - {{__('languages.class')}}</th>
-                                <th><span>{{__('languages.no_of_students')}}</span></th>
+                                <th><span>{{__('languages.students')}}</span></th>
                                 <th>{{__('languages.progress')}}</th>
                                 <th>{{__('languages.average_accuracy')}}</th>
                                 <th>{{__('languages.study_status')}}</th>
@@ -284,7 +284,7 @@ if($user_id){
 												$gradesClass = [];
 											}
                                         @endphp
-                                        <a href="{{route('exam-configuration-preview', $assignmentExcercise->exam_id)}}" class="ml-2" title="{{__('languages.config')}}">
+                                        <a href="{{route('exam-configuration-preview', $assignmentExcercise->exam_id)}}" class="ml-2" title="{{__('languages.configurations')}}">
 											<i class="fa fa-gear" aria-hidden="true"></i>
 										</a>
                                         <a href="javascript:void(0);" class="exam_questions-info ml-2" data-examid="{{$assignmentExcercise->exam_id}}" title="{{__('languages.preview')}}"><i class="fa fa-book" aria-hidden="true"></i></a>
@@ -469,7 +469,7 @@ if($user_id){
 				<input type="hidden" name="exam_ids" id="exam_ids" value="">
 				<input type="hidden" name="student_ids" id="student_ids" value="">
 				<div class="modal-header">
-					<h4 class="modal-title w-100">{{__('languages.class_ability_analysis')}}</h4>
+					<h4 class="modal-title w-100">{{__('languages.ability_analysis')}}</h4>
 					<button type="button" class="close class-ability-analysis-report-close-pop" data-dismiss="modal" aria-hidden="true">&times;</button>
 				</div>
 				<div class="modal-body">
@@ -505,7 +505,7 @@ if($user_id){
 		<div class="modal-content">
 			<form method="post">
 				<div class="modal-header">
-					<h4 class="modal-title w-100">{{__('languages.question_difficulty_analysis')}}</h4>
+					<h4 class="modal-title w-100">{{__('languages.difficulty_analysis')}}</h4>
 					<button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
 				</div>
 				<div class="modal-body Graph-body">

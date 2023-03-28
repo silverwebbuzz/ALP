@@ -38,7 +38,7 @@
     
     <link rel="stylesheet" href="{{asset('css/select2.min.css')}}"/>
     <link href="{{asset('css/jquery.timepicker.min.css')}}" rel="stylesheet"/>
-
+    
     <script src="{{ asset('js/jquery-3.6.0.min.js')}}"></script>
     <script src="{{ asset('toastr/toastr.min.js') }}"></script>
     <script src="{{ asset('js/jquery/3.4.1/jquery.min.js') }}"></script>
@@ -90,7 +90,10 @@
             $('#content').addClass('<?php echo Session::get('sidebar_option'); ?>');
         </script>
     <?php }else{ ?>
-        <script> $('#content').addClass('sidebar-close');</script>
+        <script> 
+            // $('#content').addClass('sidebar-close');
+            $('#content').addClass('sidebar-open');
+        </script>
     <?php }?>
 
     <?php if(!empty(Session::get('sidebar'))){ ?>
@@ -98,7 +101,10 @@
             $('#sidebar').addClass('<?php echo Session::get('sidebar'); ?>');
         </script>
     <?php }else{ ?>
-        <script> $('#sidebar').addClass('active');</script>
+        <script> 
+            // $('#sidebar').addClass('active');
+            $('#sidebar').addClass('inactive');
+        </script>
     <?php }?>
 
     <!--  JS File -->

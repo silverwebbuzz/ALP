@@ -106,11 +106,17 @@ class ClassController extends Controller
                         );
                         $Subjects = Subjects::create($PostData);
                         if(!empty($Subjects)){
-                            GradeSchoolMappings::create([
+                            if(GradeSchoolMappings::create([
                                 cn::GRADES_MAPPING_CURRICULUM_YEAR_ID_COL   => $this->GetCurriculumYear(),
                                 cn::GRADES_MAPPING_SCHOOL_ID_COL            => Auth::user()->{cn::USERS_SCHOOL_ID_COL},
-                                cn::GRADES_MAPPING_GRADE_ID_COL             => $Grades->id
-                            ]);
+                                cn::GRADES_MAPPING_GRADE_ID_COL             => $Grades->{cn::GRADES_ID_COL}
+                            ])->doesntExist()){
+                                GradeSchoolMappings::create([
+                                    cn::GRADES_MAPPING_CURRICULUM_YEAR_ID_COL   => $this->GetCurriculumYear(),
+                                    cn::GRADES_MAPPING_SCHOOL_ID_COL            => Auth::user()->{cn::USERS_SCHOOL_ID_COL},
+                                    cn::GRADES_MAPPING_GRADE_ID_COL             => $Grades->{cn::GRADES_ID_COL}
+                                ]);
+                            }
                             $ClassSubjectMapping = ClassSubjectMapping::create([
                                                     cn::CLASS_SUBJECT_MAPPING_CURRICULUM_YEAR_ID_COL    => $this->GetCurriculumYear(),
                                                     cn::CLASS_SUBJECT_MAPPING_SUBJECT_ID_COL            => $Subjects->{cn::SUBJECTS_ID_COL},
@@ -140,11 +146,17 @@ class ClassController extends Controller
                     }else{
                         $Subjects = Subjects::where([cn::SUBJECTS_NAME_COL => cn::SUBJECTMATHEMATICS])->first();
                         if(!empty($Subjects)){
-                            GradeSchoolMappings::create([
+                            if(GradeSchoolMappings::create([
                                 cn::GRADES_MAPPING_CURRICULUM_YEAR_ID_COL   => $this->GetCurriculumYear(),
                                 cn::GRADES_MAPPING_SCHOOL_ID_COL            => Auth::user()->{cn::USERS_SCHOOL_ID_COL},
-                                cn::GRADES_MAPPING_GRADE_ID_COL             => $Grades->{cn::GRADES_ID_COL},
-                            ]);
+                                cn::GRADES_MAPPING_GRADE_ID_COL             => $Grades->{cn::GRADES_ID_COL}
+                            ])->doesntExist()){
+                                GradeSchoolMappings::create([
+                                    cn::GRADES_MAPPING_CURRICULUM_YEAR_ID_COL   => $this->GetCurriculumYear(),
+                                    cn::GRADES_MAPPING_SCHOOL_ID_COL            => Auth::user()->{cn::USERS_SCHOOL_ID_COL},
+                                    cn::GRADES_MAPPING_GRADE_ID_COL             => $Grades->{cn::GRADES_ID_COL}
+                                ]);
+                            }
                             $ClassSubjectMapping = ClassSubjectMapping::create([
                                                     cn::CLASS_SUBJECT_MAPPING_SUBJECT_ID_COL    => $Subjects->{cn::SUBJECTS_ID_COL},
                                                     cn::CLASS_SUBJECT_MAPPING_CLASS_ID_COL      => $Grades->{cn::GRADES_ID_COL},
@@ -259,14 +271,15 @@ class ClassController extends Controller
                                 // Clone and mapping data
                                 //$this->StrandUnitObjectivesMappingClone($Grades->{cn::GRADES_ID_COL},$Subjects->{cn::SUBJECTS_ID_COL});
                                 Log::info('Job Success - Redirect success page');
-                                return redirect('class')->with('success_msg', __('languages.class_added_successfully'));                            
+                                return redirect('class')->with('success_msg', __('languages.class_added_successfully'));
                             }else{
                                 return back()->with('error_msg', __('languages.problem_was_occur_please_try_again'));
                             }
                         }
                     }
                 }else{
-                    return back()->with('error_msg', __('validation.grade_is_already_exists'));
+                    //return back()->with('error_msg', __('validation.grade_is_already_exists'));
+                    return redirect('class')->with('success_msg', __('languages.class_added_successfully'));
                 }
             }
         }catch(Exception $exception){

@@ -46,6 +46,7 @@ class DbConstant {
     const USERS_ADDRESS_COL ='address';
     const USERS_GENDER_COL ='gender';
     const USERS_CITY_COL ='city';
+    const USERS_REGION_ID_COL ='region_id';
     const USERS_DATE_OF_BIRTH_COL ='dob';
     const USERS_PASSWORD_COL = 'password';
     const USERS_PROFILE_PHOTO_COL = 'profile_photo';
@@ -98,7 +99,6 @@ class DbConstant {
     const MODULES_UPDATED_AT_COL  = 'updated_at';
 
     //SCHOOL TABLE
-
     const SCHOOL_TABLE_NAME = 'school';
     const SCHOOL_ID_COLS = 'id';
     const SCHOOL_SCHOOL_NAME_COL = 'school_name';
@@ -110,6 +110,7 @@ class DbConstant {
     const SCHOOL_SCHOOL_ADDRESS_EN_COL = 'school_address_en';
     const SCHOOL_SCHOOL_ADDRESS_CH_COL = 'school_address_ch';
     const SCHOOL_SCHOOL_CITY = 'city';
+    const SCHOOL_REGION_ID_COL ='region_id';
     const SCHOOL_DESCRIPTION_EN_COL = 'description_en';
     const SCHOOL_DESCRIPTION_CH_COL = 'description_ch';
     const SCHOOL_SCHOOL_STATUS = 'status';
@@ -1018,5 +1019,26 @@ class DbConstant {
     const LEARNING_OBJECTIVES_SKILLS_LEARNING_OBJECTIVE_ID_COL = "learning_objective_id";
     const LEARNING_OBJECTIVES_SKILLS_LEARNING_SKILL_COL = "learning_objectives_skill";
 
+    /** Learning Progress Learning Unit */
+    const LEARNING_UNITS_PROGRESS_REPORT_TABLE = "learning_units_progress_report";
+    const LEARNING_UNITS_PROGRESS_REPORT_ID_COL = "id";
+    const LEARNING_UNITS_PROGRESS_REPORT_STUDENT_ID = "student_id";
+    const LEARNING_UNITS_PROGRESS_REPORT_LEARNING_PROGRESS_ALL_COL = "learning_progress_all";
+    const LEARNING_UNITS_PROGRESS_REPORT_LEARNING_PROGRESS_TEST_COL = "learning_progress_test";
+    const LEARNING_UNITS_PROGRESS_REPORT_LEARNING_PROGRESS_TESTING_ZONE_COL = "learning_progress_testing_zone";
 
+    /** Learning Progress Learning Objectives */
+    const LEARNING_OBJECTIVES_PROGRESS_REPORT_TABLE = "learning_objectives_progress_report";
+    const LEARNING_OBJECTIVES_PROGRESS_REPORT_ID_COL = "id";
+    const LEARNING_OBJECTIVES_PROGRESS_REPORT_STUDENT_ID = "student_id";
+    const LEARNING_OBJECTIVES_PROGRESS_REPORT_LEARNING_PROGRESS_ALL_COL = "learning_progress_all";
+    const LEARNING_OBJECTIVES_PROGRESS_REPORT_LEARNING_PROGRESS_TEST_COL = "learning_progress_test";
+    const LEARNING_OBJECTIVES_PROGRESS_REPORT_LEARNING_PROGRESS_TESTING_ZONE_COL = "learning_progress_testing_zone";
+
+    /** Regions Table */
+    const REGIONS_TABLE = 'regions';
+    const REGIONS_ID_COL = 'id';
+    const REGIONS_REGION_EN_COL = 'region_en';
+    const REGIONS_REGION_CH_COL = 'region_ch';
+    const REGIONS_STATUS_COL = 'status';
 }

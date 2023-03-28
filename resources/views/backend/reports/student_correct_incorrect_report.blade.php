@@ -300,7 +300,7 @@
 				<div class="modal-content">
 					<form method="post">
 						<div class="modal-header">
-							<h4 class="modal-title w-100">{{__('languages.student_performance_graph')}}</h4>
+							<h4 class="modal-title w-100">{{__('languages.performance_graph')}}</h4>
 							<button type="button" class="close" onclick="destroyCanvas()" data-dismiss="modal" aria-hidden="true">&times;</button>
 						</div>
 						<div class="modal-body">

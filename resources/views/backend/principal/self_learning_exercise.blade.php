@@ -236,7 +236,7 @@ if($user_id){
                                                 <a href="javascript:void(0);" class="exam_questions-info ml-2" data-examid="{{$selflearningTest->exam_id}}" title="{{__('languages.preview')}}"><i class="fa fa-book" aria-hidden="true"></i></a>
                                                 <a href="javascript:void(0);" class="result_summary ml-2" data-examid="{{$selflearningTest->exam_id}}" data-studentids="{{$selflearningTest->student_ids}}" title="{{__('languages.result_summary')}}"><i class="fa fa-bar-chart" aria-hidden="true"></i></a>
                                                 @if(isset($selflearningTest->exams) && !empty($selflearningTest->exams->learning_objectives_configuration))
-                                                <a href="{{route('self_learning.preview',$selflearningTest->exams->id)}}" class="ml-2" title="{{__('languages.config')}}">
+                                                <a href="{{route('self_learning.preview',$selflearningTest->exams->id)}}" class="ml-2" title="{{__('languages.configurations')}}">
                                                     <i class="fa fa-gear" aria-hidden="true"></i>
                                                 </a>
                                                 @endif
@@ -303,7 +303,7 @@ if($user_id){
 				<input type="hidden" name="exam_ids" id="exam_ids" value="">
 				<input type="hidden" name="student_ids" id="student_ids" value="">
 				<div class="modal-header">
-					<h4 class="modal-title w-100">{{__('languages.class_ability_analysis')}}</h4>
+					<h4 class="modal-title w-100">{{__('languages.ability_analysis')}}</h4>
 					<button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
 				</div>
 				<div class="modal-body">
@@ -337,7 +337,7 @@ if($user_id){
 		<div class="modal-content">
 			<form method="post">
 				<div class="modal-header">
-					<h4 class="modal-title w-100">{{__('languages.question_difficulty_analysis')}}</h4>
+					<h4 class="modal-title w-100">{{__('languages.difficulty_analysis')}}</h4>
 					<button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
 				</div>
 				<div class="modal-body Graph-body">

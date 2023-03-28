@@ -173,7 +173,8 @@ $(function (){
 					'strands_ids': $strandIds
 				},
 				success: function(response) {
-					$('#learning_unit').html('');
+                    // $('#learning_unit').html('');
+					$(classNameLearningUnit).html('');
 					$("#cover-spin").hide();
 					var data = JSON.parse(JSON.stringify(response));
 					if(data){

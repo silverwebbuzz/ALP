@@ -37,13 +37,13 @@
 							@csrf()
                                 <div class="form-row select-data">
                                     <div class="form-group col-md-6">
-                                        <label class="text-bold-600" for="exampleInputUsername1">{{ __('languages.user_activity.english_name') }}</label>
-                                        <input type="text" class="form-control" name="name_en" id="strand_name_en" placeholder="{{__('languages.user_activity.english_name')}}" value="{{old('strand_name_en')}}">
+                                        <label class="text-bold-600" for="exampleInputUsername1">{{__('languages.name')}}</label>
+                                        <input type="text" class="form-control" name="name_en" id="strand_name_en" placeholder="{{__('languages.name')}}" value="{{old('strand_name_en')}}">
                                         @if($errors->has('name_en'))<span class="validation_error">{{ $errors->first('name_en') }}</span>@endif
                                     </div>
                                     <div class="form-group col-md-6">
-                                        <label class="text-bold-600" for="exampleInputUsername1">{{ __('languages.user_activity.chinese_name') }}</label>
-                                        <input type="text" class="form-control" name="name_ch" id="strand_name_ch" placeholder="{{ __('languages.user_activity.chinese_name') }}" value="{{old('strand_name_ch')}}">
+                                        <label class="text-bold-600" for="exampleInputUsername1">{{__('languages.name')}} ({{ __('languages.chinese') }})</label>
+                                        <input type="text" class="form-control" name="name_ch" id="strand_name_ch" placeholder="{{__('languages.name')}} ({{ __('languages.chinese') }})" value="{{old('strand_name_ch')}}">
                                         @if($errors->has('name_ch'))<span class="validation_error">{{ $errors->first('name_ch') }}</span>@endif
                                     </div>
                                 </div>

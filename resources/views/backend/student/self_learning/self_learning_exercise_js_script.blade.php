@@ -47,7 +47,7 @@ $(function (){
         }
     });
 
-    $(document).on('click', '.generate-self-learning', function() {
+    $(document).on('click', '.generate-self-learning', function() {        
         var currentStep = $(this).attr('data-stepid');
         if(checkValidation(currentStep) && currentStep == 2 && $('.form-steps.step1 .error').length==0){
             if($('#difficulty_mode').val()=='auto'){
@@ -177,7 +177,7 @@ $(function (){
 					'strands_ids': $strandIds
 				},
 				success: function(response) {
-					$('#learning_unit').html('');
+					$(classNameLearningUnit).html('');
 					$("#cover-spin").hide();
 					var data = JSON.parse(JSON.stringify(response));
 					if(data){
@@ -264,7 +264,7 @@ $(function (){
                                                         <option value="5">5</option>\
                                                     </select>';
                                             }
-                                            html += '<input type="text" name="learning_unit['+this.learning_unit_id+'][learning_objective]['+this.id+'][get_no_of_question_learning_objectives]" value="'+data.data.getNoOfQuestionPerLearningObjective[this.id]+'" class="get_no_of_question_learning_objectives" min="'+data.data.getNoOfQuestionPerLearningObjective[this.id]+'" max="'+maximum_question_per_skill+'">\
+                                            html += '<input type="text" name="learning_unit['+this.learning_unit_id+'][learning_objective]['+this.id+'][get_no_of_question_learning_objectives]" value="'+data.data.getNoOfQuestionPerLearningObjective[this.id]+'" class="get_no_of_question_learning_objectives" min="'+data.data.getNoOfQuestionPerLearningObjective[this.id]+'" max="'+maximum_question_per_skill+'" readonly>\
                                         </div>';
 							});
                             $('.selection-learning-objectives-section').html(html);

@@ -9,6 +9,7 @@ use Illuminate\Support\Facades\Hash;
 use App\Models\User;
 use App\Models\School;
 use App\Models\Role;
+use App\Models\Regions;
 use App\Traits\Common;
 use App\Jobs\DeleteUserDataJob;
 use Auth;
@@ -17,6 +18,10 @@ use App\Helpers\Helper;
 class SchoolUsersController extends Controller
 {
     use Common;
+
+    public function __construct(){
+        
+    }
 
     /**
      * USE : Listing page school users
@@ -28,24 +33,25 @@ class SchoolUsersController extends Controller
             }
             $items = $request->items ?? 10;
             $schoolList = School::all();
-            $roleList = Role::whereIn(cn::ROLES_ID_COL,[
-                            cn::PRINCIPAL_ROLE_ID,
-                            cn::PANEL_HEAD_ROLE_ID,
-                            cn::CO_ORDINATOR_ROLE_ID,
-                            cn::TEACHER_ROLE_ID,
-                            cn::STUDENT_ROLE_ID
-                        ])->get();
+            $Roles = [
+                cn::PRINCIPAL_ROLE_ID,
+                cn::PANEL_HEAD_ROLE_ID,
+                cn::CO_ORDINATOR_ROLE_ID,
+                cn::TEACHER_ROLE_ID
+            ];
+            if($this->isAdmin()){
+                $Roles[] = cn::STUDENT_ROLE_ID;
+            }
+            $roleList = Role::whereIn(cn::ROLES_ID_COL,$Roles)->get();
             $UsersList = [];
-            $UsersList = User::with(['roles','schools'])
-                        ->where(function($q){
-                            $q->whereIn(cn::USERS_ROLE_ID_COL,[
-                                cn::PRINCIPAL_ROLE_ID,
-                                cn::PANEL_HEAD_ROLE_ID,
-                                cn::CO_ORDINATOR_ROLE_ID,
-                                cn::TEACHER_ROLE_ID,
-                                cn::STUDENT_ROLE_ID
-                            ])
-                            ->orWhereIn(cn::USERS_ID_COL,$this->curriculum_year_mapping_student_ids());
+            $UsersList = User::with(['roles','schools','Region'])
+                        ->where(function($q) use($Roles){
+                            if($this->isAdmin()){
+                                $q->whereIn(cn::USERS_ROLE_ID_COL,$Roles)
+                                ->orWhereIn(cn::USERS_ID_COL,$this->curriculum_year_mapping_student_ids());
+                            }else{
+                                $q->whereIn(cn::USERS_ROLE_ID_COL,$Roles);
+                            }
                         })
                         ->where(function($q){
                             if(Auth::user()->{cn::USERS_SCHOOL_ID_COL}){
@@ -56,21 +62,19 @@ class SchoolUsersController extends Controller
                         ->orderBy(cn::USERS_ID_COL,'DESC')
                         ->paginate($items);
             if(isset($request->filter) && !empty($request->filter)){
-                $Query = User::select('*')->with(['roles','schools'])
+                $Query = User::select('*')->with(['roles','schools','Region'])
                         ->where(function($q){
                             if(Auth::user()->{cn::USERS_SCHOOL_ID_COL}){
                                 $q->where(cn::USERS_SCHOOL_ID_COL,Auth::user()->{cn::USERS_SCHOOL_ID_COL});
                             }
                         })
-                        ->where(function($q){
-                            $q->whereIn(cn::USERS_ROLE_ID_COL,[
-                                cn::PRINCIPAL_ROLE_ID,
-                                cn::PANEL_HEAD_ROLE_ID,
-                                cn::CO_ORDINATOR_ROLE_ID,
-                                cn::TEACHER_ROLE_ID,
-                                cn::STUDENT_ROLE_ID
-                            ])
-                            ->orWhereIn(cn::USERS_ID_COL,$this->curriculum_year_mapping_student_ids());
+                        ->where(function($q) use($Roles){
+                            if($this->isAdmin()){
+                                $q->whereIn(cn::USERS_ROLE_ID_COL,$Roles)
+                                ->orWhereIn(cn::USERS_ID_COL,$this->curriculum_year_mapping_student_ids());
+                            }else{
+                                $q->whereIn(cn::USERS_ROLE_ID_COL,$Roles);
+                            }
                         });
                 //search by school
                 if(isset($request->school_id) && !empty($request->school_id)){
@@ -106,6 +110,7 @@ class SchoolUsersController extends Controller
             if(!$this->isAdmin() && Auth::user()->{cn::USERS_IS_SCHOOL_ADMIN_PRIVILEGE_ACCESS_COL} == 'no'){
                 return  redirect(Helper::redirectRoleBasedDashboard(Auth::user()->{cn::USERS_ID_COL}));
             }
+            $Regions = Regions::where(cn::REGIONS_STATUS_COL,'active')->get();
             $Schools = School::where(cn::SCHOOL_SCHOOL_STATUS,'active')->orderBy('id','DESC')->get();
             $Roles = Role::whereIn(cn::ROLES_ID_COL,[
                         cn::PRINCIPAL_ROLE_ID,
@@ -113,7 +118,7 @@ class SchoolUsersController extends Controller
                         cn::CO_ORDINATOR_ROLE_ID,
                         cn::TEACHER_ROLE_ID
                     ])->get();
-            return view('backend.SchoolUsersManagement.add',compact('Roles','Schools'));
+            return view('backend.SchoolUsersManagement.add',compact('Roles','Schools','Regions'));
         }catch(\Exception $exception) {
             return back()->withError($exception->getMessage())->withInput();
         }
@@ -146,6 +151,7 @@ class SchoolUsersController extends Controller
             $UserModel->{cn::USERS_STATUS_COL}                              = $request->status ?? 'active';
             $UserModel->{cn::USERS_CREATED_BY_COL}                          = auth()->user()->{cn::USERS_ID_COL};
             $UserModel->{cn::USERS_IS_SCHOOL_ADMIN_PRIVILEGE_ACCESS_COL}    = $request->is_school_admin_privilege_access;
+            $UserModel->{cn::USERS_REGION_ID_COL}                           = ($request->region_id) ? $request->region_id : null;
             $Users = $UserModel->save();
             $Users = $UserModel->latest()->first();
             if($Users){
@@ -167,6 +173,7 @@ class SchoolUsersController extends Controller
             if(!$this->isAdmin() && Auth::user()->{cn::USERS_IS_SCHOOL_ADMIN_PRIVILEGE_ACCESS_COL} == 'no'){
                 return  redirect(Helper::redirectRoleBasedDashboard(Auth::user()->{cn::USERS_ID_COL}));
             }
+            $Regions = Regions::where(cn::REGIONS_STATUS_COL,'active')->get();
             $Schools = School::where(cn::SCHOOL_SCHOOL_STATUS,'active')->orderBy('id','DESC')->get();
             $Roles = Role::whereIn(cn::ROLES_ID_COL,[
                         cn::PRINCIPAL_ROLE_ID,
@@ -175,7 +182,7 @@ class SchoolUsersController extends Controller
                         cn::TEACHER_ROLE_ID
                     ])->get();
             $user = User::find($id);
-            return view('backend.SchoolUsersManagement.edit',compact('Roles','Schools','user'));
+            return view('backend.SchoolUsersManagement.edit',compact('Roles','Schools','user','Regions'));
         }catch(\Exception $exception) {
             return back()->withError($exception->getMessage())->withInput();
         }
@@ -206,6 +213,7 @@ class SchoolUsersController extends Controller
                 cn::USERS_EMAIL_COL         => $request->email,
                 cn::USERS_MOBILENO_COL      => ($request->mobile_no) ? $this->encrypt($request->mobile_no) : null,
                 cn::USERS_IS_SCHOOL_ADMIN_PRIVILEGE_ACCESS_COL => $request->is_school_admin_privilege_access,
+                cn::USERS_REGION_ID_COL     => ($request->region_id) ? $request->region_id : null,
                 cn::USERS_STATUS_COL        => $request->status ?? 'active'
             );
             $User = User::where(cn::USERS_ID_COL,$id)->Update($PostData);            
@@ -238,5 +246,13 @@ class SchoolUsersController extends Controller
         }catch (\Exception $exception) {
             return $this->sendError($exception->getMessage(), 404);
         }
+    }
+
+    /**
+     * USE : Delete multiple school user
+     */
+    public function DeleteMultipleSchoolUser(Request $request){
+        dispatch(new DeleteUserDataJob($request->record_ids))->delay(now()->addSeconds(1));
+        return $this->sendResponse([], __('languages.user_deleted_successfully'));
     }
 }

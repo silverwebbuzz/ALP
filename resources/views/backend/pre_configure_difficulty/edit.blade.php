@@ -40,7 +40,7 @@
                                         <label for="users-list-role">{{ __('languages.pre_configure_difficulty.difficulty_level') }}</label>
                                         <fieldset class="form-group">
                                             <select class="selectpicker form-control" data-show-subtext="true" data-live-search="true" name="difficulty_level" id="difficultyLevel">
-                                                <option value=''>{{ __('languages.pre_configure_difficulty.select_difficulty_level') }}</option>
+                                                <option value=''>{{ __('languages.pre_configure_difficulty.difficulty_level') }}</option>
                                                 @if(!empty($difficultyLevels))
                                                     @foreach($difficultyLevels as $difficultyLevel)
                                                     <option value="{{$difficultyLevel['id']}}" {{ ($preConfigureData->difficulty_level == $difficultyLevel['id']) ?  'selected' : '' }}>{{ $difficultyLevel['name']}}</option>
@@ -53,14 +53,14 @@
                                     </div>
 
                                     <div class="form-group col-md-6">
-                                        <label class="text-bold-600">{{ __('languages.name_english') }}</label>
-                                        <input type="text" class="form-control" name="difficulty_level_name_en" id="difficulty_level_name_en" placeholder="{{ __('languages.name_english') }}" value="{{$preConfigureData->difficulty_level_name_en}}">
+                                        <label class="text-bold-600">{{ __('languages.difficulty') }} {{ __('languages.name') }}</label>
+                                        <input type="text" class="form-control" name="difficulty_level_name_en" id="difficulty_level_name_en" placeholder="{{ __('languages.difficulty') }} {{ __('languages.name') }}" value="{{$preConfigureData->difficulty_level_name_en}}">
                                         @if($errors->has('difficulty_level_name_en'))<span class="validation_error">{{ $errors->first('difficulty_level_name_en') }}</span>@endif
                                     </div>
 
                                     <div class="form-group col-md-6">
-                                        <label class="text-bold-600">{{ __('languages.name_chinese') }}</label>
-                                        <input type="text" class="form-control" name="difficulty_level_name_ch" id="difficulty_level_name_ch" placeholder="{{ __('languages.name_chinese') }}" value="{{$preConfigureData->difficulty_level_name_ch}}">
+                                        <label class="text-bold-600">{{ __('languages.difficulty') }} {{ __('languages.name') }} ({{__('languages.chinese')}})</label>
+                                        <input type="text" class="form-control" name="difficulty_level_name_ch" id="difficulty_level_name_ch" placeholder="{{ __('languages.difficulty') }} {{ __('languages.name') }} ({{__('languages.chinese')}})" value="{{$preConfigureData->difficulty_level_name_ch}}">
                                         @if($errors->has('difficulty_level_name_ch'))<span class="validation_error">{{ $errors->first('difficulty_level_name_ch') }}</span>@endif
                                     </div>
 

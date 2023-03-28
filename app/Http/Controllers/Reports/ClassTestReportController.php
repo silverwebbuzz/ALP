@@ -343,6 +343,7 @@ class ClassTestReportController extends Controller
      * USE : Class test report, correct and incorrect (table version, correct/wrong)
      */
     public function ClassTestResultCorrectIncorrectAnswers(Request $request){
+
         $isRemainderEnable = false;
         if(isset($request->isLoggedIn) && !empty($request->isLoggedIn)){
             if($this->isSchoolLogin() || $this->isPrincipalLogin() || $this->isPanelHeadLogin() || $this->isCoOrdinatorLogin()){
@@ -479,7 +480,7 @@ class ClassTestReportController extends Controller
             $studentList =  User::where([
                                 cn::USERS_ROLE_ID_COL => cn::STUDENT_ROLE_ID,
                                 cn::USERS_SCHOOL_ID_COL => Auth::user()->{cn::USERS_SCHOOL_ID_COL}
-                            ])                            
+                            ])
                             ->with('grades')
                             ->pluck(cn::USERS_ID_COL)
                             ->toArray();
@@ -582,17 +583,15 @@ class ClassTestReportController extends Controller
             }
 
             if($this->isTeacherLogin()){
-
                 $TeacherGradeClass = $this->TeacherGradesClassService->getTeacherAssignedGradesClass($schoolId, Auth::user()->{cn::USERS_ID_COL});
-                
-                $AvailableClassIds =  ExamGradeClassMappingModel::where([
-                                                        cn::EXAM_SCHOOL_GRADE_CLASS_MAPPING_CURRICULUM_YEAR_ID_COL  => $this->GetCurriculumYear(),
-                                                        cn::EXAM_SCHOOL_GRADE_CLASS_MAPPING_EXAM_ID_COL             => $request->exam_id,
-                                                        cn::EXAM_SCHOOL_GRADE_CLASS_MAPPING_SCHOOL_ID_COL           => Auth::user()->{cn::USERS_SCHOOL_ID_COL},
-                                                        cn::EXAM_SCHOOL_GRADE_CLASS_MAPPING_STATUS_COL              => 'publish'
-                                                    ])
-                                                    ->whereIn(cn::EXAM_SCHOOL_GRADE_CLASS_MAPPING_CLASS_ID_COL,$TeacherGradeClass['class'])
-                                                    ->pluck(cn::EXAM_SCHOOL_GRADE_CLASS_MAPPING_CLASS_ID_COL)->toArray();
+                $AvailableClassIds =    ExamGradeClassMappingModel::where([
+                                            cn::EXAM_SCHOOL_GRADE_CLASS_MAPPING_CURRICULUM_YEAR_ID_COL  => $this->GetCurriculumYear(),
+                                            cn::EXAM_SCHOOL_GRADE_CLASS_MAPPING_EXAM_ID_COL             => $request->exam_id,
+                                            cn::EXAM_SCHOOL_GRADE_CLASS_MAPPING_SCHOOL_ID_COL           => Auth::user()->{cn::USERS_SCHOOL_ID_COL},
+                                            cn::EXAM_SCHOOL_GRADE_CLASS_MAPPING_STATUS_COL              => 'publish'
+                                        ])
+                                        ->whereIn(cn::EXAM_SCHOOL_GRADE_CLASS_MAPPING_CLASS_ID_COL,$TeacherGradeClass['class'])
+                                        ->pluck(cn::EXAM_SCHOOL_GRADE_CLASS_MAPPING_CLASS_ID_COL)->toArray();
                                                     
                 if(!empty($request->class_type_id)){
                     $AvailableClassIds = (is_array($request->class_type_id)) ? $request->class_type_id : [$request->class_type_id];
@@ -607,8 +606,8 @@ class ClassTestReportController extends Controller
                                         ->pluck(cn::GRADE_CLASS_MAPPING_NAME_COL,cn::GRADE_CLASS_MAPPING_ID_COL)
                                         ->toArray();                                        
                 $studentList =  User::where(cn::USERS_ID_COL,$this->curriculum_year_mapping_student_ids($request->grade_id,'',$schoolId))
-                                    ->where(cn::USERS_ROLE_ID_COL,cn::STUDENT_ROLE_ID)
-                                    ->pluck(cn::USERS_ID_COL)->toArray();                                         
+                                ->where(cn::USERS_ROLE_ID_COL,cn::STUDENT_ROLE_ID)
+                                ->pluck(cn::USERS_ID_COL)->toArray();                                         
             }
 
             if($this->isAdmin()){
@@ -981,13 +980,32 @@ class ClassTestReportController extends Controller
                                 cn::EXAM_TABLE_ID_COLS => $request->exam_id
                             ])
                             ->whereRaw("find_in_set($currentLoggedSchoolId,school_id)")->first();
-                $studentList =  User::where([
-                                    cn::USERS_ROLE_ID_COL => cn::STUDENT_ROLE_ID,
-                                    cn::USERS_SCHOOL_ID_COL => $currentLoggedSchoolId
-                                ])                            
-                                ->with('grades')
-                                ->pluck(cn::USERS_ID_COL)
-                                ->toArray();
+                // $studentList =  User::where([
+                //                     cn::USERS_ROLE_ID_COL => cn::STUDENT_ROLE_ID,
+                //                     cn::USERS_SCHOOL_ID_COL => $currentLoggedSchoolId
+                //                 ])                            
+                //                 ->with('grades')
+                //                 ->pluck(cn::USERS_ID_COL)
+                //                 ->toArray();
+                if(isset($request->class_type_id)){
+                    $studentList =  User::where([
+                                        cn::USERS_ROLE_ID_COL => cn::STUDENT_ROLE_ID,
+                                        cn::USERS_SCHOOL_ID_COL => $currentLoggedSchoolId
+                                    ])
+                                    ->get()
+                                    ->where('CurriculumYearGradeId',$request->grade_id)
+                                    ->whereIn('CurriculumYearClassId',$GradeClassMapping)
+                                    ->pluck(cn::USERS_ID_COL)->toArray();                                    
+                }else{
+                    $studentList =  User::where([
+                                        cn::USERS_ROLE_ID_COL => cn::STUDENT_ROLE_ID,
+                                        cn::USERS_SCHOOL_ID_COL => $currentLoggedSchoolId
+                                    ])                            
+                                    ->with('grades')
+                                    ->pluck(cn::USERS_ID_COL)
+                                    ->toArray();
+                }
+                
             }else{
                 if($this->isAdmin()){
                     $getClasses = $this->getClassesByRoles($request->exam_id,$request->exam_school_id,$request->grade_id);
@@ -998,7 +1016,7 @@ class ClassTestReportController extends Controller
             if($this->isAdmin()){
                 $getClasses = $this->getClassesByRoles($request->exam_id,$request->exam_school_id,$request->grade_id);
             }
-
+           
             if(!empty($ExamData)){
                 /* For Display a Group in Dialog Box */ 
                 if(!empty($ExamData->peer_group_ids)){
@@ -1208,7 +1226,7 @@ class ClassTestReportController extends Controller
                     
                 }   
             }
-        }        
+        }
         // Sorting array based on query sting params
         if(isset($_GET['sort_by_type']) && isset($_GET['sort_by_value'])){
             // Sorting based on student names
@@ -1241,9 +1259,15 @@ class ClassTestReportController extends Controller
         }else{
             usort($ResultList, $this->make_comparer(['student_name', SORT_ASC]));
         }
+
+        // Get Page name
+        $menuItem = '';
+        if(isset($ExamData->id) && !empty($ExamData->id)){
+            $menuItem = $this->GetPageName($ExamData->id);
+        }
         return view('backend/reports/class_test_result_correct_incorrect',compact('examType','peerGroupData','getClasses','SchoolList','GradeList','ExamList',
         'ResultList','QuestionSkills','ExamData','studentsRanks','grade_id','class_type_id','group_id','GradeClassListData','QuestionAnswerData',
-        'PeerGroupList','schoolList','isRemainderEnable'));
+        'PeerGroupList','schoolList','isRemainderEnable','menuItem'));
     }
 
     /**
@@ -1567,8 +1591,18 @@ class ClassTestReportController extends Controller
                     }
                     // Run query
                     $ExamGradeClassData = $ExamGradeClassQuery->pluck(cn::EXAM_SCHOOL_GRADE_CLASS_MAPPING_STUDENT_IDS_COL);
-                    if(isset($ExamGradeClassData) && !empty($ExamGradeClassData)){
+                    if(isset($ExamGradeClassData) && !empty($ExamGradeClassData) && !empty($ExamGradeClassData[0])){
                         $StudentIds = explode(',',$ExamGradeClassData[0]);
+                    }
+
+                    if(empty($StudentIds) && isset($request->GradeId) && !empty($request->ClassIds)){
+                        $StudentIds =   User::where(cn::USERS_SCHOOL_ID_COL,$SchoolId)
+                                        ->where(cn::USERS_ROLE_ID_COL,cn::STUDENT_ROLE_ID)
+                                        ->get()
+                                        ->where('CurriculumYearGradeId',$request->GradeId)
+                                        ->whereIn('CurriculumYearClassId',$request->ClassIds)
+                                        ->pluck(cn::USERS_ID_COL)
+                                        ->toArray();
                     }
                 }
                 
@@ -1634,8 +1668,18 @@ class ClassTestReportController extends Controller
             }
             // Run query
             $ExamGradeClassData = $ExamGradeClassQuery->pluck(cn::EXAM_SCHOOL_GRADE_CLASS_MAPPING_STUDENT_IDS_COL);
-            if(isset($ExamGradeClassData) && !empty($ExamGradeClassData)){
+            if(isset($ExamGradeClassData) && !empty($ExamGradeClassData) && !empty($ExamGradeClassData[0])){
                 $StudentIds = explode(',',$ExamGradeClassData[0]);
+            }
+
+            if(empty($StudentIds) && isset($request->GradeId) && !empty($request->ClassIds)){
+                $StudentIds =   User::where(cn::USERS_SCHOOL_ID_COL,$schoolId)
+                                ->where(cn::USERS_ROLE_ID_COL,cn::STUDENT_ROLE_ID)
+                                ->get()
+                                ->where('CurriculumYearGradeId',$request->GradeId)
+                                ->whereIn('CurriculumYearClassId',$request->ClassIds)
+                                ->pluck(cn::USERS_ID_COL)
+                                ->toArray();
             }
 
             // Get Other students

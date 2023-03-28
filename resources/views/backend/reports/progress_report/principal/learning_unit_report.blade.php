@@ -74,20 +74,11 @@
 											<thead>
 												<tr>
 													<th rowspan="2">{{__('languages.student_name')}}</th>
-													{{-- <th rowspan="2">{{__('languages.mastered')}}</th> --}}
-													{{-- @foreach($StrandsLearningUnitsList as $Strand)
-														<th colspan="{{count($Strand['learning_unit'])}}">{{$Strand['name_'.app()->getLocale()]}}</th>
-													@endforeach --}}
 													@foreach($StrandList as $Strand)
 														<th colspan={{count(App\Helpers\Helper::getLearningUnits($Strand['id']))}}>{{$Strand['name_'.app()->getLocale()]}}</th>
 													@endforeach
 												</tr>
                                                 <tr>
-													{{-- @foreach($StrandsLearningUnitsList as $Strand)
-                                                    @foreach($Strand['learning_unit'] as $LearningUnit)
-														<th>{{$LearningUnit['id']}}. {{$LearningUnit['name_'.app()->getLocale()]}}</th>
-                                                    @endforeach
-													@endforeach --}}
 													@foreach($LearningUnitsList as $learningUnit)
 														<th>{{$learningUnit['name_'.app()->getLocale()]}}</th>
 													@endforeach
@@ -97,27 +88,27 @@
                                             @foreach($progressReportArray as $StudentId => $Student)
                                                 <tr>
                                                     <td><?php echo  App\Helpers\Helper::decrypt($Student['student_data'][0]['name_'.app()->getLocale()]); ?></td>
-                                                    @foreach($Student['report_data'] as $LearningUnit)
-                                                    <td>
-														<div class="progress" style="height:1rem">
-															<div class="progress-bar p-1" data-toggle="tooltip" data-placement="top" title="{{$LearningUnit['accomplished_percentage']}}% ({{$LearningUnit['count_accomplished_learning_objectives']}}/{{$LearningUnit['no_of_learning_objectives']}})" style="width:{{$LearningUnit['accomplished_percentage']}}%;background-color:{{$ColorCodes['accomplished_color']}};">
+													@foreach($Student['report_data'] as $LearningUnit)
+													<td>
+														@if(isset($LearningUnit) && !empty($LearningUnit))
+														<div class="progress" style="height:1rem" title="{{$LearningUnit['accomplished_percentage']}}%">
+															<div class="progress-bar p-1" data-toggle="tooltip" data-placement="top" title="{{$LearningUnit['accomplished_percentage']}}%" style="width:{{$LearningUnit['accomplished_percentage']}}%;background-color:{{$ColorCodes['accomplished_color']}};">
 																@if(!empty($LearningUnit['accomplished_percentage']))
 																{{$LearningUnit['accomplished_percentage']}}%
 																@else
 																{{__('languages.not_available')}}
 																@endif
 															</div>
-
-															<div class="progress-bar p-1" data-toggle="tooltip" data-placement="top" title="{{$LearningUnit['not_accomplished_percentage']}}% ({{$LearningUnit['count_not_accomplished_learning_objectives']}}/{{$LearningUnit['no_of_learning_objectives']}})" style="width:{{$LearningUnit['not_accomplished_percentage']}}%;background-color:{{$ColorCodes['not_accomplished_color']}};">
-																@if(!empty($LearningUnit['not_accomplished_percentage']))
-																{{$LearningUnit['not_accomplished_percentage']}}%
-																@else
+														</div>
+														@else
+														<div class="progress" style="height:1rem" title="0%">
+															<div class="progress-bar p-1" data-toggle="tooltip" data-placement="top" title="0%" style="width:0%;background-color:{{$ColorCodes['accomplished_color']}};">
 																{{__('languages.not_available')}}
-																@endif
 															</div>
 														</div>
-                                                    </td>
-                                                    @endforeach
+														@endif
+													</td>
+													@endforeach
                                                 </tr>
                                             @endforeach
 											</tbody>

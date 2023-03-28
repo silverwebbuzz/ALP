@@ -80,7 +80,7 @@
 											<th class="first-head"><span>{{__('languages.peer_group.sr_no')}}</span></th>
 											<th class="first-head"><span>@sortablelink('group_name',__('languages.peer_group.group_name'))</span></th>
 											<th class="selec-opt"><span>{{__('languages.peer_group.no_of_members')}}</span></th>
-											<th>{{__('languages.created_user')}}</th>
+											<th>{{__('languages.creator')}}</th>
                                             <th>@sortablelink('status',__('languages.peer_group.status'))</th>
 											<th>{{__('languages.peer_group.action')}}</th>
 							        	</tr>
@@ -102,6 +102,9 @@
 												@endif
 											</td>
 											<td class="btn-edit">
+												<a href="{{route('peer-group.view.members',$peerGroup->id)}}" class="view-peer-group-members-action" title="{{__('languages.view_members')}}">
+													<i class="fa fa-users fa-lg"></i>
+												</a>
                                                 <a href="javascript:void(0);" class="alp_chat_icon" data-AlpChatGroupId="{{$peerGroup->dreamschat_group_id}}" title="{{__('languages.peer_group.alp_chat')}}">
 													<img src="{{asset('images/alp_chat.png')}}"/>
 												</a>

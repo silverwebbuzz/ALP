@@ -21,7 +21,13 @@ class PeerGroupMember extends Model
         cn::PEER_GROUP_MEMBERS_CURRICULUM_YEAR_ID_COL
     ];
 
+    public $timestamps = true;
+
     function Student(){
+        return $this->hasOne(User::class,cn::USERS_ID_COL,cn::PEER_GROUP_MEMBERS_MEMBER_ID_COL);
+    }
+
+    function member(){
         return $this->hasOne(User::class,cn::USERS_ID_COL,cn::PEER_GROUP_MEMBERS_MEMBER_ID_COL);
     }
     

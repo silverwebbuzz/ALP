@@ -1,7 +1,7 @@
 <!-- Start School Sidebar Menus -->
 @if(Auth::user()->role_id == 5)
     <nav id="sidebar" class="@if(!empty(Session::get('sidebar'))){{Session::get('sidebar')}}@endif" style="background-color:{{$color}};">
-        <h1>
+        <h1 class="d-flex sidebar_top_thumb_main">
             <a href="javascript:void(0);" class="logo">
                 @if(Auth::user()->profile_photo!="")
                     <img src="{{ asset(Auth::user()->profile_photo) }}" alt="logo" class="logo-icon">
@@ -9,6 +9,7 @@
                     <img src="{{ asset('images/profile_image.jpeg') }}" alt="logo" class="logo-icon">
                 @endif
             </a>
+            @include('backend.layouts.sidebar.user_info_sidebar')
         </h1>
         <ul class="list-unstyled components mb-5">
             <li class="{{ (request()->is('schools/dashboard')) ? 'active': '' }}">
@@ -61,14 +62,14 @@
                             </a>
                         </li>
                         @endif
-                        @if (in_array('leaderboard_read', $permissions))
+                        <!-- @if (in_array('leaderboard_read', $permissions))
                         <li class="nav-item {{ (request()->is('student/leaderboard')) ? 'active': '' }}">
                             <a class="nav-link" href="{{route('student/leaderboard')}}">
                                 <span class="fa fa-user"></span>
                                 <span class="text">{{__('languages.sidebar.leaderboard')}}</span>
                             </a>
                         </li>
-                        @endif
+                        @endif -->
                     </ul>
                 </div>
                 @endif
@@ -165,7 +166,7 @@
             <li class="{{ (request()->is('school/assignment-exercise')) ? 'active': '' }}">
                 <a href="{{ route('school.assignment-exercise') }}">
                     <span class="fa fa-book"></span>
-                    <span class="text">{{__('languages.exercises')}}</span>
+                    <span class="text">{{__('languages.exercise')}}</span>
                 </a>
             </li>
             

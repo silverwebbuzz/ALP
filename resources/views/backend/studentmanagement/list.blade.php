@@ -32,7 +32,7 @@
 								{{-- <a href="{{ route('student.import.upgrade-school-year') }}" class="dark-blue-btn btn btn-primary mb-4">{{__('languages.upgrade_year_via_csv')}}</a> --}}
 							</div>
 							<hr class="blue-line">
-							{{-- <a href="javascript:void(0);" class="btn btn-warning mb-4" id="massDelete">{{__('Mass Delete')}}</a> --}}
+							<a href="javascript:void(0);" class="dark-blue-btn btn btn-primary mb-4" id="massDelete">{{__('languages.delete')}}</a>
 						</div>
 					</div>
 					{{-- Class Promtion in year need to upgrade so some time this code is comment --}}
@@ -89,7 +89,7 @@
                         </div>
 						<div class="select-lng pt-2 pb-2 col-lg-2 col-md-4">
 							<select name="student_grade_id"  class="form-control select-option" id ="student_grade_id">
-								<option value="">{{ __('languages.user_management.grade') }}</option>
+								<option value="">{{ __('languages.form') }}</option>
 								@if(!empty($gradeList))
 									@foreach($gradeList as $grade)
 										<option value="{{$grade->grades->id}}" {{ request()->get('student_grade_id') == $grade->grades->id ? 'selected' : '' }}>{{ $grade->grades->name}}</option>
@@ -123,7 +123,7 @@
                         </div>
 						<div class="col-lg-2 col-md-2">
                             <div class="select-lng pt-2 pb-2">
-                                <input type="text" class="input-search-box mr-2" id="classStudentNumber" name="classStudentNumber" value="{{request()->get('classStudentNumber')}}" placeholder="{{__('languages.profile.class_student_number')}}">
+                                <input type="text" class="input-search-box mr-2" id="classStudentNumber" name="classStudentNumber" value="{{request()->get('classStudentNumber')}}" placeholder="{{__('languages.student_code')}}">
                             </div>
                         </div>
                         <div class="col-lg-2 col-md-3">
@@ -141,20 +141,19 @@
 							    	<thead>
 							        	<tr>
 							          		<th>
-										  		{{-- <input type="checkbox" name="student-class-promotion-check-all" id="student-class-promotion-check-all" class="checkbox" value=""> --}}
 												<input type="checkbox" name="student-class-promotion-check-all" id="selectAllStudent" class="checkbox" value="">
 											</th>
-											<th class="first-head"><span>@sortablelink('name_en',__('languages.name_english'))</span></th>
+											<th class="first-head"><span>@sortablelink('name_en',__('languages.name'))</span></th>
 											<th class="first-head"><span>@sortablelink('name_ch',__('languages.name_chinese'))</span></th>
-											<th class="sec-head selec-opt"><span>@sortablelink('email',__('languages.email'))</span></th>
-											<th class="selec-head">@sortablelink('grade_id',__('languages.grade'))</th>
-											<th class="selec-head">@sortablelink('class_id',__('languages.class_within_grade'))</th>
+											<th class="sec-head selec-opt"><span>@sortablelink('email',__('languages.email_address'))</span></th>
+											<th class="selec-head">@sortablelink('grade_id',__('languages.form'))</th>
+											<th class="selec-head">@sortablelink('class_id',__('languages.class'))</th>
 
-											<th class="selec-head">@sortablelink('class_student_number',__('languages.profile.class_student_number'))</th>
+											<th class="selec-head">@sortablelink('class_student_number',__('languages.student_code'))</th>
 											<th class="selec-head">@sortablelink('permanent_reference_number',__('languages.std_number'))</th>
-											<th class="selec-head">@sortablelink('student_number_within_class',__('languages.student_number_with_class'))</th>
+											<th class="selec-head">@sortablelink('student_number_within_class',__('languages.student_number'))</th>
 											<th class="selec-head">@sortablelink('class',__('languages.class_and_grade'))</th>
-
+											<th class="selec-head">@sortablelink('region_id',__('languages.region'))</th>
 											<th class="selec-head">@sortablelink('status',__('languages.status'))</th>
 											<th class="selec-head">{{__('languages.action')}}</th>
 							        	</tr>
@@ -163,20 +162,17 @@
                                     @if(!empty($UsersList))
 										@foreach($UsersList as $User)
 							        	<tr>
-											{{-- <td><input type="checkbox" name="student-class-promotion" class="checkbox student-Ids" value="{{$User->id}}"></td> --}}
 											<td><input type="checkbox" name="student-class-promotion" class="checkbox selectSingleStudent" data-id ="{{$User->id}}" value="{{$User->id}}"></td>
 											<td>{{ ($User->name_en) ? App\Helpers\Helper::decrypt($User->name_en) : $User->name }}</td>
 											<td>{{ ($User->name_ch) ? App\Helpers\Helper::decrypt($User->name_ch) : 'N/A' }}</td>
 											<td>{{ $User->email }}</td>
 											<td class="gradesname_{{$User->id}}">{{($User->CurriculumYearData) ? \App\Helpers\Helper::getGradeName($User->CurriculumYearData->grade_id) : 'N/A'}}</td>
 											<td class="classname_{{$User->id}}">{{($User->CurriculumYearData) ? \App\Helpers\Helper::getSingleClassName($User->CurriculumYearData->class_id) : 'N/A'}}</td>
-											<td>
-												{{ ($User->class_student_number) ? $User->class_student_number : 'N/A'}}
-											</td>
+											<td>{{ ($User->class_student_number) ? $User->class_student_number : 'N/A'}}</td>
 											<td>{{ ($User->permanent_reference_number) ? $User->permanent_reference_number : 'N/A'}}</td>
 											<td>{{ ($User->CurriculumYearData) ? $User->CurriculumYearData->student_number_within_class : 'N/A'}}</td>
 											<td>{{ ($User->CurriculumYearData) ? $User->CurriculumYearData->class : 'N/A'}}</td>
-
+											<td>{{ ($User->Region) ? $User->Region->{'region_'.app()->getLocale()} : 'N/A'}}</td>
 											<td>
 												@if($User->status === 'pending')
 													<span class="badge badge-warning">{{__('languages.pending')}}</span>
@@ -188,19 +184,21 @@
 											</td>
 											<td class="btn-edit">
 												@if (in_array('student_management_update', $permissions))
-												<a href="{{ route('Student.edit', $User->id) }}" class="" title="{{__('languages.edit')}}"><i class="fa fa-pencil" aria-hidden="true"></i></a>
+												<a href="{{ route('Student.edit', $User->id) }}" class="" title="{{__('languages.edit')}}"><i class="fa fa-pencil fa-lg" aria-hidden="true"></i></a>
 												@endif
 												@if (in_array('student_management_delete', $permissions))
-												<a href="javascript:void(0);" class="pl-2" id="deleteStudent" data-id="{{$User->id}}" title="{{__('languages.delete')}}"><i class="fa fa-trash" aria-hidden="true"></i></a>
+												<a href="javascript:void(0);" class="pl-2" id="deleteStudent" data-id="{{$User->id}}" title="{{__('languages.delete')}}"><i class="fa fa-trash fa-lg" aria-hidden="true"></i></a>
 												@endif
-												<a href="{{ route('class-promotion-history', $User->id) }}" class="pl-2" title="{{__('languages.class_promotion')}}"><i class="fa fa-history" aria-hidden="true"></i></a>
+												<a href="{{ route('class-promotion-history', $User->id) }}" class="pl-2" title="{{__('languages.class_promotion')}}"><i class="fa fa-history fa-lg" aria-hidden="true"></i></a>
 												@if(Auth::user()->role_id == 5)
 													@if (in_array('change_password_update', $permissions))
-														<a href="javascript:void(0);" class="pl-2 changeUserPassword"  data-id="{{$User->id}}" title="{{__('languages.change_password')}}"><i class="fa fa-unlock" aria-hidden="true"></i></a>
+														<a href="javascript:void(0);" class="pl-2 changeUserPassword"  data-id="{{$User->id}}" title="{{__('languages.change_password')}}"><i class="fa fa-unlock fa-lg" aria-hidden="true"></i></a>
 													@endif
 												@endif
-												{{-- <a href="{{ route('student.student-profiles', $User->id) }}" class="pl-2" title="{{__('languages.my_class.view_profile')}}"><i class="fa fa-eye" aria-hidden="true"></i></a> --}}
-												<a href="{{ route('student-profiles', $User->id) }}" class="pl-2" title="{{__('languages.my_class.view_profile')}}"><i class="fa fa-eye" aria-hidden="true"></i></a>
+												<a href="{{ route('student-profiles', $User->id) }}" class="pl-2" title="{{__('languages.my_class.view_profile')}}"><i class="fa fa-eye fa-lg" aria-hidden="true"></i></a>
+												@if (in_array('change_password_update', $permissions))
+													<a href="javascript:void(0);" class="pl-2 changeUserPassword" data-id="{{$User->id}}" title="{{__('languages.change_password')}}"><i class="fa fa-unlock fa-lg" aria-hidden="true"></i></a>
+												@endif
 											</td>
 										</tr>
 										@endforeach
@@ -241,38 +239,38 @@
 	      </div>
 		</div>
 		<script>
-				//for per Page on filteration hidden 
-				var TotalFilterData = "{!! $TotalFilterData !!}";
-                        if((TotalFilterData > 0 && TotalFilterData <= 10)){
-                            document.getElementById("pagination").style.visibility = "hidden";
-                            document.getElementById("per_page").style.visibility = "hidden";
-                        }
-				/*for pagination add this script added by mukesh mahanto*/ 
-				document.getElementById('pagination').onchange = function() {
-						window.location = "{!! $UsersList->url(1) !!}&items=" + this.value;	
-				}; 
-		</script>
-		{{-- Mass Record Delete --}}
-		<script>
-			$(document).on('click', '#selectAllStudent', function() {      
+			//for per Page on filteration hidden 
+			var TotalFilterData = "{!! $TotalFilterData !!}";
+			if((TotalFilterData > 0 && TotalFilterData <= 10)){
+				document.getElementById("pagination").style.visibility = "hidden";
+				document.getElementById("per_page").style.visibility = "hidden";
+			}
+			/*for pagination add this script added by mukesh mahanto*/ 
+			document.getElementById('pagination').onchange = function() {
+				window.location = "{!! $UsersList->url(1) !!}&items=" + this.value;	
+			};
+			
+			$(document).on('click', '#selectAllStudent', function() {
 				$(".selectSingleStudent").prop("checked", this.checked);
-			});	
-			$(document).on('click', '.selectSingleStudent', function() {		
-				if ($('.selectSingleStudent:checked').length == $('.selectSingleStudent').length) {
+			});
+			
+			$(document).on('click', '.selectSingleStudent', function() {
+				if($('.selectSingleStudent:checked').length == $('.selectSingleStudent').length){
 					$('#selectAllStudent').prop('checked', true);
-				} else {
+				}else{
 					$('#selectAllStudent').prop('checked', false);
 				}
-			}); 
+			});
+
 			/*Mass Record Delete */
 			$(document).on('click','#massDelete',function(){
 				var records = [];  
 				$(".selectSingleStudent:checked").each(function() {  
 					records.push($(this).data('id'));
 				});	
-				if(records.length <=0){  
-					alert("Please select records.");  
-				}else { 
+				if(records.length <= 0){  
+					toastr.error(PLEASE_SELECT_RECORD);
+				}else{ 
 					var selected_values = records.join(",");
 					$.confirm({
 						title: ARE_YOU_SURE_TO_REMOVE_THESE_RECORDS + "?",
@@ -280,7 +278,7 @@
 						autoClose: "Cancellation|8000",
 						buttons: {
 							deleteRecords: {
-								text: ARE_YOU_SURE_TO_REMOVE_THESE_RECORDS,
+								text: BUTTONYESTEXTEN,
 								action: function () {
 									$("#cover-spin").show();
 									$.ajax({
@@ -293,9 +291,9 @@
 										success: function (response) {
 											$("#cover-spin").hide();
 											var data = JSON.parse(JSON.stringify(response));
-											if (data.status === "success") {
+											if(data.status === "success"){
 												var sel = false;
-												var ch = $(".selectSingleStudent:checked").each(function() { 
+												var ch = $(".selectSingleStudent:checked").each(function(){ 
 													var $this = $(this);
 													sel = true;
 													$this.closest('tr').fadeOut(function(){
@@ -303,11 +301,11 @@
 													});
 												});
 												toastr.success(data.message);
-											}else {
+											}else{
 												toastr.error(data.message);
 											}
 										},	
-										error: function (response) {
+										error: function (response){
 											ErrorHandlingMessage(response);
 										},
 									});
@@ -317,7 +315,7 @@
 						},
 					});
 				} 	  
-			})
+			});
 		</script>
 		@include('backend.layouts.footer')
 @endsection

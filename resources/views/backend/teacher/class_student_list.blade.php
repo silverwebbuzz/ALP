@@ -41,15 +41,13 @@
 										@if(!empty($gradesList))
 											@foreach($gradesList as $grade)
 											@php
-												
-												if(array_key_exists("get_class",$grade->toArray()) ){
-													$gradeData = $grade->getClass;
-												}else{
-													$gradeData = $grade->grades;
-												}
+											if(array_key_exists("get_class",$grade->toArray())){
+												$gradeData = $grade->getClass;
+											}else{
+												$gradeData = $grade->grades;
+											}
 											@endphp
-											{{-- <option value="{{$grade->getClass->id}}" {{ (request()->get('student_grade_id')) == $grade->getClass->id ? 'selected' : '' }}>{{ $grade->getClass->name}}</option> --}}
-											<option value="{{$gradeData->id}}" {{ (request()->get('student_grade_id')) == $gradeData->id ? 'selected' : '' }}>{{ $gradeData->name}}</option>
+											<option value="{{$gradeData->id}}" {{(request()->get('student_grade_id')) == $gradeData->id ? 'selected' : '' }}>{{ $gradeData->name}}</option>
 											@endforeach
 										@endif
 									</select>
@@ -65,7 +63,7 @@
 							<!-- For a Filtration on name,email & city -->
 							<div class="col-lg-4 col-md-5">
 								<div class="select-lng pt-2 pb-2">
-									<input type="text" class="input-search-box mr-2" name="searchtext" value="{{request()->get('searchtext')}}" placeholder="{{__('languages.search_by_name')}},{{__('languages.email')}},{{__('languages.user_management.city')}}">
+									<input type="text" class="input-search-box mr-2" name="searchtext" value="{{request()->get('searchtext')}}" placeholder="{{__('languages.search_by_name')}},{{__('languages.email')}},{{__('languages.student_code')}}">
 									@if($errors->has('searchtext'))
 										<span class="validation_error">{{ $errors->first('searchtext') }}</span>
 									@endif
@@ -85,7 +83,7 @@
 							<div class="select-lng pt-2 pb-2">
 								<label for="assignStudentIntoGroup">{{__('languages.assigned_student_to_group')}}</label>
 								<select class="selectpicker form-control" data-show-subtext="true" data-live-search="true" name="assignStudentIntoGroup" id="assignStudentIntoGroup">
-									<option value=''>{{ __('Select Group') }}</option>
+									<option value=''>{{ __('languages.select')}} {{__('languages.group') }}</option>
 									@if(!empty($GroupData))
 										@foreach($GroupData as $group)
 										<option value="{{$group->id}}">{{ $group->group_name}}</option>
@@ -105,13 +103,13 @@
 							          		<th>
 										  		<input type="checkbox" name="selectAllStudentIntoGroup" class="selectAllStudentIntoGroup">
 											</th>
-											<th class="first-head"><span>@sortablelink('name_en',__('languages.name_english'))</span></th>
+											<th class="first-head"><span>@sortablelink('name_en',__('languages.name'))</span></th>
 											<th class="first-head"><span>@sortablelink('name_ch',__('languages.name_chinese'))</span></th>
-											<th class="sec-head selec-opt"><span>@sortablelink('email',__('languages.email'))</span></th>
-											<th class="selec-head">@sortablelink('grade_id',__('languages.grade'))</th>
+											<th class="sec-head selec-opt"><span>@sortablelink('email',__('languages.email_address'))</span></th>
+											<th class="selec-head">@sortablelink('grade_id',__('languages.form'))</th>
 											<th class="selec-head">{{__('languages.class')}}</th>
-											<th class="selec-head">{{__('languages.profile.class_student_number')}}</th>
-											<th class="selec-head">@sortablelink('overall_ability',__('languages.overall_ability'))</th>
+											<th class="selec-head">{{__('languages.student_code')}}</th>
+											<!-- <th class="selec-head">@sortablelink('overall_ability',__('languages.overall_ability'))</th> -->
 											<th class="selec-head">{{__('languages.credit_points')}}</th>
 											<th class="selec-head">{{__('languages.action')}}</th>
 							        	</tr>
@@ -127,15 +125,15 @@
 											<td class="classname_{{$User->id}}">{{$User->grades->name ?? 'N/A'}}</td>
 											<td>{{ $User->getClassname($User->id) }}</td>
 											<td>{{ ($User->class_student_number) ? $User->class_student_number : ''}}</td>
-											@if($User->overall_ability != "")
+											<!-- @if($User->overall_ability != "")
 												<td>{{number_format(round($User->overall_ability,2),2)}} <strong>({{$User->NormalizedOverAllAbility.'%'}})</strong></td>
 											@else
 												<td>---</td>
-											@endif
+											@endif -->
 											<td>{{ $User->getUserCreditPoints->no_of_credit_points ?? 0 }}</td>
 											<td class="btn-edit">
 												{{-- <a href="{{ route('teacher.student-profiles', $User->id) }}" class="" title="{{__('languages.my_class.view_profile')}}"><i class="fa fa-eye" aria-hidden="true"></i></a> --}}
-												<a href="{{ route('student-profiles', $User->id) }}" class="" title="{{__('languages.my_class.view_profile')}}"><i class="fa fa-eye" aria-hidden="true"></i></a>
+												<a href="{{ route('student-profiles', $User->id) }}" class="" title="{{__('languages.my_class.view_profile')}}"><i class="fa fa-eye fa-lg" aria-hidden="true"></i></a>
 											</td>
 										</tr>
 										@endforeach

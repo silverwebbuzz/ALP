@@ -25,7 +25,7 @@
 					<div class="row">
 					<div class="select-lng pt-2 pb-2 col-lg-2 col-md-4">                            
                             <select name="school_id"  class="form-control select-option">
-                                <option value="">{{ __('languages.select_school') }}</option>
+                                <option value="">{{ __('languages.school') }}</option>
                                 @if(!empty($schoolList))
                                     @foreach($schoolList as $school)
                                     <option value="{{$school->id}}" {{ request()->get('school_id') == $school['id'] ? 'selected' : '' }}>{{ $school->school_name}}</option>
@@ -39,7 +39,7 @@
 
                         <div class="select-lng pt-2 pb-2 col-lg-2 col-md-4">                            
                             <select name="grade_id"  class="form-control select-option">
-                                <option value="">{{ __('languages.select_grade') }}</option>
+                                <option value="">{{ __('languages.form') }}</option>
                                 @if(!empty($gradeList))
                                     @foreach($gradeList as $grade)
                                     <option value="{{$grade->id}}" {{ request()->get('grade_id') == $grade->id ? 'selected' : '' }}>{{ $grade->name}}</option>
@@ -53,7 +53,7 @@
 
 						<div class="select-lng pt-2 pb-2 col-lg-2 col-md-4">                            
                             <select name="role_id"  class="form-control select-option">
-                                <option value="">{{ __('languages.select_role') }}</option>
+                                <option value="">{{ __('languages.role') }}</option>
                                 @if(!empty($roleList))
                                     @foreach($roleList as $role)
                                     <option value="{{$role->id}}" {{ request()->get('role_id') == $role->id ? 'selected' : '' }}>{{ $role->role_name}}</option>
@@ -77,8 +77,8 @@
 								<table class="table-responsive">
 							    	<thead>
 							        	<tr>
-											<th class="first-head"><span>{{__('languages.user_activity.english_name')}}</span></th>
-											<th class="first-head"><span>{{__('languages.user_activity.chinese_name')}}</span></th>
+											<th class="first-head"><span>{{__('languages.name')}}</span></th>
+											<th class="first-head"><span>{{__('languages.name_chinese')}}</span></th>
 											<th>{{__('languages.action')}}</th>
 							        	</tr>
 							    	</thead>
@@ -91,7 +91,7 @@
 											<td>{{ ($user->name_ch) ? App\Helpers\Helper::decrypt($user->name_ch) : 'N/A'}}</td>
                                             <td class="btn-edit">
 												<a href="{{ route('useractivity.show', $user->id)}}" class="" title="{{__('languages.view')}}">
-													<i class="fa fa-eye" aria-hidden="true"></i>
+													<i class="fa fa-eye fa-lg" aria-hidden="true"></i>
 												</a>
 											</td>
 										</tr>

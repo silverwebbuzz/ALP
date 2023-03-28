@@ -95,11 +95,12 @@
 							          		<th>
 										  		<input type="checkbox" name="" class="checkbox" id="selectAllPeerGroup">
 											</th>
-											<th class="first-head"><span>{{__('languages.peer_group.sr_no')}}</span></th>
+											<th class="first-head"><span>{{__('languages.id')}}</span></th>
 											<th class="first-head"><span>@sortablelink('group_name',__('languages.peer_group.group_name'))</span></th>
                                             {{-- <th class="selec-opt"><span>{{__('languages.peer_group.subject')}}</span></th> --}}
 											<th class="selec-opt"><span>{{__('languages.peer_group.no_of_members')}}</span></th>
-											<th>{{__('languages.created_user')}}</th>
+											<th>{{__('languages.creator')}}</th>
+											<th>{{__('languages.creator')}} {{__('languages.role')}}</th>
                                             <th>@sortablelink('status',__('languages.peer_group.status'))</th>
 											<th>{{__('languages.peer_group.action')}}</th>
 							        	</tr>
@@ -112,8 +113,10 @@
 											<td>{{$loop->iteration}}</td>
 											<td>{{$peerGroup->group_name}}</td>
 											{{-- <td>{{$peerGroup->subject->name}}</td> --}}
-											<td>{{($peerGroup->members) ? count($peerGroup->members) : 'N/A'}}</td>
+											<td>{{($peerGroup->members) ? count($peerGroup->Members) : 'N/A'}}</td>
+											<td>{{App\Helpers\Helper::getUserName($peerGroup->created_by_user_id) ?? ''}}</td>
 											<td>{{App\Helpers\Helper::FindRoleByUserId($peerGroup->created_by_user_id) ?? ''}}</td>
+											
                                             <td>
 												@if($peerGroup->status=="1")
 													<span class="badge badge-success">{{__('languages.active')}}</span>
@@ -123,21 +126,32 @@
 											</td>
 											<td class="btn-edit">
 												@if(in_array('peer_group_update', $permissions))
-													@if($peerGroup->created_by_user_id == Auth::user()->id)
-														<a href="{{ route('peer-group.edit', $peerGroup->id) }}" class="" title="{{__('languages.edit')}}"><i class="fa fa-pencil" aria-hidden="true"></i></a>
+													@if($peerGroup->created_by_user_id == Auth::user()->id
+													|| Auth::user()->role_id == 5
+													|| Auth::user()->role_id == 7
+													|| Auth::user()->role_id == 8
+													|| Auth::user()->role_id == 9
+													)
+														<a href="{{ route('peer-group.edit', $peerGroup->id) }}" class="" title="{{__('languages.edit')}}"><i class="fa fa-pencil fa-lg" aria-hidden="true"></i></a>
 													@endif
 												@endif
 
-												@if (in_array('peer_group_delete', $permissions))
+												@if(in_array('peer_group_delete', $permissions))
 													@if($peerGroup->created_by_user_id == Auth::user()->id)
-														<a href="javascript:void(0);" class="pl-2 deletePeerGroup" data-id="{{$peerGroup->id}}" title="{{__('languages.delete')}}"><i class="fa fa-trash" aria-hidden="true"></i></a>
+														<a href="javascript:void(0);" class="pl-2 deletePeerGroup" data-id="{{$peerGroup->id}}" title="{{__('languages.delete')}}"><i class="fa fa-trash fa-lg" aria-hidden="true"></i></a>
 													@endif
 												@endif
 
+												<a href="{{route('peer-group.view.members',$peerGroup->id)}}" id="view-peer-group-members" title="{{__('languages.view_members')}}">
+													<i class="fa fa-users fa-lg"></i>
+												</a>
+
+												@if(count($peerGroup->members) >= 1)
 												<a href="javascript:void(0);" class="pl-2 alp_chat_icon" data-AlpChatGroupId="{{$peerGroup->dreamschat_group_id}}" title="{{__('languages.peer_group.alp_chat')}}">
 													{{-- <img src="{{asset('images/alp_chat.png')}}"/> --}}
-													<i class="fa fa-comments" aria-hidden="true"></i>
+													<i class="fa fa-comments fa-lg" aria-hidden="true"></i>
 												</a>
+												@endif
 											</td>
 										</tr>
 										@endforeach

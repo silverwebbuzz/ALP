@@ -129,7 +129,7 @@
 													<th>{{__('languages.student_name')}}</th>
 													<th>{{__('languages.mastered')}}</th>
 													@foreach($learningObjectivesList as $learningObjectives)
-														<th>{{ $learningObjectives->foci_number }}</th>
+														<th>{{ $learningObjectives['foci_number'] }}</th>
 													@endforeach
 												</tr>
 											</thead>

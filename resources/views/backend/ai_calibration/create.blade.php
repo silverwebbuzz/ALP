@@ -39,7 +39,7 @@
                                     <label class="text-bold-600">{{__('languages.reference_adjusted_calibration')}}</label>
                                     <select name="reference_adjusted_calibration" class="form-control select-option" id="reference_adjusted_calibration">
                                         <option value="">{{__('languages.reference_adjusted_calibration')}}</option>
-                                        <option value="initial_condition">{{__('languages.initial_condition')}}</option>
+                                        <option value="initial_conditions">{{__('languages.initial_condition')}}</option>
                                         @if($AdjustedCalibrationList)
                                         @foreach($AdjustedCalibrationList as $CalibrationList)
                                         <option value="{{$CalibrationList->id}}">{{$CalibrationList->calibration_number}} ({{date('d-m-Y',strtotime($CalibrationList->start_date))}} To {{date('d-m-Y',strtotime($CalibrationList->end_date))}})</option>
@@ -52,7 +52,7 @@
                                 <div class="form-group col-md-6 mb-50">
                                     <label>{{ __('languages.start_date') }}</label>
                                     <div class="input-group date">
-                                        <input type="text" class="form-control" id="ai-calibration-start-date" name="start_date" value="" placeholder="{{__('languages.select_start_date')}}" autocomplete="off" readonly>
+                                        <input type="text" class="form-control" id="ai-calibration-start-date" name="start_date" value="" placeholder="{{__('languages.start_date')}}" autocomplete="off" readonly>
                                         <div class="input-group-addon input-group-append">
                                             <div class="input-group-text">
                                                 <i class="glyphicon glyphicon-calendar fa fa-calendar"></i>
@@ -66,7 +66,7 @@
                                 <div class="form-group col-md-6 mb-50">
                                     <label>{{ __('languages.end_date') }}</label>
                                     <div class="input-group date">
-                                        <input type="text" class="form-control" id="ai-calibration-end-date" name="end_date" value="" placeholder="{{ __('languages.select_end_date') }}" autocomplete="off">
+                                        <input type="text" class="form-control" id="ai-calibration-end-date" name="end_date" value="" placeholder="{{ __('languages.end_date') }}" autocomplete="off">
                                         <div class="input-group-addon input-group-append">
                                             <div class="input-group-text">
                                                 <i class="glyphicon glyphicon-calendar fa fa-calendar"></i>
@@ -78,10 +78,10 @@
                                 </div>
 
                                 <div class="form-group col-md-6 mb-50">
-                                    <label>{{ __('languages.select_school') }}</label>
+                                    <label>{{ __('languages.schools') }}</label>
                                     <select name="schoolIds[]" class="form-control select-option" id="select-ai-calibration-schools" multiple>
                                         @if(isset($SchoolList) && !empty($SchoolList))
-                                            <label>{{__('languages.select_school')}}</label>
+                                            <label>{{__('languages.schools')}}</label>
                                             @foreach($SchoolList as $school)
                                             <option value="{{$school->id}}">
                                                 @if(app()->getLocale() == 'en')
@@ -98,18 +98,18 @@
                                 </div>
 
                                 <div class="form-group col-md-6 mb-50" id="student-selection">
-                                    <label>{{ __('languages.select_student') }}</label>
+                                    <label>{{ __('languages.students') }}</label>
                                     <select name="studentIds[]" class="form-control select-option" id="select-ai-calibration-students" multiple>
                                     </select>
                                 </div>
 
                                 <div class="form-group col-md-6 mb-50">
-                                    <label>{{ __('languages.select_test_type') }}</label>
+                                    <label>{{ __('languages.type') }}</label>
                                     <select name="test_type" class="form-control select-option" id="select-ai-calibration-choose-result">
                                         <!-- <option value="">{{ __('languages.select_test_type') }}</option> -->
                                         <option value="1">{{__('languages.tests')}}</option>
-                                        <option value="2">{{__('languages.testing_zone')}}</option>
-                                        <option value="3">{{__('languages.tests')}} & {{__('languages.testing_zone')}}</option>
+                                        <option value="2">{{__('languages.ai_based_assessments')}}</option>
+                                        <option value="3">{{__('languages.tests')}} & {{__('languages.ai_based_assessments')}}</option>
                                     </select>
                                 </div>
                             </div>

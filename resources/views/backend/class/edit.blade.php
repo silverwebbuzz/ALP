@@ -12,7 +12,7 @@
                 <div class="row">
                     <div class="col-md-12">
                         <div class="sec-title">
-                            <h2 class="mb-4 main-title">{{ __('languages.grade_management.update_class') }}</h2>
+                            <h2 class="mb-4 main-title">{{ __('languages.update_form') }}</h2>
                         </div>
                         <div class="sec-title">
                             <a href="javascript:void(0);" class="btn-back" id="backButton">{{__('languages.back')}}</a>
@@ -37,10 +37,10 @@
                         @method('patch')
                         <div class="form-row select-data">
                             <div class="form-group col-md-6 mb-50">
-                                <label class="text-bold-600" for="name">{{ __('languages.grade') }}</label>
+                                <label class="text-bold-600" for="name">{{ __('languages.form') }}</label>
                                 <select name="name" class="form-control select-option" id="name"  >
                                 @if(!empty($GradeList))
-                                <option value="" >{{__('languages.select_grade')}}</option>
+                                <option value="" >{{__('languages.form')}}</option>
                                     @foreach($GradeList as $grade)
                                         <option value="{{$grade->id}}" {{($data->id == $grade->id) ? 'selected' : ''}}>{{ $grade->name}}</option>
                                     @endforeach

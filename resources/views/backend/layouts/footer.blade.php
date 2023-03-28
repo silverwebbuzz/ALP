@@ -14,6 +14,7 @@ if(Auth::user()->role_id == 1){
     }else{
         $color = '#a8e4b0';
     }
+    $isGroupExists = App\Helpers\Helper::IsPeerGroupExists(Auth::user()->role_id,Auth::user()->id);  
 @endphp
 <footer class="sm-admin-footer p-2" style="background-color:{{$color}};">
     <div class="container">
@@ -21,7 +22,7 @@ if(Auth::user()->role_id == 1){
             <div class="copyrights-line text-center">
                 <p class="p2">{{__('languages.footer.grow_your_mind_with_better_learning')}}</p>
             </div>
-            @if(!App\Helpers\Helper::isAdmin())
+            @if(!App\Helpers\Helper::isAdmin() && $isGroupExists)
             <div class="footer_chat_main" id="alp_chat_btn">
                 <a href="javascript:void(0);"><img src="{{asset('images/alp_chat.png')}}"/></a>
             </div>
@@ -94,7 +95,7 @@ if(Auth::user()->role_id == 1){
 		<div class="modal-content">
 			<form method="get">
 				<div class="modal-header">
-					<h4 class="modal-title w-100">{{__('languages.question_list_preview')}}</h4>	
+					<h4 class="modal-title w-100">{{__('languages.preview')}}</h4>	
 					<button type="button" class="close closeQuestionPop" data-dismiss="modal" aria-hidden="true">&times;</button>
 				</div>
 				<div class="modal-body teacher-question-list-preview-data modal-lg">
@@ -123,6 +124,7 @@ if(Auth::user()->role_id == 1){
                 @method("POST")
                 <div class="modal-body ChangeEndDateModal-modal-body">
                     <input type="hidden" name="ExamId" id="ExamId" value =""/>
+                    <input type="hidden" name="ExamResultType" id="ExamResultType" value =""/>
                     {{-- <input type="hidden" name="ExamType" id="ExamType" value =""/> --}}
                     <input type="hidden" name="dateType" id="dateType" value =""/>
                     <div>
@@ -178,7 +180,7 @@ if(Auth::user()->role_id == 1){
 		<div class="modal-content">
 			<form method="post">
 				<div class="modal-header embed-responsive">
-					<h4 class="modal-title w-100 ml-3">{{__('languages.student_summary_report')}}</h4>
+					<h4 class="modal-title w-100 ml-3">{{__('languages.result_summary')}}</h4>
 				</div>
 				<div class="modal-body student-report-summary-data">
 					
@@ -284,6 +286,26 @@ if(auth::user()->role_id != 1){
 <!-- End : Open School Profile popup model -->
 @endif
 
+<!-- Second Trial Popup in Report -->
+<div class="modal" id="secondTrialPopup" tabindex="-1" aria-labelledby="secondTrialPopup" aria-hidden="true" data-backdrop="static">
+    <div class="modal-dialog secondTrialPopupWidth">
+        <div class="modal-content">
+            <form method="post">
+                <div class="modal-header">
+                    <h4 class="modal-title w-100">{{__('languages.second_trial')}}</h4>
+                    <button type="button" class="close closeSecondTrialPopupModal" data-dismiss="modal" aria-hidden="true">&times;</button>
+                </div>
+                <div class="modal-body secondTrialModal">
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-default closeSecondTrialPopupModal" data-dismiss="modal">{{__('languages.close')}}</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+<!-- Second Trial Popup in Report -->
+
 <script>
 /**
  * * USE : On click chat icon then will be open chat page
@@ -316,5 +338,30 @@ $(function (){
             AutoLoginAlpChat(username, password, language, SelectedAlpChatGroup);
         }
     });
+
+
+    $(document).on('click','.second_trial',function(){
+        studentId = $(this).data('studentid');
+        examId = $(this).data('examid');
+        $("#cover-spin").show();
+        $.ajax({
+            url: BASE_URL + "/test_result/second_trial/"+examId+"/"+studentId,
+            type: "GET",
+            async:true,
+            data: {
+                examId: examId,
+                studentId: studentId,             
+            },
+            success: function (response) {
+                $('#secondTrialPopup .modal-body').html(response);
+                $('#secondTrialPopup').modal('show');
+                $("#cover-spin").hide();
+            },
+            error: function (response) {
+                ErrorHandlingMessage(response);
+            },
+        });
+    });
 });
+
 </script>

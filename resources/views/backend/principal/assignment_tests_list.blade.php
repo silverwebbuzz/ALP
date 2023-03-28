@@ -172,7 +172,7 @@ if($user_id){
 												<th class="selec-opt">{{__('languages.date')}} & {{__('languages.time')}}</th>
 												<th class="first-head"><span>{{__('languages.title')}}</span></th>
 												<th>{{__('languages.grade')}} - {{__('languages.class')}}</th>
-												<th class="selec-opt"><span>{{__('languages.no_of_students')}}</span></th>
+												<th class="selec-opt"><span>{{__('languages.students')}}</span></th>
 												<th>{{__('languages.progress')}}</th>
 												<th>{{__('languages.average_accuracy')}}</th>
 												<th>{{__('languages.study_status')}}</th>
@@ -403,7 +403,7 @@ if($user_id){
 													</td>
 													<td class="btn-edit">
 														<a href="{{ route('report.class-test-reports.correct-incorrect-answer', ['exam_id' => $groupTest['groupTest']['exam_ids'], 'filter' => 'filter']) }}" title="Class Performance Report"><i class="fa fa-bar-chart" aria-hidden="true"></i></a>
-														<a href="javascript:void(0);" title="{{__('languages.class_ability_analysis')}}" class="getClassAbilityAnalysisReport" data-examid="{{$groupTest['groupTest']['exam_ids']}}" data-studentids="{{$groupTest['groupTest']['student_ids']}}">
+														<a href="javascript:void(0);" title="{{__('languages.ability_analysis')}}" class="getClassAbilityAnalysisReport" data-examid="{{$groupTest['groupTest']['exam_ids']}}" data-studentids="{{$groupTest['groupTest']['student_ids']}}">
 															<i class="fa fa-bar-chart" aria-hidden="true"></i>
 														</a>
 														<a href="javascript:void(0);" title="{{__('test_difficulty_analysis')}}" class="getTestDifficultyAnalysisReport" data-examid="{{$groupTest['groupTest']['exam_ids']}}">
@@ -427,7 +427,7 @@ if($user_id){
 												<th class="selec-opt"><span>{{__('languages.date')}} & {{__('languages.time')}}</span></th>
 												<th class="first-head"><span>{{__('languages.title')}}</span></th>
 												<th>{{__('languages.grade')}} - {{__('languages.class')}}</th>
-												<th>{{__('languages.no_of_students')}}</th>
+												<th>{{__('languages.students')}}</th>
 												<th>{{__('languages.progress')}}</th>
 												<th>{{__('languages.average_accuracy')}}</th>
 												<th>{{__('languages.study_status')}}</th>
@@ -545,7 +545,7 @@ if($user_id){
 															</td>
 															<td class="btn-edit">
 																<a href="{{ route('report.class-test-reports.correct-incorrect-answer', ['exam_id' => $testExam['id'], 'filter' => 'filter']) }}" title="Class Performance Report"><i class="fa fa-bar-chart" aria-hidden="true"></i></a>
-																<a href="javascript:void(0);" title="{{__('languages.class_ability_analysis')}}" class="getClassAbilityAnalysisReport" data-examid="{{$testExam['id']}}" data-studentids="{{$testExam['student_ids']}}">
+																<a href="javascript:void(0);" title="{{__('languages.ability_analysis')}}" class="getClassAbilityAnalysisReport" data-examid="{{$testExam['id']}}" data-studentids="{{$testExam['student_ids']}}">
 																	<i class="fa fa-bar-chart" aria-hidden="true"></i>
 																</a>
 																<a href="javascript:void(0);" title="{{__('languages.test_difficulty_analysis')}}" class="getTestDifficultyAnalysisReport" data-examid="{{$testExam['id']}}">
@@ -663,7 +663,7 @@ if($user_id){
 													</td>
 													<td class="btn-edit">
 														<a href="{{ route('report.class-test-reports.correct-incorrect-answer', ['exam_id' => $groupTest['groupTest']['exam_ids'],'filter' => 'filter']) }}" title="Class Performance Report"><i class="fa fa-bar-chart" aria-hidden="true"></i></a>
-														<a href="javascript:void(0);" title="{{__('languages.class_ability_analysis')}}" class="getClassAbilityAnalysisReport" data-examid="{{$groupTest['groupTest']['exam_ids']}}" data-studentids="{{$groupTest['groupTest']['student_ids']}}">
+														<a href="javascript:void(0);" title="{{__('languages.ability_analysis')}}" class="getClassAbilityAnalysisReport" data-examid="{{$groupTest['groupTest']['exam_ids']}}" data-studentids="{{$groupTest['groupTest']['student_ids']}}">
 															<i class="fa fa-bar-chart" aria-hidden="true"></i>
 														</a>
 														<a href="javascript:void(0);" title="{{__('languages.test_difficulty_analysis')}}" class="getTestDifficultyAnalysisReport" data-examid="{{$groupTest['groupTest']['exam_ids']}}">
@@ -802,7 +802,7 @@ if($user_id){
 				<input type="hidden" name="exam_ids" id="exam_ids" value="">
 				<input type="hidden" name="student_ids" id="student_ids" value="">
 				<div class="modal-header">
-					<h4 class="modal-title w-100">{{__('languages.class_ability_analysis')}}</h4>
+					<h4 class="modal-title w-100">{{__('languages.ability_analysis')}}</h4>
 					<button type="button" class="close class-ability-analysis-report-close-pop" data-dismiss="modal" aria-hidden="true">&times;</button>
 				</div>
 				<div class="modal-body">
@@ -836,7 +836,7 @@ if($user_id){
 		<div class="modal-content">
 			<form method="post">
 				<div class="modal-header">
-					<h4 class="modal-title w-100">{{__('languages.question_difficulty_analysis')}}</h4>
+					<h4 class="modal-title w-100">{{__('languages.difficulty_analysis')}}</h4>
 					<button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
 				</div>
 				<div class="modal-body Graph-body">

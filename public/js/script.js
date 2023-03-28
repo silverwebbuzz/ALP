@@ -27,6 +27,14 @@ if (typeof file_type == "undefined") {
 // OnPageLoad Jquery Events
 OnPageLoadEvent = {
     init: function () {
+
+        /**
+         * Data table script
+         */
+        $("#view-peer-group-member-table").DataTable({
+            order: [[0, "desc"]],
+        });
+
         /** USE : Set the draggable popup full question solution image */
         $('#SolutionImageModal').draggable({
             handle: ".modal-header"
@@ -47,10 +55,10 @@ OnPageLoadEvent = {
         //Default remember tab selected into student panel and teacher panel
         $(".test-tab").removeClass("active");
         $(".tab-pane").removeClass("active");
-        if ($.cookie("PreviousTab")) {
+        if($.cookie("PreviousTab")){
             $("#tab-" + $.cookie("PreviousTab")).addClass("active");
             $("#" + $.cookie("PreviousTab")).addClass("active");
-        } else {
+        }else{
             $("#tab-exercise").addClass("active");
             $("#exercise").addClass("active");
         }
@@ -60,7 +68,7 @@ OnPageLoadEvent = {
             knowledgeNode($("#naming_structure_code").val());
         }
 
-        $(".select-search,#nodeModal #main_node_id,#addNodesForm #sub_node_id,#updateNodesForm #sub_node_id,#nodeModal #parent-node-id,#question_filter_grade,#question_filter_difficulty,#question_filter_question_type,#question_filter_status,#user_filter_school,#user_filter_role,#user_filter_grade,#role,#school_id,#grade_id,#status,#add_student_group_grade,#add_student_group_status,#School,#filter_test_template_difficult_lvl,#filter_test_template_template_type,#template_type,#difficulty_level,#learningReportStrand,#reportLearningType,#pass_only_and_or,#curriculum,#test_type,#select-report-date,#select-no-of-per-trials-question,#difficulty_mode,#select-display-hints,#select-display-full-solutions,#select-display-pr-answer-hints,#select-randomize-answers,#select-randomize-order,#test_start_time,#test_end_time,#use_of_modes,#assignStudentIntoGroup,#leaderboard_type,#learning_tutor_language_id,#is_approved_question,.performance_exam_id,#current_curriculum_year,#curriculum_year,#reference_adjusted_calibration,#school_users_school_id").select2({
+        $(".select-search,#nodeModal #main_node_id,#addNodesForm #sub_node_id,#updateNodesForm #sub_node_id,#nodeModal #parent-node-id,#question_filter_grade,#question_filter_difficulty,#question_filter_question_type,#question_filter_status,#user_filter_school,#user_filter_role,#user_filter_grade,#role,#school_id,#grade_id,#status,#add_student_group_grade,#add_student_group_status,#School,#filter_test_template_difficult_lvl,#filter_test_template_template_type,#template_type,#difficulty_level,#learningReportStrand,#reportLearningType,#pass_only_and_or,#curriculum,#test_type,#select-report-date,#select-no-of-per-trials-question,#difficulty_mode,#select-display-hints,#select-display-full-solutions,#select-display-pr-answer-hints,#select-randomize-answers,#select-randomize-order,#test_start_time,#test_end_time,#use_of_modes,#assignStudentIntoGroup,#leaderboard_type,#learning_tutor_language_id,#is_approved_question,.performance_exam_id,#current_curriculum_year,#curriculum_year,#reference_adjusted_calibration,#school_users_school_id,#region_id").select2({
             width: "100%",
         });
 
@@ -467,7 +475,7 @@ OnPageLoadEvent = {
             },
             columns: 1,
             filterPlaceholder: SEARCH,
-            nonSelectedText: SELECT_GRADE,
+            nonSelectedText: PLEASE_SELECT_STAGES,
             allSelectedText: ALL_SELECTED,
             nSelectedText: SELECTED,
             selectAllText: SELECT_ALL,
@@ -484,7 +492,7 @@ OnPageLoadEvent = {
             },
             columns: 1,
             filterPlaceholder: SEARCH,
-            nonSelectedText: SELECT_STRAND,
+            nonSelectedText: SELECT_STRANDS,
             allSelectedText: ALL_SELECTED,
             nSelectedText: SELECTED,
             selectAllText: SELECT_ALL,
@@ -740,7 +748,7 @@ OnChangeEvent = {
         $(document).on("change", "#reference_adjusted_calibration", function () {
             if (this.value != "") {
                 $("#cover-spin").show();
-                if(this.value == 'initial_condition'){
+                if(this.value == 'initial_conditions'){
                     $('#ai-calibration-start-date').val(moment('09/01/2022').format('DD/MM/YYYY'));
                 }else{
                     var CalibrationId = this.value;
@@ -812,11 +820,11 @@ OnChangeEvent = {
                     $("#cover-spin").hide();
                     $("#learning_tutor_learning_unit").html("");
                     var data = JSON.parse(JSON.stringify(response));
-                    if (data) {
+                    if (data.data) {
                         $("#learning_tutor_learning_unit").prop("disabled",false);
                         if (data.data) {
                             // $(data.data).each(function () {
-                            $.each(data.data, function (index, value) {
+                            $.each(data.data.learningUnit, function (index, value) {
                                 var option = $("<option />");
                                 // option.attr("value", this.id).text(this["name_" + APP_LANGUAGE]);
                                 option.attr('value', this.id).text(this['index'] +'.'+' '+this["name_"+APP_LANGUAGE]+' '+'('+this['id']+')');
@@ -1229,9 +1237,7 @@ OnChangeEvent = {
 
         // Get strands based on subjects
         $(document).on("change", "#grade-id", function () {
-            // Update question code
-            //GenerateQuestionCode();
-            if (this.value) {
+            if(this.value){
                 $.ajax({
                     url: BASE_URL + "/getStrandsFromSubject",
                     type: "POST",
@@ -1244,19 +1250,19 @@ OnChangeEvent = {
                         $("#cover-spin").hide();
                         var data = JSON.parse(JSON.stringify(response));
                         $("#strand-id").show();
-                        if (data) {
+                        if(data){
                             $("#strand-id").html('<option value="">' +SELECT_STRAND +"</option>");
                             $("#strand-id").prop("disabled", false);
-                            if (data.data) {
+                            if(data.data){
                                 $(data.data).each(function () {
                                     var option = $("<option />");
                                     option.attr("value", this.id).text(this.name);
                                     $("#strand-id").append(option);
                                 });
-                            } else {
+                            }else{
                                 $("#strand-id").html('<option value="">' +STRAND_NOT_AVAILABLE +"</option>");
                             }
-                        } else {
+                        }else{
                             $("#strand-id").html('<option value="">' +STRAND_NOT_AVAILABLE +"</option>");
                         }
                     },
@@ -1269,8 +1275,6 @@ OnChangeEvent = {
 
         // Get Learning Units based on Strand
         $(document).on("change", "#strand-id", function () {
-            //Update Question Code
-            //GenerateQuestionCode();
             if (this.value) {
                 $.ajax({
                     url: BASE_URL + "/getLearningUnitFromStrands",
@@ -1285,22 +1289,21 @@ OnChangeEvent = {
                         $("#cover-spin").hide();
                         var data = JSON.parse(JSON.stringify(response));
                         $("#learning-unit").show();
-                        if (data) {
+                        if(data){
                             $("#learning-unit").html('<option value="">' +SELECT_LEARNING_UNITS +"</option>");
                             $("#learning-unit").prop("disabled", false);
-                            if (data.data) {
+                            if(data.data){
                                 $(data.data).each(function () {
                                     var option = $("<option />");
                                     option.attr("value", this.id).text(this.name);
                                     $("#learning-unit").append(option);
                                 });
-                            } else {
+                            }else{
                                 $("#learning-unit").html('<option value="">' +LEARNING_UNITS_NOT_AVAILABLE +"</option>");
                             }
-                        } else {
+                        }else{
                             $("#learning-unit").html('<option value="">' +LEARNING_UNITS_NOT_AVAILABLE +"</option>");
                         }
-                        //$("#strand-id").multiselect("reload");
                     },
                     error: function (response) {
                         ErrorHandlingMessage(response);
@@ -1311,8 +1314,6 @@ OnChangeEvent = {
 
         // Get Learning Objectives based on Learning Units
         $(document).on("change", "#learning-unit", function () {
-            //Update Question Code
-            //GenerateQuestionCode();
             if (this.value) {
                 $.ajax({
                     url: BASE_URL + "/getLearningObjectivesFromLearningUnits",
@@ -1354,58 +1355,47 @@ OnChangeEvent = {
 
         // Get Learning Objectives based on Learning Units
         $(document).on("change","#refresh-question-learning-unit",function () {
-                //Update Question Code
-                //GenerateQuestionCode();
-                if (this.value) {
-                    $.ajax({
-                        url:
-                            BASE_URL +
-                            "/getLearningObjectivesFromMultipleLearningUnits",
-                        type: "POST",
-                        data: {
-                            _token: $('meta[name="csrf-token"]').attr(
-                                "content"
-                            ),
-                            grade_id: $("#grade-id").val(),
-                            //subject_id: $("#subject-id").val(),
-                            strand_id: $("#refresh-question-strand-id").val(),
-                            learning_unit_id: $("#refresh-question-learning-unit").val(),
-                        },
-                        success: function (response) {
-                            $("#cover-spin").hide();
-                            var data = JSON.parse(JSON.stringify(response));
-                            if (data) {
-                                $("#refresh-question-learning-objectives").html("");
-                                if (data.data) {
-                                    $(data.data).each(function () {
-                                        var option = $("<option />");
-                                        option.attr("value", this.id).text(this.foci_number +" " +this.title);
-                                        $("#refresh-question-learning-objectives").append(option);
-                                    });
-                                } else {
-                                    $("#refresh-question-learning-objectives").html('<option value="">' +LEARNING_OBJECTIVES_NOT_AVAILABLE +"</option>");
-                                }
+            if (this.value) {
+                $.ajax({
+                    url:
+                        BASE_URL +
+                        "/getLearningObjectivesFromMultipleLearningUnits",
+                    type: "POST",
+                    data: {
+                        _token: $('meta[name="csrf-token"]').attr(
+                            "content"
+                        ),
+                        grade_id: $("#grade-id").val(),
+                        //subject_id: $("#subject-id").val(),
+                        strand_id: $("#refresh-question-strand-id").val(),
+                        learning_unit_id: $("#refresh-question-learning-unit").val(),
+                    },
+                    success: function (response) {
+                        $("#cover-spin").hide();
+                        var data = JSON.parse(JSON.stringify(response));
+                        if (data) {
+                            $("#refresh-question-learning-objectives").html("");
+                            if (data.data) {
+                                $(data.data).each(function () {
+                                    var option = $("<option />");
+                                    option.attr("value", this.id).text(this.foci_number +" " +this.title);
+                                    option.attr('selected', 'selected');
+                                    $("#refresh-question-learning-objectives").append(option);
+                                });
                             } else {
                                 $("#refresh-question-learning-objectives").html('<option value="">' +LEARNING_OBJECTIVES_NOT_AVAILABLE +"</option>");
                             }
-                            $("#refresh-question-learning-objectives").multiselect("rebuild");
-                        },
-                        error: function (response) {
-                            ErrorHandlingMessage(response);
-                        },
-                    });
-                }
+                        } else {
+                            $("#refresh-question-learning-objectives").html('<option value="">' +LEARNING_OBJECTIVES_NOT_AVAILABLE +"</option>");
+                        }
+                        $("#refresh-question-learning-unit").multiselect("rebuild");
+                        $("#refresh-question-learning-objectives").multiselect("rebuild");
+                    },
+                    error: function (response) {
+                        ErrorHandlingMessage(response);
+                    },
+                });
             }
-        );
-
-        $(document).on("change", "#learning-objectives", function () {
-            //Update Question Code
-            //GenerateQuestionCode();
-        });
-
-        $(document).on("change", "#field_g", function () {
-            //Update Question Code
-            //GenerateQuestionCode();
         });
 
         //for a get grade id based on school id in admin add user panel
@@ -1421,19 +1411,19 @@ OnChangeEvent = {
                 success: function (response) {
                     $("#cover-spin").hide();
                     var data = JSON.parse(JSON.stringify(response));
-                    if (data) {
+                    if(data){
                         $("#class").html('<option value="">' + SELECT_GRADE + "</option>");
                         $("#class").prop("disabled", false);
-                        if (data.data) {
-                            $(data.data).each(function () {
+                        if(data.data){
+                            $(data.data).each(function (){
                                 var option = $("<option />");
                                 option.attr("value", this.grades.id).text(this.name);
                                 $("#class").append(option);
                             });
-                        } else {
+                        }else{
                             $("#class").html('<option value="">' +GRADE_NOT_AVAILABLE +"</option>");
                         }
-                    } else {
+                    }else{
                         $("#class").html('<option value="">' +GRADE_NOT_AVAILABLE +"</option>");
                     }
                 },
@@ -2789,10 +2779,25 @@ OnClickEvent = {
             });
         });
 
+        /*Check Report Date Base Select  a date of release after date*/
+        function checkExamReportDate($reportType,$fromDate,$toDate){
+            if($reportType == 'after_submit'){
+                $( "#examToDate" ).datepicker('option','minDate',$fromDate);
+            }else if($reportType == 'end_date'){
+                $( "#examToDate" ).datepicker('option','minDate',$toDate);
+                // $( "#examToDate" ).datepicker('option','maxDate',$toDate);
+            }
+            else{ 
+                //custom_date
+                $( "#examToDate" ).datepicker('option','minDate',$fromDate);
+            }
+        }
+        
         /** USE: Change Exam End Date */
         $(document).on("click", ".change_end_date_of_exam", function () {
             $("#ExamId").val($(this).data("examid"));
             ($(this).attr("dateType") == "EndDate") ? $("#examToDate").val($(this).attr("examEndDate")) : $("#examToDate").val($(this).attr("examResultDate"));
+            checkExamReportDate($(this).data("reporttype"),$(this).data("startdate"),$(this).data("enddate"));
             $(".test_reference_number").html($(this).attr("refrence_no"));
             $(".test_title").html($(this).attr("title"));
             $(".SetLabelOfChangeDate").html($(this).attr("dateType"));
@@ -2935,7 +2940,11 @@ OnClickEvent = {
             $("#SolutionImageModal").modal("show");
             $("#cover-spin").hide();
         });
+        $(document).on("click",'.closeSecondTrialPopupModal',function(){
+            $(".modal-body").html("");
+            closePopupModal("secondTrialPopup");
 
+        });
         // Clear Question Solution popup html
         $(document).on("click", ".closePopUpQuestionSolutionImage", function () {
             $("#modal-body").html("");
@@ -4962,6 +4971,21 @@ Validation = {
                             searchIDs.push(GroupAdminUser);
                         },
                     });
+                    
+                    // Get Default School User Ids
+                    $.ajax({
+                        url: BASE_URL + "/get/school-users",
+                        type: "GET",
+                        async: false,
+                        success: function (response) {
+                            var data = JSON.parse(JSON.stringify(response));
+                            if(data.data){
+                                // Mergr GroupMemberList and default School Users (Principal, Co-ordinator, Panel Head)
+                                GroupMemberList = $.merge( $.merge( [], GroupMemberList ), data.data );
+                            }
+                        },
+                    });
+                    // End School User code
 
                     for(var gm = 0; gm < GroupMemberList.length; gm++){
                         var checkuid = GroupMemberList[gm];
@@ -5614,6 +5638,9 @@ Validation = {
                     email: true,
                     checkValidEmail: true,
                 },
+                profile_photo:{
+                    extension: "jpg|jpeg|png|gif",
+                },
                 password: {
                     required: true,
                     minlength: 6,
@@ -5622,7 +5649,7 @@ Validation = {
                     required: true,
                     minlength: 6,
                     equalTo: "#password",
-                },
+                }
             },
             messages: {
                 school_name: {
@@ -5640,6 +5667,9 @@ Validation = {
                 email: {
                     required: VALIDATIONS.PLEASE_ENTER_EMAIL,
                     email: VALIDATIONS.PLEASE_ENTER_VALID_EMAIL,
+                },
+                profile_photo:{
+                    extension: VALIDATIONS.PLEASE_UPLOAD_ONLY_JPEG_JPG_OR_PNG_FILES,
                 },
                 password: {
                     required: VALIDATIONS.PLEASE_ENTER_PASSWORD,
@@ -7742,333 +7772,6 @@ function ErrorHandlingMessage(response) {
     }
 }
 
-// // Store Student Exam History
-// function StoreStudentExamDetail(examid,currentid,answer,language){
-//     // Store StudentExam History Data
-//     $.ajax({
-//         url: BASE_URL + "/store-student-answer-history",
-//         type: "GET",
-//         data: {
-//             _token: $('meta[name="csrf-token"]').attr("content"),
-//             questionid: currentid,
-//             examid: examid,
-//             language: language,
-//             answer:answer,                   
-//         },
-//         success: function (response) {
-//             $("#cover-spin").hide();
-//         },
-//     });
-// }
-
-// // Attempt Exams submit
-// function attempt_exams() {
-//     // If user click on the next button then system will trigger on click selected radio button
-//     $(".test-all .checkanswer:checked").trigger('change');
-//     var language = $("input[name=language]").val();
-//     var questionspos = "";
-//     setNoButtonText = "";
-//     $setYesButtonText = "";
-//     $setPoptitle = "";
-//     var language = $("input[name=language]").val();
-//     $("#cover-spin").show();
-//     if(questiontype == 2 || questiontype == 1){
-//         // Exam type => 2 = Excercise  & 1 = self learning
-//         if(attempt_ans == 0){
-//             if(isReAttempt === false){
-//                 $("#questions_ans").val(JSON.stringify(question_old_data_new));
-//                 $("#wrong_ans").val(JSON.stringify(wrong_question_old_data_new));
-//                 return true;
-//             }else{
-//                 $("#attempt_first_trial_data_new").val(JSON.stringify(question_old_data_new));
-//                 $.ajax({
-//                     url: BASE_URL + "/check-answer",
-//                     type: "POST",
-//                     data: {
-//                         _token: $('meta[name="csrf-token"]').attr("content"),
-//                         questionid: question_old_data_new,
-//                     },
-//                     success: function (response) {                        
-//                         if(response.data.length != 0){
-//                             $.each(response.data, function (k, v) {
-//                                 questionspos += "Q-" + v.questionNo;
-//                                 if(response.data.length - 1 != k){
-//                                     questionspos += ", ";
-//                                 }
-//                             });
-//                             if(language == "ch"){
-//                                 questionspos += "<br />" + POPMESSAGE_CH1;
-//                                 $setPoptitle = POPMESSAGETITLE_CH;
-//                                 $setYesButtonText = BUTTONYESTEXTCH;
-//                                 setNoButtonText = BUTTONNOTEXTCH;
-//                             }else{
-//                                 questionspos += "<br />" + POPMESSAGE_EN1;
-//                                 $setPoptitle = POPMESSAGETITLE_EN;
-//                                 $setYesButtonText = BUTTONYESTEXTEN;
-//                                 setNoButtonText = BUTTONNOTEXTEN;
-//                             }
-//                             $.confirm({
-//                                 title: $setPoptitle,
-//                                 content: questionspos,
-//                                 //autoClose: 'Cancellation|8000',
-//                                 buttons: {
-//                                     TryAgain: {
-//                                         text: $setYesButtonText,
-//                                         action: function () {
-//                                             var examid = $("input[name=exam_id]").val();
-//                                             var language = $("input[name=language]").val();
-//                                             wrong_question_old_data_new = response.data;
-//                                             var currentid = response.data[0]["question_id"];
-//                                             attempt_ans = 1;
-//                                             questionNo = 1;
-//                                             $("#cover-spin").hide();
-//                                             $.ajax({
-//                                                 url:BASE_URL + "/next-question",
-//                                                 type: "POST",
-//                                                 data: {
-//                                                     _token: $('meta[name="csrf-token"]').attr("content"),
-//                                                     currentid: currentid,
-//                                                     examid: examid,
-//                                                     examaction: "Next",
-//                                                     questionNo: questionNo,
-//                                                     language: language,
-//                                                     wrong_ans:
-//                                                     wrong_question_old_data_new,
-//                                                     attempt_ans: attempt_ans,
-//                                                     // Get Question Position
-//                                                     question_position:
-//                                                     question_position,
-//                                                     examactionset: "current",
-//                                                 },
-//                                                 success: function (response) {
-//                                                     $("#nextquestionarea").html(response);
-//                                                     if (question_old_data_new.length != 0) {
-//                                                         for (var icn = 0;icn <question_old_data_new.length;icn++) {
-//                                                             var question_id_check =$("#nextquestionarea .checkanswer").attr("question-id");
-//                                                             if (question_old_data_new[icn]["question_id"] == question_id_check) {
-//                                                                 var answer_ren = question_old_data_new[icn]["answer"];
-//                                                                 $("#nextquestionarea .checkanswer[value=" +answer_ren +"]").prop("checked",true);
-//                                                                 $("#nextquestion").prop("disabled",false);
-//                                                                 if ($("#nextquestion").length ==0) {
-//                                                                     $("#submitquestion").prop("disabled",false);
-//                                                                     $("#submitquestion").show();
-//                                                                 }
-//                                                             }
-//                                                         }
-//                                                     }
-//                                                     //updateMathHtml();
-//                                                     // updateMathHtmlById(
-//                                                     //     "nextquestionarea"
-//                                                     // );
-//                                                     MathJax.Hub.Queue(["Typeset",MathJax.Hub]);
-//                                                     $("#cover-spin").hide();
-//                                                 },
-//                                             });
-//                                         },
-//                                     },
-//                                     No: function () {
-//                                         isReAttempt = false;
-//                                         $("#questions_ans").val(JSON.stringify(question_old_data_new));
-//                                         $("#wrong_ans").val(JSON.stringify(wrong_question_old_data_new));
-//                                         $("#cover-spin").hide();
-//                                         $("#AttemptQuestionFeedbackBody").html(EmojiPopupHtml());
-//                                         $("#isAfterSubmit").val(1);
-//                                         if($("#isAfterSubmit").val() == 1){
-//                                             $("#AttemptQuestionFeedback").modal("show");
-//                                         }
-//                                         // $("#attempt-exams").submit();
-//                                         // return true;
-//                                     },
-//                                 },
-//                             });
-//                         }else{
-//                             isReAttempt = false;
-//                             $("#questions_ans").val(JSON.stringify(question_old_data_new));
-//                             $("#wrong_ans").val(JSON.stringify(wrong_question_old_data_new));
-//                             $("#cover-spin").hide();
-//                             $("#AttemptQuestionFeedbackBody").html(EmojiPopupHtml());
-//                             $("#isAfterSubmit").val(1);
-//                             if ($("#isAfterSubmit").val() == 1) {
-//                                 $("#AttemptQuestionFeedback").modal("show");
-//                             }
-//                              // for emoji cookie set blank after exam submit
-//                             $.cookie('SetfeedbackEmoji','');
-//                             // $("#attempt-exams").submit();
-//                             // return true;
-//                         }
-//                     },
-//                 });
-//             }
-//         }else{
-//             $("#questions_ans").val(JSON.stringify(question_old_data_new));
-//             $("#wrong_ans").val(JSON.stringify(wrong_question_old_data_new));
-//             $("#cover-spin").hide();
-//             $("#AttemptQuestionFeedbackBody").html(EmojiPopupHtml());
-//             $("#isAfterSubmit").val(1);
-//             if ($("#isAfterSubmit").val() == 1) {
-//                 $("#AttemptQuestionFeedback").modal("show");
-//                 //return true;
-//             }
-//         }
-//     }else{
-//         $("#questions_ans").val(JSON.stringify(question_old_data_new));
-//         $("#wrong_ans").val(JSON.stringify(wrong_question_old_data_new));
-//         $("#cover-spin").hide();
-//         $("#AttemptQuestionFeedbackBody").html(EmojiPopupHtml());
-//         $("#isAfterSubmit").val(1);
-//         if($("#isAfterSubmit").val() == 1){
-//             $("#AttemptQuestionFeedback").modal("show");
-//         }
-//         // return true;
-//     }
-//     return false;
-// }
-
-// // Attempt Personal Exams  submit
-// function attempt_personal_exams() {
-//     // If user click on the next button then system will trigger on click selected radio button
-//     $(".test-all .checkanswer:checked").trigger('change');
-//     var questionspos = "";
-//     setNoButtonText = "";
-//     $setYesButtonText = "";
-//     $setPoptitle = "";
-//     var language = $("input[name=language]").val();
-//     if(student_test_type == 1 && self_learning_test_type == 2){
-//         $("#questions_ans").val(JSON.stringify(question_old_data_new));
-//         $("#wrong_ans").val(JSON.stringify(wrong_question_old_data_new));
-//         return true;
-//     }
-
-//     $("#cover-spin").show();
-//     if(questiontype == 2 || questiontype == 1){
-//         // Exam type => 2 = Excercise  & 1 = self learning
-//         if(attempt_ans == 0){
-//             if(isReAttempt === false){
-//                 $("#questions_ans").val(JSON.stringify(question_old_data_new));
-//                 $("#wrong_ans").val(JSON.stringify(wrong_question_old_data_new));
-//                 return true;
-//             }else{
-//                 $("#attempt_first_trial_data_new").val(JSON.stringify(question_old_data_new));
-//                 $.ajax({
-//                     url: BASE_URL + "/check-answer",
-//                     type: "POST",
-//                     data: {
-//                         _token: $('meta[name="csrf-token"]').attr("content"),
-//                         questionid: question_old_data_new,
-//                     },
-//                     success: function (response) {
-//                         if(response.data.length != 0){
-//                             $.each(response.data, function (k, v) {
-//                                 questionspos += "Q-" + v.questionNo;
-//                                 if(response.data.length - 1 != k){
-//                                     questionspos += ", ";
-//                                 }
-//                             });
-//                             if(language == "ch"){
-//                                 questionspos += "<br />" + POPMESSAGE_CH1;
-//                                 $setPoptitle = POPMESSAGETITLE_CH;
-//                                 $setYesButtonText = BUTTONYESTEXTCH;
-//                                 setNoButtonText = BUTTONNOTEXTCH;
-//                             }else{
-//                                 questionspos += "<br />" + POPMESSAGE_EN1;
-//                                 $setPoptitle = POPMESSAGETITLE_EN;
-//                                 $setYesButtonText = BUTTONYESTEXTEN;
-//                                 setNoButtonText = BUTTONNOTEXTEN;
-//                             }
-//                             $.confirm({
-//                                 title: $setPoptitle,
-//                                 content: questionspos,
-//                                 //autoClose: 'Cancellation|8000',
-//                                 buttons: {
-//                                     TryAgain: {
-//                                         text: $setYesButtonText,
-//                                         action: function () {
-//                                             var examid = $("input[name=exam_id]").val();
-//                                             var language = $("input[name=language]").val();
-//                                             wrong_question_old_data_new = response.data;
-//                                             var currentid = response.data[0]["question_id"];
-//                                             attempt_ans = 1;
-//                                             questionNo = 1;
-//                                             $("#cover-spin").hide();
-//                                             $.ajax({
-//                                                 url:BASE_URL + "/next-question",
-//                                                 type: "POST",
-//                                                 data: {
-//                                                     _token: $('meta[name="csrf-token"]').attr("content"),
-//                                                     currentid: currentid,
-//                                                     examid: examid,
-//                                                     examaction: "Next",
-//                                                     questionNo: questionNo,
-//                                                     language: language,
-//                                                     wrong_ans: wrong_question_old_data_new,
-//                                                     attempt_ans: attempt_ans,
-//                                                     // Get Question Position
-//                                                     question_position:
-//                                                     question_position,
-//                                                     examactionset: "current",
-//                                                 },
-//                                                 success: function (response) {
-//                                                     $("#nextquestionarea").html(response);
-//                                                     if(question_old_data_new.length != 0){
-//                                                         for(var icn = 0; icn < question_old_data_new.length;icn++){
-//                                                             var question_id_check = $("#nextquestionarea .checkanswer").attr("question-id");
-//                                                             if(question_old_data_new[icn]["question_id"] == question_id_check){
-//                                                                 var answer_ren = question_old_data_new[icn]["answer"];
-//                                                                 $("#nextquestionarea .checkanswer[value=" +answer_ren +"]").prop("checked",true);
-//                                                                 $("#nextquestion").prop("disabled",false);
-//                                                                 if($("#nextquestion").length ==0){
-//                                                                     $("#submitquestion").prop("disabled",false);
-//                                                                     $("#submitquestion").show();
-//                                                                 }
-//                                                             }
-//                                                         }
-//                                                     }
-//                                                     //updateMathHtml();
-//                                                     // updateMathHtmlById(
-//                                                     //     "nextquestionarea"
-//                                                     // );
-//                                                     MathJax.Hub.Queue(["Typeset",MathJax.Hub]);
-//                                                     $("#cover-spin").hide();
-//                                                 },
-//                                             });
-//                                         },
-//                                     },
-//                                     No: function () {
-//                                         // for emoji cookie set blank after exam submit
-//                                         isReAttempt = false;
-//                                         $("#questions_ans").val(JSON.stringify(question_old_data_new));
-//                                         $("#wrong_ans").val(JSON.stringify(wrong_question_old_data_new));
-//                                         $("#cover-spin").hide();
-//                                         $("#attempt-exams").submit();
-//                                         $.cookie('SetfeedbackEmoji','');
-//                                         return true;
-//                                     },
-//                                 },
-//                             });
-//                         }else{
-//                             isReAttempt = false;
-//                             $("#questions_ans").val(JSON.stringify(question_old_data_new));
-//                             $("#wrong_ans").val(JSON.stringify(wrong_question_old_data_new));
-//                             $("#cover-spin").hide();
-//                             $("#attempt-exams").submit();
-//                             return true;
-//                         }
-//                     },
-//                 });
-//             }
-//         }else{
-//             $("#questions_ans").val(JSON.stringify(question_old_data_new));
-//             $("#wrong_ans").val(JSON.stringify(wrong_question_old_data_new));
-//             return true;
-//         }
-//     }else{
-//         $("#questions_ans").val(JSON.stringify(question_old_data_new));
-//         $("#wrong_ans").val(JSON.stringify(wrong_question_old_data_new));
-//         return true;
-//     }
-//     return false;
-// }
-
 function SetQuestionCodeValue($ArrayOfValue) {
     $questionCodeText = "";
     if ("grades" in $CodeArray) {
@@ -8862,7 +8565,7 @@ function ExportClassPerformanceReport(examID, classIds, groupIds) {
  * USE : Update Group Member
  */
 function updateGroupMember(form,dreamschat_group_id,GroupMemberData,newMemberList,newMemberListLength,rci) {
-    if (GroupMemberData.length != 0) {
+    if(GroupMemberData.length != 0){
         for (var checkUid = 0; checkUid < GroupMemberData.length; checkUid++) {
             if (GroupMemberData[checkUid]["id"] == newMemberList[rci]) {
                 var Udata = GroupMemberData[checkUid];
@@ -8960,4 +8663,8 @@ function getAuthBasedDashboard($roleId){
             break;
     }
     return DashboardUrl;
+}
+
+function ShowLoader(){
+    $("#cover-spin").show();
 }

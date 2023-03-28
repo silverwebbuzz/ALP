@@ -18,7 +18,7 @@
     $languageList = \App\Models\Languages::all();
 
     $SchoolDashboardController = new \App\Http\Controllers\SchoolDashboardController;
-    $CurrentSchoolData = $SchoolDashboardController->GetSchoolDetailsById(auth::user()->school_id);
+    $CurrentSchoolData = $SchoolDashboardController->GetSchoolDetailsById(auth::user()->school_id);  
 @endphp
 <nav class="navbar navbar-expand-lg" style="background-color:{{$color}};">
     <div class="container-fluid">
@@ -30,26 +30,32 @@
             <i class="fa fa-bars"></i>
         </button>
     
-        @if(Auth::user()->role_id != 1)
+        {{-- @if(Auth::user()->role_id != 1)
         <div class="school-profile-title">
-            <button type="button" class="btn btn-primary school-profile-button" data-toggle="modal" data-target="#school-profile-popup">
-            @if(app()->getLocale() == 'en')
-                {{ mb_strimwidth($CurrentSchoolData->DecryptSchoolNameEn, 0, 28, "...")}}
+            @if(isset($CurrentSchoolData->SchoolLogo) && !empty($CurrentSchoolData->SchoolLogo))
+            <a href="javascript:void(0);" class="school-profile-button" data-toggle="modal" data-target="#school-profile-popup">
+                <img src="{{$CurrentSchoolData->SchoolLogo}}" alt="logo" class="logo-icon">
+            </a>
             @else
-                {{ mb_strimwidth($CurrentSchoolData->DecryptSchoolNameCh, 0, 28, "...")}}
+                <button type="button" class="btn btn-primary school-profile-button" data-toggle="modal" data-target="#school-profile-popup">
+                    @if(app()->getLocale() == 'en')
+                        {{ mb_strimwidth($CurrentSchoolData->DecryptSchoolNameEn, 0, 28, "...")}}
+                    @else
+                        {{ mb_strimwidth($CurrentSchoolData->DecryptSchoolNameCh, 0, 28, "...")}}
+                    @endif
+                </button>
             @endif
-            </button>
         </div>
-        @endif
+        @endif --}}
 
-        @if(auth()->user()->role_id == 3)
+        {{-- @if(auth()->user()->role_id == 3)
             @php
             // Get Curriculum Year list by user
             $CurriculumYearList = App\Helpers\Helper::getCurriculumYearList(auth()->user()->id);
             @endphp
             <!-- Selection for school year -->
             <div class="years-selection-dropdown-main ml-auto">
-                <label>{{__('languages.curriculum_year')}}</label>
+                <label>{{__('languages.school_year')}}</label>
                 <select class="years-selection-dropdown selectpicker select-option" id="curriculum_year">
                     @if(isset($CurriculumYearList) && !empty($CurriculumYearList))
                     @foreach($CurriculumYearList as $CurriculumYearListKey => $curriculumYear)
@@ -59,13 +65,13 @@
                 </select>
             </div>
             <!-- End Selection for school year -->
-        @endif
+        @endif --}}
 
-        @if(in_array(auth()->user()->role_id,[2,5,7,1,9,8]))
+        {{-- @if(in_array(auth()->user()->role_id,[2,5,7,1,9,8]))
             <?php $CurriculumYearList = \App\Traits\Common::GetCurriculumCurrentYear(); ?>
             <!-- Selection for school year -->
             <div class="years-selection-dropdown-main ml-auto">
-                <label>{{__('languages.curriculum_year')}}</label>
+                <label>{{__('languages.school_year')}}</label>
                 <select class="years-selection-dropdown selectpicker select-option" id="curriculum_year">
                     @if(isset($CurriculumYearList) && !empty($CurriculumYearList))
                     @foreach($CurriculumYearList as $CurriculumYearListKey => $curriculumYear)
@@ -74,7 +80,7 @@
                     @endif
                 </select>
             </div>
-        @endif
+        @endif --}}
 
         <div class="langague-dropdown">
             <li class="dropdown">
@@ -92,9 +98,9 @@
                 </ul>
             </li>
         </div>
-        <div class="super-admin-title">
+        {{-- <div class="super-admin-title ml-3">
             <h4>{{ auth()->user()->id }} : {{ (auth()->user()->name_en) ? App\Helpers\Helper::decrypt(auth()->user()->name_en) : auth()->user()->name }}</h4>
-        </div>
+        </div> --}}
         <!-- <div class="collapse navbar-collapse" id="navbarSupportedContent">
             <ul class="nav navbar-nav ml-auto">
             <li class="nav-item active">

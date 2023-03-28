@@ -40,7 +40,7 @@
                         @csrf()
                         <div class="form-row select-data">
                             <div class="form-group col-md-3">
-                                <label for="users-list-role">{{ __('languages.curriculum_year') }}</label>
+                                <label for="users-list-role">{{ __('languages.school_year') }}</label>
                                 <fieldset class="form-group">
                                     <select class="form-control" name="curriculum_year_id" id="curriculum">
                                         @if(isset($CurriculumYears))

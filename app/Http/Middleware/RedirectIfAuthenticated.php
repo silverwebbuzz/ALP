@@ -19,22 +19,22 @@ class RedirectIfAuthenticated
      */
     public function handle($request, Closure $next, $guard = null)
     {
-        if (Auth::guard($guard)->check() && Auth::user()->role_id == 1) {
-            //return redirect()->route('admin.dashboard');
-            return redirect()->route('users.index');
-        } elseif(Auth::guard($guard)->check() && Auth::user()->role_id == 2){
+        if(Auth::guard($guard)->check() && Auth::user()->role_id == 1){ // SUPERADMIN_ROLE_ID
+            return redirect()->route('superadmin.dashboard');
+            //return redirect()->route('users.index');
+        }elseif(Auth::guard($guard)->check() && Auth::user()->role_id == 2){ // TEACHER_ROLE_ID
             return redirect()->route('teacher.dashboard');
-        } elseif(Auth::guard($guard)->check() && Auth::user()->role_id == 3){
-            //return redirect()->route('student.dashboard');
-            return redirect()->route('getStudentExamList');
-        }elseif(Auth::guard($guard)->check() && Auth::user()->role_id == 5){
-            //return redirect()->route('student.dashboard');
-            return redirect()->route('report.class-test-reports.correct-incorrect-answer');
-        }elseif(Auth::guard($guard)->check() && Auth::user()->role_id == 7){
+        }elseif(Auth::guard($guard)->check() && Auth::user()->role_id == 3){ // STUDENT_ROLE_ID
+            return redirect()->route('student.dashboard');
+            //return redirect()->route('getStudentExamList');
+        }elseif(Auth::guard($guard)->check() && Auth::user()->role_id == 5){ // SCHOOL_ROLE_ID
+            return redirect()->route('student.dashboard');
+            //return redirect()->route('report.class-test-reports.correct-incorrect-answer');
+        }elseif(Auth::guard($guard)->check() && Auth::user()->role_id == 7){ // PRINCIPAL_ROLE_ID
             return redirect()->route('principal.dashboard');
-        }elseif(Auth::guard($guard)->check() && Auth::user()->role_id == 8){
+        }elseif(Auth::guard($guard)->check() && Auth::user()->role_id == 8){ // PANEL_HEAD_ROLE_ID
             return redirect()->route('panel-head.dashboard');
-        }elseif(Auth::guard($guard)->check() && Auth::user()->role_id == 9){
+        }elseif(Auth::guard($guard)->check() && Auth::user()->role_id == 9){ // CO_ORDINATOR_ROLE_ID
             return redirect()->route('co-ordinator.dashboard');
         }else{
             return $next($request);

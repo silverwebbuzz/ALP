@@ -45,6 +45,11 @@ Route::get('SendRemainderUploadStudentNewSchoolCurriculumYear','CronJobControlle
 // Assign to credit points manually via cron job
 Route::get('AssignCreditPointsManually', 'CronJobController@AssignCreditPointsManually')->name('AssignCreditPointsManually');
 
+// Update Learning Progress report cron-job
+Route::get('UpdateLearningProgress', 'CronJobController@UpdateLearningProgressJob')->name('UpdateLearningProgressJob');
+
+Route::get('UpdateUserCreditPointTable', 'CronJobController@UpdateUserCreditPointTable')->name('UpdateUserCreditPointTable');
+
 /******************************************************************************************************************************
  *  End Cron Job Urls **
  * ****************************************************************************************************************************/
@@ -60,7 +65,6 @@ Route::get('set-curriculum-year','CommonController@AjaxSetCurriculumYear')->name
 /**********************************************
  * Frontend Routes
  * ************************************************/
-Route::get('passwordCreate', 'CommonController@passwordCreate');
 Route::get('logout', 'Auth\LoginController@logout')->name('logout');
 Route::get('/', function () {
 	return view('frontend.homepage');
@@ -113,7 +117,7 @@ Route::get('check-question-code-exists', 'CommonController@checkQuestionCodeExis
 Route::get('lang/{lang}', ['as' => 'lang.switch', 'uses' => 'LanguageController@switchLang']);
 Route::get('check-email-exists', 'CommonController@CheckEmailExists')->name('check-email-exists');
 
-Route::group(['middleware'=>['auth']], function () {
+Route::group(['middleware' => ['auth']], function () {
 
     Route::match(['GET', 'POST'], 'change-password', 'UsersController@changePassword')->name('change-password');
 
@@ -133,6 +137,7 @@ Route::group(['middleware'=>['auth']], function () {
 
     // Module for School User Management
     Route::get('school-users/delete/{id}', 'SchoolUsersController@destroy');
+    Route::post('delete/multiple/school-user','SchoolUsersController@DeleteMultipleSchoolUser')->name('delete.multiple.school-user');
     Route::resource('school-users','SchoolUsersController');
 
     /** Start Questions Module Route **/
@@ -200,6 +205,7 @@ Route::group(['middleware'=>['auth']], function () {
 
     Route::get('get_student_questions_by_difficulty_and_speed/{id}', 'ExamController@getStudentQuestionsByDifficultyAndSpeed')->name('getStudentQuestionsByDifficultyAndSpeed');
 
+    Route::get('test_result/second_trial/{examid}/{studentid}','ExamController@getSecondTrialResult')->name('second-trial');
     Route::get('exams/result/{examid}/{studentid}', 'ExamController@getExamResult')->name('exams.result');
     Route::get('exam/result/{examid}/{studentid}','ExamController@getAdminExamResult')->name('adminexams.result');
     Route::get('exams/ajax/result/{examid}/{studentid}', 'ExamController@getAjaxExamResult');
@@ -208,12 +214,13 @@ Route::group(['middleware'=>['auth']], function () {
     /** End Exam management Module Route **/
 
     /** Manage Learning Unit Ordering **/
-        Route::get('learning-unit-ordering','OrderingLearningUnit@getAllLearningUnit')->name('learning-unit-ordering');
-        Route::post('save-learning-unit-ordering','OrderingLearningUnit@saveOrderingData')->name('save-learning-unit-ordering');
+    Route::get('learning-unit-ordering','OrderingLearningUnit@getAllLearningUnit')->name('learning-unit-ordering');
+    Route::post('save-learning-unit-ordering','OrderingLearningUnit@saveOrderingData')->name('save-learning-unit-ordering');
 
-        Route::get('learning-objectives-ordering','OrderingLearningObjectives@getAllLearningObjectives')->name('learning-objectives-ordering');
-        Route::post('save-objectives-ordering','OrderingLearningObjectives@saveOrderingData')->name('save-objectives-ordering');
+    Route::get('learning-objectives-ordering','OrderingLearningObjectives@getAllLearningObjectives')->name('learning-objectives-ordering');
+    Route::post('save-objectives-ordering','OrderingLearningObjectives@saveOrderingData')->name('save-objectives-ordering');
     /** Manage Learning Unit Ordering **/
+    
     /** Strat Node Management Module Route **/
     Route::get('nodes/tree-view-list','NodesManagementController@getTreeViewListNodes')->name('nodes.tree-view-list');
     Route::Resource('nodes','NodesManagementController')->middleware(['admin']);
@@ -234,7 +241,7 @@ Route::group(['middleware'=>['auth']], function () {
     /** End Modules Management **/
 
     /** Strat User Activity Route **/
-    Route::resource('useractivity','UserActivityController')->middleware(['admin']);
+    Route::resource('useractivity','UserActivityController');//->middleware(['admin']);
     /** End User Activity Route **/
 
     /** Strat School Management Route **/
@@ -265,12 +272,8 @@ Route::group(['middleware'=>['auth']], function () {
         Route::match(['get','post'],'report/skill-weekness', 'GroupsSkillWeeknessReportController@getSkillWeeknessReport')->name('report.skill-weekness');
     
         // Progress Report routes
-        Route::get('teacher/progress-report/learning-objective', 'ProgressReportController@TeacherProgressReportLearningObjective')->name('teacher.progress-report.learning-objective');
-        Route::get('teacher/progress-report/learning-units', 'ProgressReportController@TeacherProgressReportLearningUnits')->name('teacher.progress-report.learning-units');
         Route::get('student/progress-report/learning-objective/{studentId}', 'ProgressReportController@StudentProgressReportLearningObjective')->name('student.progress-report.learning-objective');
         Route::get('student/progress-report/learning-units/{studentId}','ProgressReportController@StudentProgressReportLearningUnits')->name('student.progress-report.learning-units');
-        Route::get('principal/progress-report/learning-objective', 'ProgressReportController@PrincipalProgressReportLearningObjective')->name('principal.progress-report.learning-objective');
-        Route::get('principal/progress-report/learning-units', 'ProgressReportController@PrincipalProgressReportLearningUnits')->name('principal.progress-report.learning-units');
     });
     /** End admin reports route **/
 
@@ -417,9 +420,6 @@ Route::group(['middleware'=>['auth']], function () {
     Route::get('parent/child/subject/{id}','ParentDashboardController@GetSubjectList')->middleware(['parent'])->name('subject-list');
 
 
-
-
-
     /***********************************************************************************
      * Backend Routes (School Panel)
      * *********************************************************************************/
@@ -520,6 +520,7 @@ Route::group(['middleware'=>['auth']], function () {
     Route::post('peer-group/memberlist','PeerGroupController@memberlist');
     Route::post('peer-group/get-selected-memberlist','PeerGroupController@getSelectedMemberList');
     Route::get('get-studentlist-by-grade-class','PeerGroupController@getStudentListByGradeClass')->name('getStudentListByGradeClass');
+    Route::match(['GET', 'POST'],'peer-group/view/members/{group_id}', 'PeerGroupController@ViewPeerGroupMembers')->name('peer-group.view.members');
     Route::resource('peer-group','PeerGroupController');
     Route::get('get-user-info', 'CommonController@GetUserInfo')->name('get-user-info');
     Route::get('auto-peer-group','PeerGroupController@createViewAutoPeerGroup')->name('auto-peer-group');
@@ -581,7 +582,7 @@ Route::group(['middleware'=>['auth']], function () {
     // Route::get('student/students-profile/{id}','TeacherDashboardController@studentsProfile')->name('student.student-profiles');
 
     // Route::match(['GET', 'POST'],'assign-credit-points','TeacherDashboardController@AssignCreditPoints')->middleware(['teacher'])->name('assign-credit-points');
-    Route::match(['GET', 'POST'],'assign-credit-points','CreditPointController@AssignCreditPoints')->middleware(['teacher'])->name('assign-credit-points');
+    Route::match(['GET', 'POST'],'assign-credit-points','CreditPointController@AssignCreditPoints')->name('assign-credit-points');
     Route::get('get-students-list-checkbox', 'CommonController@getStudentListByGradeClassGroup');
 
 
@@ -602,4 +603,9 @@ Route::group(['middleware'=>['auth']], function () {
     /***********************************************************************************
      * End CoOrdinator Routes
      * *********************************************************************************/
+
+    Route::get('learning-progress/learning-units', 'Reports\ProgressReportController@LearningProgressLearningUnits')->name('learning-progress.learning-units');
+    Route::get('learning-progress/learning-objectives', 'Reports\ProgressReportController@LearningProgressLearningObjectives')->name('learning-progress.learning-objectives');
+
+    Route::get('get/school-users', 'CommonController@GetSchoolUserIds');
 });
