@@ -28,31 +28,32 @@
                 </div>
                 @endif
                 @php
-                    if(Auth::user()->role_id==2){
-                        $color = '#f7bfbf';
-                    }else if(Auth::user()->role_id==3){
-                        $color = '#d8dc41';
-                    }else if(Auth::user()->role_id == 7){
-                        $color = '#BDE5E1';
-                    }else if(Auth::user()->role_id == 8){
-                        $color = '#fed08d';
-                    }else{
-                        $color = '#A5A6F6';
-                    }
+                    // if(Auth::user()->role_id==2){
+                    //     $color = '#f7bfbf';
+                    // }else if(Auth::user()->role_id==3){
+                    //     $color = '#d8dc41';
+                    // }else if(Auth::user()->role_id == 7){
+                    //     $color = '#BDE5E1';
+                    // }else if(Auth::user()->role_id == 8){
+                    //     $color = '#fed08d';
+                    // }else{
+                    //     $color = '#A5A6F6';
+                    // }
+                    $RoleBasedColor = \App\Helpers\Helper::getRoleBasedColor();
                 @endphp
                 <style type="text/css">
                     .question-generator-option-headings .admin-tab {
-                        background-color:<?php echo $color;?> !important;
+                        background-color:<?php echo $RoleBasedColor['background_color'];?> !important;
                     }
                     .question-generator-option-headings li.admin-tab.tab_active {
-                        background-color:<?php echo str_replace(';','', App\Helpers\Helper::getRoleBasedMenuActiveColor()); ?> !important;
+                        background-color:<?php echo str_replace(';','', $RoleBasedColor['active_color']); ?> !important;
                     }
                     .bg-pink {
-                        background-color:<?php echo $color;?> !important;
-                        border-color:<?php echo $color; ?> !important;
+                        background-color:<?php echo $RoleBasedColor['background_color'];?> !important;
+                        border-color:<?php echo $RoleBasedColor['background_color']; ?> !important;
                     }
                     .sm-deskbord-main-sec .tab-content-wrap .nav-pills .nav-link.active {
-                        background-color: <?php echo $color; ?> !important;
+                        background-color: <?php echo $RoleBasedColor['background_color']; ?> !important;
                         color: #000;
                         font-family: inherit;
                     }
@@ -160,8 +161,8 @@
                                         <div class="form-group col-md-6 mb-50">
                                             <label class="text-bold-600">{{ __('languages.question_generators_menu.report_date') }}</label>
                                             <select name="report_date" class="form-control select-option" id="select-report-date">
-                                                <option value="end_date">{{__('languages.question_generators_menu.end_date')}}</option>
-                                                <option value="after_submit" selected>{{__('languages.question_generators_menu.after_submit')}}</option>
+                                                <option value="end_date" selected>{{__('languages.question_generators_menu.end_date')}}</option>
+                                                <option value="after_submit">{{__('languages.question_generators_menu.after_submit')}}</option>
                                                 <option value="custom_date">{{__('languages.question_generators_menu.custom_date')}}</option>
                                             </select>
                                         </div>

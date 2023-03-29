@@ -1818,28 +1818,6 @@ class QuestionGeneratorController extends Controller {
                         ])
                         ->whereIn(cn::USERS_ID_COL,$StudentIds)
                         ->get();
-
-        // $studentList =  User::where([
-        //                     cn::USERS_SCHOOL_ID_COL => Auth::user()->{cn::USERS_SCHOOL_ID_COL},
-        //                     cn::USERS_ROLE_ID_COL => cn::STUDENT_ROLE_ID
-        //                 ])
-        //                 ->where(function ($query) use ($request,$gradesListId,$GradeClassId,$isTeacher){
-        //                     if(!isset($request->gradeIds) && !isset($request->classIds)){
-        //                         $query->whereIn(cn::USERS_GRADE_ID_COL,$request->gradeIds)->whereIn(cn::USERS_CLASS_ID_COL,$request->classIds);
-        //                     }else{
-        //                         if(isset($request->gradeIds) && !empty($request->gradeIds)){
-        //                             $query->whereIn(cn::USERS_GRADE_ID_COL,$request->gradeIds);
-        //                         }else if($isTeacher==1){
-        //                             $query->whereIn(cn::USERS_GRADE_ID_COL,$gradesListId);
-        //                         }
-
-        //                         if(isset($request->classIds) && !empty($request->classIds)){
-        //                             $query->whereIn(cn::USERS_CLASS_ID_COL,$request->classIds);
-        //                         }else if($isTeacher==1){
-        //                             $query->whereIn(cn::USERS_CLASS_ID_COL,$GradeClassId);
-        //                         }
-        //                     }
-        //                 })->get();
         if(!$studentList->isEmpty()){
             foreach($studentList as $student){
                 $optionList .= '<option value="'.$student->id.'">';
@@ -1854,7 +1832,7 @@ class QuestionGeneratorController extends Controller {
                 $optionList .= '</option>';
             }
         }else{
-            $optionList .= '<option value="">Students not available</option>';
+            $optionList .= '<option value="">__("languages.students_not_available")</option>';
         }
         return $this->sendResponse([$optionList]);
     }

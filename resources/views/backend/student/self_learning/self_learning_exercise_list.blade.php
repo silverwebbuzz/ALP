@@ -181,7 +181,7 @@ if($user_id){
 															@if(in_array('result_management_read', $permissions))	
 																@if((isset($examArray['attempt_exams']) && in_array(Auth::id(),array_column($examArray['attempt_exams'],'student_id'))) && ($examArray['status'] == "publish") && date('Y-m-d',strtotime($examArray['result_date'])) <= date('Y-m-d'))
 																<a href="{{route('exams.result',['examid' => $selfLearningExcercise->id, 'studentid' => Auth::user()->id])}}" class="view-result-btn" title="{{__('languages.result_text')}}">
-																	<i class="fa fa-eye fa-lg" aria-hidden="true" ></i>
+																	<i class="fa fa-eye fa-lg" aria-hidden="true"></i>
 																</a>
 																@endif
 															@endif

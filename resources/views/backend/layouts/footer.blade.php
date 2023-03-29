@@ -1,22 +1,23 @@
 @php
-if(Auth::user()->role_id == 1){
-        $color = '#A5A6F6';
-    }else if(Auth::user()->role_id==2){
-        $color = '#f7bfbf';
-    }else if(Auth::user()->role_id==3){
-        $color = '#d8dc41';
-    }else if(Auth::user()->role_id == 7){
-        $color = '#BDE5E1';
-    }else if(Auth::user()->role_id == 8){
-        $color = '#fed08d';
-    }else if(Auth::user()->role_id == 9){
-        $color = '#eab676';
-    }else{
-        $color = '#a8e4b0';
-    }
+// if(Auth::user()->role_id == 1){
+//         $color = '#A5A6F6';
+//     }else if(Auth::user()->role_id==2){
+//         $color = '#f7bfbf';
+//     }else if(Auth::user()->role_id==3){
+//         $color = '#d8dc41';
+//     }else if(Auth::user()->role_id == 7){
+//         $color = '#BDE5E1';
+//     }else if(Auth::user()->role_id == 8){
+//         $color = '#fed08d';
+//     }else if(Auth::user()->role_id == 9){
+//         $color = '#eab676';
+//     }else{
+//         $color = '#a8e4b0';
+//     }
+    $RoleBasedColor = \App\Helpers\Helper::getRoleBasedColor();
     $isGroupExists = App\Helpers\Helper::IsPeerGroupExists(Auth::user()->role_id,Auth::user()->id);  
 @endphp
-<footer class="sm-admin-footer p-2" style="background-color:{{$color}};">
+<footer class="sm-admin-footer p-2" style="background-color:{{$RoleBasedColor['background_color']}};">
     <div class="container">
         <div class="row">
             <div class="copyrights-line text-center">

@@ -25,13 +25,17 @@ if($user_id){
 }else{
     $permissions = [];
 }
+$RoleBasedColor = \App\Helpers\Helper::getRoleBasedColor();
 @endphp
 <style>
-    .sm-deskbord-main-sec #sidebar.inactive ul li.active{ 
+    .sm-deskbord-main-sec #sidebar.inactive ul li.active{
         background-color: <?php echo App\Helpers\Helper::getRoleBasedMenuActiveColor(); ?>
     }
     .sm-deskbord-main-sec #sidebar.active ul li.active {
         background-color: <?php echo App\Helpers\Helper::getRoleBasedMenuActiveColor(); ?>
+    }
+    .sm-deskbord-main-sec #sidebar.active ul.components li a , #sidebar.inactive .sidebar_icon_main{
+        background-color: <?php echo $RoleBasedColor['headerColor'];?> !important;
     }
 </style>
 

@@ -452,6 +452,47 @@ class Helper{
         return $grade->{cn::GRADES_NAME_COL};
     }
 
+    /**
+     * USE : Get Role Based Background Color And Active Color
+     */
+    public static function getRoleBasedColor(){
+        $color = ['background_color' => "#000",'active_color' => '#000'];
+        switch(Auth::user()->role_id){
+            case 1:
+                $bgcolor = self::getGlobalConfiguration('super_admin_panel_color');
+                $activeColor = self::getGlobalConfiguration('super_admin_panel_active_color');
+                $headerColor = self::getGlobalConfiguration('super_admin_header_color');
+                break;
+            case 2:
+                $bgcolor = self::getGlobalConfiguration('teacher_panel_color');
+                $activeColor = self::getGlobalConfiguration('teacher_panel_active_color');
+                $headerColor = self::getGlobalConfiguration('teacher_header_color');
+                break;
+            case 3:
+                $bgcolor = self::getGlobalConfiguration('student_panel_color');
+                $activeColor = self::getGlobalConfiguration('student_panel_active_color');
+                $headerColor = self::getGlobalConfiguration('student_header_color');
+                break;
+            case 7:
+                $bgcolor = self::getGlobalConfiguration('principal_panel_color');
+                $activeColor = self::getGlobalConfiguration('principal_panel_active_color');
+                $headerColor = self::getGlobalConfiguration('principal_header_color');
+                break;
+            case 8:
+                $bgcolor = self::getGlobalConfiguration('panel_head_panel_color');
+                $activeColor = self::getGlobalConfiguration('panel_head_panel_active_color');
+                $headerColor = self::getGlobalConfiguration('panel_head_header_color');
+                break;
+            case 9:
+                $bgcolor = self::getGlobalConfiguration('co_ordinator_panel_color');
+                $activeColor = self::getGlobalConfiguration('co_ordinator_panel_active_color');
+                $headerColor = self::getGlobalConfiguration('co_ordinator_header_color');
+                break;
+        }
+        $color = ['background_color' => $bgcolor,'active_color' => $activeColor, 'headerColor' => $headerColor];
+        return $color;
+    }
+    
      /**
      * USE : Get Global Configuration value using key name
      */

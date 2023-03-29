@@ -1440,14 +1440,14 @@ trait Common {
      * USE : Encryption Data
      */
     public static function encrypt($string){
-        return base64_encode($string);
+        return base64_encode($string, TRUE);
     }
 
     /**
      * USE : Decrypt Data
      */
     public static function decrypt($string){
-        return base64_decode($string);
+        return base64_decode($string,TRUE);
     }
 
     /**
@@ -1511,7 +1511,7 @@ trait Common {
     public function getPeerGroupType(){
         return array(
             ['id' => '0', 'name' => __('languages.similar').' '.__('languages.distribution')],
-            ['id' => '1', 'name' => __('languages.report.ability').'-'.__('languages.based')]
+            ['id' => '1', 'name' => __('languages.ability_based')]
         );
     }
 

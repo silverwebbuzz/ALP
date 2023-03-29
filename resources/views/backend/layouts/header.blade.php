@@ -1,26 +1,26 @@
 
 @php
-    if(Auth::user()->role_id == 1){
-        $color = '#A5A6F6';
-    }else if(Auth::user()->role_id==2){
-        $color = '#f7bfbf';
-    }else if(Auth::user()->role_id==3){
-        $color = '#d8dc41';
-    }else if(Auth::user()->role_id == 7){
-        $color = '#BDE5E1';
-    }else if(Auth::user()->role_id == 8){
-        $color = '#fed08d';
-    }else if(Auth::user()->role_id == 9){
-        $color = '#eab676';
-    }else{
-        $color = '#a8e4b0';
-    }
+    // if(Auth::user()->role_id == 1){
+    //     $color = '#A5A6F6';
+    // }else if(Auth::user()->role_id==2){
+    //     $color = '#f7bfbf';
+    // }else if(Auth::user()->role_id==3){
+    //     $color = '#d8dc41';
+    // }else if(Auth::user()->role_id == 7){
+    //     $color = '#BDE5E1';
+    // }else if(Auth::user()->role_id == 8){
+    //     $color = '#fed08d';
+    // }else if(Auth::user()->role_id == 9){
+    //     $color = '#eab676';
+    // }else{
+    //     $color = '#a8e4b0';
+    // }
+    $RoleBasedColor = \App\Helpers\Helper::getRoleBasedColor();
     $languageList = \App\Models\Languages::all();
-
     $SchoolDashboardController = new \App\Http\Controllers\SchoolDashboardController;
     $CurrentSchoolData = $SchoolDashboardController->GetSchoolDetailsById(auth::user()->school_id);  
 @endphp
-<nav class="navbar navbar-expand-lg" style="background-color:{{$color}};">
+<nav class="navbar navbar-expand-lg" style="background-color:{{$RoleBasedColor['headerColor']}};">
     <div class="container-fluid">
         <button type="button" id="sidebarCollapse" class="btn btn-primary tonggel-btn">
             <i class="fa fa-bars"></i>

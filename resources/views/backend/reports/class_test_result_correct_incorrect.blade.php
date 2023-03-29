@@ -34,7 +34,7 @@
 								<div class="select-lng pt-2 pb-2 col-lg-4 col-md-4">
 									<label> {{ __('languages.exercise') }} / {{ __('languages.test_text') }}</label>
 									<select name="exam_id" id="exam_id" class="form-control select-option performance_exam_id">
-										<option value="">{{ __('languages.exercise') }}/{{ __('languages.test_text') }}</option>
+										{{-- <option value="">{{ __('languages.exercise') }}/{{ __('languages.test_text') }}</option> --}}
 										@php
 											$school_id = '';
 											if(App\Helpers\Helper::isSchoolLogin()){
@@ -1042,7 +1042,7 @@
 							}
 						});
 					}else{
-						toastr.error('Please select exams');
+						toastr.error(VALIDATIONS.PLEASE_SELECT_EXAM);
 					}
 				});
 				
@@ -1087,7 +1087,7 @@
 							}
 						});
 					}else{
-						toastr.error('Please select exams');
+						toastr.error(VALIDATIONS.PLEASE_SELECT_EXAM);
 					}
 				});
 

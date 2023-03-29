@@ -2,8 +2,6 @@
     
 use Illuminate\Support\Facades\Route;
 
-// Route::get('abc', 'CommonController@DataEntryLearningObjectives')->name('DataEntryLearningObjectives');
-
 /******************************************************************************************************************************
  *  Start Cron Job Urls **
  * ****************************************************************************************************************************/
@@ -54,11 +52,7 @@ Route::get('UpdateUserCreditPointTable', 'CronJobController@UpdateUserCreditPoin
  *  End Cron Job Urls **
  * ****************************************************************************************************************************/
 
-
- 
 Route::get('demo-progress-report', 'Reports\StudentLearningReportsController@StudentLearningReport')->name('StudentLearningReport');
-
-
 Route::get('update_in_all_table_curriculum_year_id','CommonController@UpdateInAllTableCurriculumYearId');
 Route::get('set-curriculum-class_student_number','CommonController@setClassStudentNumberColumnValue');
 Route::get('set-curriculum-year','CommonController@AjaxSetCurriculumYear')->name('set-curriculum-year');

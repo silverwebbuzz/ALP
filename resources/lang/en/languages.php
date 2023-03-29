@@ -322,8 +322,8 @@ return [
     'global_configuration_updated_successfully' => 'Global Configuration Updated Successfully',
     'select_language'                   => 'Select Language',
     'language_name'                     => 'Language Name',
-    'reattempt_exam_pop_message_1'      => 'The answers of the following questions are incorrect?',
-    'reattempt_exam_pop_message_2'      => 'Would you like to try again',
+    'reattempt_exam_pop_message_1'      => 'The answers of the following questions are incorrect.',
+    'reattempt_exam_pop_message_2'      => 'Would you like to try again?',
     'class_promotion_history'           => 'Class Promotion History',
     'to_class'                          => 'To Class',
     'from_class'                        => 'From Class',
@@ -448,7 +448,6 @@ return [
     'enter_hint_for_wrong_answer'    => 'enter hint for wrong answer',
     'enter_title'                   => 'Enter Title',
     'student_question_analysis_graph' => 'Student Question Analysis Graph',
-
     'sidebar' => [
         'question-wizard'                   => 'Question Wizard',
         'self_learning'                     => 'Self-Learning',
@@ -510,7 +509,6 @@ return [
         'peer_groups'                       => 'Peer Groups',
         'leaderboard'                       => 'Leaderboard'
     ],
-
     'questions' => [
         'parent_node_id'                    => 'Parent Node ID',
         'select_node'                       => 'Select Node',
@@ -573,7 +571,6 @@ return [
         'hint_1'                            => 'Hint 1',
         'hint_2'                            => 'Hint 2',
     ],
-
     'user_management' =>[
         'user_detail'                       => 'User Detail',
         'import_users'                      => 'Import Users',
@@ -617,7 +614,6 @@ return [
         'enter_the_address'                 => 'Enter the address',
         'user_role'                         => 'Users Role',
     ],
-
     'group_management' =>[
         'group_detail'                      => 'Group Detail',
         'create_new_group'                  => 'Create New Group',
@@ -648,7 +644,6 @@ return [
         'enter_group_name'                  => 'Enter Group Name',
         'search_by_student_name'            => 'Student Name',
     ],
-
     'test_template_management' =>[
         'test_template_detail'              => 'Test Template Detail',
         'question_templates'                => 'Question Templates',
@@ -678,7 +673,6 @@ return [
         'template_question_list'            => 'Template Question List',
         'question_type'                     => 'Question Type',
     ],
-
     'test'  =>[
         'test_detail'                       => 'Test / Exercise Management',
         'add_test'                          => 'Add Test',
@@ -721,7 +715,6 @@ return [
         'update_status'                     => 'Update Status',
         'test_type'                         => 'Test Type',
     ],
-
     'school_management' => [
         'school_detail'                     => 'School Detail',
         'school_details'                    => 'School Details',
@@ -748,7 +741,6 @@ return [
         'enter_english_name'                => 'Enter English Name',
         'enter_chinese_name'                => 'Enter Chinese Name',
     ],
-
     'upload_document' => [
         'document_detail'                   => 'Document Detail',
         'update_document'                   => 'Update Document',
@@ -783,14 +775,12 @@ return [
         'more_audio_files'                  => 'More AUDIO files..',
         'more_images_files'                 => 'More IMAGES files..',
     ],
-
     'module_management' =>[
         'module_detail'                     => 'Module Detail',
         'add_new_module'                    => 'Add New Module',
         'module_name'                       => 'Module Name',
         'update_module'                     => 'Update Module',
     ],
-
     'role_and_permission' => [
         'role_details'                      => 'Role Details',
         'add_new_role'                      => 'Add New Role',
@@ -802,7 +792,6 @@ return [
         'delete'                            => 'Delete',
         'update_role'                       => 'Update Role',
     ],
-
     'settings' => [
         'configure_settings'                => 'Configure Settings',
         'site_name'                         => 'Site Name',
@@ -821,7 +810,6 @@ return [
         'smtp_encryption'                   => 'SMTP Encryption',
         'basic_settings'                    => 'Basic Settings'
     ],
-
     'pre_configure_difficulty' => [
         'pre_defined_difficulty_details'    => 'Pre-defined Difficulty Details',
         'add_new_difficulty'                => 'Add New Difficulty',
@@ -832,7 +820,6 @@ return [
         'update_pre_configure_difficulty'   => 'Update Pre-defined Difficulty',
         'add_pre_defined_difficulty'        => 'Add Pre-defined Difficulty',
     ],
-
     'ai_calculated_difficulty'  => [
         'ai_calculated_difficulty_detail'   => 'Ai Calculated Difficulty Detail',
         'add_new_difficulty'                => 'Add New Difficulty',
@@ -842,7 +829,6 @@ return [
         'difficulty_value'                  => 'Difficulty Value',
         'update_ai_calculated_difficulty'   => 'Update Ai Calculated Difficulty',
     ],
-
     'nodes' => [
         'node_tree'                         => 'Node Tree',
         'node_detail'                       => 'Node Detail',
@@ -866,7 +852,6 @@ return [
         'weakness_name_english'             => 'Weakness Name (English)',
         'weakness_name_chinese'             => 'Weakness Name (Chinese)',
     ],
-
     'user_activity' =>[
         'user_activities'                   => 'User Activities',
         'english_name'                      => 'English Name',
@@ -876,7 +861,6 @@ return [
         'ip_address'                        => 'IP Address',
         'request_date_time'                 => 'Request DateTime',
     ],
-
     'report' =>[
         'release_date'                      => 'Release Date',
         'class_performance'                 => 'Class Performance',
@@ -904,7 +888,6 @@ return [
         'total_no_of_students_in_class'     => 'Total No. Of Students In Class',
         'no_of_students_who_attempted_test' => 'No. Of Students Who Attempted the Test',
         'school_comparisons_report'         => 'School Comparisons Report',
-        // 'total_no_of_questions'              => 'Total No. Of Questions',
         'average_correct_answers'           => 'Average Correct Answers',
         'average_accuracy'                  => 'Average Accuracy',
         'student_weakness'                  => 'Student Weakness',
@@ -924,7 +907,6 @@ return [
         'answer_statistics'                 => 'Answer Statistics',
         'export_performance_report'         => 'Export Performance Report',
     ],
-
     'profile' => [
         'profile'                           => 'Profile',
         'english_name'                      => 'English Name',
@@ -953,7 +935,6 @@ return [
         'school_code'                       => 'School Code',
         'school_year_start_date'            => 'School Year Start Date'
     ],
-
     'my_class'  => [
         'my_classes'                        => 'My Classes',
         'student_details'                   => 'Student Details',
@@ -961,15 +942,14 @@ return [
         'contact_information'               => 'Contact Information',
         'view_profile'                      => 'View Profile'
     ],
-
     'my_studies' => [
         'self_learning'                     => 'Self Learning',
         'exercise'                          => 'Exercise',
         'test'                              => 'Test',
         'test_result'                       => 'Test Result',
         'questions'                         => 'Questions',
-        'select_exam_language'              => 'Select Exam Language',
-        'select_test_language'              => 'Select Test Language',
+        'select_exam_language'              => 'Select Question Language',
+        'select_test_language'              => 'Select Question Language',
         'exam_time'                         => 'Exam Time',
         'explain'                           => 'Explain',
         'previous'                          => 'Previous',
@@ -980,7 +960,6 @@ return [
         'want_a_hint'                              => 'Want A Hint?',
         'exam_time_out'                            => 'Exam Time Out',
     ],
-
     'result' => [
         'student_result'                    => 'Student Result',
         'server_details'                    => 'Server Details',
@@ -1000,18 +979,15 @@ return [
         'correct_answer'                    => 'Correct Answer',
         'incorrect_answer'                  => 'Incorrect Answer',
     ],
-
     'subjects' =>[
         'add_new_subject'                   => 'Add New Subject',
         'update_subject'                    => 'Update Subject',
         'my_subjects_list'                  => 'My Subject List',
         'subject_list'                      => 'Subject List',
     ],
-
     'teachers' =>[
         'my_teachers_list'                  => 'My Teachers List',
     ],
-
     'student_dashboard' =>[
         'student_dashboard'                 => 'Student Dashboard',
         'no_of_activities'                  => 'No. of Activities',
@@ -1019,7 +995,6 @@ return [
         'unread_messages'                   => 'Unread Messages',
         'test_list'                         => 'Test List',
     ],
-
     'parent' =>[
         'child_list'                        => 'Child List',
         'teacher_list'                      => 'Teacher List',
@@ -1027,7 +1002,6 @@ return [
         'child_teacher_list'                => 'Child Teacher List',
         'child_subject_list'                => 'Child Subject List',
     ],
-
     'student_management' => [
         'add_new_student'                   => 'Add New Student',
         'student_details'                   => 'Student Details',
@@ -1036,31 +1010,26 @@ return [
         'class_promotion'                   => 'Class Promotion',
         'update_student'                    => 'Update Student',
     ],
-
     'teacher_management' => [
         'teacher_details'                       => 'Teacher Details',
         'add_new_teacher'                       => 'Add New Teacher',
         'update_teacher'                        => 'Update teacher',
     ],
-
     'principal_management' => [
         'principal_details'                       => 'Principal Details',
         'add_new_principal'                       => 'Add New Principal',
         'update_principal'                        => 'Update Principal',
     ],
-
     'grade_management' => [
         'grade_class_management'                => 'Grade/Class Management',
         'add_new_class'                         => 'Add New Class',
         'update_class'                          => 'Update Class',
     ],
-
     'teacher_class_assign' => [
         'teacher_class_subject_assign'          => 'Teacher Class Subject Assign',
         'assign_teacher_class_subject'          => 'Assign Teacher Class Subject',
         'update_teacher_class_subject'          => 'Update Teacher Class Subject',
     ],
-
     'strands_management' => [
         'strands_detail'                        => 'Strands Detail',
         'add_new_strand'                        => 'Add New Strands',
@@ -1069,7 +1038,6 @@ return [
         'search_by_strand_name'                 => 'Search By Strand Name',
         'search_by_strand_code'                 => 'Search By Strand Code',
     ],
-
     'learning_units_management' =>[
         'learning_unit_details'                     => 'Learning Unit Details',
         'add_new_learning_unit'                     => 'Add New Learning Unit',
@@ -1081,7 +1049,6 @@ return [
         'name_ch'                                   => 'Name Chinese',
         'strand_id'                                 => 'Select Strands',
     ],
-
     'learning_objectives_management' =>[
         'add_learning_objective'                   => 'Add Learning Objective',
         'learning_objectives_detail'                => 'Learning Objectives Detail',
@@ -1093,17 +1060,14 @@ return [
         'select_learning_unit'                      => 'Select Learning Unit',
         'learning_objective_details'                => 'Learning Objective Details',
     ],
-
     'sub_admin_management' => [
         'sub_admin_detail'                          => 'Sub Admin Detail',
         'add_new_sub_admin'                         => 'Add New Sub Admin',
         'update_sub_admin'                          => 'Update Sub Admin',
     ],
-
     'footer' => [
         'grow_your_mind_with_better_learning'   => 'Grow Your Mind With Better Learning'
     ],
-
     'peer_group' => [
         'peer_group' => 'Peer Group',
         'create_peer_group' => 'Create Peer Group',
@@ -1128,7 +1092,6 @@ return [
         'number_of_groups'       => 'Number of Groups',
         'select_number_of_groups'=> 'Select Number of Groups',
     ],
-
     'question_generators_menu' => [
         'question_generators'          => 'Test/Exercise Generators',
         'configuration'                => 'Configuration',
@@ -1152,7 +1115,7 @@ return [
         'end_time'                     => 'End Time',
         'select_test_end_time'         => 'Select Test End Time',
         'report_date'                  => 'Report Date',
-        'after_submit'                 => 'After Submit',
+        'after_submit'                 => 'After Submission',
         'custom_date'                  => 'Custom Date',
         'report_custom_date'           => 'Report Custom Date',
         'custom_date'                  => 'Custom Date',
@@ -1173,7 +1136,6 @@ return [
         'maximum_no_of_question_per_objective' => 'Maximum No of Question Per Objective',
         'learning_objectives'           => 'Learning Objectives',
         'difficulty_level'              => 'Difficulty Level',
-        // 'no_of_question_per_learning_objectives' => 'No of question per learning Objective',
         'no_of_question_per_learning_objectives' => 'No. of Questions per Learning Objectives',
         'select_all'                    => 'Select All',
         'some_text'                     => 'Some text',
@@ -1248,7 +1210,6 @@ return [
     'number_of_stages_to_earn_extra_credit_points'                  => 'Number of Stages to Earn Extra Credit Points',
     'difference_of_normalized_ability_between_stages'               => 'Difference of Normalized Ability (%) between Stages',
     'enter_starting_accuracy_to_earn_credit_points'                 => 'Enter Starting Accuracy to Earn Credit Points',
-
     'enter_credit_points_earned_for_starting_accuracy'              => 'Enter Credit Points Earned for Starting Accuracy',
     'enter_number_of_stages_to_earn_extra_credit_point'             => 'Enter Number of Stages to Earn Extra Credit Point',
     'enter_difference_of_accuracy_between_stages'                   => 'Enter Difference of Accuracy between Stages',
@@ -1274,7 +1235,6 @@ return [
     'student_or_group_added_successfully'                           => 'Student Or Group Added Successfully',
     'sec_per_question'                                              => 'Sec/Qn',
     'learning_type'                                                 => 'Leaderboard Type',
-
     'credit_points'                                                 => 'Credit Points',
     'no_any_data'                                                   => 'No Any Data',
     'exam_name'                                                     => 'Exam Name',
@@ -1300,7 +1260,6 @@ return [
     'min_no_of_questions_of_learning_objective'                     => 'Min no. of questions of Learning Objective',
     'question_window_size_of_learning_objective'                    => 'Question Window Size of Learning Objective',
     'accomplished_objectives'                                       => 'Accomplished Objectives',
-
     'mastered'                              => 'Mastered',
     'is_approved_question'                  => 'Is Approved Question',
     'yes'                                   => 'Yes',
@@ -1326,7 +1285,6 @@ return [
     'having_question'                       =>  'Having Questions?',
     'video_player'                          => 'Video Player',
     'cancel'                                => 'Cancel',
-
     'duplicate_csv_file_records'            => 'Duplicate Csv File Records',
     'error_msg_for_duplication_csv_import_student'=>'Errors Detected Please Correct The Highlighted Records And Upload Again',
     'new_students_import'                   => 'New Student Import',
@@ -1335,7 +1293,6 @@ return [
     'commit'                                => 'Submit',
     'please_correct_the_below_highlighted_data_conflict_with_the_current_system_data' => 'Please correct the below highlighted data conflict with the current system data',
     'data_imported_successfully'            =>  'Data Imported Successfully',
-    
     'aiapi_label' => [
         'Plot_Analyze_Question' => [
             'label_1' => 'Question Difficulty',
@@ -1345,7 +1302,6 @@ return [
             'x_axis' => 'Student Ability',
             'left_y_axis' => 'No. of Students',
             'right_y_axis' => '%'
-            //'right_y_axis' => 'Density'
         ],
         'Plot_Analyze_Student' => [
             'label_1' => 'Student Ability',
@@ -1355,7 +1311,6 @@ return [
             'x_axis' => 'Question Difficulty',
             'left_y_axis' => 'No. of questions',
             'right_y_axis' => '%'
-            //'right_y_axis' => 'Density'
         ],
         'Plot_Analyze_My_Class_Ability' => [
             'label_1' => 'Abilities of My Class',
@@ -1364,8 +1319,7 @@ return [
             'plot_title' => "My Class's Abilities",
             'left_y_axis' => 'No. of Students',
             'right_y_axis' => '%',
-            //'right_y_axis' => 'Density',
-            'x_axis' => "Students' Abilities",
+            'x_axis' => "Student's Ability",
             'median_label' => 'Median',
             'mean_label'   => 'Mean',
             'std_label'     => 'N Std'
@@ -1377,8 +1331,7 @@ return [
             'plot_title' => "My Class vs My School",
             'left_y_axis' => 'No. of Students',
             'right_y_axis' => '%',
-            //'right_y_axis' => 'Density',
-            'x_axis' => "Student's Abilities",
+            'x_axis' => "Student's Ability",
             'median_label' => 'Median',
             'mean_label'   => 'Mean',
             'std_label'     => 'N Std'
@@ -1390,7 +1343,6 @@ return [
             'plot_title' => "My Class vs My School vs All Schools",
             'left_y_axis' => 'No. of Students',
             'right_y_axis' => '%',
-            //'right_y_axis' => 'Density',
             'x_axis' => "Student's Ability",
             'median_label' => 'Median',
             'mean_label'   => 'Mean',
@@ -1415,7 +1367,6 @@ return [
         'my_class_vs_my_school_vs_all_school' => 'My Class vs My School vs All Schools',
         'my_group_vs_my_school_vs_all_school' => 'My Group vs My School vs All Schools',
     ],
-
     'self_learning_exercise'                => 'Self Learning Exercise',
     'self_learning_test'                    => 'Self Learning Test',
     'save_and_continue'                     => 'Save And Continue',
@@ -1426,24 +1377,19 @@ return [
     'no_any_student_attempt_exam_you_have_selected_class' => 'No Any Student Attempt Exam You Have Selected Class',
     'attempt_exam_notification_message'     =>  'Attempt Exam Notification Message',
     'message'                               => 'Message',
-    //'ai_calibration'                        => 'AI-Calibration',
     'start_date'                            => 'Start Date',
     'end_date'                              => 'End Date',
     'select_start_date'                     => 'Select Start Date',
     'select_end_date'                       => 'Select End Date',
-    // 'pre_defined_difficulty'                            => 'Pre Defined Difficulty',
-    // 'ai_difficulty'                                     => 'AI Difficulty',
     'ai_calibration'                            => 'AI-Calibration',
     'attempt_exam_notification_message'         =>  'Attempt Exam Notification Message',
     'message'                                   => 'Message',
     'copy'                                      => 'Copy',
     'create'                                    => 'Create',
-    // 'principal_profile'                         => 'Principal Profile',
     'sorry_you_cant_attempt_exam_after_page_refresh' => "Sorry....you can't attempt exam after page refresh.",
     'inspect_mode'                              => 'Inspect Mode',
     'test_exercise_inspect_mode'                => 'Test/Exercise Inspect Mode',
     'reference_number'                          => 'Reference No',
-
     'change_exam_date'                          => 'Change Date',
     'exam_date_updated_successfully'            => 'Exam Date Updated Successfully',
     'sxx'                                       => 'SXX',
@@ -1483,7 +1429,6 @@ return [
     'percentile_of_calibration_abilities'       => 'Percentile of calibration abilities',
     'zero'                                      => 'Zero',
     'as_a_percentile_of_calibration_abilities' => 'As a percentile of calibration abilities',
-    
     'no_of_student'                             => 'No.of Student',
     'no_of_involved_school'                     => 'No.of Involved School',
     'no_of_involved_question_seeds'             => 'No.of Involved Question Seeds',
@@ -1524,7 +1469,6 @@ return [
     'median_calibration_ability'                => 'Median Calibration Ability',
     'add_new_calibration'                       => 'Add New Calibration',
     'ai_calibration_list'                       => 'Ai-Calibration List',
-
     'previous_ai_difficulty'                    => 'Previous AI Difficulty',
     'change_difference'                         => 'Change Difference',
     'question_log_type'                         => 'Question Log Type',
@@ -1538,7 +1482,6 @@ return [
     'please_select_option'                      => 'Please select option',
     'include'                                   => 'Include',
     'exclude'                                   => 'Exclude',
-    // 'start_date_time'                           => 'Start Date-Time',
     'complete_date_time'                        => 'Complete Date & Time',
     'students_not_available'                    => 'Students not available',
     'question_calibration_adjustment_log'       => 'Question Calibration Adjustment Log',
@@ -1585,7 +1528,6 @@ return [
         'update_school_user'                    => 'Update School User',
         'school_name'                           => 'School Name',
     ],
-
     'common_sidebar' =>[
         'dashboard'                             => 'Dashboard',
         'my_account'                            => 'My Account',
@@ -1627,7 +1569,6 @@ return [
         'learning_units'                        => 'Learning Units',
         'learning_objectives'                    => 'Learning Objectives',
     ],
-
     'admin_sidebar' =>[
         'syllabus_management'                   => 'Syllabus Management',
         'curriculum_management'                 => 'Curriculum Management',
@@ -1671,7 +1612,6 @@ return [
     'creator'                                   => 'Creator',
     'modify_status'                             => 'Modify Status',
     'deactivate'                                => 'Deactivate',
-    // 'self_learning'                             => 'Self-Learning',
     'general_hints'                             => 'General Hints',
     'full_solution'                             => 'Full Solution',
     'copy_en_to_ch'                             => 'Copy English To Chinese',
@@ -1695,13 +1635,12 @@ return [
     'q'                                         => 'Q',
     'total_students'                            => 'Total Students',
     'questions_text'                            => 'Questions',
-
     'update_learning_progress_report_not'       => '(If any of the below parameters is updated, the learning progress reports of the whole system will be re-computed. The whole background process will take a few hours to complete)',
     'submission'                                => 'Submission',
     'configurations'                            => 'Configurations',
     'export'                                    => 'Export',
     'classes'                                   => 'Classes',
-    'similar'                                   => 'Similar',
+    'similar'                                   => 'Even',
     'distribution'                              => 'Distribution',
     'based'                                     => 'Based',
     'pre_defined_difficulty'                    => 'Pre-defined Difficulty',
@@ -1765,5 +1704,10 @@ return [
     'how_do_you_feel_now'                       => 'How do you feel right now?',
     'unflag_en'                                 => 'Unflag',
     'unflag_ch'                                 => '取消標記',
-    'expired'                                   => 'Expired',    
+    'expired'                                   => 'Expired',  
+    'all_panel_backgrounds'                     => 'All Panel Backgrounds',
+    'active_tab_color'                          => 'Active Tab Color',
+    'background_color'                          => 'Background Color',
+    'ability_based'                             => 'Ability Based',
+    'header_background_color'                   => 'Header Background Color'
 ];

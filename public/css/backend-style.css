@@ -5170,3 +5170,37 @@ margin-right: 0;
 .sidebar_profile_user_data a{
     color: #fff;
 }
+
+/* -------------------- */
+/* #sidebar.inactive ul li a img {
+    background: #5e91c3;
+} */
+#sidebar.inactive .sidebar_icon_main {
+    width: 60px;
+    height: 40px;
+    display: flex;
+    /* background-color: #5ec381; */
+    justify-content: center;
+    align-items: center;
+    border-right: 1px solid !important;
+}
+#sidebar.inactive ul li a{
+    display: flex !important;
+    align-items: center;
+}
+#sidebar.inactive ul li a span{
+    padding-left: 10px;
+}
+.sm-add-user-sec {
+   background-color: transparent;
+}
+#content{
+    background: linear-gradient(90deg, rgba(171,186,223,1) 0%, rgba(250,221,217,1) 100%) !important;
+}
+.list-unstyled li{
+    border-bottom: 1px solid #fff;
+}
+#sidebar.inactive ul li a {
+    padding:  0;
+    border: 1px solid;
+}

@@ -109,6 +109,7 @@ var VALIDATIONS = {
     FIELD_IS_REQUIRED : "The field is required",
     PLEASE_ADD_QUESTIONS: "Please Add Questions",
     ALLOW_MINIMUM_ONE_QUESTION : "Allow Minimum One Question",
+    PLEASE_SELECT_EXAM : "Please Select Exam",
 };
 var N_SELECTED_TEXT = 'selected';
 var NONE_SELECTED = "None selected";
@@ -196,10 +197,10 @@ var DELETE_ASSIGN = "Delete Assign";
 var DELETE_URL = "Delete URL";
 var CANCELLATION = "Cancellation";
 var REATTEMPTPOPMSG = "";
-var POPMESSAGE_EN1 = "Would you like to try again";
-var POPMESSAGE_CH1 = "你想再試一次嗎";
-var POPMESSAGETITLE_EN = "The answers of the following questions are incorrect?";
-var POPMESSAGETITLE_CH = "以下問題的答案不正確？";
+var POPMESSAGE_EN1 = "Would you like to try again?";
+var POPMESSAGE_CH1 = "你想再試一次嗎?";
+var POPMESSAGETITLE_EN = "The answers of the following questions are incorrect.";
+var POPMESSAGETITLE_CH = "以下問題的答案不正確。";
 var BUTTONYESTEXTEN = "Yes";
 var BUTTONYESTEXTCH = "是的";
 var BUTTONNOTEXTEN = "No";
@@ -253,3 +254,18 @@ var UN_FLAG_BUTTON_TEXT_EN = 'Unflag';
 var UN_FLAG_BUTTON_TEXT_CH = '取消標記';
 var FLAG_VALIDATION_TEXT_EN = "Without selecting any answer you can't set flag";
 var FLAG_VALIDATION_TEXT_CH = "如果不選擇任何答案，您將無法設置標誌";
+var SHOW = "Show";
+var ENTRIES = "entries";
+var SEARCH = "Search";
+var SHOWING = "Showing";
+var TO = "to";
+var OF = "of";
+var PREVIOUS = "Previous";
+var NEXT = "Next";
+var FIRST = "First";
+var LAST = "Last";
+var FILTERED = "filtered";
+var FROM = "from";
+var TOTAL = "total";
+var NO_DATA_AVAILABLE_IN_TABLE = "No data available in table";
+var NO_MATCHING_RECORDS_FOUND = "No matching records found";

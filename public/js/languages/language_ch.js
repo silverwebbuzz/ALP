@@ -66,7 +66,7 @@ var VALIDATIONS = {
     PLEASE_UPLOAD_ONLY_JPEG_JPG_OR_PNG_FILES: "僅上傳媒體文件 圖片 | 圖片 | PNG | 動圖",
     PLEASE_SELECT_LEARNING_TYPE: "請選擇學習類型",
     PLEASE_ENTER_NAME: "請輸入姓名",
-    PLEASE_SELECT_STRAND: "請選擇章節",
+    PLEASE_SELECT_STRAND: "請選擇領域",
     REQUIRED_VALUE_MAXIMUM_ABILITY_HISTORY: "要求最長能力歷史",
     REQUIRED_VALUE_MAXIMUM_TRIAL_ATTEMPTS: "要求最大嘗試次數",
     PLEASE_ENTER_THAN_ZERO_VALUE: "請輸入大於零",
@@ -87,7 +87,7 @@ var VALIDATIONS = {
     PLEASE_ENTER_PERMANENT_REFERENCE_NUMBER: "請輸入永久參考編號",
     QUESTION_CODE_ALREADY_EXISTS: "問題編號已存在",
     CONFIGURATIONS_DATA_NOT_FOUND: "未找到配置數據",
-    PLEASE_ENTER_PEER_GROUP_NAME: "請輸入同輩群組名稱",
+    PLEASE_ENTER_PEER_GROUP_NAME: "請輸入學習群組名稱",
     PLEASE_SELECT_AT_LEAST_ONE_CLASS: "請至少選擇一門班別",
     DATA_NOT_FOUND: "未找到數據",
     PLEASE_SELECT_ENGLISH_ANSWER: "請選擇英文答案",
@@ -96,7 +96,7 @@ var VALIDATIONS = {
     ALLOWED_ONLY_CHARACTER_VALUE: "僅允許字符值",
     NUMBER_IS_NOT_PERMITTED: "號碼不允許",
     NO_AVAILABLE_DIFFICULTY_VALUE: "沒有適用的難度值",
-    PLEASE_SELECT_STUDENTS_OR_PEER_GROUP: "請選擇學生或同輩群組",
+    PLEASE_SELECT_STUDENTS_OR_PEER_GROUP: "請選擇學生或學習群組",
     PLEASE_SELECT_GRADE_AND_CLASSES: "請選擇表格和課程",
     PLEASE_SELECT_STUDENT: "請選擇學生",
     PLEASE_SELECT_GROUP: "請選擇群組",
@@ -108,10 +108,11 @@ var VALIDATIONS = {
     CALIBRATION_DATA_NOT_FOUND : "未找到校準數據",
     FIELD_IS_REQUIRED : "該字段是必需的",
     PLEASE_ADD_QUESTIONS: "請添加問題",
-    ALLOW_MINIMUM_ONE_QUESTION : "允許至少一個問題"
+    ALLOW_MINIMUM_ONE_QUESTION : "允許至少一個問題",
+    PLEASE_SELECT_EXAM : "請選擇考試",
 };
-var N_SELECTED_TEXT = '已选择';
-var NONE_SELECTED = "未选择";
+var N_SELECTED_TEXT = '已選擇';
+var NONE_SELECTED = "未選擇";
 var RESULT_DATE = "結果發佈日期";
 var END_DATE = "結束日期";
 var PLEASE_ENTER = "請輸入";
@@ -132,8 +133,8 @@ var CLASS_NOT_AVAILABLE = "沒有適用的班別";
 var GRADE_NOT_AVAILABLE = "表格不可用";
 var SELECT_GRADE = "選擇表格";
 var SUBJECT_NOT_AVAILABLE = "沒有適用的科目";
-var SELECT_STRAND = "選擇章節";
-var STRAND_NOT_AVAILABLE = "沒有適用的章節";
+var SELECT_STRAND = "選擇領域";
+var STRAND_NOT_AVAILABLE = "沒有適用的領域";
 var SELECT_LEARNING_UNITS = "選擇學習單位";
 var LEARNING_UNITS_NOT_AVAILABLE = "沒有適用的學習重點";
 var SELECT_LEARNING_OBJECTIVES = "選擇學習重點";
@@ -187,19 +188,19 @@ var DELETE_TEST = "刪除測驗";
 var DELETE_TEACHER = "刪除教師";
 var DELETE_PRINCIPAL = "刪除校長";
 var DELETE_SUBJECT = "刪除科目";
-var DELETE_STRAND = "刪除章節";
+var DELETE_STRAND = "刪除領域";
 var DELETE_LEARNING_OBJECTIVES = "刪除學習重點";
 var DELETE_CLASS = "刪除班別";
-var DELETE_AI_CALCULATED_DIFFICULTY_LEVEL = "刪除 Ai 計算難度級別";
+var DELETE_AI_CALCULATED_DIFFICULTY_LEVEL = "刪除 AI 計算難度級別";
 var DELETE_PRE_CONFIGURE_DIFFICULTY_LEVEL = "刪除預配置難度級別";
 var DELETE_ASSIGN = "刪除分配";
 var DELETE_URL = "刪除網址";
 var CANCELLATION = "消除";
 var REATTEMPTPOPMSG = "";
-var POPMESSAGE_EN1 = "你想再試一次嗎";
-var POPMESSAGE_CH1 = "你想再試一次嗎";
-var POPMESSAGETITLE_EN = "以下問題的答案不正確？";
-var POPMESSAGETITLE_CH = "以下問題的答案不正確？";
+var POPMESSAGE_EN1 = "Would you like to try again?";
+var POPMESSAGE_CH1 = "你想再試一次嗎?";
+var POPMESSAGETITLE_EN = "The answers of the following questions are incorrect.";
+var POPMESSAGETITLE_CH = "以下問題的答案不正確。";
 var BUTTONYESTEXTEN = "Yes";
 var BUTTONYESTEXTCH = "是的";
 var BUTTONNOTEXTEN = "No";
@@ -208,7 +209,7 @@ var TIME_OUT_IN_5_MINUTES = "5 分鐘內超時";
 var TIME_OUT_IN_1_MINUTES = "1 分鐘內超時";
 var YOUR_TIME_IS_OVER = "你的時間結束了？";
 var QUESTION_SOLUTION_NOT_FOUND = "未找到題解方案";
-var SELECT_PEER_GROUP = "選擇同輩群組";
+var SELECT_PEER_GROUP = "選擇學習群組";
 var SELECT_DIFFICULTY_LEVEL = "選擇難度級別";
 var PLEASE_SELECT_AT_LEAST_ONE_QUESTION = "請選擇至少一條問題";
 var ARE_YOU_SURE_WANT_TO_REMOVE_EXISTING_QUESTION = "你確定要刪除現有問題嗎";
@@ -227,7 +228,7 @@ var CLASS_PROMOTION = "班別升級";
 var ARE_YOU_SURE_TO_ASSIGN_GROUP = "你確定要分配群組嗎?";
 var YES = "是的";
 var ARE_YOU_SURE_TO_ADD_CREDIT_POINTS = "您確定要添加積分嗎";
-var ASSIGN_CREDIT_POINTS = "分配學分";
+var ASSIGN_CREDIT_POINTS = "分配獎勵點數";
 var PLEASE_SELECT_QUESTION_FIRST = "請先選擇問題";
 var PLEASE_SELECT_VERIFICATION_STATUS = "請選擇驗證狀態";
 var UPDATE_QUESTION_VERIFICATION = "更新問題驗證";
@@ -253,3 +254,18 @@ var UN_FLAG_BUTTON_TEXT_EN = 'Unflag';
 var UN_FLAG_BUTTON_TEXT_CH = '取消標記';
 var FLAG_VALIDATION_TEXT_EN = "Without selecting any answer you can't set flag";
 var FLAG_VALIDATION_TEXT_CH = "如果不選擇任何答案，您將無法設置標誌";
+var SHOW = "展示";
+var ENTRIES = "條目";
+var SEARCH = "搜索";
+var SHOWING = "顯示";
+var TO = "到";
+var OF = "的";
+var PREVIOUS = "以前的";
+var NEXT = "下一個";
+var FIRST = "第一的";
+var LAST = "最後的";
+var FILTERED = "過濾";
+var FROM = "從";
+var TOTAL = "全部的";
+var NO_DATA_AVAILABLE_IN_TABLE = "表中無可用數據";
+var NO_MATCHING_RECORDS_FOUND = "未找到匹配的記錄";

@@ -31,35 +31,36 @@
                 </div>
                 @endif
                 @php
-                    if(Auth::user()->role_id==2){
-                        $color = '#f7bfbf';
-                    }else if(Auth::user()->role_id==3){
-                        $color = '#d8dc41';
-                    }else if(Auth::user()->role_id == 7){
-                        $color = '#BDE5E1';
-                    }else if(Auth::user()->role_id == 8){
-                        $color = '#fed08d';
-                    }else if(Auth::user()->role_id == 9){
-                        $color = '#eab676';
-                    }else if(Auth::user()->role_id == 5){
-                        $color = '#a8e4b0';
-                    }else{
-                        $color = '#A5A6F6';
-                    }
+                    // if(Auth::user()->role_id==2){
+                    //     $color = '#f7bfbf';
+                    // }else if(Auth::user()->role_id==3){
+                    //     $color = '#d8dc41';
+                    // }else if(Auth::user()->role_id == 7){
+                    //     $color = '#BDE5E1';
+                    // }else if(Auth::user()->role_id == 8){
+                    //     $color = '#fed08d';
+                    // }else if(Auth::user()->role_id == 9){
+                    //     $color = '#eab676';
+                    // }else if(Auth::user()->role_id == 5){
+                    //     $color = '#a8e4b0';
+                    // }else{
+                    //     $color = '#A5A6F6';
+                    // }
+                    $RoleBasedColor = \App\Helpers\Helper::getRoleBasedColor();
                 @endphp
                 <style type="text/css">
                     .question-generator-option-headings .admin-tab {
-                        background-color:<?php echo $color;?> !important;
+                        background-color:<?php echo $RoleBasedColor['background_color'];?> !important;
                     }
                     .question-generator-option-headings li.admin-tab.tab_active {
-                        background-color:<?php echo str_replace(';','', App\Helpers\Helper::getRoleBasedMenuActiveColor()); ?> !important;
+                        background-color:<?php echo str_replace(';','', $RoleBasedColor['active_color']); ?> !important;
                     }
                     .bg-pink {
-                        background-color:<?php echo $color;?> !important;
-                        border-color:<?php echo $color; ?> !important;
+                        background-color:<?php echo $RoleBasedColor['background_color'];?> !important;
+                        border-color:<?php echo $RoleBasedColor['background_color']; ?> !important;
                     }
                     .sm-deskbord-main-sec .tab-content-wrap .nav-pills .nav-link.active {
-                        background-color: <?php echo $color; ?> !important;
+                        background-color: <?php echo $RoleBasedColor['background_color']; ?> !important;
                         color: #000;
                         font-family: inherit;
                     }
@@ -383,7 +384,7 @@
                                                         </div>
                                                         @if(!empty($grade->classes))
                                                         <div class="form-grade-sub-option">
-                                                            <div class="form-grade-sub-single-option">
+                                                            <div class="form-grade-sub-single-option d-flex flex-wrap">
                                                                 @foreach($grade->classes as $classes)
                                                                 <input type="checkbox" name="classes[{{$grade->id}}][]" value="{{$classes->id}}"   data-label="{{$grade->name}}{{$classes->name}}" class="question-generator-class-chkbox" @if(in_array($classes->id,$studentClassData)) checked @endif  {{ $fieldDisabled }}>
                                                                 <label>{{$grade->name}}{{$classes->name}}</label>
@@ -398,6 +399,7 @@
                                                     @endforeach
                                                     @endif
                                                 </div>
+                                                
                                             </div>
 
                                             <div class="grade-class-date-time-list clearfix clearfix float-left"></div>

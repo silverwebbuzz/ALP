@@ -721,6 +721,135 @@
                                 --}}
                                 {{-- Game Configuration --}}
 
+                                 {{-- Custom Layout Color --}}
+                                 <fieldset>
+                                    <legend class="global-config-title">{{__('languages.all_panel_backgrounds')}}</legend>
+                                        <div class="form-row main-config-section">
+                                            <div class="row">
+                                                <div class="form-group col-md-2">
+                                                    <label class="text-bold-600"></label>
+                                                </div>
+                                                <div class="form-group col-md-3">
+                                                    <label class="text-bold-600">{{__('languages.background_color')}}</label>
+                                                </div>
+                                                <div class="form-group col-md-3"> 
+                                                    <label class="text-bold-600">{{__('languages.header_background_color')}}</label>
+                                                </div>
+                                                <div class="form-group col-md-3"> 
+                                                    <label class="text-bold-600">{{__('languages.active_tab_color')}}</label>
+                                                </div>
+                                            </div>
+                                            <div class="row">
+                                                <div class="form-group col-md-2">
+                                                    <label class="text-bold-600">{{__('languages.super_admin')}}</label>
+                                                </div>
+                                                <div class="form-group col-md-3">
+                                                    <input type="color" id="super_admin_panel_color" name="super_admin_panel_color" value="{{$ConfigurationArray['super_admin_panel_color'] ?? '#a5a6f6'}}">
+                                                    <span class="error-msg"></span>
+                                                </div>
+                                                <div class="form-group col-md-3">
+                                                    <input type="color" id="super_admin_header_color" name="super_admin_header_color" value="{{$ConfigurationArray['super_admin_header_color'] ?? '#5e91c3'}}">
+                                                    <span class="error-msg"></span>
+                                                </div>
+                                                <div class="form-group col-md-3">
+                                                    <input type="color" id="super_admin_panel_active_color" name="super_admin_panel_active_color" value="{{$ConfigurationArray['super_admin_panel_active_color'] ?? '#8687fd'}}">
+                                                    <span class="error-msg"></span>
+                                                </div>
+                                            </div>
+
+                                            <div class="row">
+                                                <div class="form-group col-md-2">
+                                                    <label class="text-bold-600">{{__('languages.principal')}}</label>
+                                                </div>
+                                                <div class="form-group col-md-3">
+                                                    <input type="color" id="principal_panel_color" name="principal_panel_color" value="{{$ConfigurationArray['principal_panel_color'] ?? '#bde5e1'}}">
+                                                    <span class="error-msg"></span>
+                                                </div>
+                                                <div class="form-group col-md-3">
+                                                    <input type="color" id="principal_header_color" name="principal_header_color" value="{{$ConfigurationArray['principal_header_color'] ?? '#57dbba'}}">
+                                                    <span class="error-msg"></span>
+                                                </div>
+                                                <div class="form-group col-md-3">
+                                                    <input type="color" id="principal_panel_active_color" name="principal_panel_active_color" value="{{$ConfigurationArray['principal_panel_active_color'] ?? '#46a59b'}}">
+                                                    <span class="error-msg"></span>
+                                                </div>
+                                            </div>
+
+                                            <div class="row">
+                                                <div class="form-group col-md-2">
+                                                    <label class="text-bold-600">{{__('languages.panel_head')}}</label>
+                                                </div>
+                                                <div class="form-group col-md-3">
+                                                    <input type="color" id="panel_head_panel_color" name="panel_head_panel_color" value="{{$ConfigurationArray['panel_head_panel_color'] ?? '#fed08d'}}">
+                                                    <span class="error-msg"></span>
+                                                </div>
+                                                <div class="form-group col-md-3">
+                                                    <input type="color" id="panel_head_header_color" name="panel_head_header_color" value="{{$ConfigurationArray['panel_head_header_color'] ?? '#e3bc4f'}}">
+                                                    <span class="error-msg"></span>
+                                                </div>
+                                                <div class="form-group col-md-3">
+                                                    <input type="color" id="panel_head_panel_active_color" name="panel_head_panel_active_color" value="{{$ConfigurationArray['panel_head_panel_active_color'] ?? '#f7b350'}}">
+                                                    <span class="error-msg"></span>
+                                                </div>
+                                            </div>
+
+                                            <div class="row">
+                                                <div class="form-group col-md-2">
+                                                    <label class="text-bold-600">{{__('languages.coordinator')}}</label>
+                                                </div>
+                                                <div class="form-group col-md-3">
+                                                    <input type="color" id="co_ordinator_panel_color" name="co_ordinator_panel_color" value="{{$ConfigurationArray['co_ordinator_panel_color'] ?? '#eab676'}}">
+                                                    <span class="error-msg"></span>
+                                                </div>
+                                                <div class="form-group col-md-3">
+                                                    <input type="color" id="co_ordinator_header_color" name="co_ordinator_header_color" value="{{$ConfigurationArray['co_ordinator_header_color'] ?? '#e4d153'}}">
+                                                    <span class="error-msg"></span>
+                                                </div>
+                                                <div class="form-group col-md-3">
+                                                    <input type="color" id="co_ordinator_panel_active_color" name="co_ordinator_panel_active_color" value="{{$ConfigurationArray['co_ordinator_panel_active_color'] ?? '#f4a23d'}}">
+                                                    <span class="error-msg"></span>
+                                                </div>
+                                            </div>
+
+                                            <div class="row">
+                                                <div class="form-group col-md-2">
+                                                    <label class="text-bold-600">{{__('languages.teacher')}}</label>
+                                                </div>
+                                                <div class="form-group col-md-3">
+                                                    <input type="color" id="teacher_panel_color" name="teacher_panel_color" value="{{$ConfigurationArray['teacher_panel_color'] ?? '#f7bfbf'}}">
+                                                    <span class="error-msg"></span>
+                                                </div>
+                                                <div class="form-group col-md-3">
+                                                    <input type="color" id="teacher_header_color" name="teacher_header_color" value="{{$ConfigurationArray['teacher_header_color'] ?? '#d897a1'}}">
+                                                    <span class="error-msg"></span>
+                                                </div>
+                                                <div class="form-group col-md-3">
+                                                    <input type="color" id="teacher_panel_active_color" name="teacher_panel_active_color" value="{{$ConfigurationArray['teacher_panel_active_color'] ?? '#ef8787'}}">
+                                                    <span class="error-msg"></span>
+                                                </div>
+                                            </div>
+
+                                            <div class="row">
+                                                <div class="form-group col-md-2">
+                                                    <label class="text-bold-600">{{__('languages.common_sidebar.student')}}</label>
+                                                </div>
+                                                <div class="form-group col-md-3">
+                                                    <input type="color" id="student_panel_color" name="student_panel_color" value="{{$ConfigurationArray['student_panel_color'] ?? '#d8dc41'}}">
+                                                    <span class="error-msg"></span>
+                                                </div>
+                                                <div class="form-group col-md-3">
+                                                    <input type="color" id="student_header_color" name="student_header_color" value="{{$ConfigurationArray['student_header_color'] ?? '#afb927'}}">
+                                                    <span class="error-msg"></span>
+                                                </div>
+                                                <div class="form-group col-md-3">
+                                                    <input type="color" id="student_panel_active_color" name="student_panel_active_color" value="{{$ConfigurationArray['student_panel_active_color'] ?? '#a3ad07'}}">
+                                                    <span class="error-msg"></span>
+                                                </div>
+                                            </div>
+                                        </div>
+                                </fieldset>
+                                 {{-- Custom Layout Color --}}
+
                                 <div class="form-row select-data">
                                     <div class="sm-btn-sec form-row">
                                         <div class="form-group col-md-6 mb-50 btn-sec">

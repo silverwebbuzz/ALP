@@ -566,19 +566,6 @@ class StudentController extends Controller
             if(isset($request['test_time_duration']) && !empty($request['test_time_duration'])){
                 $test_time_duration = $request['test_time_duration'];
             }
-            // $examData = [
-            //     cn::EXAM_TYPE_COLS => 1,
-            //     cn::EXAM_CONFIGURATIONS_DETAILS_EXAM_ID_COL => $exams->id,
-            //     cn::EXAM_CONFIGURATIONS_DETAILS_CREATED_BY_USER_ID_COL => $this->LoggedUserId(),
-            //     cn::EXAM_CONFIGURATIONS_DETAILS_STRAND_IDS_COL => $strand_id,
-            //     cn::EXAM_CONFIGURATIONS_DETAILS_LEARNING_UNIT_IDS_COL => $learning_unit_id,
-            //     cn::EXAM_CONFIGURATIONS_DETAILS_LEARNING_OBJECTIVES_IDS_COL => $learning_objectives_id,
-            //     cn::EXAM_CONFIGURATIONS_DETAILS_DIFFICULTY_MODE_COL => $difficulty_lvl,
-            //     cn::EXAM_CONFIGURATIONS_DETAILS_DIFFICULTY_LEVELS_COL => $difficulty_mode,
-            //     cn::EXAM_CONFIGURATIONS_DETAILS_NO_OF_QUESTIONS_COL => ($request['questionIds']) ?  count(explode(",",$request['questionIds'])) : null,
-            //     //cn::EXAM_CONFIGURATIONS_DETAILS_TIME_DURATION_COL => $test_time_duration
-            // ];
-            // ExamConfigurationsDetails::create($examData);
             $response['redirectUrl'] = 'student/exam/'.$exams->id;
             $response['self_learning_type'] = $request['self_learning_test_type'];
         }

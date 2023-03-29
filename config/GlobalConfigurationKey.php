@@ -109,7 +109,30 @@ return [
     'max_addition_steps',
     'game_introduction_video_url',
     'no_of_game_spot_keys',
-    'game_music_file'
+    'game_music_file',
 
+    // Custom layout color
+    'super_admin_panel_color',
+    'principal_panel_color',
+    'panel_head_panel_color',
+    'co_ordinator_panel_color',
+    'teacher_panel_color',
+    'student_panel_color',
+
+    // Active Tab Color Set
+    'super_admin_panel_active_color',
+    'principal_panel_active_color',
+    'panel_head_panel_active_color',
+    'co_ordinator_panel_active_color',
+    'teacher_panel_active_color',
+    'student_panel_active_color',
+
+    // Panels header background color
+    'super_admin_header_color',
+    'principal_header_color',
+    'panel_head_header_color',
+    'co_ordinator_header_color',
+    'teacher_header_color',
+    'student_header_color'
 ];
 

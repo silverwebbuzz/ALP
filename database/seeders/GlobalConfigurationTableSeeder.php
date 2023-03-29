@@ -381,8 +381,53 @@ class GlobalConfigurationTableSeeder extends Seeder
                 cn::GLOBAL_CONFIGURATION_VALUE_COL => 5,
             ],
             [
-                cn::GLOBAL_CONFIGURATION_KEY_COL => 'game_introduction_video_url',
-                cn::GLOBAL_CONFIGURATION_VALUE_COL => 'https://www.youtube.com/watch?v=9xwazD5SyVg',
+                cn::GLOBAL_CONFIGURATION_KEY_COL => 'super_admin_panel_color',
+                cn::GLOBAL_CONFIGURATION_VALUE_COL => '#a5a6f6',
+            ],
+
+            [
+                cn::GLOBAL_CONFIGURATION_KEY_COL => 'principal_panel_color',
+                cn::GLOBAL_CONFIGURATION_VALUE_COL => '#bde5e1',
+            ],
+            [
+                cn::GLOBAL_CONFIGURATION_KEY_COL => 'panel_head_panel_color',
+                cn::GLOBAL_CONFIGURATION_VALUE_COL => '#fed08d',
+            ],
+            [
+                cn::GLOBAL_CONFIGURATION_KEY_COL => 'co_ordinator_panel_color',
+                cn::GLOBAL_CONFIGURATION_VALUE_COL => '#eab676',
+            ],
+            [
+                cn::GLOBAL_CONFIGURATION_KEY_COL => 'teacher_panel_color',
+                cn::GLOBAL_CONFIGURATION_VALUE_COL => '#f7bfbf',
+            ],
+            [
+                cn::GLOBAL_CONFIGURATION_KEY_COL => 'student_panel_color',
+                cn::GLOBAL_CONFIGURATION_VALUE_COL => '#d8dc41',
+            ],
+            [
+                cn::GLOBAL_CONFIGURATION_KEY_COL => 'super_admin_panel_active_color',
+                cn::GLOBAL_CONFIGURATION_VALUE_COL => '#8687fd',
+            ],
+            [
+                cn::GLOBAL_CONFIGURATION_KEY_COL => 'principal_panel_active_color',
+                cn::GLOBAL_CONFIGURATION_VALUE_COL => '#46a59b',
+            ],
+            [
+                cn::GLOBAL_CONFIGURATION_KEY_COL => 'panel_head_panel_active_color',
+                cn::GLOBAL_CONFIGURATION_VALUE_COL => '#f7b350',
+            ],
+            [
+                cn::GLOBAL_CONFIGURATION_KEY_COL => 'co_ordinator_panel_active_color',
+                cn::GLOBAL_CONFIGURATION_VALUE_COL => '#f4a23d',
+            ],
+            [
+                cn::GLOBAL_CONFIGURATION_KEY_COL => 'teacher_panel_active_color',
+                cn::GLOBAL_CONFIGURATION_VALUE_COL => '#ef8787',
+            ],
+            [
+                cn::GLOBAL_CONFIGURATION_KEY_COL => 'student_panel_active_color',
+                cn::GLOBAL_CONFIGURATION_VALUE_COL => '#a3ad07',
             ],
         ];
 

@@ -1648,7 +1648,8 @@ class ClassTestReportController extends Controller
         $studentAbility = [];
         $studentidlist = array();
         if(isset($request->ExamId) && !empty($request->ExamId)){
-            $isGroup = (isset($isGroup) && !empty($isGroup)) ? true : false;
+            $isGroup = (isset($request->PeerGroupId) && !empty($request->PeerGroupId)) ? true : false;
+            //$isGroup = (isset($isGroup) && !empty($isGroup)) ? true : false;
             $schoolId = $request->SchoolId ?? Auth::user()->{cn::USERS_SCHOOL_ID_COL};
             // Check exam is assigning via peer-group
             $ExamGradeClassQuery =  ExamGradeClassMappingModel::select(DB::raw('group_concat(student_ids) as student_ids'))

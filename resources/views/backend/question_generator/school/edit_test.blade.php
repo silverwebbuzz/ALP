@@ -31,35 +31,36 @@
                 </div>
                 @endif
                 @php
-                    if(Auth::user()->role_id==2){
-                        $color = '#f7bfbf';
-                    }else if(Auth::user()->role_id==3){
-                        $color = '#d8dc41';
-                    }else if(Auth::user()->role_id == 7){
-                        $color = '#BDE5E1';
-                    }else if(Auth::user()->role_id == 8){
-                        $color = '#fed08d';
-                    }else if(Auth::user()->role_id == 9){
-                        $color = '#eab676';
-                    }else if(Auth::user()->role_id == 5){
-                        $color = '#a8e4b0';
-                    }else{
-                        $color = '#A5A6F6';
-                    }
+                    // if(Auth::user()->role_id==2){
+                    //     $color = '#f7bfbf';
+                    // }else if(Auth::user()->role_id==3){
+                    //     $color = '#d8dc41';
+                    // }else if(Auth::user()->role_id == 7){
+                    //     $color = '#BDE5E1';
+                    // }else if(Auth::user()->role_id == 8){
+                    //     $color = '#fed08d';
+                    // }else if(Auth::user()->role_id == 9){
+                    //     $color = '#eab676';
+                    // }else if(Auth::user()->role_id == 5){
+                    //     $color = '#a8e4b0';
+                    // }else{
+                    //     $color = '#A5A6F6';
+                    // }
+                    $RoleBasedColor = \App\Helpers\Helper::getRoleBasedColor();
                 @endphp
                 <style type="text/css">
                     .question-generator-option-headings .admin-tab {
-                        background-color:<?php echo $color;?> !important;
+                        background-color:<?php echo $RoleBasedColor['background_color'];?> !important;
                     }
                     .question-generator-option-headings li.admin-tab.tab_active {
-                        background-color:<?php echo str_replace(';','', App\Helpers\Helper::getRoleBasedMenuActiveColor()); ?> !important;
+                        background-color:<?php echo str_replace(';','', $RoleBasedColor['active_color']); ?> !important;
                     }
                     .bg-pink {
-                        background-color:<?php echo $color;?> !important;
-                        border-color:<?php echo $color; ?> !important;
+                        background-color:<?php echo $RoleBasedColor['background_color'];?> !important;
+                        border-color:<?php echo $RoleBasedColor['background_color']; ?> !important;
                     }
                     .sm-deskbord-main-sec .tab-content-wrap .nav-pills .nav-link.active {
-                        background-color: <?php echo $color; ?> !important;
+                        background-color: <?php echo $RoleBasedColor['background_color']; ?> !important;
                         color: #000;
                         font-family: inherit;
                     }
@@ -542,7 +543,7 @@
                                         <div class="selected-learning-objectives-difficulty">
                                             @if($fieldDisabled == 'disabled')
                                                 @if(isset($learningObjectivesConfiguration[$learningObjectives['learning_unit_id']]['learning_objective'][$learningObjectives['id']]))
-                                                    <input type="checkbox" name="learning_unit[{{$learningObjectives['learning_unit_id']}}][learning_objective][{{ $learningObjectives['id'] }}]" value="{{ $learningObjectives->id }}" class="learning_objective_checkbox" @if(isset($learningObjectivesConfiguration[$learningObjectives['learning_unit_id']]['learning_objective'][$learningObjectives->id])) checked @endif  {{ $fieldDisabled }} >
+                                                    <input type="checkbox" name="learning_unit[{{$learningObjectives['learning_unit_id']}}][learning_objective][{{ $learningObjectives['id'] }}]" value="{{ $learningObjectives['id'] }}" class="learning_objective_checkbox" @if(isset($learningObjectivesConfiguration[$learningObjectives['learning_unit_id']]['learning_objective'][$learningObjectives['id']])) checked @endif  {{ $fieldDisabled }} >
                                                     <label>{{ $learningObjectives['foci_number'] }} {{ $learningObjectives['title_'.app()->getLocale()] }}</label>
                                                     <select name="learning_unit[{{$learningObjectives['learning_unit_id']}}][learning_objective][{{ $learningObjectives['id'] }}][learning_objectives_difficulty_level][]" class="form-control select-option learning_objectives_difficulty_level" multiple  {{ $fieldDisabled }} {{ ($exam->difficulty_mode=='auto' ? 'disabled' : '') }}>
                                                         <option value="1" @if(in_array(1,$existingDifficultySelectd)) selected @endif >1</option>

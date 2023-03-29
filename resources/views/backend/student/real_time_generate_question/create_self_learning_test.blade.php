@@ -28,29 +28,30 @@
                 </div>
                 @endif
                 @php
-                if(Auth::user()->role_id==2){
-                    $color = '#f7bfbf';
-                }else if(Auth::user()->role_id==3){
-                    $color = '#d8dc41';
-                }else if(Auth::user()->role_id == 7){
-                    $color = '#BDE5E1';
-                }else{
-                    $color = '#a8e4b0';
-                }
+                // if(Auth::user()->role_id==2){
+                //     $color = '#f7bfbf';
+                // }else if(Auth::user()->role_id==3){
+                //     $color = '#d8dc41';
+                // }else if(Auth::user()->role_id == 7){
+                //     $color = '#BDE5E1';
+                // }else{
+                //     $color = '#a8e4b0';
+                // }
+                $RoleBasedColor = \App\Helpers\Helper::getRoleBasedColor();
                 @endphp
                 <style type="text/css">
                     .question-generator-option-headings .admin-tab {
-                        background-color:<?php echo $color;?> !important;
+                        background-color:<?php echo $RoleBasedColor['background_color'];?> !important;
                     }
                     .question-generator-option-headings li.admin-tab.tab_active {
-                        background-color:<?php echo str_replace(';','', App\Helpers\Helper::getRoleBasedMenuActiveColor());?> !important;
+                        background-color:<?php echo str_replace(';','', $RoleBasedColor['active_color']);?> !important;
                     }
                     .bg-pink {
-                        background-color:<?php echo $color;?> !important;
-                        border-color:<?php echo $color;?> !important;
+                        background-color:<?php echo $RoleBasedColor['background_color'];?> !important;
+                        border-color:<?php echo $RoleBasedColor['background_color'];?> !important;
                     }
                     .sm-deskbord-main-sec .tab-content-wrap .nav-pills .nav-link.active {
-                        background-color: <?php echo $color;?> !important;
+                        background-color: <?php echo $RoleBasedColor['background_color'];?> !important;
                         color: #000;
                         font-family: inherit;
                     }

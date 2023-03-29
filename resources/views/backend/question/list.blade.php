@@ -30,7 +30,7 @@
 									@if(!App\Helpers\Helper::isExternalUserLogin())
 										<a href="{{ route('questions.export') }}" class="dark-blue-btn btn btn-primary mb-4">{{__('languages.questions.export_question')}}</a>
 									@endif
-									<a href="{{ route('update.question.codes') }}" class="dark-blue-btn btn btn-primary mb-4">{{__('Update Question Codes')}}</a>
+									<!-- <a href="{{ route('update.question.codes') }}" class="dark-blue-btn btn btn-primary mb-4">{{__('Update Question Codes')}}</a> -->
 								</div>
 							</div>
 							<hr class="blue-line">

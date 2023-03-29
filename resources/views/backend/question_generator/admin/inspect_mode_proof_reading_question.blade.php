@@ -28,6 +28,17 @@
                     {{ session()->get('error_msg') }}
                 </div>
                 @endif
+                @php
+                    $RoleBasedColor = \App\Helpers\Helper::getRoleBasedColor();
+                @endphp
+                <style>
+                    .question-generator-option-headings .admin-tab {
+                        background: <?php echo $RoleBasedColor['background_color'] .' !important';  ?>
+                    }
+                    .question-generator-option-headings .tab_active {
+                        background: <?php echo $RoleBasedColor['active_color'].' !important'; ?>
+                    }
+                </style>
                 <form name="question-generator" id="question-generator" class="inspect-mode-question-wizard" action="{{ route('super-admin.generate-questions') }}" method="POST">
                     @csrf
                     <div class="sm-add-user-sec card">
