@@ -6,8 +6,8 @@ use Illuminate\Auth\Events\Registered;
 use Illuminate\Auth\Listeners\SendEmailVerificationNotification;
 use Illuminate\Foundation\Support\Providers\EventServiceProvider as ServiceProvider;
 use Illuminate\Support\Facades\Event;
-use App\Events\UpdateMyTeachingReportEvent;
-use App\Listeners\UpdateMyTeachingReportListener;
+use App\Events\UserActivityLog;
+use App\Listeners\StoreUserActivityLog;
 
 class EventServiceProvider extends ServiceProvider
 {
@@ -20,9 +20,9 @@ class EventServiceProvider extends ServiceProvider
         Registered::class => [
             SendEmailVerificationNotification::class,
         ],
-        // UpdateMyTeachingReportEvent::class => [
-        //     UpdateMyTeachingReportListener::class,
-        // ],
+        UserActivityLog::class => [
+            StoreUserActivityLog::class,
+        ],
     ];
 
     /**

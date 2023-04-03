@@ -62,7 +62,7 @@
                         font-family: inherit;
                     }
                 </style>
-                <form name="question-generator" id="question-generator" action="{{ route('school.generate-questions') }}" method="POST" onsubmit="ShowLoader();">
+                <form name="question-generator" id="question-generator" action="{{route('school.generate-questions')}}" method="POST" onsubmit="ShowLoader();">
                     @csrf
                     <div class="sm-add-user-sec card">
                         <div class="select-option-sec pb-5 card-body">
@@ -403,7 +403,7 @@
                                             <select name="strand_id[]" class="form-control select-option" id="strand_id" multiple>
                                                 @if(isset($strandsList) && !empty($strandsList))
                                                     @foreach ($strandsList as $strandKey => $strand)
-                                                        <option value="{{ $strand->id }}" <?php if($strandKey == 0){echo 'selected';}?>>{{ $strand->{'name_'.app()->getLocale()} }}</option>
+                                                        <option value="{{$strand->id}}" <?php if($strandKey == 0){echo 'selected';}?>>{{ $strand->{'name_'.app()->getLocale()} }}</option>
                                                     @endforeach
                                                 @else
                                                     <option value="">{{__('languages.no_strands_available')}}</option>
@@ -414,9 +414,8 @@
                                             <label>{{__('languages.upload_document.learning_units')}}</label>
                                             <select name="learning_unit_id[]" class="form-control select-option" id="learning_unit" multiple>
                                                 @if(isset($LearningUnits) && !empty($LearningUnits))
-                                                    @foreach ($LearningUnits as $learningUnitKey => $learningUnit)
-                                                        {{-- <option value="{{ $learningUnit->id }}" selected>{{ $learningUnit->{'name_'.app()->getLocale()} }}</option> --}}
-                                                        <option value="{{ $learningUnit['id'] }}" selected>{{$learningUnit['index']}}. {{ $learningUnit['name_en'] }} ({{$learningUnit['id']}})</option>
+                                                    @foreach($LearningUnits as $learningUnitKey => $learningUnit)
+                                                        <option value="{{ $learningUnit['id'] }}" selected>{{$learningUnit['index']}}. {{$learningUnit['name_'.app()->getLocale()]}} ({{$learningUnit['id']}})</option>
                                                     @endforeach
                                                 @else
                                                     <option value="">{{__('languages.no_learning_units_available')}}</option>
@@ -444,7 +443,7 @@
                                     <div class="form-row selection-learning-objectives-section">
                                         @if(isset($LearningObjectives) && !empty($LearningObjectives))
                                         <div class="selected-learning-objectives-difficulty">
-                                            <input type="checkbox" name="all_learning_objective_checkbox" value="" class="all_learning_objective_checkbox" checked> Select All
+                                            <input type="checkbox" name="all_learning_objective_checkbox" value="" class="all_learning_objective_checkbox" checked> {{__('languages.question_generators_menu.select_all')}}
                                         </div>
                                         @foreach ($LearningObjectives as $learningObjectivesKey => $learningObjectives)
                                         @php
@@ -982,7 +981,7 @@ $(function (){
                         var html = '';
 						if(data.data.LearningObjectives){
                             html += '<div class="selected-learning-objectives-difficulty">\
-                                        <input type="checkbox" name="all_learning_objective_checkbox" value="" class="all_learning_objective_checkbox" checked> Select All\
+                                        <input type="checkbox" name="all_learning_objective_checkbox" value="" class="all_learning_objective_checkbox" checked> '+SELECT_ALL+'\
                                     </div>';
 							// $(data.data.LearningObjectives).each(function() {
                             $.each(data.data.LearningObjectives,function(index,value) {

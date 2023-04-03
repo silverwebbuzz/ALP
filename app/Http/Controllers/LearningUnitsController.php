@@ -11,6 +11,8 @@ use Exception;
 use Illuminate\Support\Facades\Validator;
 use App\Helpers\Helper;
 use Auth;
+use App\Events\UserActivityLog;
+
 class LearningUnitsController extends Controller
 {
     use Common;

@@ -13,6 +13,8 @@ use Exception;
 use Illuminate\Support\Facades\File;
 use Intervention\Image\Facades\Image;
 use Illuminate\Support\Facades\DB;
+use App\Events\UserActivityLog;
+use Illuminate\Support\Facades\Auth;
 
 class ProfileController extends Controller
 {
@@ -31,6 +33,7 @@ class ProfileController extends Controller
             return back()->withError($exception->getMessage())->withInput();
         }
     }
+    
     public function updateProfile(Request $request,$id){
         try{
             if ($request->isMethod('patch')){
@@ -72,6 +75,10 @@ class ProfileController extends Controller
                 
                 $update = User::where(cn::USERS_ID_COL,$id)->update($PostData);
                 if(!empty($update)){
+                    $this->UserActivityLog(
+                        Auth::user()->id,
+                        Auth::user()->DecryptNameEn.' '.__('activity_history.profile_updated')
+                    );
                     return redirect('profile')->with('success_msg', __('languages.profile_updated_successfully'));
                 }else{
                     return back()->with('error_msg', __('languages.problem_was_occur_please_try_again'));

@@ -19,6 +19,7 @@ use App\Models\AttemptExams;
 use App\Models\Answer;
 use App\Http\Services\AIApiService;
 use App\Http\Controllers\CronJobController;
+use App\Events\UserActivityLog;
 
 class UpdateAttemptExamsTableJob implements ShouldQueue
 {

@@ -13,6 +13,8 @@ use Log;
 use Illuminate\Support\Facades\Validator;
 use App\Helpers\Helper;
 use Illuminate\Support\Facades\Auth;
+use App\Events\UserActivityLog;
+
 class AiCalculatedDifficulty extends Controller
 {
     use Common;

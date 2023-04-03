@@ -22,6 +22,7 @@ use App\Models\RemainderUpdateSchoolYearData;
 use App\Constants\DbConstant As cn;
 use Carbon\Carbon;
 use Log;
+use App\Events\UserActivityLog;
 
 class CloneSchoolDataNextCurriculumYear implements ShouldQueue
 {

@@ -13,6 +13,8 @@ use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\File;
 use Intervention\Image\Facades\Image;
 use Exception;
+use App\Events\UserActivityLog;
+
 class SchoolDashboardController extends Controller
 {
     use Common;

@@ -161,7 +161,7 @@ $(function (){
                         var html = '';
 						if(data.data.LearningObjectives){
                             html += '<div class="selected-learning-objectives-difficulty">\
-                                        <input type="checkbox" name="all_learning_objective_checkbox" value="" class="all_learning_objective_checkbox" checked> Select All\
+                                        <input type="checkbox" name="all_learning_objective_checkbox" value="" class="all_learning_objective_checkbox" checked> '+SELECT_ALL+'\
                                     </div>';
 							$(data.data.LearningObjectives).each(function() {
                                 var learningObjectivesTitle=eval('this.title_'+currentLanguage);

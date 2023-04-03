@@ -21,6 +21,7 @@ use App\Models\AICalibrationReport;
 use App\Models\CalibrationQuestionLog;
 use Illuminate\Support\Facades\View;
 use App\Jobs\AICalibrationJob;
+use App\Events\UserActivityLog;
 
 class AI_CalibrationController extends Controller
 {

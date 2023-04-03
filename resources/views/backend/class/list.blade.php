@@ -55,10 +55,9 @@
 										  		<input type="checkbox" name="" class="checkbox">
 											</th>
 											<th>#{{__('languages.id')}}</th>
-							          		<th class="first-head"><span>@sortablelink('name',__('languages.form'))</span></th>
-											<th class="first-head"><span>{{__('languages.class')}}</span></th>
-											<th class="selec-head">@sortablelink('status',__('languages.class'))</th>
-											<th class="selec-head">{{__('languages.action')}}</th>
+							          		<th><span>@sortablelink('grade_id',__('languages.form'))</span></th>
+											<th><span>{{__('languages.class')}}</span></th>
+											<th>{{__('languages.action')}}</th>
 							        	</tr>
 							    	</thead>
 							    	<tbody class="scroll-pane">
@@ -69,13 +68,6 @@
 											<td>{{ $loop->iteration }}</td>
 											<td>{{ $data->grades->name }}</td>
 											<td>{{ $data->getClassNames($data->grade_id) }}</td>
-											<td>
-												@if($data->grades->status == '1')
-													<span class="badge badge-success">{{__('languages.active')}}</span> 
-												@else
-												<span class="badge badge-primary">{{__('languages.inactive')}}</span> 
-												@endif
-											</td>
 											<td class="btn-edit">
 											@if (in_array('grade_management_update', $permissions))
 												<a href="{{ route('class.edit', $data->id) }}" class="" title="{{__('languages.edit')}}"><i class="fa fa-pencil fa-lg" aria-hidden="true"></i></a>

@@ -55,6 +55,7 @@ use App\Models\LearningUnitsProgressReport;
 use App\Models\LearningObjectivesProgressReport;
 use App\Jobs\UpdateLearningProgressReportJob;
 use App\Models\UserCreditPointHistory;
+use App\Events\UserActivityLog;
 
 class CronJobController extends Controller
 {

@@ -46,9 +46,20 @@ use App\Models\AICalibrationReport;
 use App\Models\CalibrationQuestionLog;
 use App\Models\LearningUnitOrdering;
 use App\Models\LearningObjectiveOrdering;
-
+use App\Events\UserActivityLog;
 
 trait Common {
+
+    /**
+     * Save user activity log history
+     */
+    public function UserActivityLog($UserId = null, $ActivityMessage){
+        $ActivityHistory = [
+            'user_id' => $UserId,
+            'ActivityMessage' => $ActivityMessage
+        ];
+        event(new UserActivityLog($ActivityHistory));
+    }
 
     /**
      * USE : Get Page Name
@@ -1440,14 +1451,14 @@ trait Common {
      * USE : Encryption Data
      */
     public static function encrypt($string){
-        return base64_encode($string, TRUE);
+        return base64_encode($string);
     }
 
     /**
      * USE : Decrypt Data
      */
     public static function decrypt($string){
-        return base64_decode($string,TRUE);
+        return base64_decode($string);
     }
 
     /**

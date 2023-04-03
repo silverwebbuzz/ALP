@@ -160,7 +160,7 @@
                             @if($isUpdatedCalibration)
                             <div class="form-group m-0 btn-sec d-flex">
                                 <a href="{{ route('ai-calibration.question-log', $CalibrationReport->id) }}">
-                                    <button type="button" class="blue-btn btn btn-primary px-4 mt-4 black-button">{{__('View Calibration Log')}}</button>
+                                    <button type="button" class="blue-btn btn btn-primary px-4 mt-4 black-button">{{__('languages.view_calibration_log')}}</button>
                                 </a>
                             </div>
                             @else

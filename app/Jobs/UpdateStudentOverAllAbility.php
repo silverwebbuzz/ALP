@@ -24,6 +24,7 @@ use App\Models\Exam;
 use App\Models\Question;
 use DB;
 use Illuminate\Support\Facades\Auth;
+use App\Events\UserActivityLog;
 
 class UpdateStudentOverAllAbility implements ShouldQueue
 {

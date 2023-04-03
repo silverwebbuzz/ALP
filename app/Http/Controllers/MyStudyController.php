@@ -25,6 +25,7 @@ use App\Models\LearningsUnits;
 use App\Models\LearningsObjectives;
 use Log;
 use Auth;
+use App\Events\UserActivityLog;
 
 class MyStudyController extends Controller
 {

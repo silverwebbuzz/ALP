@@ -48,11 +48,6 @@
                                 </select>
                                 @if($errors->has('name'))<span class="validation_error">{{ $errors->first('name') }}</span>@endif
                             </div>
-                            {{-- <div class="form-group col-md-6 mb-50">
-                                <label class="text-bold-600" for="exampleInputUsername1">{{ __('languages.grade') }}</label>
-                                <input type="text" class="form-control" name="name" id="name" placeholder="{{ __('languages.grade') }} {{__('languages.grade_sample_example')}}" value="{{$data->name}}">
-                                @if($errors->has('name'))<span class="validation_error">{{ $errors->first('name') }}</span>@endif
-                            </div> --}}
                             <div class="form-group col-md-6 mb-50">
                                 <label for="status">{{ __('languages.class') }}</label>
                                 @if(!empty($data->classes))
@@ -67,13 +62,13 @@
                                     @if($errors->has('class_type'))<span class="validation_error">{{ $errors->first('class_type') }}</span>@endif
                                 @endif
                             </div>
-                            <div class="form-group col-md-6 mb-50">
+                            <!-- <div class="form-group col-md-6 mb-50">
                                 <label for="id_end_time">{{ __('languages.status') }}</label>
                                 <select name="status" class="form-control select-option" id="status">
                                     <option value="1" {{ $data->status == "1" ? 'selected' : '' }}>{{__("languages.active")}}</option>
                                     <option value="0" {{ $data->status == "0" ? 'selected' : '' }}>{{__("languages.inactive")}}</option>
                                 </select>
-                            </div>
+                            </div> -->
                         </div>
                     
                             <div class="form-row select-data">

@@ -744,7 +744,7 @@
                                                     <label class="text-bold-600">{{__('languages.super_admin')}}</label>
                                                 </div>
                                                 <div class="form-group col-md-3">
-                                                    <input type="color" id="super_admin_panel_color" name="super_admin_panel_color" value="{{$ConfigurationArray['super_admin_panel_color'] ?? '#a5a6f6'}}">
+                                                    <input type="color" id="super_admin_panel_color" name="super_admin_panel_color" value="{{$ConfigurationArray['super_admin_panel_color'] ?? '#86a0cb'}}">
                                                     <span class="error-msg"></span>
                                                 </div>
                                                 <div class="form-group col-md-3">

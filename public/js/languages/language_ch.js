@@ -1,5 +1,5 @@
 var VALIDATIONS = {
-    SELECT_ROLE: "請選擇角色",
+    SELECT_ROLE: "請選擇職能",
     PLEASE_ENTER_ENGLISH_NAME: "請輸入英文名稱",
     PLEASE_ENTER_CHINESE_NAME: "請輸入中文名稱",
     PLEASE_ENTER_NAMING_STRUCTURE_CODE: "請輸入命名結構編號",
@@ -41,11 +41,11 @@ var VALIDATIONS = {
     PLEASE_ENTER_FOCI_NUMBER: "請輸入學習重點號碼",
     PLEASE_SELECT_LEARNING_UNIT: "請選擇學習單位",
     PLEASE_SELECT_LEARNING_OBJECTIVES: "請選擇學習重點",
-    PLEASE_SELECT_NODE: "請選擇節點",
+    PLEASE_SELECT_NODE: "請選擇知識點",
     PLEASE_ENTER_FILE_NAME: "請輸入文件名稱",
     PLEASE_ENTER_MODULE_NAME: "請輸入模塊名稱",
-    PLEASE_ENTER_ROLE_NAME: "請輸入角色名稱",
-    PLEASE_ENTER_NODE_ID: "請輸入節點編號",
+    PLEASE_ENTER_ROLE_NAME: "請輸入職能名稱",
+    PLEASE_ENTER_NODE_ID: "請輸入知識點編號",
     PLEASE_ENTER_ENGLISH_TITLE: "請輸入英文標題",
     PLEASE_ENTER_CHINESE_TITLE: "請輸入中文標題",
     PLEASE_ENTER_ENGLISH_WEAKNESS_NAME: "請輸入英文弱點名稱",
@@ -60,12 +60,12 @@ var VALIDATIONS = {
     PLEASE_ENTER_SUBJECT_NAME: "請輸入科目名稱",
     PLEASE_ENTER_SUBJECT_CODE: "請選擇科目編號",
     PLEASE_ENTER_MINIMUM_EIGHT_DIGIT: "請輸入最少 8 位數字",
-    PLEASE_SELECT_IMPORT_USER_ROLE: "請選擇導入用戶角色",
+    PLEASE_SELECT_IMPORT_USER_ROLE: "請選擇導入用戶職能",
     PLEASE_UPLOAD_CSV_FILE: "請上傳 CSV 文件",
     INVALID_FILE_EXTENSION: "文件擴展名稱無效， 僅允許的文件類型 :[xls, csv]",
     PLEASE_UPLOAD_ONLY_JPEG_JPG_OR_PNG_FILES: "僅上傳媒體文件 圖片 | 圖片 | PNG | 動圖",
     PLEASE_SELECT_LEARNING_TYPE: "請選擇學習類型",
-    PLEASE_ENTER_NAME: "請輸入姓名",
+    PLEASE_ENTER_NAME: "請輸入名稱",
     PLEASE_SELECT_STRAND: "請選擇領域",
     REQUIRED_VALUE_MAXIMUM_ABILITY_HISTORY: "要求最長能力歷史",
     REQUIRED_VALUE_MAXIMUM_TRIAL_ATTEMPTS: "要求最大嘗試次數",
@@ -119,16 +119,16 @@ var PLEASE_ENTER = "請輸入";
 var SELECT_CLASS = "選擇班別";
 var SELECT_SUBJECT = "請選擇科目";
 var SELECT_SCHOOL = "選擇學校";
-var SELECT_SUB_ROLES = "選擇子角色";
+var SELECT_SUB_ROLES = "選擇子職能";
 var SELECT_TEST = "選擇測驗";
-var SELECT_NODE = "選擇節點";
-var SELECT_PARENT_NODE = "選擇父節點";
+var SELECT_NODE = "選擇知識點";
+var SELECT_PARENT_NODE = "選擇父知識點";
 var Q_ID = "問題 ID";
 var QUESTION_CODE = "問題編號";
 var QUESTION_TYPE = "問題類型";
 var DIFFICULTY_LEVEL = "難度級別";
 var SUBJECT = "科目";
-var NODES_NOT_AVAILABLE = "沒有適用的節點";
+var NODES_NOT_AVAILABLE = "沒有適用的知識點";
 var CLASS_NOT_AVAILABLE = "沒有適用的班別";
 var GRADE_NOT_AVAILABLE = "表格不可用";
 var SELECT_GRADE = "選擇表格";
@@ -173,11 +173,11 @@ var PLEASE_SELECT_ATLEAST_ONE_QUESTION = "請至少選擇一條問題";
 var CONFIRMATION = "如果你不回應，此對話框將在 8 秒後自動觸發“取消”。";
 var DELETE_FILE = "刪除文件";
 var DELETE_EXAM = "刪除測驗";
-var DELETE_ROLE = "刪除角色";
+var DELETE_ROLE = "刪除職能";
 var DELETE_MODULE = "刪除模塊";
 var DELETE_LEARNING_UNITS = "刪除學習單位";
 var DELETE_SCHOOL = "刪除學校";
-var DELETE_NODE = "刪除節點";
+var DELETE_NODE = "刪除知識點";
 var DELETE_SUB_ADMIN = "刪除子管理員";
 var DELETE_QUESTION = "刪除問題";
 var DELETE_USER = "刪除用戶";
@@ -227,7 +227,7 @@ var ARE_YOU_SURE_EXAM_SEND_TO_THE_SCHOOL = "你確定把測驗分發到學校嗎
 var CLASS_PROMOTION = "班別升級";
 var ARE_YOU_SURE_TO_ASSIGN_GROUP = "你確定要分配群組嗎?";
 var YES = "是的";
-var ARE_YOU_SURE_TO_ADD_CREDIT_POINTS = "您確定要添加積分嗎";
+var ARE_YOU_SURE_TO_ADD_CREDIT_POINTS = "您確定要添加獎勵點嗎";
 var ASSIGN_CREDIT_POINTS = "分配獎勵點數";
 var PLEASE_SELECT_QUESTION_FIRST = "請先選擇問題";
 var PLEASE_SELECT_VERIFICATION_STATUS = "請選擇驗證狀態";

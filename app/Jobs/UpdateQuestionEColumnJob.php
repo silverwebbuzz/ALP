@@ -12,6 +12,7 @@ use App\Models\Question;
 use App\Constants\DbConstant As cn;
 use Log;
 use App\Traits\Common;
+use App\Events\UserActivityLog;
 
 class UpdateQuestionEColumnJob implements ShouldQueue
 {

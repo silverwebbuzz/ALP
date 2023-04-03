@@ -13,6 +13,7 @@ use Illuminate\Support\Facades\View;
 use App\Http\Services\TeacherGradesClassService;
 use App\Constants\DbConstant as cn;
 use Auth;
+use App\Events\UserActivityLog;
 
 class LeaderBoardController extends Controller 
 {

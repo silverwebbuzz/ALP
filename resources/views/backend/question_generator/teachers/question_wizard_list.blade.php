@@ -645,8 +645,7 @@
 		            if(response.data){
 		                $('#question-generator-student-id').html(response.data);
 		                $("#question-generator-student-id").find('option').attr('selected','selected');
-		                if($(".assignStudentData #oldStudentList").val()!="")
-		                {
+		                if($(".assignStudentData #oldStudentList").val()!=""){
 		                	var oldStudentList=$(".assignStudentData #oldStudentList").val();
 		                	oldStudentList=oldStudentList.split(',');
 		                	$.each(oldStudentList,function(key,studentId){
@@ -666,9 +665,7 @@
 	        $(".grade-class-date-time-list").html('');
 	        var testStartTimeHtml=$('#test_start_time').html();
 	        var testEndTimeHtml=$('#test_end_time').html();
-	        
-	        if($('.question-generator-grade-chkbox:checked').length==0)
-	        {
+	        if($('.question-generator-grade-chkbox:checked').length==0){
 	            $('#question-generator-student-id').prop('disabled',true);
 	            $("#question-generator-student-id").multiselect('disable');
 	        }
@@ -678,44 +675,34 @@
 	            if($(this).is(":checked")) {
 	                var generatorClassChkboxLength=$(this).closest('.form-grade-select').find('.question-generator-class-chkbox:checked').length;
 	                var generatorClassChkboxAllLength=$(this).closest('.form-grade-select').find('.question-generator-class-chkbox').length;
-	                if(generatorClassChkboxLength==0)
-	                {
+	                if(generatorClassChkboxLength==0){
 	                    $(this).closest('.form-grade-select').find('.question-generator-class-chkbox').each(function(){
 	                        var generatorClassValue=$(this).val();
 	                        htmlData+=dateTimeList($(this),generatorValue,generatorClassValue,testStartTimeHtml,testEndTimeHtml);
 	                    });
-
-	                }
-	                else
-	                {
+	                }else{
 	                    $(this).closest('.form-grade-select').find('.question-generator-class-chkbox:checked').each(function(){
 	                        var generatorClassValue=$(this).val();
 	                        htmlData+=dateTimeList($(this),generatorValue,generatorClassValue,testStartTimeHtml,testEndTimeHtml);
 	                    });
 	                }
-	            }
-	            else
-	            {
+	            }else{
 	                $(this).closest('.form-grade-select').find('.question-generator-class-chkbox:checked').each(function(){
-	                        var generatorClassValue=$(this).val();
-	                        htmlData+=dateTimeList($(this),generatorValue,generatorClassValue,testStartTimeHtml,testEndTimeHtml);
-	                    });
+						var generatorClassValue=$(this).val();
+						htmlData+=dateTimeList($(this),generatorValue,generatorClassValue,testStartTimeHtml,testEndTimeHtml);
+					});
 	            }
 	        });
-	        if(htmlData=='')
-	        {
+	        if(htmlData==''){
 	            $('.question-generator-class-chkbox:checked').each(function(){
-	                        var generatorValue=$(this).closest('.form-grade-select').find('.question-generator-grade-chkbox').val();
-	                        var generatorClassValue=$(this).val();
-	                        htmlData+=dateTimeList($(this),generatorValue,generatorClassValue,testStartTimeHtml,testEndTimeHtml);
-	                    });
+					var generatorValue=$(this).closest('.form-grade-select').find('.question-generator-grade-chkbox').val();
+					var generatorClassValue=$(this).val();
+					htmlData+=dateTimeList($(this),generatorValue,generatorClassValue,testStartTimeHtml,testEndTimeHtml);
+				});
 	        }
-
 	        $(".grade-class-date-time-list").html(htmlData);
-
 	        var mainStartDate=$("input[name=start_date]").val();
 	        var mainEndDate=$("input[name=end_date]").val();
-
 	        $(".date-picker-stud").datepicker({
 	            dateFormat: "dd/mm/yy",
 	            minDate:mainStartDate,
@@ -724,19 +711,15 @@
 	            changeYear: true,
 	            yearRange: "1950:" + new Date().getFullYear(),
 	        });
-
 	        var selectedStartTimeIndex=$('#test_start_time option[value="'+$('#test_start_time').val()+'"]').index();
 	        var selectedEndTimeIndex=$('#test_end_time option[value="'+$('#test_end_time').val()+'"]').index();
 	        $(".grade-class-date-time-list .end_time option").each(function(){
 	            var endOptionSelectedStartTimeIndex = $(this).index();
 	            if(endOptionSelectedStartTimeIndex < selectedStartTimeIndex){
 	                $(this).attr("disabled", "disabled");
-	            }
-	            else if((endOptionSelectedStartTimeIndex > selectedEndTimeIndex) && selectedEndTimeIndex>0)
-	            {
+	            }else if((endOptionSelectedStartTimeIndex > selectedEndTimeIndex) && selectedEndTimeIndex>0){
 	                $(this).attr("disabled", "disabled");
-	            }
-	            else{
+	            }else{
 	                $(this).removeAttr("disabled");
 	            }
 	        });
@@ -744,22 +727,17 @@
 	            var endOptionSelectedStartTimeIndex = $(this).index();
 	            if(endOptionSelectedStartTimeIndex < selectedStartTimeIndex){
 	                $(this).attr("disabled", "disabled");
-	            }
-	            else if((endOptionSelectedStartTimeIndex > selectedEndTimeIndex) && selectedEndTimeIndex>0)
-	            {
+	            }else if((endOptionSelectedStartTimeIndex > selectedEndTimeIndex) && selectedEndTimeIndex>0){
 	                $(this).attr("disabled", "disabled");
-	            }
-	            else{
+	            }else{
 	                $(this).removeAttr("disabled");
 	            }
 	        });
 	        $(".grade-class-date-time-list .start_time").val($('#test_start_time').val());
 	        $(".grade-class-date-time-list .end_time").val($('#test_end_time').val());
-
-	        //$('#test_end_time').val('').select2().trigger('change');
 	    }
-	    function dateTimeList(E,generatorValue,generatorClassValue,testStartTimeHtml,testEndTimeHtml)
-	    {
+
+	    function dateTimeList(E,generatorValue,generatorClassValue,testStartTimeHtml,testEndTimeHtml){
 	        var mainStartDate=$("input[name=start_date]").val();
 	        var mainEndDate=$("input[name=end_date]").val();
 	        dataHtmlData='<div class="row"><div class="col-md-1"><label>'+E.attr('data-label')+'</label></div><div class="col-md-11"><div class="form-row">\
@@ -800,25 +778,21 @@
 	        </div></div><div class="col-md-12"><hr></div></div>';
 	        return dataHtmlData;
 	    }
+
 	    // Group data time
 	    function setGroupDateTimeList() {
 	        $(".grade-class-date-time-list").html('');
 	        $(".group-date-time-list").html('');
 	        var testStartTimeHtml=$('#test_start_time').html();
 	        var testEndTimeHtml=$('#test_end_time').html();
-	        
 	        var htmlData='';
-	       
-	            $('#question-generator-peer-group-options option:selected').each(function(){
-	                var generatorGroupValue=$(this).attr('value');
-	                htmlData+=groupDateTimeList($(this),generatorGroupValue,testStartTimeHtml,testEndTimeHtml);
-	            });
-
+			$('#question-generator-peer-group-options option:selected').each(function(){
+				var generatorGroupValue=$(this).attr('value');
+				htmlData+=groupDateTimeList($(this),generatorGroupValue,testStartTimeHtml,testEndTimeHtml);
+			});
 	        $(".group-date-time-list").html(htmlData);
-
 	        var mainStartDate=$("input[name=start_date]").val();
 	        var mainEndDate=$("input[name=end_date]").val();
-
 	        $(".date-picker-stud").datepicker({
 	            dateFormat: "dd/mm/yy",
 	            minDate:mainStartDate,
@@ -827,19 +801,15 @@
 	            changeYear: true,
 	            yearRange: "1950:" + new Date().getFullYear(),
 	        });
-
 	        var selectedStartTimeIndex=$('#test_start_time option[value="'+$('#test_start_time').val()+'"]').index();
 	        var selectedEndTimeIndex=$('#test_end_time option[value="'+$('#test_end_time').val()+'"]').index();
 	        $(".group-date-time-list .end_time option").each(function(){
 	            var endOptionSelectedStartTimeIndex = $(this).index();
 	            if(endOptionSelectedStartTimeIndex < selectedStartTimeIndex){
 	                $(this).attr("disabled", "disabled");
-	            }
-	            else if((endOptionSelectedStartTimeIndex > selectedEndTimeIndex) && selectedEndTimeIndex>0)
-	            {
+	            }else if((endOptionSelectedStartTimeIndex > selectedEndTimeIndex) && selectedEndTimeIndex>0){
 	                $(this).attr("disabled", "disabled");
-	            }
-	            else{
+	            }else{
 	                $(this).removeAttr("disabled");
 	            }
 	        });
@@ -847,23 +817,18 @@
 	            var endOptionSelectedStartTimeIndex = $(this).index();
 	            if(endOptionSelectedStartTimeIndex < selectedStartTimeIndex){
 	                $(this).attr("disabled", "disabled");
-	            }
-	            else if((endOptionSelectedStartTimeIndex > selectedEndTimeIndex) && selectedEndTimeIndex>0)
-	            {
+	            }else if((endOptionSelectedStartTimeIndex > selectedEndTimeIndex) && selectedEndTimeIndex>0){
 	                $(this).attr("disabled", "disabled");
-	            }
-	            else{
+	            }else{
 	                $(this).removeAttr("disabled");
 	            }
 	        });
 	        $(".group-date-time-list .start_time").val($('#test_start_time').val());
 	        $(".group-date-time-list .end_time").val($('#test_end_time').val());
-
-	        //$('#test_end_time').val('').select2().trigger('change');
 	    }
+
 	    //generator Group date and time html
-	    function groupDateTimeList(E,generatorGroupValue,testStartTimeHtml,testEndTimeHtml)
-	    {
+	    function groupDateTimeList(E,generatorGroupValue,testStartTimeHtml,testEndTimeHtml){
 	        var mainStartDate=$("input[name=start_date]").val();
 	        var mainEndDate=$("input[name=end_date]").val();
 	        dataHtmlData='<div class="row"><div class="col-md-1"><label>'+E.attr('data-label')+'</label></div><div class="col-md-11"><div class="form-row">\
@@ -906,5 +871,4 @@
 	    }
 		</script>
 		@include('backend.layouts.footer')
-
 @endsection

@@ -9,6 +9,7 @@ use App\Models\TeachersClassSubjectAssign;
 use App\Models\Subjects;
 use App\Constants\DbConstant As cn;
 use Illuminate\Support\Facades\Auth;
+use App\Events\UserActivityLog;
 
 class ParentDashboardController extends Controller {
     public function __construct(){

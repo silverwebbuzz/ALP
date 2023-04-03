@@ -41,7 +41,6 @@ if(Auth::user()->role_id == 1){
 <!-- Super Admin Sidebar Menus -->
 @if(Auth::user()->role_id == 1)
     <nav id="sidebar" class="@if(!empty(Session::get('sidebar'))){{Session::get('sidebar')}}@endif" style="background-color:{{$RoleBasedColor['background_color']}};">
-
     <h1 class="d-flex sidebar_top_thumb_main">
         <a href="javascript:void(0);" class="logo">
         @if(Auth::user()->profile_photo!="")
@@ -125,7 +124,6 @@ if(Auth::user()->role_id == 1){
                         request()->is('nodes') ||
                         request()->is('nodes/*')
                     ) ? 'collapsed': '' }}" href="#syllabus_management" data-toggle="collapse" data-target="#syllabus_management">
-                    <!-- <span class="fa"><i class="fa fa-book" title="{{__('languages.admin_sidebar.curriculum_management')}}"></i></span> -->
                     <div class="sidebar_icon_main">
                         <img class ="sidebar_icon" src="{{ asset('images/sidebar_icons/strand.png') }}"  title="{{__('languages.admin_sidebar.curriculum_management')}}" alt="{{__('languages.admin_sidebar.curriculum_management')}}">
                     </div>
@@ -286,7 +284,6 @@ if(Auth::user()->role_id == 1){
                                 request()->is('schoolmanagement/*')
                             ) ? 'active' : ''}}">
                             <a class="nav-link " href="{{ route('schoolmanagement.index') }}">
-                                <!-- <span class="fa fa-user" title="{{__('languages.admin_sidebar.schools')}}"></span> -->
                                 <div class="sidebar_icon_main">
                                     <img class ="sidebar_icon" src="{{ asset('images/sidebar_icons/user.png') }}"  title="{{__('languages.admin_sidebar.schools')}}" alt="{{__('languages.admin_sidebar.schools')}}">
                                 </div>
@@ -300,7 +297,6 @@ if(Auth::user()->role_id == 1){
                             request()->is('school-users/*')
                         ) ? 'active' : ''}}">
                         <a class="nav-link" href="{{route('school-users.index')}}">
-                            <!-- <span class="fa fa-user" title="{{__('languages.admin_sidebar.school_user_management')}}"></span> -->
                             <div class="sidebar_icon_main">
                                 <img class ="sidebar_icon" src="{{ asset('images/sidebar_icons/user.png') }}"  title="{{__('languages.admin_sidebar.school_user_management')}}" alt="{{__('languages.admin_sidebar.school_user_management')}}">
                             </div>
@@ -359,7 +355,6 @@ if(Auth::user()->role_id == 1){
                                         request()->is('ai-calibration/question-log/*')
                                     ) ? 'active': ''}}">
                                 <a href="{{ route('ai-calibration.list') }}">
-                                    <!-- <span class="fa fa-file" title="{{__('languages.admin_sidebar.ai_calibration')}}"></span> -->
                                     <div class="sidebar_icon_main">
                                         <img class ="sidebar_icon" src="{{ asset('images/sidebar_icons/setting.png') }}"  title="{{__('languages.admin_sidebar.ai_calibration')}}" alt="{{__('languages.admin_sidebar.ai_calibration')}}">
                                     </div>
@@ -373,9 +368,6 @@ if(Auth::user()->role_id == 1){
                                     request()->is('modulesmanagement/*')
                                 ) ? 'active': '' }}">
                             <a class="nav-link" href="{{ route('modulesmanagement.index') }}">
-                                <!-- <span class="fa fa-sliders-h">
-                                    <i class="fa fa-tags" title="{{__('languages.admin_sidebar.module_management')}}" aria-hidden="true"></i>
-                                </span> -->
                                 <div class="sidebar_icon_main">
                                     <img class ="sidebar_icon" src="{{ asset('images/sidebar_icons/setting.png') }}"  title="{{__('languages.admin_sidebar.module_management')}}" alt="{{__('languages.admin_sidebar.module_management')}}">
                                 </div>
@@ -389,7 +381,6 @@ if(Auth::user()->role_id == 1){
                                 request()->is('rolesmanagement/*/edit')
                             ) ? 'active': ''  }}">
                             <a class="nav-link" href="{{route('rolesmanagement.index')}}">
-                                <!-- <span class="fa fa-sliders-h"><i class="fa fa-unlock-alt" title="{{__('languages.admin_sidebar.roles_and_permissions')}}" aria-hidden="true"></i></span> -->
                                 <div class="sidebar_icon_main">
                                     <img class ="sidebar_icon" src="{{ asset('images/sidebar_icons/setting.png') }}"  title="{{__('languages.admin_sidebar.roles_and_permissions')}}" alt="{{__('languages.admin_sidebar.roles_and_permissions')}}">
                                 </div>
@@ -399,7 +390,6 @@ if(Auth::user()->role_id == 1){
 
                         <li class="nav-item {{ (request()->is('settings')) ? 'active': '' }}">
                             <a href="{{route('settings')}}">
-                                <!-- <span class="fa fa-cogs" title="{{__('languages.admin_sidebar.system_settings')}}"></span> -->
                                 <div class="sidebar_icon_main">
                                     <img class ="sidebar_icon" src="{{ asset('images/sidebar_icons/setting.png') }}"  title="{{__('languages.admin_sidebar.system_settings')}}" alt="{{__('languages.admin_sidebar.system_settings')}}">
                                 </div>
@@ -422,7 +412,6 @@ if(Auth::user()->role_id == 1){
                         @if(in_array('global_configurations_update', $permissions))
                             <li class="nav-item {{ (request()->is('global-configuration')) ? 'active': '' }}">
                                 <a href="{{route('global-configuration')}}">
-                                    <!-- <span class="fa fa-wrench" title="{{__('languages.global_configurations')}}"></span> -->
                                     <div class="sidebar_icon_main">
                                         <img class ="sidebar_icon" src="{{ asset('images/sidebar_icons/setting.png') }}"  title="{{__('languages.global_configurations')}}" alt="{{__('languages.global_configurations')}}">
                                     </div>
@@ -433,7 +422,6 @@ if(Auth::user()->role_id == 1){
 
                         <li class="nav-item">
                             <a class="nav-link" href="#">
-                                <!-- <span class="fa fa-user" title="{{__('languages.admin_sidebar.default_annual_credit_amount')}}"></span> -->
                                 <div class="sidebar_icon_main">
                                     <img class ="sidebar_icon" src="{{ asset('images/sidebar_icons/setting.png') }}"  title="{{__('languages.admin_sidebar.default_annual_credit_amount')}}" alt="{{__('languages.admin_sidebar.default_annual_credit_amount')}}">
                                 </div>
@@ -447,8 +435,8 @@ if(Auth::user()->role_id == 1){
 
         {{-- Activity Log --}}
         @if (in_array('user_activity_read', $permissions))
-            <li class="nav-item {{ (request()->is('useractivity')) ? 'active': '' }}">
-                <a href="{{route('useractivity.index')}}">
+            <li class="nav-item {{ (request()->is('user/activity-log') || request()->is('user/activity-log/*')) ? 'active': '' }}">
+                <a href="{{route('activity-log.index')}}">
                     <div class="sidebar_icon_main">
                         <img class ="sidebar_icon" src="{{ asset('images/sidebar_icons/user_activity.png') }}"  title="{{__('languages.admin_sidebar.activity_log')}}" alt="{{__('languages.admin_sidebar.activity_log')}}">
                     </div>
@@ -487,9 +475,8 @@ if(Auth::user()->role_id == 1){
         {{-- Logout --}}
         <li>
             <a href="javascript:void(0);" id="logout">
-                <!-- <span class="fa fa-sign-out" title="{{__('languages.common_sidebar.logout')}}"></span> -->
                 <div class="sidebar_icon_main">
-                    <img class ="sidebar_icon" src="{{ asset('images/sidebar_icons/performance_report.png') }}"  title="{{__('languages.common_sidebar.logout')}}" alt="{{__('languages.common_sidebar.logout')}}">
+                    <img class ="sidebar_icon" src="{{ asset('images/sidebar_icons/logout.png') }}"  title="{{__('languages.sidebar.logout')}}" alt="{{__('languages.sidebar.logout')}}">
                 </div>
                 <span class="text">{{__('languages.common_sidebar.logout')}}</span>
             </a>

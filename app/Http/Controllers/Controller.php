@@ -7,6 +7,7 @@ use Illuminate\Foundation\Bus\DispatchesJobs;
 use Illuminate\Foundation\Validation\ValidatesRequests;
 use Illuminate\Routing\Controller as BaseController;
 use App\Traits\ResponseFormat;
+use App\Events\UserActivityLog;
 
 class Controller extends BaseController
 {

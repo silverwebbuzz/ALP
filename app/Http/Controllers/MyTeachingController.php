@@ -29,6 +29,7 @@ use Illuminate\Support\Facades\View;
 use Log;
 use Auth;
 use App\Http\Services\TeacherGradesClassService;
+use App\Events\UserActivityLog;
 
 class MyTeachingController extends Controller
 {

@@ -8,8 +8,9 @@
             request()->is('class') || request()->is('class/*') || 
             request()->is('teacher-class-subject-assign') ||
             request()->is('teacher-class-subject-assign/*') ||
-            request()->is('school/profile') ||
-            request()->is('useractivity')
+            request()->is('school/profile') || 
+            request()->is('user/activity-log') || 
+            request()->is('user/activity-log/*')
 
         ) ? 'collapsed': '' }}" 
         href="#school_admin_privilege" data-toggle="collapse" data-target="#school_admin_privilege">
@@ -27,7 +28,8 @@
             request()->is('teacher-class-subject-assign') || 
             request()->is('teacher-class-subject-assign/*') ||
             request()->is('school/profile') ||
-            request()->is('useractivity')
+            request()->is('user/activity-log') || 
+            request()->is('user/activity-log/*')
         ) ? 'show': '' }}" id="school_admin_privilege" aria-expanded="false">
         <ul class="flex-column pl-2 nav">
             <li class="nav-item {{ (request()->is('school/profile')) ? 'active': '' }}">
@@ -125,8 +127,8 @@
                 </div>
             </li>
 
-            <li class="nav-item {{ (request()->is('useractivity')) ? 'active': '' }}">
-                <a class="nav-link" href="{{route('useractivity.index')}}">
+            <li class="nav-item {{ (request()->is('user/activity-log') || request()->is('user/activity-log/*')) ? 'active': '' }}">
+                <a class="nav-link" href="{{route('activity-log.index')}}">
                     <div class="sidebar_icon_main">
                         <img class ="sidebar_icon" src="{{ asset('images/sidebar_icons/user_activity.png') }}"  title="{{__('languages.common_sidebar.user_activity')}}" alt="{{__('languages.common_sidebar.user_activity')}}">
                     </div>

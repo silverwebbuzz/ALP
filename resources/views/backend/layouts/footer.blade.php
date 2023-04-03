@@ -1,19 +1,4 @@
 @php
-// if(Auth::user()->role_id == 1){
-//         $color = '#A5A6F6';
-//     }else if(Auth::user()->role_id==2){
-//         $color = '#f7bfbf';
-//     }else if(Auth::user()->role_id==3){
-//         $color = '#d8dc41';
-//     }else if(Auth::user()->role_id == 7){
-//         $color = '#BDE5E1';
-//     }else if(Auth::user()->role_id == 8){
-//         $color = '#fed08d';
-//     }else if(Auth::user()->role_id == 9){
-//         $color = '#eab676';
-//     }else{
-//         $color = '#a8e4b0';
-//     }
     $RoleBasedColor = \App\Helpers\Helper::getRoleBasedColor();
     $isGroupExists = App\Helpers\Helper::IsPeerGroupExists(Auth::user()->role_id,Auth::user()->id);  
 @endphp
@@ -21,7 +6,7 @@
     <div class="container">
         <div class="row">
             <div class="copyrights-line text-center">
-                <p class="p2">{{__('languages.footer.grow_your_mind_with_better_learning')}}</p>
+                <p class="p2">{{__('languages.footer.title')}}</p>
             </div>
             @if(!App\Helpers\Helper::isAdmin() && $isGroupExists)
             <div class="footer_chat_main" id="alp_chat_btn">

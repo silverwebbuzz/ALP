@@ -10,6 +10,7 @@ use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Queue\SerializesModels;
 use App\Http\Controllers\AI_Calibration\AI_CalibrationController;
 use Log;
+use App\Events\UserActivityLog;
 
 class AICalibrationJob implements ShouldQueue
 {

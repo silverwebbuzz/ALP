@@ -635,11 +635,9 @@
 		        success: function(response) {
 		            $("#cover-spin").hide();
 		            if(response.data){
-
 		                $('#question-generator-student-id').html(response.data);
 		                $("#question-generator-student-id").find('option').attr('selected','selected');
-		                if($(".assignStudentData #oldStudentList").val()!="")
-		                {
+		                if($(".assignStudentData #oldStudentList").val()!=""){
 		                	var oldStudentList=$(".assignStudentData #oldStudentList").val();
 		                	oldStudentList=oldStudentList.split(',');
 		                	$.each(oldStudentList,function(key,studentId){
@@ -659,9 +657,7 @@
         $(".grade-class-date-time-list").html('');
         var testStartTimeHtml=$('#test_start_time').html();
         var testEndTimeHtml=$('#test_end_time').html();
-        
-        if($('.question-generator-grade-chkbox:checked').length==0)
-        {
+        if($('.question-generator-grade-chkbox:checked').length==0){
             $('#question-generator-student-id').prop('disabled',true);
             $("#question-generator-student-id").multiselect('disable');
         }

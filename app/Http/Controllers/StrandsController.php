@@ -10,6 +10,8 @@ use Exception;
 use Illuminate\Support\Facades\Validator;
 use Auth;
 use App\Helpers\Helper;
+use App\Events\UserActivityLog;
+
 class StrandsController extends Controller
 {
     use Common;

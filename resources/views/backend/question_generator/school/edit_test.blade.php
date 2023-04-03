@@ -484,7 +484,7 @@
                                     <div class="form-row selection-learning-objectives-section">
                                         @if(isset($LearningObjectives) && !empty($LearningObjectives))
                                         <div class="selected-learning-objectives-difficulty">
-                                            <input type="checkbox" name="all_learning_objective_checkbox" value="" class="all_learning_objective_checkbox" checked {{ $fieldDisabled }}> Select All
+                                            <input type="checkbox" name="all_learning_objective_checkbox" value="" class="all_learning_objective_checkbox" checked {{ $fieldDisabled }}> {{__('languages.question_generators_menu.select_all')}}
                                         </div>
                                         @foreach($LearningObjectives as $learningObjectivesKey => $learningObjectives)
                                         {{-- @php
@@ -1124,7 +1124,7 @@ $(function (){
                         var html = '';
 						if(data.data.LearningObjectives){
                             html += '<div class="selected-learning-objectives-difficulty">\
-                                        <input type="checkbox" name="all_learning_objective_checkbox" value="" class="all_learning_objective_checkbox" checked> Select All\
+                                        <input type="checkbox" name="all_learning_objective_checkbox" value="" class="all_learning_objective_checkbox" checked> '+SELECT_ALL+'\
                                     </div>';
 							// $(data.data.LearningObjectives).each(function() {
                             $.each(data.data.LearningObjectives,function(index,value) {

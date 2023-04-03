@@ -17,6 +17,7 @@ use App\Models\Question;
 use App\Models\User;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Log;
+use App\Events\UserActivityLog;
 
 class AlpAiGraphController extends Controller
 {

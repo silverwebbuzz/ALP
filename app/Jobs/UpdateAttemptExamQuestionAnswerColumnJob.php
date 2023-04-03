@@ -12,6 +12,7 @@ use App\Constants\DbConstant as cn;
 use App\Traits\Common;
 use App\Models\AttemptExams;
 use Log;
+use App\Events\UserActivityLog;
 
 class UpdateAttemptExamQuestionAnswerColumnJob implements ShouldQueue
 {

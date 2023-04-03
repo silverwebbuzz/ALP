@@ -12,6 +12,7 @@ use Illuminate\Support\Facades\Mail;
 use App\Traits\ResponseFormat;
 use Log;
 use App\Models\User;
+use App\Events\UserActivityLog;
 
 class SendMailExamsAssignNotificationJob implements ShouldQueue
 {

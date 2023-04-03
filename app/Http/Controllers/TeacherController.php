@@ -27,6 +27,7 @@ use App\Models\AttemptExams;
 use App\Http\Services\AIApiService;
 use App\Helpers\Helper;
 use App\Jobs\DeleteUserDataJob;
+use App\Events\UserActivityLog;
 
 class TeacherController extends Controller
 {

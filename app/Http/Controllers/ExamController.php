@@ -45,6 +45,7 @@ use App\Models\AttemptExamStudentMapping;
 use App\Models\CurriculumYear;
 use App\Models\CurriculumYearStudentMappings;
 use App\Models\StudentAnswerHistory;
+use App\Events\UserActivityLog;
 
 class ExamController extends Controller
 {
@@ -821,6 +822,10 @@ class ExamController extends Controller
                 cn::ATTEMPT_EXAMS_AFTER_EXAM_SURVEY_COL         => $request->after_exam_survey ?? null
             ];
             $save = AttemptExams::create($PostData);
+            $this->UserActivityLog(
+                Auth::user()->id,
+                Auth::user()->DecryptNameEn.' '.__('activity_history.exam_attempted')
+            );
             if($save){
                 //Update Column Is_my_teaching_sync
                 Exam::find($examId)->update([cn::EXAM_TABLE_IS_TEACHING_REPORT_SYNC =>'true']);

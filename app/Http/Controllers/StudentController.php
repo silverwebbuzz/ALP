@@ -33,6 +33,7 @@ use App\Models\ExamSchoolMapping;
 use App\Jobs\DeleteUserDataJob;
 use App\Models\LearningObjectivesSkills;
 use App\Models\Regions;
+use App\Events\UserActivityLog;
 
 class StudentController extends Controller
 {
@@ -534,6 +535,10 @@ class StudentController extends Controller
         ];
         $this->StoreAuditLogFunction($examData,'Exam',cn::EXAM_TABLE_ID_COLS,'','Create Exam',cn::EXAM_TABLE_NAME,'');
         $exams = Exam::create($examData);
+        $this->UserActivityLog(
+            Auth::user()->id,
+            Auth::user()->DecryptNameEn.' '.__('activity_history.new_test_created')
+        );
         if($exams){
             // Create exam school mapping
             ExamSchoolMapping::create([

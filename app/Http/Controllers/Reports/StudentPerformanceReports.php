@@ -9,6 +9,7 @@ use App\Constants\DbConstant As cn;
 use App\Models\Exam;
 use App\Models\AttemptExams;
 use App\Models\Question;
+use App\Events\UserActivityLog;
 
 class StudentPerformanceReports extends Controller
 {

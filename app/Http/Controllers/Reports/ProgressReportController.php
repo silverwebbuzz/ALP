@@ -28,6 +28,7 @@ use App\Models\LearningUnitOrdering;
 use App\Models\LearningObjectiveOrdering;
 use App\Models\LearningUnitsProgressReport;
 use App\Models\LearningObjectivesProgressReport;
+use App\Events\UserActivityLog;
 
 class ProgressReportController extends Controller
 {

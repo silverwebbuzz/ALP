@@ -14,6 +14,7 @@ use App\Models\AttemptExams;
 use App\Models\GradeClassMapping;
 use App\Models\TeachersClassSubjectAssign;
 use App\Models\ExamGradeClassMappingModel;
+use App\Events\UserActivityLog;
 
 class SchoolComparisonsReportController extends Controller
 {

@@ -28,6 +28,7 @@ use App\Models\AttemptExams;
 use App\Models\MyTeachingReport;
 use App\Http\Services\TeacherGradesClassService;
 use DB;
+use App\Events\UserActivityLog;
 
 class PrincipalController extends Controller
 {

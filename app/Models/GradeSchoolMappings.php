@@ -26,6 +26,13 @@ class GradeSchoolMappings extends Model
         cn::GRADES_MAPPING_CURRICULUM_YEAR_ID_COL,
     ];
 
+    public $sortable = [
+        cn::GRADES_MAPPING_SCHOOL_ID_COL,
+        cn::GRADES_MAPPING_GRADE_ID_COL,
+        cn::GRADES_MAPPING_STATUS_COL,
+        cn::GRADES_MAPPING_CURRICULUM_YEAR_ID_COL
+    ];
+
     public $timestamps = true;
 
     public function grades(){

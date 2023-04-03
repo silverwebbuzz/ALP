@@ -38,6 +38,7 @@ use App\Models\CurriculumYearStudentMappings;
 use App\Models\LearningUnitOrdering;
 use App\Models\LearningObjectiveOrdering;
 use App\Models\LearningObjectivesSkills;
+use App\Events\UserActivityLog;
 
 class QuestionGeneratorController extends Controller {
 
@@ -244,6 +245,10 @@ class QuestionGeneratorController extends Controller {
             $this->StoreAuditLogFunction($examData,'Exam',cn::EXAM_TABLE_ID_COLS,'','Create Exam',cn::EXAM_TABLE_NAME,'');
             $exams = Exam::create($examData);
             if($exams){
+                $this->UserActivityLog(
+                    Auth::user()->id,
+                    Auth::user()->DecryptNameEn.' '.__('activity_history.new_test_created')
+                );
                 if($request->use_of_modes == 1){
                     // Create Exam and school Mapping
                     $this->CreateExamSchoolMapping($request->schoolIds,$exams->{cn::EXAM_TABLE_ID_COLS}, $request);
@@ -406,6 +411,10 @@ class QuestionGeneratorController extends Controller {
                 $this->StoreAuditLogFunction($examData,'Exam',cn::EXAM_TABLE_ID_COLS,$id,'Update Exam',cn::EXAM_TABLE_NAME,'');
                 $exams = Exam::find($id)->update($examData);
                 if($exams){
+                    $this->UserActivityLog(
+                        Auth::user()->id,
+                        Auth::user()->DecryptNameEn.' '.__('activity_history.update_test')
+                    );
                     if($exam->{cn::EXAM_TABLE_USE_OF_MODE_COLS} == 1){
                         // Create Exam and school Mapping
                         $this->UpdateExamSchoolMapping($request->schoolIds,$id, $request); // $id = Exam Id
@@ -566,7 +575,6 @@ class QuestionGeneratorController extends Controller {
         $timeSlots = $this->getTimeSlot();
         $strandsSelectd = array();
         $strandsList = Strands::all();
-        // $learningUnitList = LearningsUnits::where('stage_id','<>',3)->get(); 
         $learningUnitList = $this->GetLearningUnits($strandsList[0]->id);  
         $learningObjectivesConfiguration = array();
         if(!empty($strandsList)){            
@@ -752,6 +760,10 @@ class QuestionGeneratorController extends Controller {
             //$this->StoreAuditLogFunction($examData,'Exam',cn::EXAM_TABLE_ID_COLS,'','Create Exam',cn::EXAM_TABLE_NAME,'');
             $exams = Exam::create($examData);
             if($exams){
+                $this->UserActivityLog(
+                    Auth::user()->id,
+                    Auth::user()->DecryptNameEn.' '.__('activity_history.new_test_created')
+                );
                 if(isset($request->submission_on_time) && !empty($request->submission_on_time)){
                     $submission_on_time = $request->submission_on_time;
                     $examCreditPointRulesMappingData = [
@@ -1429,6 +1441,11 @@ class QuestionGeneratorController extends Controller {
                         $this->AssignTestToPeerGroups($exam->{cn::EXAM_TABLE_ID_COLS}, $request->peerGroupIds, $request);
                     }
 
+                    $this->UserActivityLog(
+                        Auth::user()->id,
+                        Auth::user()->DecryptNameEn.' '.__('activity_history.update_test')
+                    );
+
                     // Update Exam School Mapping Table
                     $this->UpdateExamSchoolMapping(array(Auth::user()->{cn::USERS_SCHOOL_ID_COL}), $exam->{cn::EXAM_TABLE_ID_COLS}, $request);
 
@@ -1832,7 +1849,7 @@ class QuestionGeneratorController extends Controller {
                 $optionList .= '</option>';
             }
         }else{
-            $optionList .= '<option value="">__("languages.students_not_available")</option>';
+            $optionList .= '<option value="">'.__("languages.students_not_available").'</option>';
         }
         return $this->sendResponse([$optionList]);
     }
@@ -2719,6 +2736,10 @@ class QuestionGeneratorController extends Controller {
                                 }
                                 
                             }
+                            $this->UserActivityLog(
+                                Auth::user()->id,
+                                Auth::user()->DecryptNameEn.' '.__('activity_history.update_status')
+                            );
                             return $this->sendResponse($result, __('languages.status_updated_successfully'));
                         }
                         break;
@@ -2750,6 +2771,10 @@ class QuestionGeneratorController extends Controller {
                             }
                         }
                     if($Update){
+                        $this->UserActivityLog(
+                            Auth::user()->id,
+                            Auth::user()->DecryptNameEn.' '.__('activity_history.update_status')
+                        );
                         return $this->sendResponse($result, __('languages.status_updated_successfully'));
                     }else{
                         return $this->sendError(__('languages.problem_was_occur_please_try_again'), 422);
@@ -2920,7 +2945,6 @@ class QuestionGeneratorController extends Controller {
             }
             $questionDataArray = array();
             if(isset($exam->question_ids) && !empty($exam->question_ids)){
-                //$questionDataArray = Question::with(['answers','PreConfigurationDifficultyLevel','objectiveMapping'])->whereIn(cn::QUESTION_TABLE_ID_COL,explode(',',$exam->question_ids))->get()->toArray();
                 $questionDataArray = Question::with(['answers','objectiveMapping'])->whereIn(cn::QUESTION_TABLE_ID_COL,explode(',',$exam->question_ids))->get()->toArray();
             }
             if(!empty($SelectedStrands)){
@@ -3045,7 +3069,7 @@ class QuestionGeneratorController extends Controller {
                         'examClassIds','examStartTime','examEndTime','examStartDate','examEndDate','examCreditPointRulesData','menuItem'));
         }else{
             return back()->with('error_msg', __('languages.data_not_found'));
-        } 
+        }
     }
 
     /**

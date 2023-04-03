@@ -11,6 +11,7 @@ use Illuminate\Queue\SerializesModels;
 use App\Constants\DbConstant As cn;
 use App\Http\Controllers\CronJobController;
 use Log;
+use App\Events\UserActivityLog;
 
 class DeleteUserDataJob implements ShouldQueue
 {

@@ -10,6 +10,8 @@ use App\Models\Settings;
 use Illuminate\Support\Facades\Validator;
 use Intervention\Image\Facades\Image;
 use Illuminate\Support\Facades\File;
+use App\Events\UserActivityLog;
+
 class SettingsController extends Controller
 {
     // Load Common Traits

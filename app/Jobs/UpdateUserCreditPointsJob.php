@@ -16,6 +16,7 @@ use App\Constants\DbConstant As cn;
 use Log;
 use App\Helpers\Helper;
 use App\Traits\Common;
+use App\Events\UserActivityLog;
 
 class UpdateUserCreditPointsJob implements ShouldQueue
 {

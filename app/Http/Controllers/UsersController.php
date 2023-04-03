@@ -43,7 +43,7 @@ use App\Rules\MatchOldPassword;
 use App\Helpers\Helper;
 use App\Http\Repositories\CSVFileRepository;
 use App\Jobs\DeleteUserDataJob;
-
+use App\Events\UserActivityLog;
 use Log;
 
 class UsersController extends Controller
@@ -1424,6 +1424,10 @@ class UsersController extends Controller
 
             $updatePassword = User::find(auth()->user()->id)->update(['password'=> Hash::make($request->new_password)]);
             if($updatePassword){
+                $this->UserActivityLog(
+                    Auth::user()->id,
+                    Auth::user()->DecryptNameEn.' '.__('activity_history.password_change')
+                );
                 return redirect('change-password')->with('success_msg', __('languages.password_changed_successfully'));
             }else{
                 return redirect('change-password')->with('error_msg', __('languages.problem_was_occur_please_try_again'));

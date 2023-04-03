@@ -15,6 +15,7 @@ use App\Models\LearningsObjectives;
 use App\Models\StrandUnitsObjectivesMappings;
 use App\Constants\DbConstant As cn;
 use Log;
+use App\Events\UserActivityLog;
 
 class StrandsUnitsMapping implements ShouldQueue
 {

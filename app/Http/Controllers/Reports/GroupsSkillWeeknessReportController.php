@@ -20,6 +20,7 @@ use App\Models\AttemptExams;
 use App\Models\Question;
 use App\Models\Answer;
 use Illuminate\Support\Facades\Session;
+use App\Events\UserActivityLog;
 
 class GroupsSkillWeeknessReportController extends Controller
 {

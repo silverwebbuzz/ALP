@@ -11,7 +11,8 @@ use Illuminate\Support\Str;
 use App\Traits\ResponseFormat;
 use DB; 
 use Carbon\Carbon; 
-use App\Models\User; 
+use App\Models\User;
+use App\Events\UserActivityLog;
 
 class ForgotPasswordController extends Controller
 {

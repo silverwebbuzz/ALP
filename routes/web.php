@@ -235,7 +235,7 @@ Route::group(['middleware' => ['auth']], function () {
     /** End Modules Management **/
 
     /** Strat User Activity Route **/
-    Route::resource('useractivity','UserActivityController');//->middleware(['admin']);
+    Route::resource('user/activity-log','UserActivityController');
     /** End User Activity Route **/
 
     /** Strat School Management Route **/

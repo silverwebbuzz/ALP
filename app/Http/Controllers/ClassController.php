@@ -18,6 +18,7 @@ use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\Auth;
 use App\Helpers\Helper;
 use Redirect;
+use App\Events\UserActivityLog;
 
 class ClassController extends Controller
 {
@@ -41,9 +42,10 @@ class ClassController extends Controller
                         cn::GRADES_MAPPING_SCHOOL_ID_COL            => Auth::user()->{cn::USERS_SCHOOL_ID_COL},
                         cn::GRADES_MAPPING_CURRICULUM_YEAR_ID_COL   => $this->GetCurriculumYear()
                     ])
-                    ->orderBy(cn::GRADES_ID_COL,'DESC')
                     ->sortable()
+                    ->orderBy(cn::GRADES_ID_COL,'DESC')
                     ->paginate($items);
+                    //echo '<pre>';print_r($List->toArray());die;
             return view('backend.class.list',compact('List','countData','items','TotalFilterData'));
         } catch (Exception $exception) {
             return back()->withError($exception->getMessage())->withInput();
@@ -79,10 +81,7 @@ class ClassController extends Controller
             
             if(Grades::where(cn::GRADES_NAME_COL,$request->name)->doesntExist()){
                 //Create Grade
-                $PostData = array(
-                    cn::GRADES_NAME_COL => $request->name,
-                    cn::GRADES_STATUS_COL => $request->status
-                );
+                $PostData = array(cn::GRADES_NAME_COL => $request->name);
                 $Grades = Grades::create($PostData);
                 if(!empty($request->class_type)){
                     foreach($request->class_type as $classType){
@@ -278,7 +277,6 @@ class ClassController extends Controller
                         }
                     }
                 }else{
-                    //return back()->with('error_msg', __('validation.grade_is_already_exists'));
                     return redirect('class')->with('success_msg', __('languages.class_added_successfully'));
                 }
             }

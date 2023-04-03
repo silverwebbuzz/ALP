@@ -14,6 +14,7 @@ use App\Constants\DbConstant as cn;
 use App\Traits\Common;
 use App\Helpers\Helper;
 use Log;
+use App\Events\UserActivityLog;
 
 class UpdateQuestionAIDifficultyColumnJob implements ShouldQueue
 {

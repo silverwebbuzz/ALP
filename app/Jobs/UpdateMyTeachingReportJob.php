@@ -22,6 +22,7 @@ use App\Helpers\Helper;
 use App\Models\ExamSchoolMapping;
 use App\Models\ExamGradeClassMappingModel;
 use App\Traits\Common;
+use App\Events\UserActivityLog;
 
 class UpdateMyTeachingReportJob implements ShouldQueue
 {

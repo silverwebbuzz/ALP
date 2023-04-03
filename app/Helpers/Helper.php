@@ -185,8 +185,15 @@ class Helper{
         return false;
     }
 
+    public static function FindUserRoleNameById($UserId){
+        $UserData = User::with('roles')->find($UserId);
+        if(!empty($UserData)){
+            return $UserData->roles->role_slug;
+        }
+    }
+
     public static function FindRoleByUserId($UserId){
-        $UserData = User::find($UserId);        
+        $UserData = User::find($UserId);
         if(!empty($UserData)){
             switch($UserData->{cn::USERS_ROLE_ID_COL}){
                 case cn::SUPERADMIN_ROLE_ID:

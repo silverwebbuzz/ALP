@@ -34,6 +34,7 @@ use App\Models\LearningUnitOrdering;
 use App\Models\LearningObjectiveOrdering;
 use App\Traits\ResponseFormat;
 use Cookie;
+use App\Events\UserActivityLog;
 
 class IntelligentTutorController extends Controller
 {

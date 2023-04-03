@@ -17,6 +17,7 @@ use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\View;
 use App\Http\Services\AIApiService;
 use App\Http\Controllers\CronJobController;
+use App\Events\UserActivityLog;
 
 class AttemptExamTestExerciseController extends Controller
 {

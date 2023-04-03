@@ -14,6 +14,7 @@ use App\Models\RemainderUpdateSchoolYearData;
 use App\Models\User;
 use App\Traits\Common;
 use Carbon\Carbon;
+use App\Events\UserActivityLog;
 
 class SendRemainderUploadStudentNewSchoolCurriculumYearJob implements ShouldQueue
 {

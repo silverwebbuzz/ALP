@@ -1066,7 +1066,7 @@ return [
         'update_sub_admin'                          => 'Update Sub Admin',
     ],
     'footer' => [
-        'grow_your_mind_with_better_learning'   => 'Grow Your Mind With Better Learning'
+        'title'   => ''
     ],
     'peer_group' => [
         'peer_group' => 'Peer Group',
@@ -1709,5 +1709,8 @@ return [
     'active_tab_color'                          => 'Active Tab Color',
     'background_color'                          => 'Background Color',
     'ability_based'                             => 'Ability Based',
-    'header_background_color'                   => 'Header Background Color'
+    'header_background_color'                   => 'Header Background Color',
+    'view_calibration_log'                      => 'View Calibration Log',
+    'search_by_activity_text'                   => 'Search By Activity Text',
+    'no_available_any_activity_history'         => 'No Available any Activity History'
 ];

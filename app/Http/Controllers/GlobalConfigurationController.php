@@ -10,6 +10,7 @@ use App\Models\CurriculumYear;
 use App\Constants\DbConstant as cn;
 use App\Http\Controllers\CronJobController;
 use App\Helpers\Helper;
+use App\Events\UserActivityLog;
 
 class GlobalConfigurationController extends Controller
 {

@@ -14,6 +14,7 @@ use App\Traits\Common;
 use App\Jobs\DeleteUserDataJob;
 use Auth;
 use App\Helpers\Helper;
+use App\Events\UserActivityLog;
 
 class SchoolUsersController extends Controller
 {

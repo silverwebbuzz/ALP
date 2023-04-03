@@ -18,6 +18,7 @@ use App\Models\User;
 use App\Models\ClassSubjectMapping;
 use App\Models\UploadDocuments;
 use App\Helpers\Helper;
+use App\Events\UserActivityLog;
 
 class StudentDashboardController extends Controller
 {

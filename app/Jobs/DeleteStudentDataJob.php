@@ -12,7 +12,7 @@ use App\Constants\DbConstant As cn;
 use App\Models\User;
 use Log;
 use App\Http\Controllers\UsersController;
-
+use App\Events\UserActivityLog;
 
 class DeleteStudentDataJob implements ShouldQueue
 {

@@ -11,6 +11,7 @@ use Illuminate\Support\Facades\Validator;
 use App\Traits\Common;
 use Auth;
 use App\Helpers\Helper;
+use App\Events\UserActivityLog;
 
 class RolesManagementController extends Controller
 {

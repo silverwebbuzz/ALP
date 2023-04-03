@@ -9,6 +9,8 @@ use App\Traits\ResponseFormat;
 use App\Models\Exam;
 use Exception;
 use Illuminate\Support\Facades\Auth;
+use App\Events\UserActivityLog;
+
 class StudentActivityController extends Controller
 {
     use Common, ResponseFormat;

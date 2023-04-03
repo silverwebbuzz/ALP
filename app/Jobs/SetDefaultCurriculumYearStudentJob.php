@@ -12,6 +12,7 @@ use App\Constants\DbConstant As cn;
 use App\Models\CurriculumYearStudentMappings;
 use App\Models\User;
 use App\Models\ClassPromotionHistory;
+use App\Events\UserActivityLog;
 
 class SetDefaultCurriculumYearStudentJob implements ShouldQueue
 {

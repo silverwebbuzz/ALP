@@ -11,6 +11,7 @@ use Exception;
 use Illuminate\Support\Facades\Validator;
 use Auth;
 use App\Helpers\Helper;
+use App\Events\UserActivityLog;
 
 class NodesManagementController extends Controller
 {
@@ -112,6 +113,10 @@ class NodesManagementController extends Controller
                 }
             }
             if(!empty($Nodes)){
+                $this->UserActivityLog(
+                    Auth::user()->id,
+                    Auth::user()->DecryptNameEn.' '.__('activity_history.add_node')
+                );
                 $this->StoreAuditLogFunction($postData,'Nodes','','','Create Node',cn::NODES_TABLE_NAME,'');
                 return redirect('nodes')->with('success_msg', __('languages.node_added_successfully'));
             }else{
@@ -181,6 +186,10 @@ class NodesManagementController extends Controller
                 }
             }
             if(!empty($update)){
+                $this->UserActivityLog(
+                    Auth::user()->id,
+                    Auth::user()->DecryptNameEn.' '.__('activity_history.update_node')
+                );
                 return redirect('nodes')->with('success_msg', __('languages.node_updated_successfully'));
             }else{
                 return back()->with('error_msg',  __('languages.problem_was_occur_please_try_again'));
@@ -203,6 +212,10 @@ class NodesManagementController extends Controller
                 $Nodes = Nodes::find($id);
                 // If no any assign sub nodes
                 if($Nodes->delete()){
+                    $this->UserActivityLog(
+                        Auth::user()->id,
+                        Auth::user()->DecryptNameEn.' '.__('activity_history.delete_node')
+                    );
                     if(isset($NodeRelationIds) && !empty($NodeRelationIds)){
                         NodeRelation::whereIn(cn::NODES_RELATION_ID_COL,$NodeRelationIds)->delete();
                     }

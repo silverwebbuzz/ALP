@@ -33,6 +33,7 @@ use App\Models\CalibrationQuestionLog;
 use App\Helpers\Helper;
 use App\Http\Repositories\CSVFileRepository;
 use Log;
+use App\Events\UserActivityLog;
 
 class QuestionController extends Controller
 {

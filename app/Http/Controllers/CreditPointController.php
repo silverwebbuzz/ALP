@@ -15,6 +15,7 @@ use App\Models\GradeClassMapping;
 use Illuminate\Support\Facades\Auth;
 use App\Constants\DbConstant As cn;
 use App\Http\Services\TeacherGradesClassService;
+use App\Events\UserActivityLog;
 
 class CreditPointController extends Controller
 {

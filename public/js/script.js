@@ -89,16 +89,17 @@ OnPageLoadEvent = {
             selectAll: true,
             includeSelectAllOption: true,
             enableFiltering: true,
+            filterPlaceholder: SEARCH,
             nonSelectedText: NONE_SELECTED,
-            nSelectedText: N_SELECTED_TEXT
+            nSelectedText: N_SELECTED_TEXT,
+            selectAllText: SELECT_ALL,
         });
 
         $("#question-generator-peer-group-options").multiselect({
             enableHTML: true,
             templates: {
                 filter: '<li class="multiselect-item multiselect-filter"><div class="input-group mb-3"><div class="input-group-prepend"><span class="input-group-text"><i class="fa fa-search"></i></span></div><input class="form-control multiselect-search" type="text" /></div></li>',
-                filterClearBtn:
-                    '<span class="input-group-btn"><button class="btn btn-default multiselect-clear-filter" type="button"><i class="fa fa-times"></i></button></span>',
+                filterClearBtn:'<span class="input-group-btn"><button class="btn btn-default multiselect-clear-filter" type="button"><i class="fa fa-times"></i></button></span>',
             },
             columns: 1,
             placeholder: SELECT_PEER_GROUP,
@@ -106,8 +107,11 @@ OnPageLoadEvent = {
             selectAll: true,
             includeSelectAllOption: true,
             enableFiltering: true,
+            filterPlaceholder: SEARCH,
             nonSelectedText: NONE_SELECTED,
-            nSelectedText: N_SELECTED_TEXT
+            nSelectedText: N_SELECTED_TEXT,
+            selectAllText: SELECT_ALL,
+            allSelectedText: ALL_SELECTED
         });
 
         $("#LearningUnits").select2();
@@ -123,6 +127,7 @@ OnPageLoadEvent = {
             placeholder: SELECT_SCHOOL,
             includeSelectAllOption: true,
             enableFiltering: true,
+            filterPlaceholder: SEARCH,
             nonSelectedText: NONE_SELECTED,
             nSelectedText: N_SELECTED_TEXT
         });
@@ -131,13 +136,13 @@ OnPageLoadEvent = {
             enableHTML: true,
             templates: {
                 filter: '<li class="multiselect-item multiselect-filter"><div class="input-group mb-3"><div class="input-group-prepend"><span class="input-group-text"><i class="fa fa-search"></i></span></div><input class="form-control multiselect-search" type="text" /></div></li>',
-                filterClearBtn:
-                    '<span class="input-group-btn"><button class="btn btn-default multiselect-clear-filter" type="button"><i class="fa fa-times"></i></button></span>',
+                filterClearBtn:'<span class="input-group-btn"><button class="btn btn-default multiselect-clear-filter" type="button"><i class="fa fa-times"></i></button></span>',
             },
             column: 1,
             placeholder: SELECT_STRAND,
             includeSelectAllOption: true,
             enableFiltering: true,
+            filterPlaceholder: SEARCH,
             nonSelectedText: NONE_SELECTED,
             nSelectedText: N_SELECTED_TEXT
         });
@@ -146,13 +151,13 @@ OnPageLoadEvent = {
             enableHTML: true,
             templates: {
                 filter: '<li class="multiselect-item multiselect-filter"><div class="input-group mb-3"><div class="input-group-prepend"><span class="input-group-text"><i class="fa fa-search"></i></span></div><input class="form-control multiselect-search" type="text" /></div></li>',
-                filterClearBtn:
-                    '<span class="input-group-btn"><button class="btn btn-default multiselect-clear-filter" type="button"><i class="fa fa-times"></i></button></span>',
+                filterClearBtn:'<span class="input-group-btn"><button class="btn btn-default multiselect-clear-filter" type="button"><i class="fa fa-times"></i></button></span>',
             },
             column: 1,
             placeholder: SELECT_LEARNING_UNITS,
             includeSelectAllOption: true,
             enableFiltering: true,
+            filterPlaceholder: SEARCH,
             nonSelectedText: NONE_SELECTED,
             nSelectedText: N_SELECTED_TEXT
         });
@@ -161,13 +166,13 @@ OnPageLoadEvent = {
             enableHTML: true,
             templates: {
                 filter: '<li class="multiselect-item multiselect-filter"><div class="input-group mb-3"><div class="input-group-prepend"><span class="input-group-text"><i class="fa fa-search"></i></span></div><input class="form-control multiselect-search" type="text" /></div></li>',
-                filterClearBtn:
-                    '<span class="input-group-btn"><button class="btn btn-default multiselect-clear-filter" type="button"><i class="fa fa-times"></i></button></span>',
+                filterClearBtn:'<span class="input-group-btn"><button class="btn btn-default multiselect-clear-filter" type="button"><i class="fa fa-times"></i></button></span>',
             },
             column: 1,
             placeholder: SELECT_LEARNING_OBJECTIVES,
             includeSelectAllOption: true,
             enableFiltering: true,
+            filterPlaceholder: SEARCH,
             nonSelectedText: NONE_SELECTED,
             nSelectedText: N_SELECTED_TEXT
         });
@@ -176,13 +181,13 @@ OnPageLoadEvent = {
             enableHTML: true,
             templates: {
                 filter: '<li class="multiselect-item multiselect-filter"><div class="input-group mb-3"><div class="input-group-prepend"><span class="input-group-text"><i class="fa fa-search"></i></span></div><input class="form-control multiselect-search" type="text" /></div></li>',
-                filterClearBtn:
-                    '<span class="input-group-btn"><button class="btn btn-default multiselect-clear-filter" type="button"><i class="fa fa-times"></i></button></span>',
+                filterClearBtn:'<span class="input-group-btn"><button class="btn btn-default multiselect-clear-filter" type="button"><i class="fa fa-times"></i></button></span>',
             },
             column: 1,
             placeholder: SELECT_DIFFICULTY_LEVEL,
             includeSelectAllOption: true,
             enableFiltering: true,
+            filterPlaceholder: SEARCH,
             nonSelectedText: NONE_SELECTED,
             nSelectedText: N_SELECTED_TEXT
         });
@@ -191,13 +196,13 @@ OnPageLoadEvent = {
             enableHTML: true,
             templates: {
                 filter: '<li class="multiselect-item multiselect-filter"><div class="input-group mb-3"><div class="input-group-prepend"><span class="input-group-text"><i class="fa fa-search"></i></span></div><input class="form-control multiselect-search" type="text" /></div></li>',
-                filterClearBtn:
-                    '<span class="input-group-btn"><button class="btn btn-default multiselect-clear-filter" type="button"><i class="fa fa-times"></i></button></span>',
+                filterClearBtn:'<span class="input-group-btn"><button class="btn btn-default multiselect-clear-filter" type="button"><i class="fa fa-times"></i></button></span>',
             },
             column: 1,
             placeholder: SELECT_DIFFICULTY_LEVEL,
             includeSelectAllOption: true,
             enableFiltering: true,
+            filterPlaceholder: SEARCH,
             nonSelectedText: NONE_SELECTED,
             nSelectedText: N_SELECTED_TEXT
         });
@@ -206,15 +211,13 @@ OnPageLoadEvent = {
             enableHTML: true,
             templates: {
                 filter: '<li class="multiselect-item multiselect-filter"><div class="input-group mb-3"><div class="input-group-prepend"><span class="input-group-text"><i class="fa fa-search"></i></span></div><input class="form-control multiselect-search" type="text" /></div></li>',
-                filterClearBtn:
-                    '<span class="input-group-btn"><button class="btn btn-default multiselect-clear-filter" type="button"><i class="fa fa-times"></i></button></span>',
+                filterClearBtn:'<span class="input-group-btn"><button class="btn btn-default multiselect-clear-filter" type="button"><i class="fa fa-times"></i></button></span>',
             },
             columns: 1,
             placeholder: SELECT_SUBJECT,
-            // search: true,
-            // selectAll: true
             includeSelectAllOption: true,
             enableFiltering: true,
+            filterPlaceholder: SEARCH,
             nonSelectedText: NONE_SELECTED,
             nSelectedText: N_SELECTED_TEXT
         });
@@ -223,15 +226,13 @@ OnPageLoadEvent = {
             enableHTML: true,
             templates: {
                 filter: '<li class="multiselect-item multiselect-filter"><div class="input-group mb-3"><div class="input-group-prepend"><span class="input-group-text"><i class="fa fa-search"></i></span></div><input class="form-control multiselect-search" type="text" /></div></li>',
-                filterClearBtn:
-                    '<span class="input-group-btn"><button class="btn btn-default multiselect-clear-filter" type="button"><i class="fa fa-times"></i></button></span>',
+                filterClearBtn:'<span class="input-group-btn"><button class="btn btn-default multiselect-clear-filter" type="button"><i class="fa fa-times"></i></button></span>',
             },
             columns: 1,
             placeholder: SELECT_CLASS,
-            // search: true,
-            // selectAll: true
             includeSelectAllOption: true,
             enableFiltering: true,
+            filterPlaceholder: SEARCH,
             nonSelectedText: NONE_SELECTED,
             nSelectedText: N_SELECTED_TEXT
         });
@@ -240,15 +241,13 @@ OnPageLoadEvent = {
             enableHTML: true,
             templates: {
                 filter: '<li class="multiselect-item multiselect-filter"><div class="input-group mb-3"><div class="input-group-prepend"><span class="input-group-text"><i class="fa fa-search"></i></span></div><input class="form-control multiselect-search" type="text" /></div></li>',
-                filterClearBtn:
-                    '<span class="input-group-btn"><button class="btn btn-default multiselect-clear-filter" type="button"><i class="fa fa-times"></i></button></span>',
+                filterClearBtn:'<span class="input-group-btn"><button class="btn btn-default multiselect-clear-filter" type="button"><i class="fa fa-times"></i></button></span>',
             },
             columns: 1,
             placeholder: SELECT_SCHOOL,
-            // search: true,
-            // selectAll: true
             includeSelectAllOption: true,
             enableFiltering: true,
+            filterPlaceholder: SEARCH,
             nonSelectedText: NONE_SELECTED,
             nSelectedText: N_SELECTED_TEXT
         });
@@ -257,15 +256,13 @@ OnPageLoadEvent = {
             enableHTML: true,
             templates: {
                 filter: '<li class="multiselect-item multiselect-filter"><div class="input-group mb-3"><div class="input-group-prepend"><span class="input-group-text"><i class="fa fa-search"></i></span></div><input class="form-control multiselect-search" type="text" /></div></li>',
-                filterClearBtn:
-                    '<span class="input-group-btn"><button class="btn btn-default multiselect-clear-filter" type="button"><i class="fa fa-times"></i></button></span>',
+                filterClearBtn:'<span class="input-group-btn"><button class="btn btn-default multiselect-clear-filter" type="button"><i class="fa fa-times"></i></button></span>',
             },
             columns: 1,
             placeholder: SELECT_CLASS,
-            // search: true,
-            // selectAll: true
             includeSelectAllOption: true,
             enableFiltering: true,
+            filterPlaceholder: SEARCH,
             nonSelectedText: NONE_SELECTED,
             nSelectedText: N_SELECTED_TEXT
         });
@@ -274,8 +271,7 @@ OnPageLoadEvent = {
             enableHTML: true,
             templates: {
                 filter: '<li class="multiselect-item multiselect-filter"><div class="input-group mb-3"><div class="input-group-prepend"><span class="input-group-text"><i class="fa fa-search"></i></span></div><input class="form-control multiselect-search" type="text" /></div></li>',
-                filterClearBtn:
-                    '<span class="input-group-btn"><button class="btn btn-default multiselect-clear-filter" type="button"><i class="fa fa-times"></i></button></span>',
+                filterClearBtn:'<span class="input-group-btn"><button class="btn btn-default multiselect-clear-filter" type="button"><i class="fa fa-times"></i></button></span>',
             },
             columns: 1,
             placeholder: SELECT_CLASS,
@@ -283,23 +279,24 @@ OnPageLoadEvent = {
             selectAll: true,
             includeSelectAllOption: true,
             enableFiltering: true,
+            filterPlaceholder: SEARCH,
             nonSelectedText: NONE_SELECTED,
-            nSelectedText: N_SELECTED_TEXT
+            nSelectedText: N_SELECTED_TEXT,
+            allSelectedText: ALL_SELECTED,
+            selectAllText: SELECT_ALL,
         });
 
         $("#peer_group_class_select_option").multiselect({
             enableHTML: true,
             templates: {
                 filter: '<li class="multiselect-item multiselect-filter"><div class="input-group mb-3"><div class="input-group-prepend"><span class="input-group-text"><i class="fa fa-search"></i></span></div><input class="form-control multiselect-search" type="text" /></div></li>',
-                filterClearBtn:
-                    '<span class="input-group-btn"><button class="btn btn-default multiselect-clear-filter" type="button"><i class="fa fa-times"></i></button></span>',
+                filterClearBtn:'<span class="input-group-btn"><button class="btn btn-default multiselect-clear-filter" type="button"><i class="fa fa-times"></i></button></span>',
             },
             columns: 1,
             placeholder: SELECT_CLASS,
-            // search: true,
-            // selectAll: true
             includeSelectAllOption: true,
             enableFiltering: true,
+            filterPlaceholder: SEARCH,
             nonSelectedText: NONE_SELECTED,
             nSelectedText: N_SELECTED_TEXT
         });
@@ -308,15 +305,13 @@ OnPageLoadEvent = {
             enableHTML: true,
             templates: {
                 filter: '<li class="multiselect-item multiselect-filter"><div class="input-group mb-3"><div class="input-group-prepend"><span class="input-group-text"><i class="fa fa-search"></i></span></div><input class="form-control multiselect-search" type="text" /></div></li>',
-                filterClearBtn:
-                    '<span class="input-group-btn"><button class="btn btn-default multiselect-clear-filter" type="button"><i class="fa fa-times"></i></button></span>',
+                filterClearBtn:'<span class="input-group-btn"><button class="btn btn-default multiselect-clear-filter" type="button"><i class="fa fa-times"></i></button></span>',
             },
             columns: 1,
             placeholder: SELECT_CLASS,
-            // search: true,
-            // selectAll: true
             includeSelectAllOption: true,
             enableFiltering: true,
+            filterPlaceholder: SEARCH,
             nonSelectedText: NONE_SELECTED,
             nSelectedText: N_SELECTED_TEXT
         });
@@ -325,15 +320,13 @@ OnPageLoadEvent = {
             enableHTML: true,
             templates: {
                 filter: '<li class="multiselect-item multiselect-filter"><div class="input-group mb-3"><div class="input-group-prepend"><span class="input-group-text"><i class="fa fa-search"></i></span></div><input class="form-control multiselect-search" type="text" /></div></li>',
-                filterClearBtn:
-                    '<span class="input-group-btn"><button class="btn btn-default multiselect-clear-filter" type="button"><i class="fa fa-times"></i></button></span>',
+                filterClearBtn:'<span class="input-group-btn"><button class="btn btn-default multiselect-clear-filter" type="button"><i class="fa fa-times"></i></button></span>',
             },
             columns: 1,
             placeholder: SELECT_SUB_ROLES,
-            // search: true,
-            // selectAll: true
             includeSelectAllOption: true,
             enableFiltering: true,
+            filterPlaceholder: SEARCH,
             nonSelectedText: NONE_SELECTED,
             nSelectedText: N_SELECTED_TEXT
         });
@@ -342,15 +335,13 @@ OnPageLoadEvent = {
             enableHTML: true,
             templates: {
                 filter: '<li class="multiselect-item multiselect-filter"><div class="input-group mb-3"><div class="input-group-prepend"><span class="input-group-text"><i class="fa fa-search"></i></span></div><input class="form-control multiselect-search" type="text" /></div></li>',
-                filterClearBtn:
-                    '<span class="input-group-btn"><button class="btn btn-default multiselect-clear-filter" type="button"><i class="fa fa-times"></i></button></span>',
+                filterClearBtn:'<span class="input-group-btn"><button class="btn btn-default multiselect-clear-filter" type="button"><i class="fa fa-times"></i></button></span>',
             },
             columns: 1,
             placeholder: SELECT_TEST,
-            // search: true,
-            // selectAll: true
             includeSelectAllOption: true,
             enableFiltering: true,
+            filterPlaceholder: SEARCH,
             nonSelectedText: NONE_SELECTED,
             nSelectedText: N_SELECTED_TEXT
         });
@@ -360,15 +351,13 @@ OnPageLoadEvent = {
             enableHTML: true,
             templates: {
                 filter: '<li class="multiselect-item multiselect-filter"><div class="input-group mb-3"><div class="input-group-prepend"><span class="input-group-text"><i class="fa fa-search"></i></span></div><input class="form-control multiselect-search" type="text" /></div></li>',
-                filterClearBtn:
-                    '<span class="input-group-btn"><button class="btn btn-default multiselect-clear-filter" type="button"><i class="fa fa-times"></i></button></span>',
+                filterClearBtn:'<span class="input-group-btn"><button class="btn btn-default multiselect-clear-filter" type="button"><i class="fa fa-times"></i></button></span>',
             },
             // columns: 1,
             placeholder: SELECT_NODE,
-            // search: true,
-            // selectAll: true
             includeSelectAllOption: true,
             enableFiltering: true,
+            filterPlaceholder: SEARCH,
             nonSelectedText: NONE_SELECTED,
             nSelectedText: N_SELECTED_TEXT
         });
@@ -377,15 +366,13 @@ OnPageLoadEvent = {
             enableHTML: true,
             templates: {
                 filter: '<li class="multiselect-item multiselect-filter"><div class="input-group mb-3"><div class="input-group-prepend"><span class="input-group-text"><i class="fa fa-search"></i></span></div><input class="form-control multiselect-search" type="text" /></div></li>',
-                filterClearBtn:
-                    '<span class="input-group-btn"><button class="btn btn-default multiselect-clear-filter" type="button"><i class="fa fa-times"></i></button></span>',
+                filterClearBtn:'<span class="input-group-btn"><button class="btn btn-default multiselect-clear-filter" type="button"><i class="fa fa-times"></i></button></span>',
             },
             columns: 1,
             placeholder: SELECT_PARENT_NODE,
-            // search: true,
-            // selectAll: true
             includeSelectAllOption: true,
             enableFiltering: true,
+            filterPlaceholder: SEARCH,
             nonSelectedText: NONE_SELECTED,
             nSelectedText: N_SELECTED_TEXT
         });
@@ -394,13 +381,13 @@ OnPageLoadEvent = {
             enableHTML: true,
             templates: {
                 filter: '<li class="multiselect-item multiselect-filter"><div class="input-group mb-3"><div class="input-group-prepend"><span class="input-group-text"><i class="fa fa-search"></i></span></div><input class="form-control multiselect-search" type="text" /></div></li>',
-                filterClearBtn:
-                    '<span class="input-group-btn"><button class="btn btn-default multiselect-clear-filter" type="button"><i class="fa fa-times"></i></button></span>',
+                filterClearBtn:'<span class="input-group-btn"><button class="btn btn-default multiselect-clear-filter" type="button"><i class="fa fa-times"></i></button></span>',
             },
             columns: 1,
             placeholder: SELECT_STRAND,
             includeSelectAllOption: true,
             enableFiltering: true,
+            filterPlaceholder: SEARCH,
             nonSelectedText: NONE_SELECTED,
             nSelectedText: N_SELECTED_TEXT
         });
@@ -409,28 +396,30 @@ OnPageLoadEvent = {
             enableHTML: true,
             templates: {
                 filter: '<li class="multiselect-item multiselect-filter"><div class="input-group mb-3"><div class="input-group-prepend"><span class="input-group-text"><i class="fa fa-search"></i></span></div><input class="form-control multiselect-search" type="text" /></div></li>',
-                filterClearBtn:
-                    '<span class="input-group-btn"><button class="btn btn-default multiselect-clear-filter" type="button"><i class="fa fa-times"></i></button></span>',
+                filterClearBtn:'<span class="input-group-btn"><button class="btn btn-default multiselect-clear-filter" type="button"><i class="fa fa-times"></i></button></span>',
             },
             columns: 1,
             placeholder: SELECT_LEARNING_UNITS,
             includeSelectAllOption: true,
             enableFiltering: true,
+            filterPlaceholder: SEARCH,
             nonSelectedText: NONE_SELECTED,
-            nSelectedText: N_SELECTED_TEXT
+            nSelectedText: N_SELECTED_TEXT,
+            selectAllText: SELECT_ALL,
+            allSelectedText: ALL_SELECTED
         });
 
         $("#learning_objectives").multiselect({
             enableHTML: true,
             templates: {
                 filter: '<li class="multiselect-item multiselect-filter"><div class="input-group mb-3"><div class="input-group-prepend"><span class="input-group-text"><i class="fa fa-search"></i></span></div><input class="form-control multiselect-search" type="text" /></div></li>',
-                filterClearBtn:
-                    '<span class="input-group-btn"><button class="btn btn-default multiselect-clear-filter" type="button"><i class="fa fa-times"></i></button></span>',
+                filterClearBtn:'<span class="input-group-btn"><button class="btn btn-default multiselect-clear-filter" type="button"><i class="fa fa-times"></i></button></span>',
             },
             columns: 1,
             placeholder: SELECT_LEARNING_OBJECTIVES,
             includeSelectAllOption: true,
             enableFiltering: true,
+            filterPlaceholder: SEARCH,
             nonSelectedText: NONE_SELECTED,
             nSelectedText: N_SELECTED_TEXT
         });
@@ -439,13 +428,13 @@ OnPageLoadEvent = {
             enableHTML: true,
             templates: {
                 filter: '<li class="multiselect-item multiselect-filter"><div class="input-group mb-3"><div class="input-group-prepend"><span class="input-group-text"><i class="fa fa-search"></i></span></div><input class="form-control multiselect-search" type="text" /></div></li>',
-                filterClearBtn:
-                    '<span class="input-group-btn"><button class="btn btn-default multiselect-clear-filter" type="button"><i class="fa fa-times"></i></button></span>',
+                filterClearBtn:'<span class="input-group-btn"><button class="btn btn-default multiselect-clear-filter" type="button"><i class="fa fa-times"></i></button></span>',
             },
             columns: 1,
             placeholder: "Select Finish of Assignment",
             includeSelectAllOption: true,
             enableFiltering: true,
+            filterPlaceholder: SEARCH,
             nonSelectedText: NONE_SELECTED,
             nSelectedText: N_SELECTED_TEXT
         });
@@ -454,13 +443,13 @@ OnPageLoadEvent = {
             enableHTML: true,
             templates: {
                 filter: '<li class="multiselect-item multiselect-filter"><div class="input-group mb-3"><div class="input-group-prepend"><span class="input-group-text"><i class="fa fa-search"></i></span></div><input class="form-control multiselect-search" type="text" /></div></li>',
-                filterClearBtn:
-                    '<span class="input-group-btn"><button class="btn btn-default multiselect-clear-filter" type="button"><i class="fa fa-times"></i></button></span>',
+                filterClearBtn:'<span class="input-group-btn"><button class="btn btn-default multiselect-clear-filter" type="button"><i class="fa fa-times"></i></button></span>',
             },
             columns: 1,
             placeholder: "Select Completion of Self-learning",
             includeSelectAllOption: true,
             enableFiltering: true,
+            filterPlaceholder: SEARCH,
             nonSelectedText: NONE_SELECTED,
             nSelectedText: N_SELECTED_TEXT
         });
@@ -470,8 +459,7 @@ OnPageLoadEvent = {
             enableHTML: true,
             templates: {
                 filter: '<li class="multiselect-item multiselect-filter"><div class="input-group mb-3"><div class="input-group-prepend"><span class="input-group-text"><i class="fa fa-search"></i></span></div><input class="form-control multiselect-search" type="text"/></div></li>',
-                filterClearBtn:
-                    '<span class="input-group-btn"><button class="btn btn-default multiselect-clear-filter" type="button"><i class="fa fa-times"></i></button></span>',
+                filterClearBtn:'<span class="input-group-btn"><button class="btn btn-default multiselect-clear-filter" type="button"><i class="fa fa-times"></i></button></span>',
             },
             columns: 1,
             filterPlaceholder: SEARCH,
@@ -487,8 +475,7 @@ OnPageLoadEvent = {
             enableHTML: true,
             templates: {
                 filter: '<li class="multiselect-item multiselect-filter"><div class="input-group mb-3"><div class="input-group-prepend"><span class="input-group-text"><i class="fa fa-search"></i></span></div><input class="form-control multiselect-search" type="text" /></div></li>',
-                filterClearBtn:
-                    '<span class="input-group-btn"><button class="btn btn-default multiselect-clear-filter" type="button"><i class="fa fa-times"></i></button></span>',
+                filterClearBtn:'<span class="input-group-btn"><button class="btn btn-default multiselect-clear-filter" type="button"><i class="fa fa-times"></i></button></span>',
             },
             columns: 1,
             filterPlaceholder: SEARCH,
@@ -504,8 +491,7 @@ OnPageLoadEvent = {
             enableHTML: true,
             templates: {
                 filter: '<li class="multiselect-item multiselect-filter"><div class="input-group mb-3"><div class="input-group-prepend"><span class="input-group-text"><i class="fa fa-search"></i></span></div><input class="form-control multiselect-search" type="text" /></div></li>',
-                filterClearBtn:
-                    '<span class="input-group-btn"><button class="btn btn-default multiselect-clear-filter" type="button"><i class="fa fa-times"></i></button></span>',
+                filterClearBtn:'<span class="input-group-btn"><button class="btn btn-default multiselect-clear-filter" type="button"><i class="fa fa-times"></i></button></span>',
             },
             columns: 1,
             filterPlaceholder: SEARCH,
@@ -521,8 +507,7 @@ OnPageLoadEvent = {
             enableHTML: true,
             templates: {
                 filter: '<li class="multiselect-item multiselect-filter"><div class="input-group mb-3"><div class="input-group-prepend"><span class="input-group-text"><i class="fa fa-search"></i></span></div><input class="form-control multiselect-search" type="text" /></div></li>',
-                filterClearBtn:
-                    '<span class="input-group-btn"><button class="btn btn-default multiselect-clear-filter" type="button"><i class="fa fa-times"></i></button></span>',
+                filterClearBtn:'<span class="input-group-btn"><button class="btn btn-default multiselect-clear-filter" type="button"><i class="fa fa-times"></i></button></span>',
             },
             columns: 1,
             filterPlaceholder: SEARCH,
@@ -538,8 +523,7 @@ OnPageLoadEvent = {
             enableHTML: true,
             templates: {
                 filter: '<li class="multiselect-item multiselect-filter"><div class="input-group mb-3"><div class="input-group-prepend"><span class="input-group-text"><i class="fa fa-search"></i></span></div><input class="form-control multiselect-search" type="text" /></div></li>',
-                filterClearBtn:
-                    '<span class="input-group-btn"><button class="btn btn-default multiselect-clear-filter" type="button"><i class="fa fa-times"></i></button></span>',
+                filterClearBtn:'<span class="input-group-btn"><button class="btn btn-default multiselect-clear-filter" type="button"><i class="fa fa-times"></i></button></span>',
             },
             columns: 1,
             filterPlaceholder: SEARCH,
@@ -5896,14 +5880,14 @@ Validation = {
                     required: VALIDATIONS.PLEASE_SELECT_CLASS,
                 },
             },
-            errorPlacement: function (error, element) {
-                if (element.attr("name") == "status") {
+            errorPlacement: function (error, element){
+                if(element.attr("name") == "status"){
                     error.appendTo("#error-status");
-                } else {
+                }else{
                     error.insertAfter(element);
                 }
             },
-            submitHandler: function (form) {
+            submitHandler: function (form){
                 $("#cover-spin").show();
                 form.submit();
             },
@@ -5911,30 +5895,30 @@ Validation = {
 
         //Add Subject Form Validation
         $("#addSubjectsForm").validate({
-            rules: {
-                name: {
+            rules:{
+                name:{
                     required: true,
                 },
-                code: {
+                code:{
                     required: true,
                 },
             },
-            messages: {
-                name: {
+            messages:{
+                name:{
                     required: VALIDATIONS.PLEASE_ENTER_SUBJECT_NAME,
                 },
-                code: {
+                code:{
                     required: VALIDATIONS.PLEASE_ENTER_SUBJECT_CODE,
                 },
             },
-            errorPlacement: function (error, element) {
-                if (element.attr("name") == "status") {
+            errorPlacement: function (error, element){
+                if(element.attr("name") == "status"){
                     error.appendTo("#error-status");
-                } else {
+                }else{
                     error.insertAfter(element);
                 }
             },
-            submitHandler: function (form) {
+            submitHandler: function (form){
                 $("#cover-spin").show();
                 form.submit();
             },

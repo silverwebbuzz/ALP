@@ -18,7 +18,7 @@ use App\Models\PeerGroup;
 use App\Models\PeerGroupMember;
 use Auth;
 use App\Constants\DbConstant As cn;
-
+use App\Events\UserActivityLog;
 
 use Exception;
 class ExportController extends Controller

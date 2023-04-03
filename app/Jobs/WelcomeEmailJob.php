@@ -12,6 +12,7 @@ use Illuminate\Support\Facades\Log;
 use App\Traits\ResponseFormat;
 use App\Constants\DbConstant as cn;
 use Illuminate\Support\Facades\Mail;
+use App\Events\UserActivityLog;
 
 class WelcomeEmailJob implements ShouldQueue
 {

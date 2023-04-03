@@ -37,6 +37,7 @@ use App\Models\UploadDocuments;
 use App\Models\LearningUnitOrdering;
 use App\Models\LearningObjectiveOrdering;
 use App\Models\LearningObjectivesSkills;
+use App\Events\UserActivityLog;
 
 class RealTimeAIQuestionGeneratorController extends Controller
 {
@@ -398,6 +399,11 @@ class RealTimeAIQuestionGeneratorController extends Controller
            
         ];
         $exams = Exam::create($examData);
+
+        $this->UserActivityLog(
+            Auth::user()->id,
+            Auth::user()->DecryptNameEn.' '.__('activity_history.new_test_created')
+        );
         if($exams){
             // Create exam school mapping
             ExamSchoolMapping::create([
@@ -458,6 +464,10 @@ class RealTimeAIQuestionGeneratorController extends Controller
                 cn::ATTEMPT_EXAMS_AFTER_EXAM_SURVEY_COL         => $request->after_emoji_id ?? 0,
             ];
             $save = AttemptExams::create($PostData);
+            $this->UserActivityLog(
+                Auth::user()->id,
+                Auth::user()->DecryptNameEn.' '.__('activity_history.exam_attempted')
+            );
             if($save){
                 //Update Column Is_my_teaching_sync
                 Exam::find($exams->id)->update([cn::EXAM_TABLE_IS_TEACHING_REPORT_SYNC =>'true']);
@@ -873,6 +883,10 @@ class RealTimeAIQuestionGeneratorController extends Controller
             cn::EXAM_TABLE_STATUS_COLS                      => 'publish'
         ];
         $exams = Exam::create($examData);
+        $this->UserActivityLog(
+            Auth::user()->id,
+            Auth::user()->DecryptNameEn.' '.__('activity_history.new_test_created')
+        );
         if($exams){
             // Create exam school mapping
             ExamSchoolMapping::create([
@@ -930,6 +944,10 @@ class RealTimeAIQuestionGeneratorController extends Controller
                 cn::ATTEMPT_EXAMS_SERVER_DETAILS_COL            => json_encode($this->serverData()) ?? null
             ];
             $save = AttemptExams::create($PostData);
+            $this->UserActivityLog(
+                Auth::user()->id,
+                Auth::user()->DecryptNameEn.' '.__('activity_history.exam_attempted')
+            );
             if($save){
                 //Update Column Is_my_teaching_sync
                 Exam::find($exams->id)->update([cn::EXAM_TABLE_IS_TEACHING_REPORT_SYNC =>'true']);

@@ -13,6 +13,7 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Validator;
 use App\Helpers\Helper;
 use App\Jobs\DeleteUserDataJob;
+use App\Events\UserActivityLog;
 
 class SubAdminController extends Controller
 {

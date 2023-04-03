@@ -17,6 +17,7 @@ use App\Traits\ResponseFormat;
 use App\Constants\DbConstant as cn;
 use Log;
 use Session;
+use App\Events\UserActivityLog;
 
 class LoginController extends Controller
 {
@@ -84,7 +85,11 @@ class LoginController extends Controller
                 Auth::login($User);
                 // Set User Log Activities
                 //$this->UserActivitiesLogs('login');
-                $redirectUrl = $this->GetRedirectURL();                
+                $redirectUrl = $this->GetRedirectURL();
+                $this->UserActivityLog(
+                    Auth::user()->id,
+                    Auth::user()->DecryptNameEn.' '.__('activity_history.login_history_text')
+                );
                 return $this->sendResponse(['redirectUrl' => $redirectUrl,'user_role' => Auth::user()->role_id], 'Login Successfully');
             }else{
                 return $this->sendError('Invalid Login Credentials', 422);
@@ -98,7 +103,7 @@ class LoginController extends Controller
     public function logout(Request $request) {
         try {
             $redirectUrl = config()->get('app.url').'login';
-
+            $this->UserActivityLog(Auth::user()->id, Auth::user()->DecryptNameEn.' '.__('activity_history.logout_history_text'));
             // Set User Log Activities
             if(Auth::user()){
                 //$this->UserActivitiesLogs('logout');

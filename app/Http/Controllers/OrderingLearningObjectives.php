@@ -10,6 +10,7 @@ use App\Models\LearningObjectiveOrdering;
 use App\Models\Strands;
 use App\Constants\DbConstant as cn;
 use App\Traits\Common;
+use App\Events\UserActivityLog;
 
 class OrderingLearningObjectives extends Controller
 {

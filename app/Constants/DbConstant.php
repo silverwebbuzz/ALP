@@ -1041,4 +1041,12 @@ class DbConstant {
     const REGIONS_REGION_EN_COL = 'region_en';
     const REGIONS_REGION_CH_COL = 'region_ch';
     const REGIONS_STATUS_COL = 'status';
+
+    /* Activity Log Table */
+    const ACTIVITY_LOG_TABLE = 'activity_log';
+    const ACTIVITY_LOG_ID_COL = 'id';
+    const ACTIVITY_LOG_CURRICULUM_YEAR_ID_COL = 'curriculum_year_id';
+    const ACTIVITY_LOG_SCHOOL_ID_COL = 'school_id';
+    const ACTIVITY_LOG_USER_ID_COL = 'user_id';
+    const ACTIVITY_LOG_ACTIVITY_LOG_COL = 'activity_log';
 }

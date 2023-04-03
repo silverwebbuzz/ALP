@@ -24,6 +24,7 @@ use App\Models\GradeSchoolMappings;
 use App\Models\CurriculumYearStudentMappings;
 use App\Http\Services\TeacherGradesClassService;
 use App\Http\Services\AIApiService;
+use App\Events\UserActivityLog;
 
 class PeerGroupController extends Controller
 {

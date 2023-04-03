@@ -33,6 +33,7 @@ use App\Http\Services\TeacherGradesClassService;
 use App\Models\ExamSchoolMapping;
 use App\Http\Services\AIApiService;
 use DB;
+use App\Events\UserActivityLog;
 
 class ClassTestReportController extends Controller
 {
@@ -980,13 +981,6 @@ class ClassTestReportController extends Controller
                                 cn::EXAM_TABLE_ID_COLS => $request->exam_id
                             ])
                             ->whereRaw("find_in_set($currentLoggedSchoolId,school_id)")->first();
-                // $studentList =  User::where([
-                //                     cn::USERS_ROLE_ID_COL => cn::STUDENT_ROLE_ID,
-                //                     cn::USERS_SCHOOL_ID_COL => $currentLoggedSchoolId
-                //                 ])                            
-                //                 ->with('grades')
-                //                 ->pluck(cn::USERS_ID_COL)
-                //                 ->toArray();
                 if(isset($request->class_type_id)){
                     $studentList =  User::where([
                                         cn::USERS_ROLE_ID_COL => cn::STUDENT_ROLE_ID,
@@ -994,7 +988,8 @@ class ClassTestReportController extends Controller
                                     ])
                                     ->get()
                                     ->where('CurriculumYearGradeId',$request->grade_id)
-                                    ->whereIn('CurriculumYearClassId',$GradeClassMapping)
+                                    //->whereIn('CurriculumYearClassId',$GradeClassMapping)
+                                    ->whereIn('CurriculumYearClassId',$request->class_type_id)
                                     ->pluck(cn::USERS_ID_COL)->toArray();                                    
                 }else{
                     $studentList =  User::where([
@@ -1005,7 +1000,6 @@ class ClassTestReportController extends Controller
                                     ->pluck(cn::USERS_ID_COL)
                                     ->toArray();
                 }
-                
             }else{
                 if($this->isAdmin()){
                     $getClasses = $this->getClassesByRoles($request->exam_id,$request->exam_school_id,$request->grade_id);

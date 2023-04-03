@@ -11,6 +11,7 @@ use App\Helpers\Helper;
 use App\Models\User;
 use App\Models\Strands;
 use Illuminate\Support\Facades\Auth;
+use App\Events\UserActivityLog;
 
 class AdminLearningReportsController extends Controller
 {

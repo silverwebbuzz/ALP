@@ -50,6 +50,7 @@ use App\Jobs\UpdateQuestionAIDifficultyColumnJob;
 use App\Jobs\UpdateAttemptExamQuestionAnswerColumnJob;
 use App\Models\LearningUnitOrdering;
 use App\Models\OrderingLearningUnits;
+use App\Events\UserActivityLog;
 
 class CommonController extends Controller
 {
@@ -646,13 +647,10 @@ class CommonController extends Controller
             $learningUnitId = (is_array($request->learning_unit_id)) ? $request->learning_unit_id : [$request->learning_unit_id];
             $strandId = (is_array($request->strand_id)) ? $request->strand_id : [$request->strand_id];
             $LearningObjectiveOrderingPosition = [];
-            // $learningObjectivesIds = StrandUnitsObjectivesMappings::whereIn(cn::OBJECTIVES_MAPPINGS_STRAND_ID_COL,$request->strand_id)
-                // ->whereIn(cn::OBJECTIVES_MAPPINGS_LEARNING_UNIT_ID_COL,$request->learning_unit_id)
                 $learningObjectivesIds =    StrandUnitsObjectivesMappings::whereIn(cn::OBJECTIVES_MAPPINGS_STRAND_ID_COL,$strandId)
                                             ->whereIn(cn::OBJECTIVES_MAPPINGS_LEARNING_UNIT_ID_COL,$learningUnitId)
                                             ->where(function ($query) use ($request){
                                                 if(isset($request->grade_id) && !empty($request->grade_id)){
-                                                    // $query->where(cn::OBJECTIVES_MAPPINGS_GRADE_ID_COL,$request->grade_id);
                                                     $query->whereIn(cn::OBJECTIVES_MAPPINGS_GRADE_ID_COL,$request->grade_id);
                                                 }
                                                 if(isset($request->subject_id) && !empty($request->subject_id)){
@@ -668,10 +666,8 @@ class CommonController extends Controller
                 $getNoOfQuestionPerLearningObjective = array();
                 foreach($LearningObjectives as $dataValue){
                     if(isset($request->isInspectMode) && $request->isInspectMode==true){
-                        // $getNoOfQuestionPerLearningObjective[$dataValue->id]=\App\Helpers\Helper::CountAllQuestionPerLearningObjective($dataValue->learning_unit_id,$dataValue->id,$request->test_type,$request->difficulty_level);
                         $getNoOfQuestionPerLearningObjective[$dataValue['id']] = Helper::CountAllQuestionPerLearningObjective($dataValue['learning_unit_id'],$dataValue['id'],$request->test_type,$request->difficulty_level);
                     }else{
-                        // $getNoOfQuestionPerLearningObjective[$dataValue->id]=\App\Helpers\Helper::getNoOfQuestionPerLearningObjective($dataValue->learning_unit_id,$dataValue->id);
                         $getNoOfQuestionPerLearningObjective[$dataValue['id']] = Helper::getNoOfQuestionPerLearningObjective($dataValue['learning_unit_id'],$dataValue['id']);
                     }
                 }

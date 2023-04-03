@@ -23,6 +23,7 @@ use App\Models\GradeSchoolMappings;
 use App\Models\UserCreditPointHistory;
 use App\Models\UserCreditPoints;
 use App\Http\Services\TeacherGradesClassService;
+use App\Events\UserActivityLog;
 
 class TeacherDashboardController extends Controller
 {

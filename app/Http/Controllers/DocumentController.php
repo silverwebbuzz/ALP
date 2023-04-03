@@ -29,7 +29,7 @@ use Intervention\Image\Facades\Image;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
-
+use App\Events\UserActivityLog;
 
 class DocumentController extends Controller
 {

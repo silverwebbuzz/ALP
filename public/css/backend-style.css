@@ -5171,15 +5171,11 @@ margin-right: 0;
     color: #fff;
 }
 
-/* -------------------- */
-/* #sidebar.inactive ul li a img {
-    background: #5e91c3;
-} */
+/* -------- New design CSS Changes ------------ */
 #sidebar.inactive .sidebar_icon_main {
     width: 60px;
     height: 40px;
     display: flex;
-    /* background-color: #5ec381; */
     justify-content: center;
     align-items: center;
     border-right: 1px solid !important;
@@ -5194,9 +5190,6 @@ margin-right: 0;
 .sm-add-user-sec {
    background-color: transparent;
 }
-#content{
-    background: linear-gradient(90deg, rgba(171,186,223,1) 0%, rgba(250,221,217,1) 100%) !important;
-}
 .list-unstyled li{
     border-bottom: 1px solid #fff;
 }
@@ -5204,3 +5197,40 @@ margin-right: 0;
     padding:  0;
     border: 1px solid;
 }
+
+/* User Activity History page CSS */
+.user-activity-log-page .node {
+    height: 10px;
+    width: 10px;
+    border-radius: 50%;
+    display:inline-block;
+    transition: all 1000ms ease;
+    background-color: black;
+}
+.user-activity-log-page .activated {
+    box-shadow: 0px 0px 3px 2px rgba(194, 255, 194, 0.8);
+}
+.user-activity-log-page .divider {
+    height: 40px;
+    width: 2px;
+    margin-left: 4px;
+    transition: all 800ms ease;
+    background-color: black;
+}
+.user-activity-history-list p {
+    display:inline-block;
+    margin-left: 25px;
+}
+.user-activity-history-list {
+    list-style: none;
+    position:relative;
+}
+.user-activity-history-list::before{
+    content:'';
+    height:100%;
+    width:1px;
+    position:absolute;
+    background:#000;
+    left: 5px;
+}
+/* End Activity History page CSS */

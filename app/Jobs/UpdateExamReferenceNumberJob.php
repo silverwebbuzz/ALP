@@ -12,6 +12,7 @@ use App\Models\Exam;
 use App\Constants\DbConstant As cn;
 use Log;
 use App\Traits\Common;
+use App\Events\UserActivityLog;
 
 class UpdateExamReferenceNumberJob implements ShouldQueue
 {

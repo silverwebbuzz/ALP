@@ -19,6 +19,7 @@ use App\Models\ExamGradeClassMappingModel;
 use App\Http\Services\TeacherGradesClassService;
 use Auth;
 use App\Helpers\Helper;
+use App\Events\UserActivityLog;
 
 class TeachersClassSubjectController extends Controller
 {

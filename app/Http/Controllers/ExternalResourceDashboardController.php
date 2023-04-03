@@ -7,6 +7,8 @@ use App\Constants\DbConstant As cn;
 use App\Traits\Common;
 use Validator;
 use Log;
+use App\Events\UserActivityLog;
+
 class ExternalResourceDashboardController extends Controller
 {
     use common;

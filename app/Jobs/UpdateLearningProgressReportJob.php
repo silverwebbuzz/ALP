@@ -10,6 +10,7 @@ use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Queue\SerializesModels;
 use App\Http\Controllers\CronJobController;
 use Log;
+use App\Events\UserActivityLog;
 
 class UpdateLearningProgressReportJob implements ShouldQueue
 {

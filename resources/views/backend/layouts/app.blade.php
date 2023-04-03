@@ -80,6 +80,45 @@
         <script type="text/javascript" src="{{asset('js/firebase/firebase_operations.min.js')}}"></script>
     @endif
     <!-- End Load js for firebase configurations -->
+
+    <!-- Set Background layer based on roles types -->
+    <style>
+        <?php
+        if(Auth::user() && !empty(Auth::user()->id)){
+            $UserRoleType = \App\Helpers\Helper::FindUserRoleNameById(Auth::user()->id);
+            if($UserRoleType== 'super_admin'){ ?>
+            #content{
+                background: linear-gradient(90deg, rgba(171,186,223,1) 0%, rgba(250,221,217,1) 100%) !important;
+            }
+            <?php }elseif($UserRoleType == 'principal'){ ?>
+                    #content{background-color: #edebeb;}
+            <?php }elseif($UserRoleType == 'panel_head'){?>
+                    #content{
+                        background: #7DD7F7;
+                        background: -webkit-linear-gradient(left, #7DD7F7, #90E5C6);
+                        background: -moz-linear-gradient(left, #7DD7F7, #90E5C6);
+                        background: linear-gradient(to right, #7DD7F7, #90E5C6);
+                    }
+            <?php }elseif($UserRoleType == 'co-ordinator'){ ?>
+                    #content{
+                        background: #BFEFBA;
+                        background: -webkit-linear-gradient(left, #BFEFBA, #F3F1B6);
+                        background: -moz-linear-gradient(left, #BFEFBA, #F3F1B6);
+                        background: linear-gradient(to right, #BFEFBA, #F3F1B6);
+                    }
+            <?php }elseif($UserRoleType == 'teacher'){ ?>
+                    #content{background-color: #edebeb;}
+            <?php }elseif($UserRoleType == 'student'){ ?>
+                    #content{
+                        background: #FBEC9C;
+                        background: -webkit-linear-gradient(left, #FBEC9C, #F3B6B6);
+                        background: -moz-linear-gradient(left, #FBEC9C, #F3B6B6);
+                        background: linear-gradient(90deg to right, #FBEC9C, #F3B6B6);
+                    }
+            <?php }
+        }?>
+    </style>
+    <!-- Set Background layer based on roles types -->
 </head>
 <body>
     <div class="loader"></div>
