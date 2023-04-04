@@ -4089,7 +4089,20 @@ ul.multiselect-container {
     padding-right: 30px;
     border-right: 1px solid #2f1160;
     height: 515px;
+    /* overflow-y: scroll; */
+}
+.review-question-left-section .nav-pills,
+.review-question-left-section .review-question-tab{
     overflow-y: scroll;
+    /*  */
+    overflow-x: hidden;
+}
+.review-question-left-section .nav-pills li{
+    width:50px;
+}
+.review-question-left-section .nav-pills li a{
+    padding-left: 0 !important;
+    padding-right: 0 !important;
 }
 .review-question-right-section {
     width: 50%;
