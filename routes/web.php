@@ -48,6 +48,8 @@ Route::get('UpdateLearningProgress', 'CronJobController@UpdateLearningProgressJo
 
 Route::get('UpdateUserCreditPointTable', 'CronJobController@UpdateUserCreditPointTable')->name('UpdateUserCreditPointTable');
 
+Route::get('update/weather/details', 'CronJobController@UpdateWeatherDetails')->name('UpdateWeatherDetails');
+
 /******************************************************************************************************************************
  *  End Cron Job Urls **
  * ****************************************************************************************************************************/
@@ -602,4 +604,7 @@ Route::group(['middleware' => ['auth']], function () {
     Route::get('learning-progress/learning-objectives', 'Reports\ProgressReportController@LearningProgressLearningObjectives')->name('learning-progress.learning-objectives');
 
     Route::get('get/school-users', 'CommonController@GetSchoolUserIds');
+
+    // Thank You Route
+    Route::get('thank-you','CommonController@Thankyou')->name('thank-you');
 });

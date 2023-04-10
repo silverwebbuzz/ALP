@@ -1049,4 +1049,9 @@ class DbConstant {
     const ACTIVITY_LOG_SCHOOL_ID_COL = 'school_id';
     const ACTIVITY_LOG_USER_ID_COL = 'user_id';
     const ACTIVITY_LOG_ACTIVITY_LOG_COL = 'activity_log';
+
+    /* Weather Table */
+    const WEATHER_DETAIL_TABLE = 'weather_detail';
+    const WEATHER_DETAIL_ID_COL = 'id';
+    const WEATHER_DETAIL_WEATHER_INFO_COL = 'weather_info';
 }

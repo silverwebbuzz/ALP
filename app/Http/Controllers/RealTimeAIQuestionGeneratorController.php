@@ -402,7 +402,8 @@ class RealTimeAIQuestionGeneratorController extends Controller
 
         $this->UserActivityLog(
             Auth::user()->id,
-            Auth::user()->DecryptNameEn.' '.__('activity_history.new_test_created')
+            '<p>'.Auth::user()->DecryptNameEn.' '.__('activity_history.new_test_created').'.'.
+            '<p>'.__('activity_history.title_is').$exams->title.'</p>'
         );
         if($exams){
             // Create exam school mapping
@@ -466,7 +467,10 @@ class RealTimeAIQuestionGeneratorController extends Controller
             $save = AttemptExams::create($PostData);
             $this->UserActivityLog(
                 Auth::user()->id,
-                Auth::user()->DecryptNameEn.' '.__('activity_history.exam_attempted')
+                '<p>'.Auth::user()->DecryptNameEn.' '.__('activity_history.exam_attempted').'.'.
+                '<p>'.__('activity_history.title_is').$exams->title.'.'.'</p>'.
+                '<p>'.__('activity_history.exam_reference_is').$exams->reference_no.'</p>'.
+                '<p>'.__('activity_history.exam_submitting_time_is').' '.date('Y/m/d h:i:s a', time())
             );
             if($save){
                 //Update Column Is_my_teaching_sync
@@ -885,7 +889,8 @@ class RealTimeAIQuestionGeneratorController extends Controller
         $exams = Exam::create($examData);
         $this->UserActivityLog(
             Auth::user()->id,
-            Auth::user()->DecryptNameEn.' '.__('activity_history.new_test_created')
+            '<p>'.Auth::user()->DecryptNameEn.' '.__('activity_history.new_test_created').'.'.
+            '<p>'.__('activity_history.title_is').$exams->title.'</p>'
         );
         if($exams){
             // Create exam school mapping
@@ -946,7 +951,10 @@ class RealTimeAIQuestionGeneratorController extends Controller
             $save = AttemptExams::create($PostData);
             $this->UserActivityLog(
                 Auth::user()->id,
-                Auth::user()->DecryptNameEn.' '.__('activity_history.exam_attempted')
+                '<p>'.Auth::user()->DecryptNameEn.' '.__('activity_history.exam_attempted').'.'.
+                '<p>'.__('activity_history.title_is').$exams->title.'.'.'</p>'.
+                '<p>'.__('activity_history.exam_reference_is').$exams->reference_no.'</p>'.
+                '<p>'.__('activity_history.exam_submitting_time_is').' '.date('Y/m/d h:i:s a', time())
             );
             if($save){
                 //Update Column Is_my_teaching_sync

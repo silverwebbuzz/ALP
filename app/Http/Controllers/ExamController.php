@@ -824,7 +824,10 @@ class ExamController extends Controller
             $save = AttemptExams::create($PostData);
             $this->UserActivityLog(
                 Auth::user()->id,
-                Auth::user()->DecryptNameEn.' '.__('activity_history.exam_attempted')
+                '<p>'.Auth::user()->DecryptNameEn.' '.__('activity_history.exam_attempted').'. </p>'.
+                '<p>'.__('activity_history.title_is').$examDetail->title.'. </p>'.
+                '<p>'.__('activity_history.exam_reference_is').' '.$examDetail->reference_no.'. </p>'.
+                '<p>'.__('activity_history.exam_submitting_time_is').' '.date('Y/m/d h:i:s a', time())
             );
             if($save){
                 //Update Column Is_my_teaching_sync
@@ -1503,8 +1506,16 @@ class ExamController extends Controller
                 $nodeWeaknessListCh = array_column($nodeListToArray,cn::NODES_WEAKNESS_NAME_CH_COL,cn::NODES_NODE_ID_COL);
             }
             if(!empty($AttemptExamData)){
+
+
                 // Get Percentage of difficulty level
                 $questionDifficultyGraph = $this->GetPercentageQuestionDifficultyLevel($totalQuestionDifficulty);
+                $this->UserActivityLog(
+                    Auth::user()->id,
+                    '<p>'.Auth::user()->DecryptNameEn.' '.__('activity_history.has_view_report').'.'.'</p>'.
+                    '<p>'.__('activity_history.title_is').$ExamData->title.'.'.'</p>'.
+                    '<p>'.__('activity_history.exam_reference_is').$ExamData->reference_no
+                );
                 return view('backend.exams.exams_result',compact('studentOverAllPercentile','isExerciseExam','isTestExam','difficultyLevels','isSelfLearningExam','isSelfLearningExercise',
                 'isSelfLearningTestingZone','studentId','nodeWeaknessList','nodeWeaknessListCh','Questions','AttemptExamData','ExamData','percentageOfAnswer',
                 'AllWeakness','questionDifficultyGraph'));

@@ -67,7 +67,7 @@ if(Auth::user()->role_id == 1){
                 <a class="nav-link text-truncate {{ (
                         request()->is('profile') || 
                         request()->is('change-password')
-                    ) ? 'collapsed': '' }}" href="#myaccount" data-toggle="collapse" data-target="#myaccount">
+                    ) ? '': 'collapsed' }}" href="#myaccount" data-toggle="collapse" data-target="#myaccount">
                     <div class="sidebar_icon_main">
                         <img class ="sidebar_icon" src="{{ asset('images/sidebar_icons/user.png') }}"  title="{{__('languages.my_account')}}" alt="{{__('languages.my_account')}}">
                     </div>
@@ -123,7 +123,7 @@ if(Auth::user()->role_id == 1){
                         request()->is('update/question/*') || 
                         request()->is('nodes') ||
                         request()->is('nodes/*')
-                    ) ? 'collapsed': '' }}" href="#syllabus_management" data-toggle="collapse" data-target="#syllabus_management">
+                    ) ? '': 'collapsed' }}" href="#syllabus_management" data-toggle="collapse" data-target="#syllabus_management">
                     <div class="sidebar_icon_main">
                         <img class ="sidebar_icon" src="{{ asset('images/sidebar_icons/strand.png') }}"  title="{{__('languages.admin_sidebar.curriculum_management')}}" alt="{{__('languages.admin_sidebar.curriculum_management')}}">
                     </div>
@@ -265,7 +265,7 @@ if(Auth::user()->role_id == 1){
             <a class="nav-link text-truncate {{ (
                     request()->is('schoolmanagement') || 
                     request()->is('schoolmanagement/*')
-                ) ? 'collapsed': '' }}" href="#school_management" data-toggle="collapse" data-target="#school_management">
+                ) ? '': 'collapsed' }}" href="#school_management" data-toggle="collapse" data-target="#school_management">
                 <div class="sidebar_icon_main">
                     <img class ="sidebar_icon" src="{{ asset('images/sidebar_icons/school_management.png') }}"  title="{{__('languages.admin_sidebar.school_management')}}" alt="{{__('languages.admin_sidebar.school_management')}}">
                 </div>
@@ -324,7 +324,7 @@ if(Auth::user()->role_id == 1){
                         request()->is('pre-configure-difficulty') ||
                         request()->is('pre-configure-difficulty/*') || 
                         request()->is('global-configuration')
-                    ) ? 'collapsed': '' }}" href="#setting" data-toggle="collapse" data-target="#setting">
+                    ) ? '': 'collapsed' }}" href="#setting" data-toggle="collapse" data-target="#setting">
                     <div class="sidebar_icon_main">
                         <img class ="sidebar_icon" src="{{ asset('images/sidebar_icons/setting.png') }}"  title="{{__('languages.admin_sidebar.setting')}}" alt="{{__('languages.admin_sidebar.setting')}}">
                     </div>
@@ -451,7 +451,7 @@ if(Auth::user()->role_id == 1){
                 <a class="nav-link text-truncate {{ (
                         request()->is('report/class-test-reports/correct-incorrect-answer') || 
                         request()->is('report/skill-weekness')
-                    ) ? 'collapsed': '' }}" href="#report" data-toggle="collapse" data-target="#report">
+                    ) ? '': 'collapsed' }}" href="#report" data-toggle="collapse" data-target="#report">
                     <div class="sidebar_icon_main">
                         <img class ="sidebar_icon" src="{{ asset('images/sidebar_icons/reports.png') }}"  title="{{__('languages.common_sidebar.reports')}}" alt="{{__('languages.common_sidebar.reports')}}">
                     </div>

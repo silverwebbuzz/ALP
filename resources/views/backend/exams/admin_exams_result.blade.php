@@ -43,6 +43,14 @@
                                         <p>{{$ServerDetails->Browser}}</p>
                                     </div>
                                     <div class="ip-address-main information">
+                                        <h5>{{__('languages.result.device')}} </h5>
+                                        <p>{{$ServerDetails->device ?? ''}}</p>
+                                    </div>
+                                    <div class="ip-address-main information">
+                                        <h5>{{__('languages.result.platform')}} </h5>
+                                        <p>{{$ServerDetails->platform ?? ''}}</p>
+                                    </div>
+                                    <div class="ip-address-main information">
                                         <h5>{{__('languages.result.request_date_time')}} </h5>
                                         <p><?php echo date('d/m/Y h:i:s',strtotime($ServerDetails->DateTime)); ?></p>
                                     </div>

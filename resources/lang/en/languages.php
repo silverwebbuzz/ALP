@@ -978,6 +978,8 @@ return [
         'q_no'                              => 'Q. NO',
         'correct_answer'                    => 'Correct Answer',
         'incorrect_answer'                  => 'Incorrect Answer',
+        'device'                            => 'Device',
+        'platform'                          => 'Platform'
     ],
     'subjects' =>[
         'add_new_subject'                   => 'Add New Subject',
@@ -1712,5 +1714,6 @@ return [
     'header_background_color'                   => 'Header Background Color',
     'view_calibration_log'                      => 'View Calibration Log',
     'search_by_activity_text'                   => 'Search By Activity Text',
-    'no_available_any_activity_history'         => 'No Available any Activity History'
+    'no_available_any_activity_history'         => 'No Available any Activity History',
+    'full_screen'                               => 'Full Screen',
 ];

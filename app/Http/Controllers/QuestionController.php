@@ -940,7 +940,8 @@ class QuestionController extends Controller
     
     public function questionListPreview(Request $request){
         $response = [];
-            $result['html'] = '';    
+            $result['html'] = '';
+            $popuptype = $request->popuptype;
             $questionData  = Question::with('answers')->find($request->questionId);
             $questionPostData = array(
                 cn::QUESTION_QUESTION_CODE_COL                => str_replace(" ","",$questionData->naming_structure_code),
@@ -994,7 +995,7 @@ class QuestionController extends Controller
                     }
                 }
             }
-            $result['html'] = (string)View::make('backend.question.previewUpdate',compact('question','examLanguage','UploadDocumentsData'));
+            $result['html'] = (string)View::make('backend.question.previewUpdate',compact('question','examLanguage','UploadDocumentsData','popuptype'));
             return $this->sendResponse($result);
     }
 

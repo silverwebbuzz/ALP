@@ -202,6 +202,26 @@
 </div>
 <!-- End: Remainder upgrade school year data popup -->
 
+<!-- Start Preview Question Modal -->
+<div class="modal fade" id="modalPreviewQuestion" data-backdrop="static" data-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+    <div class="modal-dialog  modal-xl" style="max-width: 90%;">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="staticBackdropLabel">{{__('languages.questions.preview_question')}}</h5>
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+        <div class="modal-body" id="question_data">
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-dismiss="modal">{{__('languages.close')}}</button>
+        </div>
+      </div>
+    </div>
+  </div>
+  <!-- End Preview Question Modal -->
+
 <!-- Start : Open School Profile popup model -->
 @php
 if(auth::user()->role_id != 1){

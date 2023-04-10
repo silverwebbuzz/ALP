@@ -8482,12 +8482,15 @@ function PreviewQuestion(formId) {
 /**
  * USE : Preview questions
  */
-function PreviewQuestionList(questionId) {
+function PreviewQuestionList(questionId,popuptype='preview') {
     $("#cover-spin").show();
     $.ajax({
         url: BASE_URL + "/question-preview-list",
         type: "GET",
-        data: { questionId },
+        data: {
+            questionId:questionId,
+            popuptype:popuptype
+        },
         success: function (response) {
             if (response.data) {
                 $("#modalPreviewQuestion  .modal-body").html(

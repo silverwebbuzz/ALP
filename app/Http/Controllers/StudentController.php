@@ -537,7 +537,8 @@ class StudentController extends Controller
         $exams = Exam::create($examData);
         $this->UserActivityLog(
             Auth::user()->id,
-            Auth::user()->DecryptNameEn.' '.__('activity_history.new_test_created')
+           '<p>'.Auth::user()->DecryptNameEn.' '.__('activity_history.new_test_created').'.'.
+           '<p>'.__('activity_history.title_is').$exams->title.'</p>'
         );
         if($exams){
             // Create exam school mapping

@@ -12,7 +12,7 @@
             request()->is('user/activity-log') || 
             request()->is('user/activity-log/*')
 
-        ) ? 'collapsed': '' }}" 
+        ) ? '': 'collapsed' }}" 
         href="#school_admin_privilege" data-toggle="collapse" data-target="#school_admin_privilege">
         <div class="sidebar_icon_main">
             <img class ="sidebar_icon" src="{{ asset('images/sidebar_icons/school_management.png') }}"  title="{{__('languages.common_sidebar.school_admin')}}" alt="{{__('languages.common_sidebar.school_admin')}}">
@@ -41,7 +41,7 @@
                 </a>
             </li>
             <li class="nav-item">
-                <a class="nav-link text-truncate {{ (request()->is('school-users') || request()->is('school-users/*') || request()->is('Student') || request()->is('Student/*') || request()->is('school/class/importStudent')) ? 'collapsed': '' }}" href="#account_management" data-toggle="collapse" data-target="#account_management">                    
+                <a class="nav-link text-truncate {{ (request()->is('school-users') || request()->is('school-users/*') || request()->is('Student') || request()->is('Student/*') || request()->is('school/class/importStudent')) ? '': 'collapsed' }}" href="#account_management" data-toggle="collapse" data-target="#account_management">                    
                     <div class="sidebar_icon_main">
                         <img class ="sidebar_icon" src="{{ asset('images/sidebar_icons/user.png') }}"  title="{{__('languages.common_sidebar.account_management')}}" alt="{{__('languages.common_sidebar.account_management')}}">
                     </div>

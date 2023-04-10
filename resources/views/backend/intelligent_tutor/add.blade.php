@@ -4,7 +4,7 @@
         @include('backend.layouts.sidebar')
         <div id="content" class="pl-2 pb-5">
             @include('backend.layouts.header')
-            @if (session('error'))
+            @if(session('error'))
             <div class="alert alert-danger">{{ session('error') }}</div>
             @endif
             <div class="sm-right-detail-sec pl-5 pr-5">

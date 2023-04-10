@@ -247,7 +247,8 @@ class QuestionGeneratorController extends Controller {
             if($exams){
                 $this->UserActivityLog(
                     Auth::user()->id,
-                    Auth::user()->DecryptNameEn.' '.__('activity_history.new_test_created')
+                    '<p>'.Auth::user()->DecryptNameEn.' '.__('activity_history.new_test_created').'.'.
+                    '<p>'.__('activity_history.title_is').$exams->title.'</p>'
                 );
                 if($request->use_of_modes == 1){
                     // Create Exam and school Mapping
@@ -413,7 +414,7 @@ class QuestionGeneratorController extends Controller {
                 if($exams){
                     $this->UserActivityLog(
                         Auth::user()->id,
-                        Auth::user()->DecryptNameEn.' '.__('activity_history.update_test')
+                        '<p>'.Auth::user()->DecryptNameEn.' '.__('activity_history.update_test').'</p>'
                     );
                     if($exam->{cn::EXAM_TABLE_USE_OF_MODE_COLS} == 1){
                         // Create Exam and school Mapping
@@ -762,7 +763,8 @@ class QuestionGeneratorController extends Controller {
             if($exams){
                 $this->UserActivityLog(
                     Auth::user()->id,
-                    Auth::user()->DecryptNameEn.' '.__('activity_history.new_test_created')
+                    '<p>'.Auth::user()->DecryptNameEn.' '.__('activity_history.new_test_created').'.'.
+                    '<p>'.__('activity_history.title_is').$exams->title.'</p>'
                 );
                 if(isset($request->submission_on_time) && !empty($request->submission_on_time)){
                     $submission_on_time = $request->submission_on_time;
@@ -1443,7 +1445,7 @@ class QuestionGeneratorController extends Controller {
 
                     $this->UserActivityLog(
                         Auth::user()->id,
-                        Auth::user()->DecryptNameEn.' '.__('activity_history.update_test')
+                        '<p>'.Auth::user()->DecryptNameEn.' '.__('activity_history.update_test').'</p>'
                     );
 
                     // Update Exam School Mapping Table
@@ -2738,7 +2740,7 @@ class QuestionGeneratorController extends Controller {
                             }
                             $this->UserActivityLog(
                                 Auth::user()->id,
-                                Auth::user()->DecryptNameEn.' '.__('activity_history.update_status')
+                                '<p>'.Auth::user()->DecryptNameEn.' '.__('activity_history.update_status').'</p>'
                             );
                             return $this->sendResponse($result, __('languages.status_updated_successfully'));
                         }
@@ -2773,7 +2775,7 @@ class QuestionGeneratorController extends Controller {
                     if($Update){
                         $this->UserActivityLog(
                             Auth::user()->id,
-                            Auth::user()->DecryptNameEn.' '.__('activity_history.update_status')
+                            '<p>'.Auth::user()->DecryptNameEn.' '.__('activity_history.update_status').'</p>'
                         );
                         return $this->sendResponse($result, __('languages.status_updated_successfully'));
                     }else{

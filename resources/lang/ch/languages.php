@@ -978,6 +978,8 @@ return [
         'q_no'                              => '題號',
         'correct_answer'                    => '正確答案',
         'incorrect_answer'                  => '不正確的答案',
+        'device'                            => '設備',
+        'platform'                          => '平台'
     ],
     'subjects' =>[
         'add_new_subject'                   => '添加新科目',
@@ -1712,5 +1714,6 @@ return [
     'header_background_color'                   => '頁眉背景色',
     'view_calibration_log'                      => '查看校準日誌',
     'search_by_activity_text'                   => '按活動文本搜索',
-    'no_available_any_activity_history'         => '沒有可用的任何活動歷史記錄'
+    'no_available_any_activity_history'         => '沒有可用的任何活動歷史記錄',
+    'full_screen'                               => '全屏',
 ];

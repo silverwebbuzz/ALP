@@ -66,7 +66,7 @@ if(Auth::user()->role_id == 1){
                     <a class="nav-link text-truncate {{ (
                             request()->is('profile') || 
                             request()->is('change-password')
-                        ) ? 'collapsed': '' }}" href="#myaccount" data-toggle="collapse" data-target="#myaccount">
+                        ) ? '': 'collapsed' }}" href="#myaccount" data-toggle="collapse" data-target="#myaccount">
                         <div class="sidebar_icon_main">
                             <img class ="sidebar_icon" src="{{ asset('images/sidebar_icons/user.png') }}"  title="{{__('languages.my_account')}}" alt="{{__('languages.my_account')}}">
                         </div>
@@ -115,7 +115,7 @@ if(Auth::user()->role_id == 1){
                     request()->is('auto-peer-group') ||
                     request()->is('assign-credit-points') || 
                     request()->is('student/leaderboard')
-                ) ? 'collapsed': '' }}" href="#teaching_and_learning" data-toggle="collapse" data-target="#teaching_and_learning">
+                ) ? '': 'collapsed' }}" href="#teaching_and_learning" data-toggle="collapse" data-target="#teaching_and_learning">
                     <div class="sidebar_icon_main">
                         <img class ="sidebar_icon" src="{{ asset('images/sidebar_icons/question_wizard.png') }}"  title="{{__('languages.common_sidebar.teaching_and_learning')}}" alt="{{__('languages.common_sidebar.teaching_and_learning')}}">
                     </div>
@@ -232,7 +232,7 @@ if(Auth::user()->role_id == 1){
                         request()->is('student/progress-report/learning-objective/*') ||
                         request()->is('learning-progress/learning-objectives')  ||
                         (isset($menuItem) && ($menuItem == 'exercise' || $menuItem == 'test' || $menuItem == 'self_learning' || $menuItem == 'testing_zone')) || (request()->is('learning-progress/learning-units'))
-                    ) ? 'collapsed': '' }}" href="#report" data-toggle="collapse" data-target="#report">
+                    ) ? '': 'collapsed' }}" href="#report" data-toggle="collapse" data-target="#report">
                         <div class="sidebar_icon_main">
                             <img class ="sidebar_icon" src="{{ asset('images/sidebar_icons/school_management.png') }}"  title="{{__('languages.common_sidebar.reports')}}" alt="{{__('languages.common_sidebar.reports')}}">
                         </div>
@@ -314,7 +314,7 @@ if(Auth::user()->role_id == 1){
                                         request()->is('student/progress-report/learning-units/*') || 
                                         request()->is('student/progress-report/learning-objective/*')||
                                         request()->is('learning-progress/learning-objectives')
-                                    ? 'collapse' : '')
+                                    ? '' : 'collapsed')
                                     }}" 
                                     href="#learning_progress_report" data-toggle="collapse" data-target="#learning_progress_report">
                                     <div class="sidebar_icon_main">
@@ -362,7 +362,7 @@ if(Auth::user()->role_id == 1){
 
             {{-- Video --}}
             <li class="nav-item">
-                <a class="nav-link text-truncate {{ (request()->is('intelligent-tutor')) ? 'collapsed': '' }}" href="#video" data-toggle="collapse" data-target="#video">
+                <a class="nav-link text-truncate {{ (request()->is('intelligent-tutor')) ? '': 'collapsed' }}" href="#video" data-toggle="collapse" data-target="#video">
                     <div class="sidebar_icon_main">
                         <img class ="sidebar_icon" src="{{ asset('images/sidebar_icons/intelligent_tutor.png') }}"  title="{{__('languages.common_sidebar.video')}}" alt="{{__('languages.common_sidebar.video')}}">
                     </div>

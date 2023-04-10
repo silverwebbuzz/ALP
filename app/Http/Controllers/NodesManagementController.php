@@ -115,7 +115,7 @@ class NodesManagementController extends Controller
             if(!empty($Nodes)){
                 $this->UserActivityLog(
                     Auth::user()->id,
-                    Auth::user()->DecryptNameEn.' '.__('activity_history.add_node')
+                    '<p>'.Auth::user()->DecryptNameEn.' '.__('activity_history.add_node').'</p>'
                 );
                 $this->StoreAuditLogFunction($postData,'Nodes','','','Create Node',cn::NODES_TABLE_NAME,'');
                 return redirect('nodes')->with('success_msg', __('languages.node_added_successfully'));
@@ -188,7 +188,7 @@ class NodesManagementController extends Controller
             if(!empty($update)){
                 $this->UserActivityLog(
                     Auth::user()->id,
-                    Auth::user()->DecryptNameEn.' '.__('activity_history.update_node')
+                    '<p>'.Auth::user()->DecryptNameEn.' '.__('activity_history.update_node').'</p>'
                 );
                 return redirect('nodes')->with('success_msg', __('languages.node_updated_successfully'));
             }else{
@@ -214,7 +214,7 @@ class NodesManagementController extends Controller
                 if($Nodes->delete()){
                     $this->UserActivityLog(
                         Auth::user()->id,
-                        Auth::user()->DecryptNameEn.' '.__('activity_history.delete_node')
+                        '<p>'.Auth::user()->DecryptNameEn.' '.__('activity_history.delete_node').'</p>'
                     );
                     if(isset($NodeRelationIds) && !empty($NodeRelationIds)){
                         NodeRelation::whereIn(cn::NODES_RELATION_ID_COL,$NodeRelationIds)->delete();

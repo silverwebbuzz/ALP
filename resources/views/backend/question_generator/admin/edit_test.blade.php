@@ -1,5 +1,10 @@
 @extends('backend.layouts.app')
 @section('content')
+<style>
+    .review-question-left-section .nav-pills li{
+        width:50px !important;
+    }
+</style>
 <div class="wrapper d-flex align-items-stretch sm-deskbord-main-sec">
     @include('backend.layouts.sidebar')
     <div id="content" class="pl-2 pb-5">
@@ -427,10 +432,15 @@
                                                     <div class="question-heading">
                                                         <p class="question-title review-question-title">'. __('languages.questions.question').':</p>
                                                     </div>
+                                                    <div >
+                                                        <button type="button" class="btn-search preview_question_list" data-id="'.$questionData['id'].'">'.__('languages.full_screen').'</button>
+                                                    </div>
+                                                    
                                                     <div class="question-answer-content pl-2">
                                                         <div class="question_content">
                                                             <label for="question-content" class="pl-3">'.$questionTitle.'</label>
                                                         </div>
+                                                        
                                                         <div class="answer-content">
                                                             <div class="answer-review">
                                                                 <span class="answer-detail-number">1</span>
@@ -456,7 +466,6 @@
                                                 </div>
                                                 </div>
                                             </div>';
-
                                             $qIndex++;
                                         @endphp
                                     @endforeach
@@ -1111,6 +1120,9 @@ function getLearningObjectivesOptionList(){
                             <div class="question-heading">\
                                 <p class="question-title review-question-title">{{ __('languages.questions.question')}}:</p>\
                             </div>\
+                            <div >\
+                                <button type="button" class="btn-search preview_question_list" data-id="'+Q.id+'">{{__('languages.full_screen')}}</button>\
+                            </div>\
                             <div class="question-answer-content pl-2">\
                                 <div class="question_content">\
                                     <label for="question-content" class="pl-3">'+questionTitle+'</label>\
@@ -1543,6 +1555,11 @@ function checkValidation(currentStep) {
 </script>
 <script type="text/javascript">
     $(document).ready(function () {
+        $(document).on("click", ".preview_question_list", function (){
+            $questionId = $(this).data('id');
+            PreviewQuestionList($questionId,'full_screen_question');
+        });
+
         $(".learning_objective_checkbox").parent().find('.get_no_of_question_learning_objectives').prop('disabled',false);
         $(".learning_objective_checkbox:not(:checked)").parent().find('select,.get_no_of_question_learning_objectives').prop('disabled',true);
         $(".learning_objective_checkbox:checked").parent().find('select').multiselect('enable');

@@ -1426,7 +1426,7 @@ class UsersController extends Controller
             if($updatePassword){
                 $this->UserActivityLog(
                     Auth::user()->id,
-                    Auth::user()->DecryptNameEn.' '.__('activity_history.password_change')
+                    '<p>'.Auth::user()->DecryptNameEn.' '.__('activity_history.password_change').'</p>'
                 );
                 return redirect('change-password')->with('success_msg', __('languages.password_changed_successfully'));
             }else{

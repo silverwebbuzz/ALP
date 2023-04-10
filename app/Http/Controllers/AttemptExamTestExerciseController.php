@@ -919,6 +919,12 @@ class AttemptExamTestExerciseController extends Controller
             ];
             $save = AttemptExams::create($PostData);
             if($save){
+                $this->UserActivityLog(
+                    Auth::user()->id,
+                    '<p>'.Auth::user()->DecryptNameEn.' '.__('activity_history.exam_attempted').'.'.'</p>'.
+                    '<p>'.__('activity_history.title_is').$examDetail->title.'.'.'</p>'.
+                    '<p>'.__('activity_history.exam_reference_is').$examDetail->reference_no.'</p>'
+                );
                 //Update Column Is_my_teaching_sync
                 Exam::find($examId)->update([cn::EXAM_TABLE_IS_TEACHING_REPORT_SYNC =>'true']);
                 

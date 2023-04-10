@@ -53,21 +53,28 @@ use App\Models\LearningsObjectives;
 use App\Models\StrandUnitsObjectivesMappings;
 use App\Models\LearningUnitsProgressReport;
 use App\Models\LearningObjectivesProgressReport;
+use App\Models\WeatherDetail;
 use App\Jobs\UpdateLearningProgressReportJob;
 use App\Models\UserCreditPointHistory;
 use App\Events\UserActivityLog;
+use App\Http\Services\WeatherAPIService;
 
 class CronJobController extends Controller
 {
     use Common, ResponseFormat;
 
-    protected $AIApiService, $CloneSchoolDataNextCurriculumYear, $UpdateMyTeachingReportJob,$User;
+    protected   $AIApiService,
+                $CloneSchoolDataNextCurriculumYear,
+                $UpdateMyTeachingReportJob,
+                $User,
+                $WeatherAPIService;
     
     public function __construct(){
         $this->AIApiService = new AIApiService();
         $this->CloneSchoolDataNextCurriculumYear = new CloneSchoolDataNextCurriculumYear;
         $this->UpdateMyTeachingReportJob = new UpdateMyTeachingReportJob;
         $this->User = new User;
+        $this->WeatherAPIService = new WeatherAPIService;
     }
 
     public function UpdateUserCreditPointTable(){
@@ -901,5 +908,27 @@ class CronJobController extends Controller
                 }
             }
         } 
+    }
+
+    /**
+     * USE : Get Hong-Kong weather details and update into database
+     */
+    public function UpdateWeatherDetails(){
+        Log::info('Weather API Run Start');
+        $WeatherInfo = $this->WeatherAPIService->GetWeatherInfo();
+        if(isset($WeatherInfo) && !empty($WeatherInfo)){
+            $WeatherDetail = WeatherDetail::first();
+            if(isset($WeatherDetail) && !empty($WeatherDetail)){
+                WeatherDetail::find($WeatherDetail->{cn::WEATHER_DETAIL_ID_COL})->Update([
+                    cn::WEATHER_DETAIL_WEATHER_INFO_COL => json_encode($WeatherInfo, TRUE)
+                ]);
+            }else{
+                WeatherDetail::Create([
+                    cn::WEATHER_DETAIL_WEATHER_INFO_COL => json_encode($WeatherInfo, TRUE)
+                ]);
+            }
+            Log::info('Weather Information Updated into database');
+        }
+        Log::info('Weather API Run Successfully');
     }
 }

@@ -1,5 +1,10 @@
 @extends('backend.layouts.app')
 @section('content')
+<style>
+    .review-question-left-section .nav-pills li{
+        width:50px !important;
+    }
+</style>
 <div class="wrapper d-flex align-items-stretch sm-deskbord-main-sec">
     @include('backend.layouts.sidebar')
     <div id="content" class="pl-2 pb-5">
@@ -400,6 +405,9 @@
                                                         <div class="question-heading pl-3">
                                                             <p class="question-title review-question-title">{{ __('languages.questions.question')}} :</p>
                                                         </div>
+                                                        <div >
+                                                            <button type="button" class="btn-search preview_question_list" data-id="">{{__('languages.full_screen')}}</button>\
+                                                        </div>
                                                         <div class="question-answer-content pl-3">
                                                             <div class="question_content">
                                                                 <label for="question-content" class="pl-3">xyz question</label>
@@ -502,6 +510,7 @@
                                                         <div class="question-heading pl-3">
                                                             <p class="question-title review-question-title">{{ __('languages.questions.question')}} :</p>
                                                         </div>
+                                                        
                                                         <div class="question-answer-content pl-2">
                                                             <div class="question_content">
                                                                 <label for="question-content" class="pl-3">xyz question</label>
@@ -572,6 +581,7 @@
         </div>
     </div>
 </div>
+
 <!-- Want a hint Modal -->
     <div class="modal fade" id="WantAHintModal" tabindex="-1" aria-labelledby="WantAHintModal" aria-hidden="true">
         <div class="modal-dialog modal-dialog-centered">
@@ -580,6 +590,28 @@
         </div>
     </div>
 <!-- Want a hint Modal -->
+<script>
+    $(document).on("click", ".preview_question_list", function (){
+        $questionId = $(this).data('id');
+        PreviewQuestionList($questionId,'full_screen_question');
+    });
+    
+    $(document).on("click",".want_a_hint",function () {
+        $("#cover-spin").show();
+        var qId=$(this).attr('question-id');
+        $('#WantAHintModal .modal-content').html('');
+        $.ajax({
+            url: BASE_URL + '/get-question-hint/'+qId,
+            type: 'GET',
+            success: function(response) {
+                $('#WantAHintModal .modal-content').html(response.data.html);
+                MathJax.Hub.Queue(["Typeset", MathJax.Hub]);
+                $('#WantAHintModal').modal('show');
+                $("#cover-spin").hide();
+            }
+        });
+    });
+</script>
 <script>
     var currentLanguage='{{app()->getLocale()}}';
     var minimum_question_per_skill = parseInt('<?php echo $RequiredQuestionPerSkill['minimum_question_per_skill'];?>');
@@ -1068,6 +1100,9 @@ function getLearningObjectivesOptionList(){
                             </div>\
                             <div class="question-heading">\
                                 <p class="question-title review-question-title">{{ __('languages.questions.question')}}:</p>\
+                            </div>\
+                            <div >\
+                                <button type="button" class="btn-search preview_question_list" data-id="'+Q.id+'">{{__('languages.full_screen')}}</button>\
                             </div>\
                             <div class="question-answer-content pl-2">\
                                 <div class="question_content">\

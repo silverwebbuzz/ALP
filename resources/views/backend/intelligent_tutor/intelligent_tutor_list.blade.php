@@ -17,7 +17,7 @@
         /* audio width set start*/
         audio { width: 150px; display: block; margin:20px; }
         /* audio width set end */
-        body {font-family: Arial, Helvetica, sans-serif;}
+        /* body {font-family: Arial, Helvetica, sans-serif;} */
 
         #myImg {
             border-radius: 5px;
@@ -31,7 +31,7 @@
         #videoPlayer.modal {
             display: none; /* Hidden by default */
             position: fixed; /* Stay in place */
-            z-index: 1; /* Sit on top */
+            z-index: 99999999; /* Sit on top */
             padding-top: 100px; /* Location of the box */
             left: 0;
             top: 0;
@@ -109,273 +109,264 @@
         @include('backend.layouts.sidebar')
         <div id="content" class="pl-2 pb-5">
             @include('backend.layouts.header')
-                <div class="sm-right-detail-sec pl-5 pr-5">
-                    <div class="container-fluid">
-                        <div class="row">
-                            <div class="col-md-12">
-                                <div class="sec-title">
-                                    <h4 class="mb-4 main-title">{{ __('languages.intelligent_tutor') }}</h4>
-                                </div>
-                                <div class="btn-sec">
-                                    <a href="javascript:void(0);" class="btn-back dark-blue-btn btn btn-primary mb-4" id="backButton">{{__('languages.back')}}</a>
-                                    @if(in_array('upload_documents_create',$permissions))
-                                        <a href="{{ route('intelligent-tutor.create') }}" class="dark-blue-btn btn btn-primary mb-4">{{__('languages.upload_document.add_new_document')}}</a>
-                                    @endif
-                                </div>
-                                <hr class="blue-line">
+            <div class="sm-right-detail-sec pl-5 pr-5">
+                <div class="container-fluid">
+                    <div class="row">
+                        <div class="col-md-12">
+                            <div class="sec-title">
+                                <h4 class="mb-4 main-title">{{ __('languages.intelligent_tutor') }}</h4>
                             </div>
+                            <div class="btn-sec">
+                                <a href="javascript:void(0);" class="btn-back dark-blue-btn btn btn-primary mb-4" id="backButton">{{__('languages.back')}}</a>
+                                @if(in_array('upload_documents_create',$permissions))
+                                    <a href="{{ route('intelligent-tutor.create') }}" class="dark-blue-btn btn btn-primary mb-4">{{__('languages.upload_document.add_new_document')}}</a>
+                                @endif
+                            </div>
+                            <hr class="blue-line">
                         </div>
-                        <div class="sm-add-question-sec">
-                            <div class="select-option-sec pb-3">
-                                @if (session('error'))
-                                <div class="alert alert-danger">{{ session('error') }}</div>
-                                @endif
-                                @if(session()->has('success_msg'))
-                                <div class="alert alert-success">
-                                    {{ session()->get('success_msg') }}
-                                </div>
-                                @endif
-                                @if(session()->has('error_msg'))
-                                <div class="alert alert-danger">
-                                    {{ session()->get('error_msg') }}
-                                </div>
-                                @endif
-                                
-                                <form method="get" id="filtration-Intelligent-tutor">	
-                                    <div class="row">
-                                        @if(Auth::user()->role_id != 3)
-                                        <div class="form-group col-md-3 mb-50">
-                                            <select class="form-control js-states w-100" data-show-subtext="true"  data-live-search="true" name="learning_tutor_grade_id[]"  id="learning_tutor_grade_id" multiple>
-                                                @if(!empty($Grades))
-                                                    @foreach ($Grades as $gradekey => $grade)
-                                                        @if(isset($requestData['learning_tutor_grade_id']))
-                                                            <option value="{{$grade->id}}" {{in_array($grade->id,$requestData['learning_tutor_grade_id']) ? 'selected' : ''}}>{{$grade->name }}</option>
-                                                        @else
-                                                        <option value="{{$grade->id}}" selected>{{$grade->name }}</option>
-                                                        @endif
-                                                    @endforeach
-                                                @else
-                                                    <option value="">{{__("languages.no_grade_available")}}</option>
-                                                @endif
-                                            </select>
-                                        </div>
-                                        @endif
-                                        <div class="form-group col-md-3 mb-50">
-                                            <select class="form-control js-states w-100" data-show-subtext="true"  data-live-search="true" name="learning_tutor_strand_id[]"  id="learning_tutor_strand_id" multiple >
-                                                @if(!empty($StrandList))
-                                                    @foreach ($StrandList as $strandkey => $strand)
-                                                        @if(isset($requestData['learning_tutor_strand_id']) && !empty($requestData['learning_tutor_strand_id']))
-                                                            <option value="{{$strand->id}}" {{(in_array($strand->id,$requestData['learning_tutor_strand_id'])) ? 'selected' : ''}}>{{$strand->{'name_'.app()->getLocale()} }}</option>  
-                                                        @else
-                                                            <option value="{{$strand->id}}" selected>{{$strand->{'name_'.app()->getLocale()} }}</option>
-                                                        @endif
-                                                    @endforeach
-                                                @else
-                                                    <option value="">{{__("languages.no_strands_available")}}</option>
-                                                @endif
-                                            </select>
-                                        </div>
-    
-                                        <div class="form-group col-md-3 mb-50">
-                                            <select class="form-control js-states w-100" data-show-subtext="true"  data-live-search="true" name="learning_tutor_learning_unit[]"  id="learning_tutor_learning_unit" multiple>
-                                                @if(!empty($LearningUnit))
-                                                    @foreach ($LearningUnit as $learningUnitKey => $learning_unit)
-                                                        @if(isset($requestData['learning_tutor_learning_unit']))
-                                                            {{-- <option value="{{$learning_unit->id}}" {{(in_array($learning_unit->id,$requestData['learning_tutor_learning_unit'])) ? 'selected' : ''}}>{{$learning_unit->{'name_'.app()->getLocale()} }}</option> --}}
-                                                            <option value="{{$learning_unit['id']}}" {{(in_array($learning_unit['id'],$requestData['learning_tutor_learning_unit'])) ? 'selected' : ''}}>{{$learning_unit['index'] }}. {{$learning_unit['name_'.app()->getLocale()] }} ({{$learning_unit['id'] }})</option>
-                                                        @else
-                                                        {{-- <option value="{{$learning_unit->id}}" selected>{{$learning_unit->{'name_'.app()->getLocale()} }}</option> --}}
-                                                        <option value="{{$learning_unit['id']}}" selected>{{$learning_unit['index'] }}. {{$learning_unit['name_'.app()->getLocale()] }} ({{$learning_unit['id'] }})</option>
-                                                        @endif
-                                                    @endforeach
-                                                @else
-                                                    <option value="">{{__("languages.no_learning_units_available")}}</option>
-                                                @endif
-                                            </select>
-                                        </div>
-    
-                                        <div class="form-group col-md-3 mb-50">
-                                            <select class="form-control js-states w-100" data-show-subtext="true"  data-live-search="true" name="learning_tutor_learning_objectives[]"  id="learning_tutor_learning_objectives" multiple>
-                                                @if(!empty($LearningObjective))
-                                                    @foreach ($LearningObjective as $learningObjectiveKey => $learning_objective)
-                                                        @if(isset($requestData['learning_tutor_learning_objectives']))
-                                                            {{-- <option value="{{$learning_objective->id}}" {{(in_array($learning_objective->id,$requestData['learning_tutor_learning_objectives'])) ? 'selected' : ''}}>{{$learning_objective->foci_number }} {{$learning_objective->{'title_'.app()->getLocale()} }}</option> --}}
-                                                            <option value="{{$learning_objective['id']}}" {{(in_array($learning_objective['id'],$requestData['learning_tutor_learning_objectives'])) ? 'selected' : ''}}>{{$learning_objective['index'] }} {{$learning_objective['title_'.app()->getLocale()] }} ({{$learning_objective['foci_number'] }})</option>
-                                                        @else
-                                                            {{-- <option value="{{$learning_objective->id}}" selected>{{$learning_objective->foci_number }} {{$learning_objective->{'title_'.app()->getLocale()} }}</option> --}}
-                                                            <option value="{{$learning_objective['id']}}" selected>{{$learning_objective['index'] }} {{$learning_objective['title_'.app()->getLocale()] }} ({{$learning_objective['foci_number'] }})</option>
-                                                        @endif
-                                                    @endforeach
-                                                @else
-                                                    <option value="">{{__("languages.no_learning_objectives_available")}}</option>
-                                                @endif
-                                            </select>
-                                        </div>
-                                        <div class="form-group col-md-3 mb-50">
-                                            <select class="form-control js-states w-100" data-show-subtext="true"  data-live-search="true" name="learning_tutor_language_id[]"  id="filter_learning_tutor_language_id" multiple>
-                                                @if(!empty($languages))
-                                                    @foreach ($languages as $language)
-                                                        @if(isset($requestData['learning_tutor_language_id']))
-                                                            <option value="{{$language->id}}" {{(in_array($language->id,$requestData['learning_tutor_language_id'])) ? 'selected' : ''}}>{{$language->name}}</option>
-                                                        @else
-                                                            <option value="{{$language->id}}" selected>{{$language->name}}</option>
-                                                        @endif
-                                                    @endforeach
-                                                @endif
-                                            </select>
-                                        </div>
-                                        <div class="form-group col-md-3 mb-50">
-                                            <select class="form-control js-states w-100" data-show-subtext="true"  data-live-search="true" name="learning_tutor_status"  id="learning_tutor_status">
-                                                @if(isset($requestData['learning_tutor_learning_objectives']))
-                                                    <option value="pending" {{($requestData['learning_tutor_status'] == "pending") ? 'selected' : ''}}>{{__('languages.pending')}}</option>
-                                                    <option value="active" {{($requestData['learning_tutor_status'] == "active") ? 'selected' : ''}}>{{__('languages.active')}}</option>
-                                                    <option value="inactive" {{($requestData['learning_tutor_status'] == "inactive") ? 'selected' : ''}}>{{__('languages.inactive')}}</option>
-                                                @else
-                                                <option value="pending">{{__('languages.pending')}}</option>
-                                                <option value="active" selected>{{__('languages.active')}}</option>
-                                                <option value="inactive">{{__('languages.inactive')}}</option>
-                                                @endif
-                                            </select>
-                                        </div>
-                                        <div class="form-group col-md-3 mb-50 d-flex">
-                                            <button type="submit" name="filter" value="filter" class="btn-search mr-2">{{ __('languages.search') }}</button>
-                                            <button type="button" class="btn btn-info" id="reset_filter_btn">{{ __('languages.reset') }} {{ __('languages.filter') }}</button>
-                                        </div>
+                    </div>
+                    <div class="sm-add-question-sec">
+                        <div class="select-option-sec pb-3">
+                            @if (session('error'))
+                            <div class="alert alert-danger">{{ session('error') }}</div>
+                            @endif
+                            @if(session()->has('success_msg'))
+                            <div class="alert alert-success">
+                                {{ session()->get('success_msg') }}
+                            </div>
+                            @endif
+                            @if(session()->has('error_msg'))
+                            <div class="alert alert-danger">
+                                {{ session()->get('error_msg') }}
+                            </div>
+                            @endif    
+                            <form method="get" id="filtration-Intelligent-tutor">
+                                <div class="row">
+                                    @if(Auth::user()->role_id != 3)
+                                    <div class="form-group col-md-3 mb-50">
+                                        <select class="form-control js-states w-100" data-show-subtext="true"  data-live-search="true" name="learning_tutor_grade_id[]"  id="learning_tutor_grade_id" multiple>
+                                            @if(!empty($Grades))
+                                            @foreach ($Grades as $gradekey => $grade)
+                                            @if(isset($requestData['learning_tutor_grade_id']))
+                                            <option value="{{$grade->id}}" {{in_array($grade->id,$requestData['learning_tutor_grade_id']) ? 'selected' : ''}}>{{$grade->name }}</option>
+                                            @else
+                                            <option value="{{$grade->id}}" selected>{{$grade->name }}</option>
+                                            @endif
+                                            @endforeach
+                                            @else
+                                            <option value="">{{__("languages.no_grade_available")}}</option>
+                                            @endif
+                                        </select>
                                     </div>
-                                </form>
-                                <hr/>
-                                @if(!empty($uploadData))   
-                                    <div class="row load-more-files">
-                                        @foreach($uploadData as $key => $content)
-                                            <div class="col-lg-3 col-md-3 col-sm-12 col-xs-12">
-                                                <div class="video-card deleteFile_{{$content->id}}">
-                                                    @switch(strtolower($content->file_type))
-                                                        @case('png')
-                                                        @case('jpg')
-                                                        @case('jpeg') 
-                                                            <img src="{{asset($content->file_path)}}" alt="{{$content->file_name}}" class="img-fluid" id='myImg'>  
-                                                            @if(in_array('upload_documents_update',$permissions))
-                                                                <span class="intelligent-tutor-files-edit-button editFile" data-id="{{$content->id}}"><i class="fa fa-pencil" aria-hidden="true"></i></span>
-                                                            @endif                                                            
-                                                            @if(in_array('upload_documents_delete',$permissions))
-                                                                <span class="intelligent-tutor-files-delete-button deleteFile" data-id="{{$content->id}}"><i class="fa fa-trash" aria-hidden="true"></i></span>
-                                                            @endif
-                                                            @break
-                                                        @case('pdf')
-                                                            <a href="{{asset($content->file_path)}}" target="_blank" title="{{$content->file_path}}">
-                                                                <img src="{{asset('images/document_images/pdf.png')}}" alt="{{$content->file_name}}" class="" id='myImg'>
-                                                            </a>
-                                                            @if(in_array('upload_documents_update',$permissions))
-                                                                <span class="intelligent-tutor-files-edit-button editFile" data-id="{{$content->id}}"><i class="fa fa-pencil" aria-hidden="true"></i></span>
-                                                            @endif 
-                                                            @if(in_array('upload_documents_delete',$permissions))
-                                                                <span class="intelligent-tutor-files-delete-button deleteFile" data-id="{{$content->id}}"><i class="fa fa-trash" aria-hidden="true"></i></span>
-                                                            @endif
-                                                            @break
-                                                        @case('csv')
-                                                            <a href="{{asset($content->file_path)}}" target="_blank" title="{{$content->file_path}}">
-                                                                <img src="{{asset('images/document_images/excel.png')}}" alt="{{$content->file_name}}" class="" id='myImg'>
-                                                            </a>
-                                                            @if(in_array('upload_documents_update',$permissions))
-                                                                <span class="intelligent-tutor-files-edit-button editFile" data-id="{{$content->id}}"><i class="fa fa-pencil" aria-hidden="true"></i></span>
-                                                            @endif 
-                                                            @if(in_array('upload_documents_delete',$permissions))
-                                                                <span class="intelligent-tutor-files-delete-button deleteFile" data-id="{{$content->id}}"><i class="fa fa-trash" aria-hidden="true"></i></span>
-                                                            @endif
-                                                            @break
-                                                        @case('mp4')
-                                                            {{-- <img src="{{asset('images/document_images/video.png')}}" alt="{{$content->file_name}}" class="playVideo" id='myImg' data-filepath="{{$content->file_path}}"> --}}
-                                                            <video class="playVideo" id='myImg' data-filepath="{{$content->file_path}}">
-                                                                <source src="{{$content->file_path}}" type="video/mp4" />
-                                                            </video>
-                                                            @if(in_array('upload_documents_update',$permissions))
-                                                                <span class="intelligent-tutor-files-edit-button editFile" data-id="{{$content->id}}"><i class="fa fa-pencil" aria-hidden="true"></i></span>
-                                                            @endif 
-                                                            @if(in_array('upload_documents_delete',$permissions))
-                                                                <span class="intelligent-tutor-files-delete-button deleteFile" data-id="{{$content->id}}"><i class="fa fa-trash"  aria-hidden="true"></i></span>
-                                                            @endif
-                                                            @break 
-                                                        @case('txt')
-                                                            <a href="{{asset($content->file_path)}}" target="_blank" title="{{$content->file_path}}">
-                                                                <img src="{{asset('images/document_images/txt.png')}}" alt="{{$content->file_name}}" class="" id='myImg'>
-                                                            </a>
-                                                            @if(in_array('upload_documents_update',$permissions))
-                                                                <span class="intelligent-tutor-files-edit-button editFile" data-id="{{$content->id}}"><i class="fa fa-pencil" aria-hidden="true"></i></span>
-                                                            @endif 
-                                                            @if(in_array('upload_documents_delete',$permissions))
-                                                                <span class="intelligent-tutor-files-delete-button deleteFile" data-id="{{$content->id}}"><i class="fa fa-trash" aria-hidden="true"></i></span>
-                                                            @endif
-                                                            @break
-                                                        @case('ppt')
-                                                        @case('pptx')
-                                                            <a href="{{asset($content->file_path)}}" target="_blank" title="{{$content->file_path}}">
-                                                                <img src="{{asset('images/document_images/ppt.png')}}" alt="{{$content->file_name}}" class="" id='myImg'>
-                                                            </a>
-                                                            @if(in_array('upload_documents_update',$permissions))
-                                                                <span class="intelligent-tutor-files-edit-button editFile" data-id="{{$content->id}}"><i class="fa fa-pencil" aria-hidden="true"></i></span>
-                                                            @endif 
-                                                            @if(in_array('upload_documents_delete',$permissions))
-                                                                <span class="intelligent-tutor-files-delete-button deleteFile" data-id="{{$content->id}}"><i class="fa fa-trash" aria-hidden="true"></i></span>
-                                                            @endif
-                                                            @break
-                                                        @case('mp3')
-                                                            <a href="{{asset($content->file_path)}}" target="_blank" title="{{$content->file_path}}">
-                                                                <img src="{{asset('images/document_images/audio.png')}}" alt="{{$content->file_name}}" class="" id='myImg'>
-                                                            </a>
-                                                            @if(in_array('upload_documents_update',$permissions))
-                                                                <span class="intelligent-tutor-files-edit-button editFile" data-id="{{$content->id}}"><i class="fa fa-pencil" aria-hidden="true"></i></span>
-                                                            @endif 
-                                                            @if(in_array('upload_documents_delete',$permissions))
-                                                                <span class="intelligent-tutor-files-delete-button deleteFile" data-id="{{$content->id}}"><i class="fa fa-trash" aria-hidden="true"></i></span>
-                                                            @endif
-                                                            @break
-                                                        @case('doc')
-                                                        @case('docx')
-                                                            <a href="{{asset($content->file_path)}}" target="_blank" title="{{$content->file_path}}">
-                                                                <img src="{{asset('images/document_images/word.png')}}" alt="{{$content->file_name}}" class="" id='myImg'>
-                                                            </a>
-                                                            @if(in_array('upload_documents_update',$permissions))
-                                                                <span class="intelligent-tutor-files-edit-button editFile" data-id="{{$content->id}}"><i class="fa fa-pencil" aria-hidden="true"></i></span>
-                                                            @endif 
-                                                            @if(in_array('upload_documents_delete',$permissions))
-                                                                <span class="intelligent-tutor-files-delete-button deleteFile" data-id="{{$content->id}}"><i class="fa fa-trash" aria-hidden="true"></i></span>
-                                                            @endif
-                                                            @break;
-                                                        @case('url')
-                                                            <img src="{{asset($content->thumbnail_file_path)}}" allow="encrypted-media" alt="{{$content->file_name}}" data-filepath="{{$content->file_path}}" class="playVideo">
-                                                            @if(in_array('upload_documents_update',$permissions))
-                                                                <span class="intelligent-tutor-files-edit-button editFile" data-id="{{$content->id}}"><i class="fa fa-pencil" aria-hidden="true"></i></span>
-                                                            @endif 
-                                                            @if(in_array('upload_documents_delete',$permissions))
-                                                                <span class="intelligent-tutor-files-delete-button deleteFile" data-id="{{$content->id}}"><i class="fa fa-trash" aria-hidden="true"></i></span>
-                                                            @endif
-                                                            {{-- <span class="intelligent-tutor-files-feedback-button feedbackFile" data-id="{{$content->id}}"><i class="fa fa-heart" aria-hidden="true"></i></span> --}}
-                                                            @break
-                                                        @default
-                                                            <img src="{{asset('images/document_images/no_image.png')}}" alt="image Not Found" class="img-fluid myImg" id='myImg'>
-                                                            @if(in_array('upload_documents_update',$permissions))
-                                                                <span class="intelligent-tutor-files-edit-button editFile" data-id="{{$content->id}}"><i class="fa fa-pencil" aria-hidden="true"></i></span>
-                                                            @endif 
-                                                            @if(in_array('upload_documents_delete',$permissions))
-                                                                <span class="intelligent-tutor-files-delete-button deleteFile" data-id="{{$content->id}}"><i class="fa fa-trash" aria-hidden="true"></i></span>
-                                                            @endif
-                                                            @break
-                                                    @endswitch
-                                                    <div class="intelligent_tutor_title">{{$content->title ?? '----'}}</div>
-                                                </div>
-                                            </div>
-                                        @endforeach
-                                    </div>
-                                @endif
-                                <div class="col-lg-2 col-md-4">
-                                    @if( $countUploadData > 12)
-                                        <input type="button" data-countUploaded="12" value="{{__('languages.show_more')}}" class="btn-search" id="add_more_document"/>
                                     @endif
+                                    <div class="form-group col-md-3 mb-50">
+                                        <select class="form-control js-states w-100" data-show-subtext="true"  data-live-search="true" name="learning_tutor_strand_id[]"  id="learning_tutor_strand_id" multiple >
+                                            @if(!empty($StrandList))
+                                                @foreach ($StrandList as $strandkey => $strand)
+                                                    @if(isset($requestData['learning_tutor_strand_id']) && !empty($requestData['learning_tutor_strand_id']))
+                                                        <option value="{{$strand->id}}" {{(in_array($strand->id,$requestData['learning_tutor_strand_id'])) ? 'selected' : ''}}>{{$strand->{'name_'.app()->getLocale()} }}</option>  
+                                                    @else
+                                                        <option value="{{$strand->id}}" selected>{{$strand->{'name_'.app()->getLocale()} }}</option>
+                                                    @endif
+                                                @endforeach
+                                            @else
+                                                <option value="">{{__("languages.no_strands_available")}}</option>
+                                            @endif
+                                        </select>
+                                    </div>
+                                    <div class="form-group col-md-3 mb-50">
+                                        <select class="form-control js-states w-100" data-show-subtext="true"  data-live-search="true" name="learning_tutor_learning_unit[]"  id="learning_tutor_learning_unit" multiple>
+                                            @if(!empty($LearningUnit))
+                                                @foreach ($LearningUnit as $learningUnitKey => $learning_unit)
+                                                    @if(isset($requestData['learning_tutor_learning_unit']))
+                                                        <option value="{{$learning_unit['id']}}" {{(in_array($learning_unit['id'],$requestData['learning_tutor_learning_unit'])) ? 'selected' : ''}}>{{$learning_unit['index'] }}. {{$learning_unit['name_'.app()->getLocale()] }} ({{$learning_unit['id'] }})</option>
+                                                    @else
+                                                        <option value="{{$learning_unit['id']}}" selected>{{$learning_unit['index'] }}. {{$learning_unit['name_'.app()->getLocale()] }} ({{$learning_unit['id'] }})</option>
+                                                    @endif
+                                                @endforeach
+                                            @else
+                                                <option value="">{{__("languages.no_learning_units_available")}}</option>
+                                            @endif
+                                        </select>
+                                    </div>
+                                    <div class="form-group col-md-3 mb-50">
+                                        <select class="form-control js-states w-100" data-show-subtext="true"  data-live-search="true" name="learning_tutor_learning_objectives[]"  id="learning_tutor_learning_objectives" multiple>
+                                            @if(!empty($LearningObjective))
+                                                @foreach ($LearningObjective as $learningObjectiveKey => $learning_objective)
+                                                    @if(isset($requestData['learning_tutor_learning_objectives']))                                                            
+                                                        <option value="{{$learning_objective['id']}}" {{(in_array($learning_objective['id'],$requestData['learning_tutor_learning_objectives'])) ? 'selected' : ''}}>{{$learning_objective['index'] }} {{$learning_objective['title_'.app()->getLocale()] }} ({{$learning_objective['foci_number'] }})</option>
+                                                    @else
+                                                        <option value="{{$learning_objective['id']}}" selected>{{$learning_objective['index'] }} {{$learning_objective['title_'.app()->getLocale()] }} ({{$learning_objective['foci_number'] }})</option>
+                                                    @endif
+                                                @endforeach
+                                            @else
+                                                <option value="">{{__("languages.no_learning_objectives_available")}}</option>
+                                            @endif
+                                        </select>
+                                    </div>
+                                    <div class="form-group col-md-3 mb-50">
+                                        <select class="form-control js-states w-100" data-show-subtext="true"  data-live-search="true" name="learning_tutor_language_id[]"  id="filter_learning_tutor_language_id" multiple>
+                                            @if(!empty($languages))
+                                                @foreach ($languages as $language)
+                                                    @if(isset($requestData['learning_tutor_language_id']))
+                                                        <option value="{{$language->id}}" {{(in_array($language->id,$requestData['learning_tutor_language_id'])) ? 'selected' : ''}}>{{$language->name}}</option>
+                                                    @else
+                                                        <option value="{{$language->id}}" selected>{{$language->name}}</option>
+                                                    @endif
+                                                @endforeach
+                                            @endif
+                                        </select>
+                                    </div>
+                                    <div class="form-group col-md-3 mb-50">
+                                        <select class="form-control js-states w-100" data-show-subtext="true"  data-live-search="true" name="learning_tutor_status"  id="learning_tutor_status">
+                                            @if(isset($requestData['learning_tutor_learning_objectives']))
+                                                <option value="pending" {{($requestData['learning_tutor_status'] == "pending") ? 'selected' : ''}}>{{__('languages.pending')}}</option>
+                                                <option value="active" {{($requestData['learning_tutor_status'] == "active") ? 'selected' : ''}}>{{__('languages.active')}}</option>
+                                                <option value="inactive" {{($requestData['learning_tutor_status'] == "inactive") ? 'selected' : ''}}>{{__('languages.inactive')}}</option>
+                                            @else
+                                            <option value="pending">{{__('languages.pending')}}</option>
+                                            <option value="active" selected>{{__('languages.active')}}</option>
+                                            <option value="inactive">{{__('languages.inactive')}}</option>
+                                            @endif
+                                        </select>
+                                    </div>
+                                    <div class="form-group col-md-3 mb-50 d-flex">
+                                        <button type="submit" name="filter" value="filter" class="btn-search mr-2">{{ __('languages.search') }}</button>
+                                        <button type="button" class="btn btn-info" id="reset_filter_btn">{{ __('languages.reset') }} {{ __('languages.filter') }}</button>
+                                    </div>
                                 </div>
+                            </form>
+                            <hr/>
+                            @if(!empty($uploadData))
+                            <div class="row load-more-files">
+                                @foreach($uploadData as $key => $content)
+                                <div class="col-lg-3 col-md-3 col-sm-12 col-xs-12">
+                                    <div class="video-card deleteFile_{{$content->id}}">
+                                        @switch(strtolower($content->file_type))
+                                            @case('png')
+                                            @case('jpg')
+                                            @case('jpeg')
+                                                <img src="{{asset($content->file_path)}}" alt="{{$content->file_name}}" class="img-fluid" id='myImg'>
+                                                @if(in_array('upload_documents_update',$permissions))
+                                                <span class="intelligent-tutor-files-edit-button editFile" data-id="{{$content->id}}"><i class="fa fa-pencil" aria-hidden="true"></i></span>
+                                                @endif
+                                                @if(in_array('upload_documents_delete',$permissions))
+                                                <span class="intelligent-tutor-files-delete-button deleteFile" data-id="{{$content->id}}"><i class="fa fa-trash" aria-hidden="true"></i></span>
+                                                @endif
+                                                @break
+                                            @case('pdf')
+                                                <a href="{{asset($content->file_path)}}" target="_blank" title="{{$content->file_path}}">
+                                                    <img src="{{asset('images/document_images/pdf.png')}}" alt="{{$content->file_name}}" class="" id='myImg'>
+                                                </a>
+                                                @if(in_array('upload_documents_update',$permissions))
+                                                    <span class="intelligent-tutor-files-edit-button editFile" data-id="{{$content->id}}"><i class="fa fa-pencil" aria-hidden="true"></i></span>
+                                                @endif 
+                                                @if(in_array('upload_documents_delete',$permissions))
+                                                    <span class="intelligent-tutor-files-delete-button deleteFile" data-id="{{$content->id}}"><i class="fa fa-trash" aria-hidden="true"></i></span>
+                                                @endif
+                                                @break
+                                            @case('csv')
+                                                <a href="{{asset($content->file_path)}}" target="_blank" title="{{$content->file_path}}">
+                                                    <img src="{{asset('images/document_images/excel.png')}}" alt="{{$content->file_name}}" class="" id='myImg'>
+                                                </a>
+                                                @if(in_array('upload_documents_update',$permissions))
+                                                    <span class="intelligent-tutor-files-edit-button editFile" data-id="{{$content->id}}"><i class="fa fa-pencil" aria-hidden="true"></i></span>
+                                                @endif 
+                                                @if(in_array('upload_documents_delete',$permissions))
+                                                    <span class="intelligent-tutor-files-delete-button deleteFile" data-id="{{$content->id}}"><i class="fa fa-trash" aria-hidden="true"></i></span>
+                                                @endif
+                                                @break
+                                            @case('mp4')
+                                                <video class="playVideo" id='myImg' data-filepath="{{$content->file_path}}">
+                                                    <source src="{{$content->file_path}}" type="video/mp4" />
+                                                </video>
+                                                @if(in_array('upload_documents_update',$permissions))
+                                                    <span class="intelligent-tutor-files-edit-button editFile" data-id="{{$content->id}}"><i class="fa fa-pencil" aria-hidden="true"></i></span>
+                                                @endif 
+                                                @if(in_array('upload_documents_delete',$permissions))
+                                                    <span class="intelligent-tutor-files-delete-button deleteFile" data-id="{{$content->id}}"><i class="fa fa-trash"  aria-hidden="true"></i></span>
+                                                @endif
+                                                @break
+                                            @case('txt')
+                                                <a href="{{asset($content->file_path)}}" target="_blank" title="{{$content->file_path}}">
+                                                    <img src="{{asset('images/document_images/txt.png')}}" alt="{{$content->file_name}}" class="" id='myImg'>
+                                                </a>
+                                                @if(in_array('upload_documents_update',$permissions))
+                                                    <span class="intelligent-tutor-files-edit-button editFile" data-id="{{$content->id}}"><i class="fa fa-pencil" aria-hidden="true"></i></span>
+                                                @endif 
+                                                @if(in_array('upload_documents_delete',$permissions))
+                                                    <span class="intelligent-tutor-files-delete-button deleteFile" data-id="{{$content->id}}"><i class="fa fa-trash" aria-hidden="true"></i></span>
+                                                @endif
+                                                @break
+                                            @case('ppt')
+                                            @case('pptx')
+                                                <a href="{{asset($content->file_path)}}" target="_blank" title="{{$content->file_path}}">
+                                                    <img src="{{asset('images/document_images/ppt.png')}}" alt="{{$content->file_name}}" class="" id='myImg'>
+                                                </a>
+                                                @if(in_array('upload_documents_update',$permissions))
+                                                    <span class="intelligent-tutor-files-edit-button editFile" data-id="{{$content->id}}"><i class="fa fa-pencil" aria-hidden="true"></i></span>
+                                                @endif 
+                                                @if(in_array('upload_documents_delete',$permissions))
+                                                    <span class="intelligent-tutor-files-delete-button deleteFile" data-id="{{$content->id}}"><i class="fa fa-trash" aria-hidden="true"></i></span>
+                                                @endif
+                                                @break
+                                            @case('mp3')
+                                                <a href="{{asset($content->file_path)}}" target="_blank" title="{{$content->file_path}}">
+                                                    <img src="{{asset('images/document_images/audio.png')}}" alt="{{$content->file_name}}" class="" id='myImg'>
+                                                </a>
+                                                @if(in_array('upload_documents_update',$permissions))
+                                                    <span class="intelligent-tutor-files-edit-button editFile" data-id="{{$content->id}}"><i class="fa fa-pencil" aria-hidden="true"></i></span>
+                                                @endif 
+                                                @if(in_array('upload_documents_delete',$permissions))
+                                                    <span class="intelligent-tutor-files-delete-button deleteFile" data-id="{{$content->id}}"><i class="fa fa-trash" aria-hidden="true"></i></span>
+                                                @endif
+                                                @break
+                                            @case('doc')
+                                            @case('docx')
+                                                <a href="{{asset($content->file_path)}}" target="_blank" title="{{$content->file_path}}">
+                                                    <img src="{{asset('images/document_images/word.png')}}" alt="{{$content->file_name}}" class="" id='myImg'>
+                                                </a>
+                                                @if(in_array('upload_documents_update',$permissions))
+                                                    <span class="intelligent-tutor-files-edit-button editFile" data-id="{{$content->id}}"><i class="fa fa-pencil" aria-hidden="true"></i></span>
+                                                @endif 
+                                                @if(in_array('upload_documents_delete',$permissions))
+                                                    <span class="intelligent-tutor-files-delete-button deleteFile" data-id="{{$content->id}}"><i class="fa fa-trash" aria-hidden="true"></i></span>
+                                                @endif
+                                                @break
+                                            @case('url')
+                                                <img src="{{asset($content->thumbnail_file_path)}}" allow="encrypted-media" alt="{{$content->file_name}}" data-filepath="{{$content->file_path}}" class="playVideo">
+                                                @if(in_array('upload_documents_update',$permissions))
+                                                    <span class="intelligent-tutor-files-edit-button editFile" data-id="{{$content->id}}"><i class="fa fa-pencil" aria-hidden="true"></i></span>
+                                                @endif 
+                                                @if(in_array('upload_documents_delete',$permissions))
+                                                    <span class="intelligent-tutor-files-delete-button deleteFile" data-id="{{$content->id}}"><i class="fa fa-trash" aria-hidden="true"></i></span>
+                                                @endif
+                                                @break
+                                            @default
+                                                <img src="{{asset('images/document_images/no_image.png')}}" alt="image Not Found" class="img-fluid myImg" id='myImg'>
+                                                @if(in_array('upload_documents_update',$permissions))
+                                                    <span class="intelligent-tutor-files-edit-button editFile" data-id="{{$content->id}}"><i class="fa fa-pencil" aria-hidden="true"></i></span>
+                                                @endif 
+                                                @if(in_array('upload_documents_delete',$permissions))
+                                                    <span class="intelligent-tutor-files-delete-button deleteFile" data-id="{{$content->id}}"><i class="fa fa-trash" aria-hidden="true"></i></span>
+                                                @endif
+                                                @break
+                                        @endswitch
+                                        <div class="intelligent_tutor_title">{{$content->title ?? '----'}}</div>
+                                    </div>
+                                </div>
+                                @endforeach
+                            </div>
+                            @endif
+                            <div class="col-lg-2 col-md-4">
+                                @if( $countUploadData > 12)
+                                <input type="button" data-countUploaded="12" value="{{__('languages.show_more')}}" class="btn-search" id="add_more_document"/>
+                                @endif
                             </div>
                         </div>
                     </div>
                 </div>
+            </div>
         </div>
     </div>
 

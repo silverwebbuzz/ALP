@@ -77,7 +77,7 @@ class ProfileController extends Controller
                 if(!empty($update)){
                     $this->UserActivityLog(
                         Auth::user()->id,
-                        Auth::user()->DecryptNameEn.' '.__('activity_history.profile_updated')
+                        '<p>'.Auth::user()->DecryptNameEn.' '.__('activity_history.profile_updated').'</p>'
                     );
                     return redirect('profile')->with('success_msg', __('languages.profile_updated_successfully'));
                 }else{

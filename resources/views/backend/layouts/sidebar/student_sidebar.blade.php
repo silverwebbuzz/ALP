@@ -69,7 +69,7 @@ if(Auth::user()->role_id == 1){
                             request()->is('change-password') ||
                             request()->is('credit-point-history/*') || 
                             request()->is('student/leaderboard')) 
-                        ? 'collapsed': '' }}" href="#myaccount" data-toggle="collapse" data-target="#myaccount">
+                        ? '': 'collapsed' }}" href="#myaccount" data-toggle="collapse" data-target="#myaccount">
                         <div class="sidebar_icon_main">
                             <img class ="sidebar_icon" src="{{ asset('images/sidebar_icons/user.png') }}"  title="{{__('languages.my_account')}}" alt="{{__('languages.my_account')}}">
                         </div>
@@ -143,7 +143,7 @@ if(Auth::user()->role_id == 1){
                         request()->is('question-wizard/preview/*') || 
                         request()->is('student/progress-report/learning-units/*') ||
                         request()->is('student/progress-report/learning-objective/*')
-                    ) ? 'collapsed': '' }}" href="#teaching_and_learning" data-toggle="collapse" data-target="#teaching_and_learning">
+                    ) ? '': 'collapsed' }}" href="#teaching_and_learning" data-toggle="collapse" data-target="#teaching_and_learning">
                     <div class="sidebar_icon_main">
                         <img class ="sidebar_icon" src="{{ asset('images/sidebar_icons/question_wizard.png') }}"  title="{{__('languages.common_sidebar.teaching_and_learning')}}" alt="{{__('languages.common_sidebar.teaching_and_learning')}}">
                     </div>

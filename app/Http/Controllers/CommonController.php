@@ -921,4 +921,11 @@ class CommonController extends Controller
                         ])->pluck('id');
         return $this->sendResponse($SchoolUserIds);
     }
+
+     /***
+     * Thank You
+     */
+    public function Thankyou(){
+        return view('backend.thank_you');
+    }
 }

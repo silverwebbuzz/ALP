@@ -1,5 +1,10 @@
 @extends('backend.layouts.app')
 @section('content')
+<style>
+    .review-question-left-section .nav-pills li{
+        width:50px !important;
+    }
+</style>
 <div class="wrapper d-flex align-items-stretch sm-deskbord-main-sec">
     @include('backend.layouts.sidebar')
     <div id="content" class="pl-2 pb-5">
@@ -640,6 +645,9 @@
                                                     </div>
                                                     <div class="question-heading">
                                                         <p class="question-title review-question-title">'. __('languages.questions.question').':</p>
+                                                    </div>
+                                                    <div>
+                                                        <button type="button" class="btn-search preview_question_list" data-id="'.$questionData['id'].'">'.__('languages.full_screen').'</button>
                                                     </div>
                                                     <div class="question-answer-content pl-2">
                                                         <div class="question_content">
@@ -1381,6 +1389,9 @@ function getLearningObjectivesOptionList(){
                             <div class="question-heading">\
                                 <p class="question-title review-question-title">{{ __('languages.questions.question')}}:</p>\
                             </div>\
+                            <div >\
+                                <button type="button" class="btn-search preview_question_list" data-id="'+Q.id+'">{{__('languages.full_screen')}}</button>\
+                            </div>\
                             <div class="question-answer-content pl-2">\
                                 <div class="question_content">\
                                     <label for="question-content" class="pl-3">'+questionTitle+'</label>\
@@ -1549,6 +1560,11 @@ $(document).ready(function () {
             $(this).val(minimum_question_per_skill);
         }
        total_no_of_questions();
+    });
+
+    $(document).on("click", ".preview_question_list", function (){
+        $questionId = $(this).data('id');
+        PreviewQuestionList($questionId,'full_screen_question');
     });
 
     $(document).on("click",".want_a_hint",function () {

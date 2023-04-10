@@ -1,5 +1,10 @@
 @extends('backend.layouts.app')
 @section('content')
+<style>
+    .review-question-left-section .nav-pills li{
+        width:50px !important;
+    }
+</style>
 <div class="wrapper d-flex align-items-stretch sm-deskbord-main-sec">
     @include('backend.layouts.sidebar')
     <div id="content" class="pl-2 pb-5">
@@ -537,6 +542,9 @@
                                                         <div class="question-heading pl-3">
                                                             <p class="question-title review-question-title">{{ __('languages.questions.question')}} :</p>
                                                         </div>
+                                                        <div >
+                                                            <button type="button" class="btn-search preview_question_list" data-id="">{{__('languages.full_screen')}}</button>\
+                                                        </div>
                                                         <div class="question-answer-content pl-3">
                                                             <div class="question_content">
                                                                 <label for="question-content" class="pl-3">xyz question</label>
@@ -739,6 +747,12 @@ var multiselectArray = {
 }
 
 $(function (){
+
+    $(document).on("click", ".preview_question_list", function (){
+        $questionId = $(this).data('id');
+        PreviewQuestionList($questionId,'full_screen_question');
+    });
+
     $(document).on('change', '.get_no_of_question_learning_objectives', function(e) {
         var minimum_question_per_skill_single = parseInt($(this).attr('min'));
         var maximum_question_per_skill_single = parseInt($(this).attr('max'));
@@ -1238,6 +1252,9 @@ function setDefaultDifficultyLevels(){
                             </div>\
                             <div class="question-heading">\
                                 <p class="question-title review-question-title">{{ __('languages.questions.question')}}:</p>\
+                            </div>\
+                            <div >\
+                                <button type="button" class="btn-search preview_question_list" data-id="'+Q.id+'">{{__('languages.full_screen')}}</button>\
                             </div>\
                             <div class="question-answer-content pl-2">\
                                 <div class="question_content">\

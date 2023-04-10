@@ -88,7 +88,7 @@ class LoginController extends Controller
                 $redirectUrl = $this->GetRedirectURL();
                 $this->UserActivityLog(
                     Auth::user()->id,
-                    Auth::user()->DecryptNameEn.' '.__('activity_history.login_history_text')
+                    '<p>'.Auth::user()->DecryptNameEn.' '.__('activity_history.login_history_text').'</p>'
                 );
                 return $this->sendResponse(['redirectUrl' => $redirectUrl,'user_role' => Auth::user()->role_id], 'Login Successfully');
             }else{
@@ -103,7 +103,10 @@ class LoginController extends Controller
     public function logout(Request $request) {
         try {
             $redirectUrl = config()->get('app.url').'login';
-            $this->UserActivityLog(Auth::user()->id, Auth::user()->DecryptNameEn.' '.__('activity_history.logout_history_text'));
+            $this->UserActivityLog(
+                Auth::user()->id, 
+                '<p>'.Auth::user()->DecryptNameEn.' '.__('activity_history.logout_history_text').'</p>'
+            );
             // Set User Log Activities
             if(Auth::user()){
                 //$this->UserActivitiesLogs('logout');

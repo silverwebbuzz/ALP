@@ -27,4 +27,5 @@ class DashboardController extends Controller
     public function CoOrdinator (){
         return view('backend.dashboard.co_ordinator');
     }
+
 }

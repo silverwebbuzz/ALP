@@ -921,11 +921,16 @@ trait Common {
      */
     public static function serverData(){
         $ip = Self::getUserIP();
+        $ip = '182.70.126.142';
         $serverInfo = [];
         if(!empty($ip)){
             $serverInfo['IP'] = $ip ?? null;
             $serverInfo['Browser'] = Self::get_browser_name() ?? null;
             $serverInfo['DateTime'] = date('Y-m-d h:i:s');
+            // Get the device details for current users
+            $GetDevicePlatformDetails = Self::GetDevicePlatformDetails();
+            $serverInfo['device'] = (!empty($GetDevicePlatformDetails['device'])) ? $GetDevicePlatformDetails['device'] : '';
+            $serverInfo['platform'] = (!empty($GetDevicePlatformDetails['platform'])) ? $GetDevicePlatformDetails['platform'] : '';
             $ip_info = @json_decode(file_get_contents("http://www.geoplugin.net/json.gp?ip=".$ip));
             if($ip_info && $ip_info->geoplugin_countryName != null){
                 $serverInfo['Country']          = $ip_info->geoplugin_countryName ?? null;
@@ -945,16 +950,60 @@ trait Common {
     }
 
     /**
+     * USE : Get the user device and platform details
+     */
+    public static function GetDevicePlatformDetails(){
+        // Check if the "mobile" word exists in User-Agent 
+        $isMobile = is_numeric(strpos(strtolower($_SERVER["HTTP_USER_AGENT"]), "mobile")); 
+        
+        // Check if the "tablet" word exists in User-Agent 
+        $isTablet = is_numeric(strpos(strtolower($_SERVER["HTTP_USER_AGENT"]), "tablet")); 
+        
+        // Platform check  
+        $isWindow = is_numeric(strpos(strtolower($_SERVER["HTTP_USER_AGENT"]), "windows"));
+        $isMac = is_numeric(strpos(strtolower($_SERVER["HTTP_USER_AGENT"]), "mac")); 
+        $isAndroid = is_numeric(strpos(strtolower($_SERVER["HTTP_USER_AGENT"]), "android")); 
+        $isIPhone = is_numeric(strpos(strtolower($_SERVER["HTTP_USER_AGENT"]), "iphone")); 
+        $isIPad = is_numeric(strpos(strtolower($_SERVER["HTTP_USER_AGENT"]), "ipad")); 
+        $isIOS = $isIPhone || $isIPad;
+        $response = array(
+            'device' => '',
+            'platform' => ''
+        );
+        if($isMobile){
+            if($isTablet){
+                $response['device'] = 'Tablet';
+            }else{ 
+                $response['device'] = 'Mobile';
+            }
+        }else{
+            $response['device'] = 'Desktop';
+        }
+        
+        if($isIOS){ 
+            $response['platform'] = 'iOS';
+        }elseif($isAndroid){
+            $response['platform'] = 'ANDROID';
+        }elseif($isWindow){
+            $response['platform'] = 'WINDOWS';
+        }elseif($isMac){
+            $response['platform'] = 'MacOs';
+        }
+
+        return $response;
+    }
+
+    /**
      * USE : check user access browser name
      */
     public static function get_browser_name(){
         $t = strtolower($_SERVER['HTTP_USER_AGENT']);
         $t = " " . $t;
-        if     (strpos($t, 'opera'     ) || strpos($t, 'opr/')     ) return 'Opera'            ;   
-        elseif (strpos($t, 'edge'      )                           ) return 'Edge'             ;   
-        elseif (strpos($t, 'chrome'    )                           ) return 'Chrome'           ;   
-        elseif (strpos($t, 'safari'    )                           ) return 'Safari'           ;   
-        elseif (strpos($t, 'firefox'   )                           ) return 'Firefox'          ;   
+        if     (strpos($t, 'opera'     ) || strpos($t, 'opr/')     ) return 'Opera'            ;
+        elseif (strpos($t, 'edge'      )                           ) return 'Edge'             ;
+        elseif (strpos($t, 'chrome'    )                           ) return 'Chrome'           ;
+        elseif (strpos($t, 'safari'    )                           ) return 'Safari'           ;
+        elseif (strpos($t, 'firefox'   )                           ) return 'Firefox'          ;
         elseif (strpos($t, 'msie'      ) || strpos($t, 'trident/7')) return 'Internet Explorer';
         return 'Unkown';
     }

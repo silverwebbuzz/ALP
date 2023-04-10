@@ -123,7 +123,7 @@
 	                    </div>
 	                @endif
 	            </div>
-	        @if (isset($question->question_type) && $question->question_type == 2)
+	        @if(isset($question->question_type) && $question->question_type == 2)
 	            <div class="attmp-main-explain">
 	                <div class="attmp-expln-inner questionhint" style="display: none">
 	                    <h5>{{__('languages.my_studies.explain')}}</h5>
@@ -131,46 +131,62 @@
 	                </div>
 	            </div>
 	        @endif
+
+			@if($popuptype == 'preview')
 			<button type="button" class="btn btn-danger language_en" id="want_a_hint" data-toggle="modal" data-target="#WantAHintModal" >{{__('languages.my_studies.want_a_hint')}}</button>
 			<button type="button" class="btn btn-danger language_ch" id="want_a_hint" data-toggle="modal" data-target="#WantAHintModal" style="display:none;">{{__('想要提示？')}}</button>
+			@else
+			<button type="button" class="btn btn-danger language_en" id="want_a_hint" data-toggle="modal" data-target="#FullScreenWantAHintModal" >{{__('languages.my_studies.want_a_hint')}}</button>
+			<button type="button" class="btn btn-danger language_ch" id="want_a_hint" data-toggle="modal" data-target="#FullScreenWantAHintModal" style="display:none;">{{__('想要提示？')}}</button>
+			@endif
 	    </div>
 	    {{-- @if (isset($question->question_type) && ($question->question_type == 2 || ($question->question_type == 1))) --}}
         <!-- Want a hint Modal -->
-        <div class="modal fade" id="WantAHintModal" tabindex="-1" aria-labelledby="WantAHintModal" aria-hidden="true">
+        <div class="modal fade" @if($popuptype == 'preview') id="WantAHintModal" @else id="FullScreenWantAHintModal" @endif tabindex="-1" aria-labelledby="WantAHintModal" aria-hidden="true">
           <div class="modal-dialog modal-dialog-centered">
             <div class="modal-content">
-              @if(isset($UploadDocumentsData) && empty($UploadDocumentsData))
-                    <div class="modal-header">
-                        <button type="button" class="close" onclick="$('#WantAHintModal').modal('hide');">
-                            <span aria-hidden="true">&times;</span>
-                        </button>
-                    </div>
+              	@if(isset($UploadDocumentsData) && empty($UploadDocumentsData))
+				<div class="modal-header">
+					<button type="button" class="close" 
+					@if($popuptype == 'preview')
+					onclick="$('#WantAHintModal').modal('hide');"
+					@else
+					onclick="$('#FullScreenWantAHintModal').modal('hide');"
+					@endif>
+						<span aria-hidden="true">&times;</span>
+					</button>
+				</div>
                 @endif
-                
                 @if(isset($UploadDocumentsData) && !empty($UploadDocumentsData))
-                    <div class="modal-body  embed-responsive embed-responsive-16by9">
-                        <button type="button" class="close" onclick="$('#WantAHintModal').modal('hide');" style="position: absolute;top: 0;right: 0;background-color: white;height: 30px;width: 30px;z-index: 9;opacity: 1;border-radius: 50%;padding-bottom: 4px;">
-                            <span aria-hidden="true">&times;</span>
-                        </button>
-                        <iframe class="embed-responsive-item " id="videoDis" frameborder="0" allowtransparency="true" allowfullscreen width="100%" height="400" ></iframe>
-                    </div>
+				<div class="modal-body  embed-responsive embed-responsive-16by9">
+					<button type="button" class="close" 
+					@if($popuptype == 'preview')
+					onclick="$('#WantAHintModal').modal('hide');"
+					@else
+					onclick="$('#FullScreenWantAHintModal').modal('hide');"
+					@endif
+					style="position: absolute;top: 0;right: 0;background-color: white;height: 30px;width: 30px;z-index: 9;opacity: 1;border-radius: 50%;padding-bottom: 4px;">
+						<span aria-hidden="true">&times;</span>
+					</button>
+					<iframe class="embed-responsive-item " id="videoDis" frameborder="0" allowtransparency="true" allowfullscreen width="100%" height="400" ></iframe>
+				</div>
                 @else
-                    <div class="modal-body">
-                        <div class="language_ch" style="display:none;">
-                            @if(trim($question->general_hints_ch)!="")
-                            {!! $question->general_hints_ch !!}
-                            @else
-                            {{__('languages.hint_not_available')}}
-                            @endif
-                        </div>
-                        <div class="language_en">
-                            @if(trim($question->general_hints_en)!="")
-                            {!! $question->general_hints_en !!}
-                            @else
-                            {{__('languages.hint_not_available')}}
-                            @endif
-                        </div>
-                     </div>
+				<div class="modal-body">
+					<div class="language_ch" style="display:none;">
+						@if(trim($question->general_hints_ch)!="")
+						{!! $question->general_hints_ch !!}
+						@else
+						{{__('languages.hint_not_available')}}
+						@endif
+					</div>
+					<div class="language_en">
+						@if(trim($question->general_hints_en)!="")
+						{!! $question->general_hints_en !!}
+						@else
+						{{__('languages.hint_not_available')}}
+						@endif
+					</div>
+					</div>
                 @endif
             </div>
           </div>

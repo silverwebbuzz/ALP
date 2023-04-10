@@ -10,6 +10,7 @@ use Carbon\Carbon;
 use App\Traits\Common;
 use App\Helpers\Helper;
 use App\Http\Controllers\CronJobController;
+use App\Console\Commands\UpdateWeatherDetail;
 use Log;
 
 class Kernel extends ConsoleKernel
@@ -22,7 +23,8 @@ class Kernel extends ConsoleKernel
      * @var array
      */
     protected $commands = [
-        //Commands\CloneSchoolData::class
+        //Commands\CloneSchoolData::class,
+        \App\Console\Commands\UpdateWeatherDetail::class,
     ];
 
     /**
@@ -46,6 +48,10 @@ class Kernel extends ConsoleKernel
         // $CronJobController = new CronJobController();
         // $CronJobController->SendRemainderUploadStudentNewSchoolCurriculumYear();
         
+        $schedule->command('WeatherDetail')->everyMinute();
+
+        //$schedule->command('update:WeatherDetail')->everySeconds(0.5);
+
         // Run Automatic queue command run into background process
         \Artisan::call('queue:work');
     }

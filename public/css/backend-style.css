@@ -4097,9 +4097,9 @@ ul.multiselect-container {
     /*  */
     overflow-x: hidden;
 }
-.review-question-left-section .nav-pills li{
+/* .review-question-left-section .nav-pills li{
     width:50px;
-}
+} */
 .review-question-left-section .nav-pills li a{
     padding-left: 0 !important;
     padding-right: 0 !important;
@@ -5231,19 +5231,25 @@ margin-right: 0;
     background-color: black;
 }
 .user-activity-history-list p {
-    display:inline-block;
+    display:block;
     margin-left: 25px;
 }
 .user-activity-history-list {
     list-style: none;
     position:relative;
 }
-.user-activity-history-list::before{
-    content:'';
-    height:100%;
-    width:1px;
-    position:absolute;
-    background:#000;
+.user-activity-history-list::before {
+    content: '';
+    height: calc(100% + 20px);
+    width: 1px;
+    position: absolute;
+    background: #000;
     left: 5px;
 }
 /* End Activity History page CSS */
+.preview_question_list{
+    float: right;
+    margin-right: 10px;
+}
+/* Thankyou  Page */
+
