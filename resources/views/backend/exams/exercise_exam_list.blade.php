@@ -125,6 +125,7 @@ if($user_id){
 										<tr>
 											<th>{{__('languages.report.start_date')}}</th>
 											<th>{{__('languages.report.end_date')}}</th>
+											<th>{{__('languages.report.result_release_date')}}</th>
 											<th>{{__('languages.reference_number')}}</th>
 											<th>{{__('languages.title')}}</th>
 											<th>{{__('languages.average_accuracy')}}</th>
@@ -142,6 +143,7 @@ if($user_id){
 										<tr @if($data['exerciseExam']) class='exercise-exam' @endif>
 											<td>{{date('d/m/Y',strtotime($examArray['exam_school_grade_class'][0]['start_date'])) }} {{ !empty($examArray['exam_school_grade_class'][0]['start_time']) ? $examArray['exam_school_grade_class'][0]['start_time'] : '00:00:00' }}</td>
 											<td>{{date('d/m/Y',strtotime($examArray['exam_school_grade_class'][0]['end_date'])) }} {{ !empty($examArray['exam_school_grade_class'][0]['end_time']) ?  $examArray['exam_school_grade_class'][0]['end_time'] : '00:00:00' }}</td>
+											<td>{{date('d/m/Y',strtotime($exerciseExam->result_date))}}</td>
 											<td>{{$exerciseExam->reference_no}}</td>
 											<td>{{$exerciseExam->title}}</td>
 											@if(isset($examArray['attempt_exams']) && in_array(Auth::id(),array_column($examArray['attempt_exams'],'student_id')))

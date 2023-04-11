@@ -1506,8 +1506,6 @@ class ExamController extends Controller
                 $nodeWeaknessListCh = array_column($nodeListToArray,cn::NODES_WEAKNESS_NAME_CH_COL,cn::NODES_NODE_ID_COL);
             }
             if(!empty($AttemptExamData)){
-
-
                 // Get Percentage of difficulty level
                 $questionDifficultyGraph = $this->GetPercentageQuestionDifficultyLevel($totalQuestionDifficulty);
                 $this->UserActivityLog(

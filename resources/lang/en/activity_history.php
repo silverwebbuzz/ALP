@@ -15,4 +15,6 @@ return [
     'title_is'                              => 'Title is : ',
     'has_view_report'                       => 'has view report',
     'exam_submitting_time_is'               => 'Exam Submitting Time Is :',
+    'exam_start_date_time'                  => 'Exam Start DateTime : ',
+    'exam_completion_date_time'             => 'Exam Completion DateTime : ',
 ];

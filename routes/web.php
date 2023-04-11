@@ -354,6 +354,8 @@ Route::group(['middleware' => ['auth']], function () {
     Route::post('student/submit/test-exercise', 'AttemptExamTestExerciseController@SubmitStudentTestExercise')->middleware(['student'])->name('student.submit.test-exercise');
     Route::post('student/attempt/exercise/second-trial', 'AttemptExamTestExerciseController@AttemptStudentSecondTrialExerciseTest')->middleware(['student'])->name('student.attempt.exercise.second-trial');
     Route::post('update/test-exercise/survey-feedback','AttemptExamTestExerciseController@UpdateTestExerciseFeedbackEmoji')->name('update.test-exercise.survey-feedback');    
+    // Thank You Route
+    Route::get('test-exercise/complete/{exam_id}','AttemptExamTestExerciseController@CompleteTestExerciseThankYou')->name('complete.test-exercise');
 
 
     Route::post('check-answer', 'ExamController@CheckAnswer')->middleware(['student'])->name('check-answer');
@@ -604,7 +606,4 @@ Route::group(['middleware' => ['auth']], function () {
     Route::get('learning-progress/learning-objectives', 'Reports\ProgressReportController@LearningProgressLearningObjectives')->name('learning-progress.learning-objectives');
 
     Route::get('get/school-users', 'CommonController@GetSchoolUserIds');
-
-    // Thank You Route
-    Route::get('thank-you','CommonController@Thankyou')->name('thank-you');
 });

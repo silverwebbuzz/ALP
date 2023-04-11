@@ -1,16 +1,16 @@
 @extends('backend.layouts.app')
     @section('content')
 	@php
-			$permissions = [];
-			$user_id = auth()->user()->id;
-			if($user_id){
-				$module_permission = App\Helpers\Helper::getPermissions($user_id);
-				if($module_permission && !empty($module_permission)){
-					$permissions = $module_permission;
-				}
-			}else{
-				$permissions = [];
-			}
+	$permissions = [];
+	$user_id = auth()->user()->id;
+	if($user_id){
+		$module_permission = App\Helpers\Helper::getPermissions($user_id);
+		if($module_permission && !empty($module_permission)){
+			$permissions = $module_permission;
+		}
+	}else{
+		$permissions = [];
+	}
 	@endphp
     <div class="wrapper d-flex align-items-stretch sm-deskbord-main-sec">
         @include('backend.layouts.sidebar')
@@ -148,7 +148,6 @@
 											<th class="sec-head selec-opt"><span>@sortablelink('email',__('languages.email_address'))</span></th>
 											<th class="selec-head">@sortablelink('grade_id',__('languages.form'))</th>
 											<th class="selec-head">@sortablelink('class_id',__('languages.class'))</th>
-
 											<th class="selec-head">@sortablelink('class_student_number',__('languages.student_code'))</th>
 											<th class="selec-head">@sortablelink('permanent_reference_number',__('languages.std_number'))</th>
 											<th class="selec-head">@sortablelink('student_number_within_class',__('languages.student_number'))</th>

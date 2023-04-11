@@ -862,6 +862,7 @@ return [
         'request_date_time'                 => 'Request DateTime',
     ],
     'report' =>[
+        'result_release_date'               => "Result Release Date",
         'release_date'                      => 'Release Date',
         'class_performance'                 => 'Class Performance',
         'tests'                             => 'Tests',
@@ -1716,4 +1717,8 @@ return [
     'search_by_activity_text'                   => 'Search By Activity Text',
     'no_available_any_activity_history'         => 'No Available any Activity History',
     'full_screen'                               => 'Full Screen',
+    'thank_you'                                 => 'Thank You',
+    'the'                                       => 'The',
+    'is_submitted_result_released_on'           => 'is Submitted. Result to be released on',
+
 ];

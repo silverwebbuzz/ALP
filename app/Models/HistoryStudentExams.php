@@ -4,11 +4,12 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\SoftDeletes;
 use App\Constants\DbConstant as cn;
 
 class HistoryStudentExams extends Model
 {
-    use HasFactory;
+    use HasFactory, SoftDeletes;
 
     protected $table = cn::HISTORY_STUDENT_EXAMS_TABLE;
 
@@ -27,5 +28,5 @@ class HistoryStudentExams extends Model
         cn::HISTORY_STUDENT_EXAMS_SECOND_TRIAL_NOT_ATTEMPTED_FLAG_QUESTION_IDS_COL
     ];
 
-    public $timestamps = false;
+    public $timestamps = true;
 }

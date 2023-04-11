@@ -862,6 +862,7 @@ return [
         'request_date_time'                 => '請求日期時間',
     ],
     'report' =>[
+        'result_release_date'               => "結果發布日期",
         'release_date'                      => '發布日期',
         'class_performance'                 => '課堂表現',
         'tests'                             => '測驗',

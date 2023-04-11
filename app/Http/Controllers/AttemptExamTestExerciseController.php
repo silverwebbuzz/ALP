@@ -30,6 +30,17 @@ class AttemptExamTestExerciseController extends Controller
         $this->CronJobController = new CronJobController;
     }
 
+    /***
+     * Thank You
+     */
+    public function CompleteTestExerciseThankYou(Request $request){
+        $examId = $request->route('exam_id');
+        $examDetail = Exam::find($examId);
+        if(!empty($examDetail)){
+            return view('backend.thank_you',compact('examDetail'));
+        }
+    }
+
     /**
      * USE : Get Random array position for question answer
      */
@@ -922,43 +933,46 @@ class AttemptExamTestExerciseController extends Controller
                 $this->UserActivityLog(
                     Auth::user()->id,
                     '<p>'.Auth::user()->DecryptNameEn.' '.__('activity_history.exam_attempted').'.'.'</p>'.
-                    '<p>'.__('activity_history.title_is').$examDetail->title.'.'.'</p>'.
-                    '<p>'.__('activity_history.exam_reference_is').$examDetail->reference_no.'</p>'
+                    '<p>'.__('activity_history.title_is').$examDetail->{cn::EXAM_TABLE_TITLE_COLS}.'.'.'</p>'.
+                    '<p>'.__('activity_history.exam_reference_is').$examDetail->{cn::EXAM_REFERENCE_NO_COL}.'</p>'.
+                    '<p>'.__('activity_history.exam_start_date_time').$HistoryStudentExams->{cn::CREATED_AT_COL}.'</p>'.
+                    '<p>'.__('activity_history.exam_completion_date_time').$HistoryStudentExams->{cn::UPDATED_AT_COL}.'</p>'
                 );
                 //Update Column Is_my_teaching_sync
                 Exam::find($examId)->update([cn::EXAM_TABLE_IS_TEACHING_REPORT_SYNC =>'true']);
                 
                 /** Start Update overall ability for the student **/
-                if($examDetail->exam_type == 3 || ($examDetail->exam_type == 1 && $examDetail->self_learning_test_type == 2)){
+                if($examDetail->{cn::EXAM_TYPE_COLS} == 3 || ($examDetail->{cn::EXAM_TYPE_COLS} == 1 && $examDetail->{cn::EXAM_TABLE_SELF_LEARNING_TEST_TYPE_COL} == 2)){
                     $this->CronJobController->UpdateStudentOverAllAbility();
                 }
 
                 /** Update My Teaching Table Via Cron Job */
                 $this->CronJobController->UpdateMyTeachingTable(Auth::user()->{cn::USERS_SCHOOL_ID_COL}, $examId);
 
-                if($examDetail->exam_type == 2){
+                if($examDetail->{cn::EXAM_TYPE_COLS} == 2){
                     /** Update Student Credit Points via cron job */
                     $this->CronJobController->UpdateStudentCreditPoints($examId, Auth::user()->{cn::USERS_ID_COL});
                 }
                 /** End Update overall ability for the student **/
 
-                if($examDetail->exam_type == 3){
+                if($examDetail->{cn::EXAM_TYPE_COLS} == 3){
                     // Start Learning Progress Learning Unit Job
                     $this->CronJobController->UpdateLearningProgressJob(Auth::user()->{cn::USERS_ID_COL});
                     // End Learning Progress Learning Unit Job
                 }
 
                 // Delete history table data
-                HistoryStudentExams::where([
-                    cn::HISTORY_STUDENT_EXAMS_STUDENT_ID_COL => Auth::user()->id,
-                    cn::HISTORY_STUDENT_EXAMS_EXAM_ID_COL => $examId
-                ])->delete();
-                HistoryStudentQuestionAnswer::where([
-                    cn::HISTORY_STUDENT_QUESTION_ANSWER_STUDENT_ID_COL => Auth::user()->id,
-                    cn::HISTORY_STUDENT_QUESTION_ANSWER_EXAM_ID_COL => $examId
-                ])->delete();
+                // HistoryStudentExams::where([
+                //     cn::HISTORY_STUDENT_EXAMS_STUDENT_ID_COL => Auth::user()->id,
+                //     cn::HISTORY_STUDENT_EXAMS_EXAM_ID_COL => $examId
+                // ])->delete();
+                // HistoryStudentQuestionAnswer::where([
+                //     cn::HISTORY_STUDENT_QUESTION_ANSWER_STUDENT_ID_COL => Auth::user()->id,
+                //     cn::HISTORY_STUDENT_QUESTION_ANSWER_EXAM_ID_COL => $examId
+                // ])->delete();
                 $this->StoreAuditLogFunction('','Exams','','','Attempt Exam',cn::EXAM_TABLE_NAME,'');
-                return redirect()->route('exams.result',['examid' => $examId, 'studentid' => Auth::user()->{cn::USERS_ID_COL}]);
+                return redirect()->route('complete.test-exercise',$examId);
+                //return redirect()->route('exams.result',['examid' => $examId, 'studentid' => Auth::user()->{cn::USERS_ID_COL}]);
             }else{
                 return back()->with('error_msg', __('languages.problem_was_occur_please_try_again'));
             }
@@ -1052,11 +1066,19 @@ class AttemptExamTestExerciseController extends Controller
                 ]);
             }else{
                 HistoryStudentExams::Create([
-                    cn::HISTORY_STUDENT_EXAMS_STUDENT_ID_COL        => Auth::user()->id,
-                    cn::HISTORY_STUDENT_EXAMS_EXAM_ID_COL           => $request->exam_id,
-                    cn::HISTORY_STUDENT_EXAMS_NO_OF_TRIAL_EXAM_COL  => 1,
-                    cn::HISTORY_STUDENT_EXAMS_BEFORE_EMOJI_ID_COL   => $request->FeedbackEmojiId
-                ]);
+                                            cn::HISTORY_STUDENT_EXAMS_STUDENT_ID_COL        => Auth::user()->id,
+                                            cn::HISTORY_STUDENT_EXAMS_EXAM_ID_COL           => $request->exam_id,
+                                            cn::HISTORY_STUDENT_EXAMS_NO_OF_TRIAL_EXAM_COL  => 1,
+                                            cn::HISTORY_STUDENT_EXAMS_BEFORE_EMOJI_ID_COL   => $request->FeedbackEmojiId
+                                        ]);
+                $examDetail = Exam::find($request->exam_id);
+                $this->UserActivityLog(
+                    Auth::user()->id,
+                    '<p>'.Auth::user()->DecryptNameEn.' '.__('activity_history.exam_attempted').'.'.'</p>'.
+                    '<p>'.__('activity_history.title_is').$examDetail->{cn::EXAM_TABLE_TITLE_COLS}.'.'.'</p>'.
+                    '<p>'.__('activity_history.exam_reference_is').$examDetail->{cn::EXAM_REFERENCE_NO_COL}.'</p>'.
+                    '<p>'.__('activity_history.exam_start_date_time').date("Y-m-d h:i:s").'</p>'
+                );
             }
             $response['status'] = true;
             if($request->FeedbackType == 'after_test_exercise'){

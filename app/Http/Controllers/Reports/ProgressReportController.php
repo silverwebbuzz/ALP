@@ -327,6 +327,7 @@ class ProgressReportController extends Controller
         if(isset($gradeArray)){
             $gradeid = $gradeArray[0];
         }
+        
         if(isset($classArray)){
             $classid = $classArray[0];
         }
