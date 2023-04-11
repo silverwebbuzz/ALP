@@ -143,7 +143,7 @@ if($user_id){
 										<tr @if($data['testExam']) class='test-exam' @endif>
 											<td>{{date('d/m/Y',strtotime($examArray['exam_school_grade_class'][0]['start_date'])) }} {{ !empty($examArray['exam_school_grade_class'][0]['start_time']) ? $examArray['exam_school_grade_class'][0]['start_time'] : '00:00:00' }}</td>
 											<td>{{date('d/m/Y',strtotime($examArray['exam_school_grade_class'][0]['end_date'])) }} {{ !empty($examArray['exam_school_grade_class'][0]['end_time']) ?  $examArray['exam_school_grade_class'][0]['end_time'] : '00:00:00' }}</td>
-											<td>{{date('d/m/Y',strtotime($exerciseExam->result_date))}}</td>
+											<td>{{date('d/m/Y H:i:s',strtotime($exerciseExam->result_date.' 23:59:59'))}}</td>
 											<td>{{$exerciseExam->reference_no}}</td>
 											<td>{{$exerciseExam->title}}</td>
 											@if(isset($examArray['attempt_exams']) && in_array(Auth::id(),array_column($examArray['attempt_exams'],'student_id')))
@@ -238,7 +238,7 @@ if($user_id){
 													@endif
 												@endif
 												@if (in_array('result_management_read', $permissions))
-													@if((isset($examArray['attempt_exams']) && in_array(Auth::id(),array_column($examArray['attempt_exams'],'student_id'))) && ($examArray['status'] == "publish") && date('Y-m-d',strtotime($examArray['result_date'])) <= date('Y-m-d'))
+													@if((isset($examArray['attempt_exams']) && in_array(Auth::id(),array_column($examArray['attempt_exams'],'student_id'))) && ($examArray['status'] == "publish") && date('Y-m-d H:i:s',strtotime($examArray['result_date'].' 23:59:59')) <= date('Y-m-d H:i:s'))
 													<a href="{{route('exams.result',['examid' => $exerciseExam->id, 'studentid' => Auth::user()->id])}}" class="view-result-btn" title="{{__('languages.result_text')}}">
 														<i class="fa fa-eye fa-lg" aria-hidden="true" ></i>
 													</a>
@@ -247,7 +247,7 @@ if($user_id){
 
 												{{-- <a href="javascript:void(0);" class="exam_questions-info ml-2" data-examid="{{$exerciseExam->id}}" title="{{__('languages.preview')}}"><i class="fa fa-book fa-lg" aria-hidden="true"></i></a> --}}
 
-												@if((isset($examArray['attempt_exams']) && in_array(Auth::id(),array_column($examArray['attempt_exams'],'student_id'))) && ($examArray['status'] == "publish") && date('Y-m-d',strtotime($examArray['result_date'])) <= date('Y-m-d'))
+												@if((isset($examArray['attempt_exams']) && in_array(Auth::id(),array_column($examArray['attempt_exams'],'student_id'))) && ($examArray['status'] == "publish") && date('Y-m-d H:i:s',strtotime($examArray['result_date'].' 23:59:59')) <= date('Y-m-d H:i:s'))
 													{{-- Test Difficulty Analysis Link --}}
 													<a href="javascript:void(0);" title="{{__('languages.difficulty_analysis')}}" class="getTestDifficultyAnalysisReport" data-examid="{{$exerciseExam->id}}">
 														<i class="fa fa-bar-chart fa-lg" aria-hidden="true"></i>

@@ -204,6 +204,8 @@ class QuestionGeneratorController extends Controller {
             $report_date = $this->DateConvertToYMD($request->end_date);
             if($request->report_date == 'after_submit'){
                 $report_date = Carbon::now();
+            }elseif($request->report_date == 'end_date'){
+                $report_date = $this->DateConvertToYMD($request->end_date);
             }else{
                 $report_date = $this->DateConvertToYMD($request->custom_date);
             }
@@ -376,6 +378,8 @@ class QuestionGeneratorController extends Controller {
                 $report_date = $this->DateConvertToYMD($request->end_date);
                 if($request->report_date == 'after_submit'){
                     $report_date = Carbon::now();
+                }elseif($request->report_date == 'end_date'){
+                    $report_date = $this->DateConvertToYMD($request->end_date);
                 }else{
                     $report_date = $this->DateConvertToYMD($request->custom_date);
                 }
@@ -700,6 +704,8 @@ class QuestionGeneratorController extends Controller {
             $report_date = $this->DateConvertToYMD($request->end_date);
             if($request->report_date == 'after_submit'){
                 $report_date = Carbon::now();
+            }elseif($request->report_date == 'end_date'){
+                $report_date = $this->DateConvertToYMD($request->end_date);
             }else{
                 $report_date = $this->DateConvertToYMD($request->custom_date);
             }
@@ -1158,6 +1164,8 @@ class QuestionGeneratorController extends Controller {
                     $report_date = ($request->end_date) ? $this->DateConvertToYMD($request->end_date) : $exam->result_date;
                     if($request->report_date == 'after_submit'){
                         $report_date = Carbon::now();
+                    }elseif($request->report_date == 'end_date'){
+                        $report_date = $this->DateConvertToYMD($request->end_date);
                     }else{
                         $report_date = ($request->custom_date) ? $this->DateConvertToYMD($request->custom_date) : $exam->result_date;
                     }

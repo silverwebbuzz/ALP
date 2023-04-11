@@ -1867,8 +1867,6 @@ class ExamController extends Controller
         $data = [];
         $studentidlist = [];
         $ExamDetails = Exam::find($request->exam_id);
-        // if(isset($request->SchoolId) && !empty($request->SchoolId)){
-        // if(isset($request->exam_school_id) && !empty($request->exam_school_id)){
         if((isset($request->exam_school_id) && !empty($request->exam_school_id)) || (isset($request->SchoolId) && !empty($request->SchoolId))){
             $schoolId = $request->SchoolId;
         }else{

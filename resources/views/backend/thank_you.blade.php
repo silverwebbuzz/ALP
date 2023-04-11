@@ -95,9 +95,9 @@
                 <div class="wrapper-1">
                       <div class="wrapper-2">
                         <h1>{{__('languages.thank_you')}} !</h1>
-                        <p>{{__('languages.the')}} {{($exam['exam_type'] == 2) ? __('languages.exercise') : __('languages.test_text')}} {{__('languages.is_submitted_result_released_on')}} {{ date('d/m/Y',strtotime($exam['result_date']))}}</p>
-                        @if(date('Y-m-d',strtotime($exam['result_date']) >= date('Y-m-d')))
-                        <a href="{{route('exams.result',[$exam['id'],Auth::user()->id])}}"><button class="go-home">{{__('languages.view')}} {{__('languages.result_text')}}</button></a>
+                        <p>{{__('languages.the')}} {{($exam['exam_type'] == 2) ? __('languages.exercise') : __('languages.test_text')}} {{__('languages.is_submitted_result_released_on')}} {{ date('d/m/Y H:i:s',strtotime($exam['result_date'].' 23:59:59'))}}</p>
+                        @if(date('Y-m-d H:i:s',strtotime($exam['result_date'].' 23:59:59') >= date('Y-m-d H:i:s')))
+                          <a href="{{route('exams.result',[$exam['id'],Auth::user()->id])}}"><button class="go-home">{{__('languages.view')}} {{__('languages.result_text')}}</button></a>
                         @endif
                         @if(($exam['exam_type'] == 2))
                           <a href="{{route('getStudentExerciseExamList')}}"><button class="go-home">Go Back to {{($exam['exam_type'] == 2) ? __('languages.exercise') : __('languages.test_text')}} List</button>

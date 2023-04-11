@@ -199,8 +199,6 @@ class ProgressReportController extends Controller
                     }
                 }
             }
-
-            //echo '<pre>';print_r($LearningUnitsList);die;
             return view('backend.reports.learning_progress.learning_unit_report',compact('StrandList','LearningUnitsList','StrandsLearningUnitsList','GradesList',
             'grade_id','ClassList','reportLearningType','progressReportArray','gradeid','classid','ColorCodes'));
         } catch (\Exception $exception) {
