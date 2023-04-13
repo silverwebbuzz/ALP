@@ -161,6 +161,7 @@ if($user_id){
                                 <th class="selec-opt">{{__('languages.publish_date_time')}}</th>
                                 <th>{{__('languages.report.start_date')}} & {{__('languages.time')}}</th>
                                 <th>{{__('languages.report.end_date')}} & {{__('languages.time')}}</th>
+								<th>{{__('languages.report.result_release_date')}}</th>
 								<th>{{__('languages.reference_number')}}</th>
                                 <th>{{__('languages.title')}}</th>
                                 <th>{{__('languages.form')}}-{{__('languages.class')}}</th>
@@ -209,6 +210,7 @@ if($user_id){
 											--
 										@endif
 									</td>
+									<td>{{date('d/m/Y',strtotime($assignmentTest->exams->result_date))}}</td>
 									<td>{{$assignmentTest->exams->reference_no}}</td>
                                     <td>{{$assignmentTest->exams->title}}</td>
                                     <td>

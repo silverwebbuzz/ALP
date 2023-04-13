@@ -31,9 +31,7 @@
 				<div class="row">
 					<div class="col-md-12">
 						<div class="sec-title">
-							{{-- <h2 class="mb-4 main-title">{{__('languages.sidebar.learning')}}</h2> --}}
 							<h2 class="mb-4 main-title">{{ __('languages.learning_objectives_progress_short')}}</h2>
-							
 						</div>
 						<div class="sec-title">
                             <a href="javascript:void(0);" class="btn-back" id="backButton">{{__('languages.back')}}</a>
@@ -102,9 +100,10 @@
                     @php
                         $data='';
                     @endphp
-                @foreach($progressReportArray as $strandTitle => $reportData)
+
+                	@foreach($progressReportArray as $strandTitle => $reportData)
 					<div class="row">
-						 @foreach($reportData as $reportTitle => $reportInfo)
+						@foreach($reportData as $reportTitle => $reportInfo)
 						<div class="col-xl-12 col-md-12 mb-4">
 							<div class="card border-left-info shadow py-2 learning-unit-secion teacher-progress-report">
 								<div class="card-body ml-2">
@@ -125,11 +124,10 @@
 													<?php
 														$normalizedAbility = 0;
 														$studyStatusColor = 'background:'.App\Helpers\Helper::getGlobalConfiguration('incomplete_color').';color:#FFF;';
-														if(isset($reportInfo) && !empty($reportInfo) && !empty($reportInfo[$learningObjectives['id']]['normalizedAbility'])){
-															$studyStatusColor = 'background:'.$reportInfo[$learningObjectives['id']]['studyStatusColor'].';color:#FFF;';
+														if(isset($reportInfo['report_data']) && !empty($reportInfo['report_data']) && !empty($reportInfo['report_data'][$learningObjectives['id']]['normalizedAbility'])){
+															$studyStatusColor = 'background:'.$reportInfo['report_data'][$learningObjectives['id']]['studyStatusColor'].';color:#FFF;';
 														}
 													?>
-														
 													<td style="width: 10% !important;min-width: 10% !important; text-align:center;">
 														<div class="study_status_colors-sec">
 															<span class="dot-color" style="{{$studyStatusColor}}border-radius: 50%;display: inline-block;"></span>

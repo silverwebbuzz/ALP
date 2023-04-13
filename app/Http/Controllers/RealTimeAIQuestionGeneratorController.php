@@ -399,11 +399,12 @@ class RealTimeAIQuestionGeneratorController extends Controller
            
         ];
         $exams = Exam::create($examData);
-
         $this->UserActivityLog(
             Auth::user()->id,
             '<p>'.Auth::user()->DecryptNameEn.' '.__('activity_history.new_test_created').'.'.
-            '<p>'.__('activity_history.title_is').$exams->title.'</p>'
+            '<p>'.__('activity_history.test_type').$this->ActivityTestType($exams).'</p>'.
+            '<p>'.__('activity_history.title_is').$exams->title.'</p>'.
+            '<p>'.__('activity_history.exam_reference_is').$exams->reference_no.'</p>'
         );
         if($exams){
             // Create exam school mapping
@@ -469,8 +470,10 @@ class RealTimeAIQuestionGeneratorController extends Controller
                 Auth::user()->id,
                 '<p>'.Auth::user()->DecryptNameEn.' '.__('activity_history.exam_attempted').'.'.
                 '<p>'.__('activity_history.title_is').$exams->title.'.'.'</p>'.
+                '<p>'.__('activity_history.test_type').$this->ActivityTestType($exams).'</p>'.
                 '<p>'.__('activity_history.exam_reference_is').$exams->reference_no.'</p>'.
-                '<p>'.__('activity_history.exam_submitting_time_is').' '.date('Y/m/d h:i:s a', time())
+                '<p>'.__('activity_history.exam_start_date_time').$exams->{cn::CREATED_AT_COL}.'</p>'.
+                '<p>'.__('activity_history.exam_completion_date_time').$exams->{cn::UPDATED_AT_COL}.'</p>'
             );
             if($save){
                 //Update Column Is_my_teaching_sync
@@ -886,11 +889,12 @@ class RealTimeAIQuestionGeneratorController extends Controller
             cn::EXAM_TABLE_CREATED_BY_USER_COL              => 'student',
             cn::EXAM_TABLE_STATUS_COLS                      => 'publish'
         ];
-        $exams = Exam::create($examData);
         $this->UserActivityLog(
             Auth::user()->id,
             '<p>'.Auth::user()->DecryptNameEn.' '.__('activity_history.new_test_created').'.'.
-            '<p>'.__('activity_history.title_is').$exams->title.'</p>'
+            '<p>'.__('activity_history.test_type').$this->ActivityTestType($exams).'</p>'.
+            '<p>'.__('activity_history.title_is').$exams->title.'</p>'.
+            '<p>'.__('activity_history.exam_reference_is').$exams->reference_no.'</p>'
         );
         if($exams){
             // Create exam school mapping
@@ -952,9 +956,11 @@ class RealTimeAIQuestionGeneratorController extends Controller
             $this->UserActivityLog(
                 Auth::user()->id,
                 '<p>'.Auth::user()->DecryptNameEn.' '.__('activity_history.exam_attempted').'.'.
+                '<p>'.__('activity_history.test_type').$this->ActivityTestType($exams).'</p>'.
                 '<p>'.__('activity_history.title_is').$exams->title.'.'.'</p>'.
                 '<p>'.__('activity_history.exam_reference_is').$exams->reference_no.'</p>'.
-                '<p>'.__('activity_history.exam_submitting_time_is').' '.date('Y/m/d h:i:s a', time())
+                '<p>'.__('activity_history.exam_start_date_time').$exams->{cn::CREATED_AT_COL}.'</p>'.
+                '<p>'.__('activity_history.exam_completion_date_time').$exams->{cn::UPDATED_AT_COL}.'</p>'
             );
             if($save){
                 //Update Column Is_my_teaching_sync

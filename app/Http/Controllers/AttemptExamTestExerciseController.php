@@ -74,14 +74,14 @@ class AttemptExamTestExerciseController extends Controller
             }else{
                 $RemainingSeconds = $ExamMaximumSeconds;
             }
-            
             // Get the question size and count
             if(isset($examDetail) && !empty($examDetail->{cn::EXAM_TABLE_QUESTION_IDS_COL})){
                 // Check before attempted questions
+                
                 $HistoryStudentExamsData =  HistoryStudentExams::where([
                                                 cn::HISTORY_STUDENT_EXAMS_STUDENT_ID_COL => Auth::user()->id,
                                                 cn::HISTORY_STUDENT_EXAMS_EXAM_ID_COL    => $exam_id
-                                            ])->first();
+                                            ])->first();                                           
                                             // Get the total allowed time in this exams                
                 if(isset($HistoryStudentExamsData) && !empty($HistoryStudentExamsData) && !empty($HistoryStudentExamsData->{cn::HISTORY_STUDENT_EXAMS_EXAM_CURRENT_QUESTION_ID_COL})){
                     $second = $HistoryStudentExamsData->{cn::HISTORY_STUDENT_EXAMS_TOTAL_SECONDS_COL};
@@ -933,6 +933,7 @@ class AttemptExamTestExerciseController extends Controller
                 $this->UserActivityLog(
                     Auth::user()->id,
                     '<p>'.Auth::user()->DecryptNameEn.' '.__('activity_history.exam_attempted').'.'.'</p>'.
+                    '<p>'.__('activity_history.test_type').$this->ActivityTestType($examDetail).'</p>'.
                     '<p>'.__('activity_history.title_is').$examDetail->{cn::EXAM_TABLE_TITLE_COLS}.'.'.'</p>'.
                     '<p>'.__('activity_history.exam_reference_is').$examDetail->{cn::EXAM_REFERENCE_NO_COL}.'</p>'.
                     '<p>'.__('activity_history.exam_start_date_time').$HistoryStudentExams->{cn::CREATED_AT_COL}.'</p>'.
@@ -1075,6 +1076,7 @@ class AttemptExamTestExerciseController extends Controller
                 $this->UserActivityLog(
                     Auth::user()->id,
                     '<p>'.Auth::user()->DecryptNameEn.' '.__('activity_history.exam_attempted').'.'.'</p>'.
+                    '<p>'.__('activity_history.test_type').$this->ActivityTestType($examDetail).'</p>'.
                     '<p>'.__('activity_history.title_is').$examDetail->{cn::EXAM_TABLE_TITLE_COLS}.'.'.'</p>'.
                     '<p>'.__('activity_history.exam_reference_is').$examDetail->{cn::EXAM_REFERENCE_NO_COL}.'</p>'.
                     '<p>'.__('activity_history.exam_start_date_time').date("Y-m-d h:i:s").'</p>'

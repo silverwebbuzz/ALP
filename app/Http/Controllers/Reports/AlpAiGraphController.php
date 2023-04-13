@@ -88,6 +88,15 @@ class AlpAiGraphController extends Controller
                             }
                         }
                     }
+                    // User Activity
+                    $this->UserActivityLog(
+                        Auth::user()->id,
+                        '<p>'.Auth::user()->DecryptNameEn.' '.__('activity_history.has_view_report').'.'.'</p>'.
+                        '<p>'.__('activity_history.test_type').$this->ActivityTestType($ExamData).'</p>'.
+                        '<p>'.__('activity_history.report_type').__('activity_history.performance_graph').'</p>'.
+                        '<p>'.__('activity_history.title_is').$ExamData->title.'.'.'</p>'.
+                        '<p>'.__('activity_history.exam_reference_is').$ExamData->reference_no.'</p>'
+                    );
                 }
 
                 if(isset($performanceResult) && !empty($performanceResult) && !empty($performanceResult['student_results_list']) && !empty($performanceResult['questions_difficulties_list'])){
@@ -203,6 +212,15 @@ class AlpAiGraphController extends Controller
                             ]);
                             $response = $this->AIApiService->Plot_Analyze_My_School_Ability($requestPayload);
                         }
+                        $this->UserActivityLog(
+                            Auth::user()->id,
+                            '<p>'.Auth::user()->DecryptNameEn.' '.__('activity_history.has_view_report').'.'.'</p>'.
+                            '<p>'.__('activity_history.test_type').$this->ActivityTestType($examData).'</p>'.
+                            '<p>'.__('activity_history.report_type').__('activity_history.ability_analysis').'</p>'.
+                            '<p>'.__('activity_history.graph_type').__('activity_history.my_school').'</p>'.
+                            '<p>'.__('activity_history.title_is').$examData->title.'.'.'</p>'.
+                            '<p>'.__('activity_history.exam_reference_is').$examData->reference_no.'</p>'
+                        );
                     break;
                     case 'all-school':
                         // Calculation for my-class graph functionality
@@ -257,6 +275,15 @@ class AlpAiGraphController extends Controller
                             ]);
                             $response = $this->AIApiService->Plot_Analyze_All_Schools_Ability($requestPayload);
                         }
+                        $this->UserActivityLog(
+                            Auth::user()->id,
+                            '<p>'.Auth::user()->DecryptNameEn.' '.__('activity_history.has_view_report').'.'.'</p>'.
+                            '<p>'.__('activity_history.test_type').$this->ActivityTestType($examData).'</p>'.
+                            '<p>'.__('activity_history.report_type').__('activity_history.ability_analysis').'</p>'.
+                            '<p>'.__('activity_history.graph_type').__('activity_history.all_school').'</p>'.
+                            '<p>'.__('activity_history.title_is').$examData->title.'.'.'</p>'.
+                            '<p>'.__('activity_history.exam_reference_is').$examData->reference_no.'</p>'
+                        );
                         break;
                     default:  // My-class
                         // Calculation for my-class graph functionality
@@ -281,6 +308,17 @@ class AlpAiGraphController extends Controller
                             ]);
                             $response = $this->AIApiService->Plot_Analyze_My_Class_Ability($requestPayload);
                         }
+                        $this->UserActivityLog(
+                            Auth::user()->id,
+                            '<p>'.Auth::user()->DecryptNameEn.' '.__('activity_history.has_view_report').'.'.'</p>'.
+                            '<p>'.__('activity_history.test_type').$this->ActivityTestType($examData).'</p>'.
+                            '<p>'.__('activity_history.report_type').__('activity_history.ability_analysis').'</p>'.
+                            '<p>'.__('activity_history.graph_type').__('activity_history.my_class').'</p>'.
+                            '<p>'.__('activity_history.title_is').$examData->title.'.'.'</p>'.
+                            '<p>'.__('activity_history.exam_reference_is').$examData->reference_no.'</p>'
+                        );
+                        break;
+                        
                 }
             }
             return $this->sendResponse($response);
@@ -318,6 +356,14 @@ class AlpAiGraphController extends Controller
                         'labels' => $this->GetAiApiLabels(config()->get('aiapi.api.Plot_Analyze_Test_Difficulty.uri'))
                     ]);
                     $response = $this->AIApiService->getPloatAnalyzeTestDifficulty($requestPayload);
+                    $this->UserActivityLog(
+                        Auth::user()->id,
+                        '<p>'.Auth::user()->DecryptNameEn.' '.__('activity_history.has_view_report').'.'.'</p>'.
+                        '<p>'.__('activity_history.test_type').$this->ActivityTestType($examData).'</p>'.
+                        '<p>'.__('activity_history.report_type').__('activity_history.difficulty_analysis').'</p>'.
+                        '<p>'.__('activity_history.title_is').$examData->title.'.'.'</p>'.
+                        '<p>'.__('activity_history.exam_reference_is').$examData->reference_no.'</p>'
+                    );
                 }
             }
             return $this->sendResponse($response);

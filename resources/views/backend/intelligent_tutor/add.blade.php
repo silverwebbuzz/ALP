@@ -53,7 +53,8 @@
 
                                     <!-- Grade -->
                                     <div class="form-group col-md-6 mb-50">
-                                        <label class="text-bold-600">{{__('languages.grade')}}</label>
+                                        {{-- <label class="text-bold-600">{{__('languages.grade')}}</label> --}}
+                                        <label class="text-bold-600">{{__('languages.stage')}}</label>
                                         <select class="form-control js-states w-100" data-show-subtext="true"  data-live-search="true" name="learning_tutor_grade_id[]"  id="learning_tutor_grade_id" multiple>
                                             @if(!empty($Grades))
                                             @foreach ($Grades as $grade)

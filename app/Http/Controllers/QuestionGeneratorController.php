@@ -205,7 +205,8 @@ class QuestionGeneratorController extends Controller {
             if($request->report_date == 'after_submit'){
                 $report_date = Carbon::now();
             }elseif($request->report_date == 'end_date'){
-                $report_date = $this->DateConvertToYMD($request->end_date);
+                //$report_date = $this->DateConvertToYMD($request->end_date);
+                $report_date = date("Y-m-d", strtotime($this->DateConvertToYMD($request->end_date)." + 1 day"));
             }else{
                 $report_date = $this->DateConvertToYMD($request->custom_date);
             }
@@ -250,7 +251,9 @@ class QuestionGeneratorController extends Controller {
                 $this->UserActivityLog(
                     Auth::user()->id,
                     '<p>'.Auth::user()->DecryptNameEn.' '.__('activity_history.new_test_created').'.'.
-                    '<p>'.__('activity_history.title_is').$exams->title.'</p>'
+                    '<p>'.__('activity_history.test_type').$this->ActivityTestType($exams).'</p>'.
+                    '<p>'.__('activity_history.title_is').$exams->title.'</p>'.
+                    '<p>'.__('activity_history.exam_reference_is').$exams->reference_no.'</p>'
                 );
                 if($request->use_of_modes == 1){
                     // Create Exam and school Mapping
@@ -379,7 +382,8 @@ class QuestionGeneratorController extends Controller {
                 if($request->report_date == 'after_submit'){
                     $report_date = Carbon::now();
                 }elseif($request->report_date == 'end_date'){
-                    $report_date = $this->DateConvertToYMD($request->end_date);
+                    //$report_date = $this->DateConvertToYMD($request->end_date);
+                    $report_date = date("Y-m-d", strtotime($this->DateConvertToYMD($request->end_date)." + 1 day"));
                 }else{
                     $report_date = $this->DateConvertToYMD($request->custom_date);
                 }
@@ -705,7 +709,8 @@ class QuestionGeneratorController extends Controller {
             if($request->report_date == 'after_submit'){
                 $report_date = Carbon::now();
             }elseif($request->report_date == 'end_date'){
-                $report_date = $this->DateConvertToYMD($request->end_date);
+                //$report_date = $this->DateConvertToYMD($request->end_date);
+                $report_date = date("Y-m-d", strtotime($this->DateConvertToYMD($request->end_date)." + 1 day"));
             }else{
                 $report_date = $this->DateConvertToYMD($request->custom_date);
             }
@@ -770,7 +775,9 @@ class QuestionGeneratorController extends Controller {
                 $this->UserActivityLog(
                     Auth::user()->id,
                     '<p>'.Auth::user()->DecryptNameEn.' '.__('activity_history.new_test_created').'.'.
-                    '<p>'.__('activity_history.title_is').$exams->title.'</p>'
+                    '<p>'.__('activity_history.test_type').$this->ActivityTestType($exams).'</p>'.
+                    '<p>'.__('activity_history.title_is').$exams->title.'</p>'.
+                    '<p>'.__('activity_history.exam_reference_is').$exams->reference_no.'</p>'
                 );
                 if(isset($request->submission_on_time) && !empty($request->submission_on_time)){
                     $submission_on_time = $request->submission_on_time;
@@ -1165,7 +1172,8 @@ class QuestionGeneratorController extends Controller {
                     if($request->report_date == 'after_submit'){
                         $report_date = Carbon::now();
                     }elseif($request->report_date == 'end_date'){
-                        $report_date = $this->DateConvertToYMD($request->end_date);
+                        //$report_date = $this->DateConvertToYMD($request->end_date);
+                        $report_date = date("Y-m-d", strtotime($this->DateConvertToYMD($request->end_date)." + 1 day"));
                     }else{
                         $report_date = ($request->custom_date) ? $this->DateConvertToYMD($request->custom_date) : $exam->result_date;
                     }
@@ -2623,6 +2631,11 @@ class QuestionGeneratorController extends Controller {
                         $examList = $Query->sortable()->orderBy(cn::EXAM_TABLE_ID_COLS,'DESC')->paginate($items);
                     }
                 }
+                // User Activity  Log
+                $this->UserActivityLog(
+                    Auth::user()->id,
+                    '<p>'.Auth::user()->DecryptNameEn.' '.__('activity_history.see_exercise_and_test_wizard').' '.__('activity_history.on').__('activity_history.date_and_time').date('Y-m-d h:i:s a', time()) .'</p>'
+                );
                 return view('backend/question_generator/school/question_wizard_list',compact('CurriculumYears','examList','items','examTypes','statusLists','difficultyLevels'));
                 break;
             case cn::TEACHER_ROLE_ID : //  = Teacher Role

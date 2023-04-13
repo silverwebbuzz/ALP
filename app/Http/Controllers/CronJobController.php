@@ -644,7 +644,6 @@ class CronJobController extends Controller
                                 $answer = $questionAnswer['answer'];
                                 $QuestionAnswerDetail = Question::where(cn::QUESTION_TABLE_ID_COL,$questionAnswer['question_id'])->with('answers')->first();
                                 if(isset($QuestionAnswerDetail)){
-                                    // echo $QuestionAnswerDetail->answers->{'correct_answer_'.$questionAnswer['language']} . '' .$answer;die;
                                     if($QuestionAnswerDetail->answers->{'correct_answer_'.$questionAnswer['language']} == $answer){
                                         $NoOfCorrectAnswers = ($NoOfCorrectAnswers + 1);
                                         $apiData['questions_results'][] = true;

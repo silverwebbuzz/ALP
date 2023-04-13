@@ -50,7 +50,7 @@
                         @break
                     @case('mp4')
                         {{-- <img src="{{asset('images/document_images/video.png')}}" alt="{{$content->file_name}}" class="playVideo" id='myImg' data-filepath="{{$content->file_path}}"> --}}
-                        <video class="playVideo responsive-thumb-image" id='myImg' data-filepath="{{$content->file_path}}">
+                        <video class="playVideo responsive-thumb-image" id='myImg' data-filepath="{{$content->file_path}}" data-filetitle ="{{$content->title}}">
                             <source src="{{$content->file_path}}" type="video/mp4" />
                         </video>
                         @if(in_array('upload_documents_update',$permissions))
@@ -107,7 +107,7 @@
                         @endif
                         @break;
                     @case('url')
-                        <img src="{{asset($content->thumbnail_file_path)}}" allow="encrypted-media" alt="{{$content->file_name}}" data-filepath="{{$content->file_path}}" class="playVideo">
+                        <img src="{{asset($content->thumbnail_file_path)}}" allow="encrypted-media" alt="{{$content->file_name}}" data-filepath="{{$content->file_path}}" data-filetitle ="{{$content->title}}" class="playVideo">
                         @if(in_array('upload_documents_update',$permissions))
                             <span class="intelligent-tutor-files-edit-button editFile" data-id="{{$content->id}}"><i class="fa fa-pencil" aria-hidden="true"></i></span>
                         @endif 

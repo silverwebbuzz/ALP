@@ -164,6 +164,10 @@ class TeacherDashboardController extends Controller
                 }
                 $studentList = $Query->orderBy(cn::USERS_ID_COL,'DESC')->sortable()->paginate($items);
             }
+            $this->UserActivityLog(
+                Auth::user()->id,
+                '<p>'.Auth::user()->DecryptNameEn.' '.__('activity_history.see_class_detail').' '.__('activity_history.on').__('activity_history.date_and_time').date('Y-m-d h:i:s a', time()) .'</p>'
+            );
             return view('backend.teacher.class_student_list',compact('gradesList','studentList','items','classTypeOptions','GroupData'));
         }catch(Exception $exception){
             return back()->withError($exception->getMessage())->withInput();
@@ -179,6 +183,20 @@ class TeacherDashboardController extends Controller
                 }
             }
             $profile = User::find($id);
+             /*Log Detail */
+             if(Auth::user()->role_id == 3){
+                $this->UserActivityLog(
+                    Auth::user()->id,
+                    '<p>'.Auth::user()->DecryptNameEn.' '.__('activity_history.see_own_profile').'. </p>'.
+                    '<p>'.__('activity_history.on').__('activity_history.date_and_time').date('Y-m-d h:i:s a', time()).'</p>'
+                );
+             }else{
+                $this->UserActivityLog(
+                    Auth::user()->id,
+                    '<p>'.Auth::user()->DecryptNameEn.' '.__('activity_history.see_profile_of').$profile->DecryptNameEn.' '.__('activity_history.on').__('activity_history.date_and_time').date('Y-m-d h:i:s a', time()) .'</p>'
+                );
+             }
+             
             return view('backend.teacher.students_profile',compact('profile','studentId'));
         }catch(Exception $exception){
             return back()->withError($exception->getMessage())->withInput();

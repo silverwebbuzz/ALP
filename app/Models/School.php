@@ -107,7 +107,7 @@ class School extends Model
                 $rules = [
                     cn::SCHOOL_SCHOOL_NAME_EN_COL => ['required'],
                     cn::SCHOOL_SCHOOL_NAME_CH_COL => ['required'],
-                    cn::SCHOOL_SCHOOL_CODE_COL => ['required'],
+                    // cn::SCHOOL_SCHOOL_CODE_COL => ['required'],
                     cn::USERS_EMAIL_COL   => ['required', Rule::unique(cn::USERS_TABLE_NAME)->whereNull(cn::USERS_DELETED_AT_COL)],
                     cn::USERS_PASSWORD_COL => ['required'],
                 ];
@@ -116,7 +116,7 @@ class School extends Model
                 $rules = [
                     cn::SCHOOL_SCHOOL_NAME_EN_COL => ['required'],
                     cn::SCHOOL_SCHOOL_NAME_CH_COL => ['required'],
-                    cn::SCHOOL_SCHOOL_CODE_COL => ['required'],
+                    // cn::SCHOOL_SCHOOL_CODE_COL => ['required'],
                     cn::USERS_EMAIL_COL => [Rule::unique(cn::USERS_TABLE_NAME)->where(function ($query) use($id) {
                         return $query->whereNull(cn::USERS_DELETED_AT_COL)
                                     ->whereNotIn(cn::USERS_SCHOOL_ID_COL,[$id])
@@ -141,7 +141,7 @@ class School extends Model
                 $messages = [
                     cn::SCHOOL_SCHOOL_NAME_EN_COL.'.required' => __('validation.please_enter_english_school_name'),
                     cn::SCHOOL_SCHOOL_NAME_CH_COL.'.required' => __('validation.please_enter_chinese_school_name'),
-                    cn::SCHOOL_SCHOOL_CODE_COL.'.required' => __('validation.please_enter_school_code'),
+                    // cn::SCHOOL_SCHOOL_CODE_COL.'.required' => __('validation.please_enter_school_code'),
                     cn::USERS_EMAIL_COL.'.required' => __('validation.please_enter_email'),
                     cn::USERS_PASSWORD_COL.'.required' => __('validation.please_enter_password')
                 ];
@@ -150,7 +150,7 @@ class School extends Model
                 $messages = [
                     cn::SCHOOL_SCHOOL_NAME_EN_COL.'.required' => __('validation.please_enter_english_school_name'),
                     cn::SCHOOL_SCHOOL_NAME_CH_COL.'.required' => __('validation.please_enter_chinese_school_name'),
-                    cn::SCHOOL_SCHOOL_CODE_COL.'.required' => __('validation.please_enter_school_code'),
+                    // cn::SCHOOL_SCHOOL_CODE_COL.'.required' => __('validation.please_enter_school_code'),
                     cn::USERS_EMAIL_COL.'.required' => __('validation.please_enter_email'),
                 ];
                 break;

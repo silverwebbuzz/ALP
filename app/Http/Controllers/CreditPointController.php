@@ -148,9 +148,15 @@ class CreditPointController extends Controller
                     }
                 }
             }
+            /*User Activity*/
+            $this->UserActivityLog(
+                Auth::user()->id,
+                '<p>'.Auth::user()->DecryptNameEn.' '.__('activity_history.assign_credit_points').' '.__('activity_history.on').__('activity_history.date_and_time').date('Y-m-d h:i:s a', time()) .'</p>'
+            );
            //return redirect('student/leaderboard')->with('success_msg','Manual Assign Credit Point Add Successfully');
            return $this->sendResponse(true);
         }
+        
         return view('backend.credit_points.assign_credit_points',compact('GradeClassData','PeerGroupList'));
     }
 }

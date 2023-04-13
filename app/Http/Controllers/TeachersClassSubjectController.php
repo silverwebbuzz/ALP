@@ -143,6 +143,11 @@ class TeachersClassSubjectController extends Controller
             }
 
             if(!empty($TeachersClassSubjectAssign)){
+                $this->UserActivityLog(
+                    Auth::user()->id,
+                    '<p>'.Auth::user()->DecryptNameEn.' '.__('activity_history.assign_teacher').'.'.'</p>'.
+                    '<p>'.__('activity_history.on').__('activity_history.date_and_time').date('Y-m-d h:i:s a', time()) .'</p>'
+                );
                 return redirect('teacher-class-subject-assign')->with('success_msg', __('languages.teacher_class_subject_assign_successfully'));
             }else{
                 return back()->with('error_msg', __('languages.problem_was_occur_please_try_again'));
@@ -248,6 +253,11 @@ class TeachersClassSubjectController extends Controller
             }
             $TeachersClassSubjectAssign = TeachersClassSubjectAssign::find($id);
             if($TeachersClassSubjectAssign->delete()){
+                $this->UserActivityLog(
+                    Auth::user()->id,
+                    '<p>'.Auth::user()->DecryptNameEn.' '.__('activity_history.deleted_assign_teacher').'.'.'</p>'.
+                    '<p>'.__('activity_history.on').__('activity_history.date_and_time').date('Y-m-d h:i:s a', time()) .'</p>'
+                );
                  $this->StoreAuditLogFunction('','TeachersClassSubjectAssign','','','Delete Teachers Class Subject Assign ID '.$id,cn::TEACHER_CLASS_SUBJECT_TABLE_NAME,'');
                 return $this->sendResponse([], __('languages.deleted_successfully'));
             }else{
@@ -276,6 +286,7 @@ class TeachersClassSubjectController extends Controller
                                                 cn::GRADES_MAPPING_CURRICULUM_YEAR_ID_COL => $this->GetCurriculumYear(),
                                                 cn::GRADES_MAPPING_SCHOOL_ID_COL          => Auth::user()->school_id,                                                                        
                                             ])
+                                            ->whereIn(cn::GRADES_MAPPING_GRADE_ID_COL,$SchoolAssignGrades)
                                             ->pluck(cn::GRADES_MAPPING_GRADE_ID_COL)
                                             ->toArray();
                     $GradeClassMapping = GradeClassMapping::where([
@@ -286,7 +297,7 @@ class TeachersClassSubjectController extends Controller
                                         ->whereIn(cn::GRADE_CLASS_MAPPING_GRADE_ID_COL ,$SchoolAssignGrades)
                                         ->get();
                     
-                }else{    
+                }else{
                     $GradeClassMapping = GradeClassMapping::where([
                                             cn::GRADE_CLASS_MAPPING_CURRICULUM_YEAR_ID_COL => $this->GetCurriculumYear(),
                                             cn::GRADE_CLASS_MAPPING_SCHOOL_ID_COL => Auth::user()->{cn::USERS_SCHOOL_ID_COL},

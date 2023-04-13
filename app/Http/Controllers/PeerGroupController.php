@@ -288,6 +288,10 @@ class PeerGroupController extends Controller
                         PeerGroupMember::insert($peerGroupMember);
                     }
                 }
+                $this->UserActivityLog(
+                    Auth::user()->id,
+                    '<p>'.Auth::user()->DecryptNameEn.' '.__('activity_history.created_group_name').$request->group_name.' '.__('activity_history.on').__('activity_history.date_and_time').date('Y-m-d h:i:s a', time()).'</p>'
+                );
                 return redirect('peer-group')->with('success_msg', __('languages.peer_group_created_successfully'));
             }else{
                 return back()->withInput()->with('error_msg', __('languages.problem_was_occur_please_try_again'));
@@ -472,6 +476,10 @@ class PeerGroupController extends Controller
            }else{
                 PeerGroupMember::where([cn::PEER_GROUP_MEMBERS_PEER_GROUP_ID_COL => $id,cn::PEER_GROUP_MEMBERS_DELETED_AT_COL => Null])->delete();
            }
+            $this->UserActivityLog(
+                Auth::user()->id,
+                '<p>'.Auth::user()->DecryptNameEn.' '.__('activity_history.updated_group_name').$request->group_name.' '.__('activity_history.on').__('activity_history.date_and_time').date('Y-m-d h:i:s a', time()).'</p>'
+            );
             return redirect('peer-group')->with('success_msg', __('languages.peer_group_updated_successfully'));
        }catch(Exception $exception){
             return back()->withError($exception->getMessage())->withInput();
@@ -486,6 +494,10 @@ class PeerGroupController extends Controller
             $PeerGroup = PeerGroup::where(cn::PEER_GROUP_CURRICULUM_YEAR_ID_COL,$this->GetCurriculumYear())->find($id);
             $ChatGroupId = $PeerGroup->dreamschat_group_id;
             if($PeerGroup->delete()){
+                $this->UserActivityLog(
+                    Auth::user()->id,
+                    '<p>'.Auth::user()->DecryptNameEn.' '.__('activity_history.deleted_group_name').$PeerGroup->group_name.' '.__('activity_history.on').__('activity_history.date_and_time').date('Y-m-d h:i:s a', time()).'</p>'
+                );
                 // Remove peer group members after deleting groups
                 $PeerGroup->Members()->delete();
                 return $this->sendResponse(['ChatGroupId' => $ChatGroupId], __('languages.peer_group_deleted_successfully'));
@@ -907,6 +919,12 @@ class PeerGroupController extends Controller
             }
             $PeerGroupList = $Query->orderBy(cn::PEER_GROUP_ID_COL,'desc')->paginate($items);
         }
+
+        // Activity Log 
+        $this->UserActivityLog(
+            Auth::user()->id,
+            '<p>'.Auth::user()->DecryptNameEn.' '.__('activity_history.see_peer_group_detail').' '.__('activity_history.on').__('activity_history.date_and_time').date('Y-m-d h:i:s a', time()) .'</p>'
+        );
         return view("backend.peer_group.student_peer_group_list",compact('PeerGroupList'));    
     }
 

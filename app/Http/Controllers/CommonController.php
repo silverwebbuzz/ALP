@@ -921,4 +921,25 @@ class CommonController extends Controller
                         ])->pluck('id');
         return $this->sendResponse($SchoolUserIds);
     }
+
+    /**
+     * USE : User Activity Store in Ajax Call
+     */
+    public function ActivityStore(Request $request){
+        switch($request->Activity){
+            case 'paly_video' :
+                $this->UserActivityLog(
+                    Auth::user()->id,
+                    '<p>'.Auth::user()->DecryptNameEn.' '.__('activity_history.play_video').'. </p>'.
+                    '<p>'.__('activity_history.title_is').$request->title.' '.__('activity_history.on').__('activity_history.date_and_time').date('Y-m-d h:i:s a', time()).'</p>'
+                );
+                break;
+            case 'chat' :
+                $this->UserActivityLog(
+                    Auth::user()->id,
+                    '<p>'.Auth::user()->DecryptNameEn.' '.__('activity_history.open_chat').' '.__('activity_history.on').__('activity_history.date_and_time').date('Y-m-d h:i:s a', time()).'</p>'
+                );
+            
+        }
+    }   
 }

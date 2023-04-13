@@ -485,7 +485,7 @@ Route::group(['middleware' => ['auth']], function () {
     
 
 
-
+    Route::get('ajax_user_activity_log','CommonController@ActivityStore')->name('ajax_user_activity');
 
 
     /***********************************************************************************

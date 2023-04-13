@@ -822,14 +822,18 @@ class ExamController extends Controller
                 cn::ATTEMPT_EXAMS_AFTER_EXAM_SURVEY_COL         => $request->after_exam_survey ?? null
             ];
             $save = AttemptExams::create($PostData);
-            $this->UserActivityLog(
-                Auth::user()->id,
-                '<p>'.Auth::user()->DecryptNameEn.' '.__('activity_history.exam_attempted').'. </p>'.
-                '<p>'.__('activity_history.title_is').$examDetail->title.'. </p>'.
-                '<p>'.__('activity_history.exam_reference_is').' '.$examDetail->reference_no.'. </p>'.
-                '<p>'.__('activity_history.exam_submitting_time_is').' '.date('Y/m/d h:i:s a', time())
-            );
+            // Get the selected student answers
+           
             if($save){
+                $this->UserActivityLog(
+                    Auth::user()->id,
+                    '<p>'.Auth::user()->DecryptNameEn.' '.__('activity_history.exam_attempted').'. </p>'.
+                    '<p>'.__('activity_history.test_type').$this->ActivityTestType($examDetail).'</p>'.
+                    '<p>'.__('activity_history.title_is').$examDetail->title.'. </p>'.
+                    '<p>'.__('activity_history.exam_reference_is').' '.$examDetail->reference_no.'. </p>'.
+                    '<p>'.__('activity_history.exam_start_date_time').$examDetail->{cn::CREATED_AT_COL}.'</p>'.
+                    '<p>'.__('activity_history.exam_completion_date_time').$examDetail->{cn::UPDATED_AT_COL}.'</p>'
+                );
                 //Update Column Is_my_teaching_sync
                 Exam::find($examId)->update([cn::EXAM_TABLE_IS_TEACHING_REPORT_SYNC =>'true']);
                 
@@ -1333,6 +1337,10 @@ class ExamController extends Controller
             $arrayOfExams = explode(',',$examId);
             $studentId = ($studentId) ? $studentId : Auth::user()->{cn::USERS_ID_COL};
             $ExamData = Exam::find($examId);
+            if(date('Y-m-d',strtotime($ExamData->result_date)) <= date('Y-m-d')){
+            }else{
+                return back()->with('error_msg', __('languages.result_not_declared_message'));
+            }
             $isSelfLearningExam = ($ExamData->{cn::EXAM_TYPE_COLS} == '1') ? true : false;
             $isExerciseExam = ($ExamData->{cn::EXAM_TYPE_COLS} == '2') ? true : false;
             $isTestExam = ($ExamData->{cn::EXAM_TYPE_COLS} == '3') ? true : false;
@@ -1511,8 +1519,10 @@ class ExamController extends Controller
                 $this->UserActivityLog(
                     Auth::user()->id,
                     '<p>'.Auth::user()->DecryptNameEn.' '.__('activity_history.has_view_report').'.'.'</p>'.
+                    '<p>'.__('activity_history.test_type').$this->ActivityTestType($ExamData).'</p>'.
+                    '<p>'.__('activity_history.report_type').__('activity_history.progress_report').'</p>'.
                     '<p>'.__('activity_history.title_is').$ExamData->title.'.'.'</p>'.
-                    '<p>'.__('activity_history.exam_reference_is').$ExamData->reference_no
+                    '<p>'.__('activity_history.exam_reference_is').$ExamData->reference_no.'</p>'
                 );
                 return view('backend.exams.exams_result',compact('studentOverAllPercentile','isExerciseExam','isTestExam','difficultyLevels','isSelfLearningExam','isSelfLearningExercise',
                 'isSelfLearningTestingZone','studentId','nodeWeaknessList','nodeWeaknessListCh','Questions','AttemptExamData','ExamData','percentageOfAnswer',

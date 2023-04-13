@@ -224,7 +224,7 @@ if($user_id){
                                                 </div>
                                             </td>
                                             <td class="btn-edit">
-                                                <a href="{{ route('report.class-test-reports.correct-incorrect-answer', ['exam_id' => $selflearningTest->exam_id,'filter' => 'filter']) }}" title="{{__('languages.performance_report')}}"><i class="fa fa-bar-chart" aria-hidden="true"></i></a>
+                                                <a href="{{ route('report.class-test-reports.correct-incorrect-answer', ['exam_id' => $selflearningTest->exam_id,'filter' => 'filter']) }}" title="{{__('languages.performance_report')}}"><i class="fa fa-bar-chart fa-lg" aria-hidden="true"></i></a>
                                                 {{-- <a href="javascript:void(0);" title="Class Ability Analysis" class="getClassAbilityAnalysisReport" data-examid="{{$selfLearningTest['id']}}" data-studentids="{{$selfLearningTest['student_ids']}}">
                                                     <i class="fa fa-bar-chart" aria-hidden="true"></i>
                                                 </a> --}}

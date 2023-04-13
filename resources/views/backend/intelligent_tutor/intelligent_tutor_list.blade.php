@@ -277,7 +277,7 @@
                                                 @endif
                                                 @break
                                             @case('mp4')
-                                                <video class="playVideo" id='myImg' data-filepath="{{$content->file_path}}">
+                                                <video class="playVideo" id='myImg' data-filepath="{{$content->file_path}}" data-filetitle ="{{$content->title}}">
                                                     <source src="{{$content->file_path}}" type="video/mp4" />
                                                 </video>
                                                 @if(in_array('upload_documents_update',$permissions))
@@ -334,7 +334,7 @@
                                                 @endif
                                                 @break
                                             @case('url')
-                                                <img src="{{asset($content->thumbnail_file_path)}}" allow="encrypted-media" alt="{{$content->file_name}}" data-filepath="{{$content->file_path}}" class="playVideo">
+                                                <img src="{{asset($content->thumbnail_file_path)}}" allow="encrypted-media" alt="{{$content->file_name}}" data-filepath="{{$content->file_path}}" data-filetitle ="{{$content->title}}" class="playVideo">
                                                 @if(in_array('upload_documents_update',$permissions))
                                                     <span class="intelligent-tutor-files-edit-button editFile" data-id="{{$content->id}}"><i class="fa fa-pencil" aria-hidden="true"></i></span>
                                                 @endif 
@@ -488,6 +488,7 @@
         }
     </script>
     <script>
+        
         //Edit Particular File title Or Description
         $(document).on("click",".editFile",function(){
             $("#cover-spin").show();
@@ -676,10 +677,26 @@
 
         // Play Video In Modal 
         $(document).on("click",".playVideo",function(){
+           
+            var videoTitle = $(this).data("filetitle");
             var videoSRC = $(this).data("filepath");
             var MergeAutoplay = videoSRC + "?autoplay=1";
             var NewvideoSRCauto= MergeAutoplay.replace("watch?v=", "embed/")
             var domain = videoSRC.replace('http://','').replace('https://','').split(/[/?#]/)[0];
+
+             // Activity
+             $.ajax({
+                url: BASE_URL + "/ajax_user_activity_log",
+                type: "GET",
+                data: {
+                    Activity: 'paly_video',
+                    title : videoTitle,
+                },
+                success: function (response) {
+                    var data = JSON.parse(JSON.stringify(response)); 
+                },
+            });
+
             if (videoSRC.indexOf("youtube") != -1) {
                 const videoId = getYoutubeId(videoSRC);
                 $("#youTubeVideoPlay").attr('src',NewvideoSRCauto);

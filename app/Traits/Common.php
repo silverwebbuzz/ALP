@@ -3303,4 +3303,23 @@ trait Common {
         return $PercentileRankValue;
     }
 
+     /**
+     * USE Set Activity Log into Test Type
+     */
+    public function ActivityTestType($examDetail){
+        $examTypeText = '';
+        if($examDetail->exam_type == 1){
+            if(substr($examDetail->reference_no,0,1) == 'S'){
+                $examTypeText = __('activity_history.self_learning');
+            }else{
+                $examTypeText = __('activity_history.ai_based_assessment');
+            }
+        }elseif($examDetail->exam_type == 2){
+            $examTypeText = __('activity_history.exercise');
+        }else{
+            $examTypeText = __('activity_history.test');
+        }
+        return $examTypeText;
+    }
+
 }

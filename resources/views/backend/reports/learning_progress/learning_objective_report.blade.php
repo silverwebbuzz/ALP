@@ -28,7 +28,7 @@
 							<div class="select-lng pb-2">
 								<label for="users-list-role">{{ __('languages.form') }}</label>
 								<select class="form-control" data-show-subtext="true" data-live-search="true" name="grade_id[]" id="student_multiple_grade_id" required >
-									@if(!empty($GradesList))
+									@if(isset($GradesList) && !empty($GradesList))
 									@foreach($GradesList as $grade)
 									<option value="{{$grade['id']}}" @if(null !== request()->get('grade_id') && in_array($grade['id'],request()->get('grade_id'))) selected @elseif($loop->index==0) selected @endif>{{$grade['name']}}</option>
 									@endforeach
@@ -40,7 +40,7 @@
 							<div class="select-lng pb-2">
 								<label for="users-list-role">{{ __('languages.class') }}</label>
 								<select name="class_type_id[]" class="form-control" id="classType-select-option" >
-									@if(!empty($teachersClassList))
+									@if(isset($teachersClassList) && !empty($teachersClassList))
 									@foreach($teachersClassList as $class)
 									<option value="{{$class['class_id']}}" @if(null !== request()->get('class_type_id') && in_array($class['class_id'],request()->get('class_type_id'))) selected @elseif($classid == $class['class_id']) selected @endif>{{$class['class_name']}}</option>
 									@endforeach
@@ -52,7 +52,7 @@
 							<div class="select-lng pb-2">
 								<label for="users-list-role">{{ __('languages.strand') }}</label>
 								<select name="learningReportStrand[]" class="form-control select-option" id="strand_id">
-									@if(!empty($strandData))
+									@if(isset($strandData) && !empty($strandData))
 									@foreach($strandData as $strand)
 									<option value="{{$strand->id}}" 
 									@if(null !== request()->get('learningReportStrand') && in_array($strand->id,request()->get('learningReportStrand'))) 
@@ -97,11 +97,13 @@
 						<div class="col-lg-2 col-md-3">
 							<label for="users-list-role"></label>
 							<div class="select-lng pt-2 pb-2">
-								<button type="submit" name="filter" value="filter" class="btn-search" onclick="showCoverSpinLoader()">{{ __('languages.search') }}</button>
+								<!-- <button type="submit" name="filter" value="filter" class="btn-search" onclick="showCoverSpinLoader()">{{ __('languages.search') }}</button> -->
+								<button type="submit" name="filter" value="filter" class="btn-search">{{ __('languages.search') }}</button>
 							</div>
 						</div>
 					</div>
 				</form>
+				@if(isset($progressReportArray) && !empty($progressReportArray))
 				@foreach($progressReportArray as $strandTitle => $strands)
 				<div class="row">
 					<div class="col-md-12">
@@ -164,6 +166,7 @@
 					@endforeach
 				</div>
 				@endforeach
+				@endif
 			</div>
 		</div>
 	</div>

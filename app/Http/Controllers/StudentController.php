@@ -215,7 +215,14 @@ class StudentController extends Controller
                 return back()->withInput()->with('error_msg', __('languages.duplicate_class_student_number'));
             }
             $Users = User::create($PostData);
+           
             if($Users){
+                 /*User Activity*/
+                $this->UserActivityLog(
+                    Auth::user()->id,
+                    '<p>'.Auth::user()->DecryptNameEn.' '.__('activity_history.created_user_name').$request->name_en.'.'.'</p>'.
+                    '<p>'.__('activity_history.on').__('activity_history.date_and_time').date('Y-m-d h:i:s a', time()) .'</p>'
+                );
                 $this->StoreAuditLogFunction($PostData,'User',cn::USERS_ID_COL,'','Create Student',cn::USERS_TABLE_NAME,'');
 
                 //in student curriculum year table in side user not exist then create record.
@@ -356,6 +363,12 @@ class StudentController extends Controller
             }
             $Update = User::where(cn::USERS_ID_COL,$id)->Update($PostData);
             if($Update){
+                 /*User Activity*/
+                 $this->UserActivityLog(
+                    Auth::user()->id,
+                    '<p>'.Auth::user()->DecryptNameEn.' '.__('activity_history.updated_user_name').$request->name_en.'.'.'</p>'.
+                    '<p>'.__('activity_history.on').__('activity_history.date_and_time').date('Y-m-d h:i:s a', time()) .'</p>'
+                );
                 CurriculumYearStudentMappings::where([
                     cn::CURRICULUM_YEAR_STUDENT_MAPPING_CURRICULUM_YEAR_ID_COL => $this->GetCurriculumYear(),
                     cn::CURRICULUM_YEAR_STUDENT_MAPPING_SCHOOL_ID_COL => auth()->user()->school_id,
@@ -387,6 +400,12 @@ class StudentController extends Controller
                 return  redirect(Helper::redirectRoleBasedDashboard(Auth::user()->{cn::USERS_ID_COL}));
             }
             $this->StoreAuditLogFunction('','User','','','Delete Student ID '.$id,cn::USERS_TABLE_NAME,'');
+            /*User Activity*/
+            $this->UserActivityLog(
+                Auth::user()->id,
+                '<p>'.Auth::user()->DecryptNameEn.' '.__('activity_history.deleted_students').'.'.'</p>'.
+                '<p>'.__('activity_history.on').__('activity_history.date_and_time').date('Y-m-d h:i:s a', time()) .'</p>'
+            );
             // Remove Using Cronjob 
             dispatch(new DeleteUserDataJob($id))->delay(now()->addSeconds(1));
             return $this->sendResponse([], __('languages.student_deleted_successfully'));
@@ -537,8 +556,10 @@ class StudentController extends Controller
         $exams = Exam::create($examData);
         $this->UserActivityLog(
             Auth::user()->id,
-           '<p>'.Auth::user()->DecryptNameEn.' '.__('activity_history.new_test_created').'.'.
-           '<p>'.__('activity_history.title_is').$exams->title.'</p>'
+            '<p>'.Auth::user()->DecryptNameEn.' '.__('activity_history.new_test_created').'.'.
+            '<p>'.__('activity_history.test_type').$this->ActivityTestType($exams).'</p>'.
+            '<p>'.__('activity_history.title_is').$exams->title.'</p>'.
+            '<p>'.__('activity_history.exam_reference_is').$exams->reference_no.'</p>'
         );
         if($exams){
             // Create exam school mapping

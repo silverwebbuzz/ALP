@@ -48,6 +48,7 @@
                                         <!-- <option value="1">{{__('languages.insert_update')}}</option> -->
                                         <option value="1" @if ($request->mode == 1) ? selected @endif>{{__('languages.new_students_import')}}</option>
                                         <option value="2" @if ($request->mode == 2) ? selected  @endif>{{__('languages.promote_students_import')}}</option>
+                                        <option value="3" @if ($request->mode == 3) ? selected  @endif>{{__('languages.update_student_name')}}</option>
                                     </select>
                                 </fieldset>
                             </div> 

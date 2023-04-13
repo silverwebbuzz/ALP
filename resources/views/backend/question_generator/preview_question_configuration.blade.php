@@ -641,8 +641,9 @@
                                                 <button type="button" class="blue-btn btn btn-primary previous-button previous_btn_step_4" data-stepid="4">{{ __('languages.question_generators_menu.previous') }}</button>
                                                 @if(auth()->user()->role_id != 3)
                                                     <a class="blue-btn btn btn-primary" href="{{ route('question-wizard') }}">{{ __('languages.close') }}</a>
-                                                @endif
+                                                @else
                                                     <a href="javascript:void(0);" class="blue-btn btn btn-primary" id="backButton">{{__('languages.close')}}</a>
+                                                @endif
                                             </div>
                                         </div>
                                     </div>

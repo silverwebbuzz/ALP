@@ -162,6 +162,7 @@ if($user_id){
                                 <th class="selec-opt">{{__('languages.publish_date_time')}}</th>
                                 <th>{{__('languages.report.start_date')}} & {{__('languages.time')}}</th>
                                 <th>{{__('languages.report.end_date')}} & {{__('languages.time')}}</th>
+								<th>{{__('languages.report.result_release_date')}}</th>
 								<th>{{__('languages.reference_number')}}</th>
                                 <th>{{__('languages.title')}}</th>
                                 <th>{{__('languages.form')}} - {{__('languages.class')}}</th>
@@ -210,6 +211,7 @@ if($user_id){
 											--
 										@endif
 									</td>
+									<td>{{date('d/m/Y',strtotime($assignmentExcercise->exams->result_date))}}</td>
 									<td>{{$assignmentExcercise->exams->reference_no}}</td>
                                     <td>{{$assignmentExcercise->exams->title}}</td>
                                     <td>
@@ -220,7 +222,7 @@ if($user_id){
 										@endif
 									</td>
                                     <td>{{ $assignmentExcercise->no_of_students }}</td>
-                                    @php																
+                                    @php
                                         $progress = json_decode($assignmentExcercise->student_progress, true);
                                         $accuracy = json_decode($assignmentExcercise->average_accuracy, true);
                                     @endphp

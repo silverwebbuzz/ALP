@@ -28,6 +28,11 @@ class ProfileController extends Controller
             if(!empty($user->other_roles_id)){
                 $otherRole = OtherRoles::select(DB::raw('group_concat('.cn::OTHER_ROLE_NAME_COL.') as roles'))->whereIn(cn::OTHER_ROLE_ID_COL,explode(',',$user->other_roles_id))->first();
             }
+            $this->UserActivityLog(
+                Auth::user()->id,
+                '<p>'.Auth::user()->DecryptNameEn.' '.__('activity_history.see_own_profile').'. </p>'.
+                '<p>'.__('activity_history.on').__('activity_history.date_and_time').date('Y-m-d h:i:s a', time()).'</p>'
+            );
             return view('backend.profile.update_profile',compact('user','otherRole','Regions'));
         }catch(Exception $exception){
             return back()->withError($exception->getMessage())->withInput();
@@ -111,6 +116,11 @@ class ProfileController extends Controller
                                         ->groupBy(cn::EXAM_CREDIT_POINT_RULES_MAPPING_EXAM_ID_COL)->groupBy(cn::CREATED_AT_COL)
                                         ->sortable()
                                         ->paginate($items);
+            /*User Activity*/
+            $this->UserActivityLog(
+                Auth::user()->id,
+                '<p>'.Auth::user()->DecryptNameEn.' '.__('activity_history.see_credit_point_history_detail').' '.__('activity_history.on').__('activity_history.date_and_time').date('Y-m-d h:i:s a', time()) .'</p>'
+            );
             return view('backend.profile.credit_point_history',compact('CreditPointHistoryList','items','TotalFilterData','UserData','studentId'));
         }
         catch(Exception $exception){

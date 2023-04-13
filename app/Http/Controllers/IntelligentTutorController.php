@@ -49,12 +49,15 @@ class IntelligentTutorController extends Controller
                 $strand = $questionStructureCode[1];
                 $learning_unit = substr($questionStructureCode[2],0,2);
                 $learning_objective = substr($questionStructureCode[2],2,2);
-                
                 $gradeID =  Grades::select(cn::GRADES_ID_COL)->where(cn::GRADES_CODE_COL,$grade)->first();
                 $StrandID = Strands::select(cn::STRANDS_ID_COL)->where(cn::STRANDS_CODE_COL,$strand)->first();
-                $LearningUnitID = LearningsUnits::select(cn::LEARNING_UNITS_ID_COL)->where('stage_id','<>',3)->where(cn::LEARNING_UNITS_CODE_COL,$learning_unit)->first();
-                $LearningObjectivesID = LearningsObjectives::select(cn::LEARNING_OBJECTIVES_ID_COL)->where(cn::LEARNING_OBJECTIVES_CODE_COL,$learning_objective)->where('stage_id','<>',3)->first();
-
+                $LearningUnitID =   LearningsUnits::select(cn::LEARNING_UNITS_ID_COL)
+                                    ->where('stage_id','<>',3)
+                                    ->where(cn::LEARNING_UNITS_CODE_COL,$learning_unit)
+                                    ->first();
+                $LearningObjectivesID = LearningsObjectives::select(cn::LEARNING_OBJECTIVES_ID_COL)
+                                        ->where(cn::LEARNING_OBJECTIVES_CODE_COL,$learning_objective)
+                                        ->where('stage_id','<>',3)->first();
                 $request->request->add([
                     'learning_tutor_grade_id' => $gradeID->toArray(),
                     'learning_tutor_strand_id' => $StrandID->toArray(),
@@ -115,7 +118,7 @@ class IntelligentTutorController extends Controller
                 $mainUploadDataQuery =  IntelligentTutorVideos::whereIn(cn::INTELLIGENT_TUTOR_VIDEOS_LANGUAGE_ID,$LanguageId)
                                                                 ->whereIntegerInRaw(cn::INTELLIGENT_TUTOR_VIDEOS_STRAND_UNITS_MAPPING_ID_COL,$strandObjectivesMappingId->toArray())
                                                                 ->where(cn::INTELLIGENT_TUTOR_VIDEOS_STATUS_COL,$Status)
-                                                                ->where(cn::INTELLIGENT_TUTOR_VIDEOS_CURRICULUM_YEAR_ID_COL,$this->GetCurriculumYear())
+                                                                //->where(cn::INTELLIGENT_TUTOR_VIDEOS_CURRICULUM_YEAR_ID_COL,$this->GetCurriculumYear())
                                                                 ->orderBy(cn::INTELLIGENT_TUTOR_VIDEOS_ID_COL,'DESC');
             }
             
@@ -400,7 +403,7 @@ class IntelligentTutorController extends Controller
         }
         $uploadData = IntelligentTutorVideos::whereIntegerInRaw(cn::INTELLIGENT_TUTOR_VIDEOS_STRAND_UNITS_MAPPING_ID_COL,$strandObjectivesMappingId->toArray())
                     ->where(cn::INTELLIGENT_TUTOR_VIDEOS_STATUS_COL,$Status)
-                    ->where(cn::INTELLIGENT_TUTOR_VIDEOS_CURRICULUM_YEAR_ID_COL,$this->GetCurriculumYear())
+                    //->where(cn::INTELLIGENT_TUTOR_VIDEOS_CURRICULUM_YEAR_ID_COL,$this->GetCurriculumYear())
                     ->whereIn(cn::INTELLIGENT_TUTOR_VIDEOS_LANGUAGE_ID,$LanguagesIdsArray)
                     ->orderBy(cn::INTELLIGENT_TUTOR_VIDEOS_ID_COL,'DESC')->skip($countUploadData)
                     ->take(12)

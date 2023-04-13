@@ -157,6 +157,12 @@ class SchoolUsersController extends Controller
             $Users = $UserModel->latest()->first();
             if($Users){
                 $this->StoreAuditLogFunction($request->all(),'User',cn::USERS_ID_COL,'','Create User',cn::USERS_TABLE_NAME,'');
+                /*User Activity*/
+                $this->UserActivityLog(
+                    Auth::user()->id,
+                    '<p>'.Auth::user()->DecryptNameEn.' '.__('activity_history.created_user_name').$request->name_en.'.'.'</p>'.
+                    '<p>'.__('activity_history.on').__('activity_history.date_and_time').date('Y-m-d h:i:s a', time()) .'</p>'
+                );
                 return redirect('school-users')->with('success_msg', __('languages.user_added_successfully'));
             }else{
                 return back()->with('error_msg', __('languages.problem_was_occur_please_try_again'));
@@ -219,6 +225,12 @@ class SchoolUsersController extends Controller
             );
             $User = User::where(cn::USERS_ID_COL,$id)->Update($PostData);            
             if($User){
+                 /*User Activity*/
+                 $this->UserActivityLog(
+                    Auth::user()->id,
+                    '<p>'.Auth::user()->DecryptNameEn.' '.__('activity_history.updated_user_name').$request->name_en.'.'.'</p>'.
+                    '<p>'.__('activity_history.on').__('activity_history.date_and_time').date('Y-m-d h:i:s a', time()) .'</p>'
+                );
                 return redirect('school-users')->with('success_msg', __('languages.user_updated_successfully'));
             }else{
                 return back()->with('error_msg', __('languages.problem_was_occur_please_try_again'));
@@ -240,6 +252,12 @@ class SchoolUsersController extends Controller
             $User = User::find($id);
             $this->StoreAuditLogFunction('','Users','','','Delete User ID '.$id,cn::USERS_TABLE_NAME,'');
             if($User->delete()){
+                /*User Activity*/
+                $this->UserActivityLog(
+                    Auth::user()->id,
+                    '<p>'.Auth::user()->DecryptNameEn.' '.__('activity_history.deleted_user_name').$User->DecryptNameEn.'.'.'</p>'.
+                    '<p>'.__('activity_history.on').__('activity_history.date_and_time').date('Y-m-d h:i:s a', time()) .'</p>'
+                );
                 return $this->sendResponse([], __('languages.user_deleted_successfully'));
             }else{
                 return $this->sendError(__('languages.problem_was_occur_please_try_again'), 422);

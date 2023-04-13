@@ -70,7 +70,7 @@
                                                 $examId = $examsData->id;
                                             }
                                             @endphp
-                                            @if(in_array($student->id,$attemptedExamStudentIds))
+                                            @if(in_array($student->id,$attemptedExamStudentIds) && (date('Y-m-d',strtotime($examsData->result_date)) <= date('Y-m-d')))
                                             <div class="col-lg-2 col-md-2 col-sm-12">
                                                 <a href="{{route('adminexams.result',['examid' => $examId, 'studentid' => $student->id])}}" class="btn btn-primary btn-sm view-result-btn" data-examid="{{$examsData->id}}" data-studentid={{$student->id}}>{{__('languages.view_result')}}</a>
                                             </div>

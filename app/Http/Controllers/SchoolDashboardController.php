@@ -95,6 +95,12 @@ class SchoolDashboardController extends Controller
                 }
                 $this->StoreAuditLogFunction($SchoolData,'User',cn::USERS_ROLE_ID_COL,cn::SCHOOL_ROLE_ID,'Update School Profile',cn::USERS_TABLE_NAME,'');
                 $update = User::where(cn::USERS_ROLE_ID_COL,cn::SCHOOL_ROLE_ID)->where(cn::USERS_SCHOOL_ID_COL,$SchoolId)->update($SchoolData);
+                /*User Activity*/
+                $this->UserActivityLog(
+                    Auth::user()->id,
+                    '<p>'.Auth::user()->DecryptNameEn.' '.__('activity_history.school_profile_updated').'.'.'</p>'.
+                    '<p>'.__('activity_history.on').__('activity_history.date_and_time').date('Y-m-d h:i:s a', time()) .'</p>'
+                );
                 return redirect('school/profile')->with('success_msg', __('languages.profile_updated_successfully'));
             }else{
                 return back()->with('error_msg', __('languages.problem_was_occur_please_try_again'));

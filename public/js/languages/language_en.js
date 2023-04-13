@@ -113,7 +113,7 @@ var VALIDATIONS = {
 };
 var N_SELECTED_TEXT = 'selected';
 var NONE_SELECTED = "None selected";
-var RESULT_DATE = "Result Date";
+var RESULT_DATE = "Result Release Date";
 var END_DATE = "End Date";
 var PLEASE_ENTER = "Please Enter";
 var SELECT_CLASS = "Select Class";

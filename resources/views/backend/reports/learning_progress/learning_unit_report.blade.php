@@ -58,7 +58,8 @@
 						<div class="col-lg-2 col-md-3">
 							<label for="users-list-role"></label>
 							<div class="select-lng pt-2 pb-2">
-								<button type="submit" name="filter" value="filter" class="btn-search" onclick="showCoverSpinLoader()">{{ __('languages.search') }}</button>
+								<!-- <button type="submit" name="filter" value="filter" class="btn-search" onclick="showCoverSpinLoader()">{{ __('languages.search') }}</button> -->
+								<button type="submit" name="filter" value="filter" class="btn-search">{{ __('languages.search') }}</button>
 							</div>
 						</div>
 					</div>

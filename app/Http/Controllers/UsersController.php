@@ -627,6 +627,7 @@ class UsersController extends Controller
             }
             
             if($request->isMethod('post')){
+
                 $file = $request->file('user_file');
                 // File Details 
                 $filename = $file->getClientOriginalName();
@@ -663,7 +664,7 @@ class UsersController extends Controller
                         $importData_arr = array();
                         $i = 0;
                         
-                        while (($filedata = fgetcsv($file, 1000, ",")) !== FALSE) {
+                        while(($filedata = fgetcsv($file, 1000, ",")) !== FALSE){
                             $num = count($filedata );
                             // Skip first row (Remove below comment if you want to skip the first row)
                             if($i != 0){
@@ -876,8 +877,6 @@ class UsersController extends Controller
                     $dataAllList='';
                     
                     $duplicateArray = [];
-                    
-
                     // $dataList='<div class="row">';
                     $dataset = '<h5>'.__("Stage 2").'</h5><span class="badge badge-warning col-md-12 mb-2">'.__('languages.please_correct_the_below_highlighted_data_conflict_with_the_current_system_data').'</span>
                                 <table border=1 width=100% class="styled-table">
@@ -886,10 +885,10 @@ class UsersController extends Controller
                                         <th>'.__('languages.email').'</th>
                                         <th>'.__('languages.english_name').'</th>
                                         <th>'.__('languages.chinese_name').'</th>
-                                        <th>'.__('languages.permanent_reference_number').'</th>
+                                        <th>'.__('languages.std_number').'</th>
                                         <th>'.__('languages.grade').'</th>
                                         <th>'.__('languages.class').'</th>
-                                        <th>'.__('languages.student_number_with_class').'</th>
+                                        <th>'.__('languages.class_student_number').'</th>
                                     </tr>
                                 </thead><tbody>';
                     $isDuplicateCount = 0;
@@ -968,10 +967,10 @@ class UsersController extends Controller
                                 $studentNumberWithInClass = $importData[7];
                             }
                         }
-                        $usersClassStudentNumber=$Grade->name.$ClassData->name.$studentNumberWithInClass;
+                        $usersClassStudentNumber = $Grade->name.$ClassData->name.$studentNumberWithInClass;
                                                 
                         switch($request->mode){
-                            case 1: 
+                            case 1: // New Student Import
                                     $checkUserExists =  User::where(function ($query) use($importData,$usersClassStudentNumber){
                                                             $query->where(cn::USERS_SCHOOL_ID_COL,Auth::user()->{cn::USERS_SCHOOL_ID_COL})
                                                                 ->where(function ($q) use($importData,$usersClassStudentNumber){
@@ -1006,7 +1005,7 @@ class UsersController extends Controller
                                                     </tr>';
                                     }
                                     break;
-                            case 2:
+                            case 2: // Update Student
                                 $isClassStudentNumberExists = false;
                                 $isEmailUnMatched = false;
                                     // Manoj added
@@ -1212,9 +1211,7 @@ class UsersController extends Controller
                                                     })->first();                                                                            
                                 if(!empty($checkUserExists)){
                                     // user Exist then class promotion history manage.
-                                    
                                     $this->ClassPromotionHistoryCreateOrUpdateRecord($request->curriculum_year_id,$checkUserExists,$gradeId,$classId);
-
                                     User::where(cn::USERS_ID_COL,$checkUserExists->id)
                                     ->update([
                                         cn::USERS_PASSWORD_COL                  => ($importData[1]) ? Hash::make($this->setPassword(trim($importData[1]))) : null,
@@ -1301,6 +1298,8 @@ class UsersController extends Controller
 
                                     $this->ClassPromotionHistoryCreateOrUpdateRecord($request->curriculum_year_id,$newUserData,$gradeId,$classId);
                                 }
+                                
+                                $successMessage = __('languages.data_imported_successfully');
                             }
 
                             if($request->mode==2){ // If 2 = promotion student to next year
@@ -1397,11 +1396,23 @@ class UsersController extends Controller
 
                                     $this->ClassPromotionHistoryCreateOrUpdateRecord($request->curriculum_year_id,$newUserData,$gradeId,$classId);
                                 }
+                                $successMessage = __('languages.data_imported_successfully');
+                            }
+
+                            if($request->mode==3){ // Update student name
+                                if($this->CheckUserInDataExists('email',$importData[0])){
+                                    User::where(cn::USERS_EMAIL_COL,$importData[0])
+                                    ->Update([
+                                        cn::USERS_NAME_EN_COL => $this->encrypt($importData[2]),
+                                        cn::USERS_NAME_CH_COL => $this->encrypt($importData[3])
+                                    ]);
+                                }
+                                $successMessage = __('languages.student_name_updated_successfully');
                             }
                         }
                     }
                     $this->StoreAuditLogFunction('','User','','','Student Imported successfully. file name '.$filepath,cn::USERS_TABLE_NAME,'');
-                    return redirect()->route('ImportStudents',['mode' => $request->mode,'curriculum_year_id' => $request->curriculum_year_id])->with('success_msg', __('languages.data_imported_successfully'));
+                    return redirect()->route('ImportStudents',['mode' => $request->mode,'curriculum_year_id' => $request->curriculum_year_id])->with('success_msg', $successMessage);
             }
         }catch(Exception $exception){
             return $this->sendError($exception->getMessage(), 404);

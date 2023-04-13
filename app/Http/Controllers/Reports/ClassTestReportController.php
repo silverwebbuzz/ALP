@@ -1176,6 +1176,12 @@ class ClassTestReportController extends Controller
                         }
                     }
                 }
+                /*User Activity*/
+                $this->UserActivityLog(
+                    Auth::user()->id,
+                    '<p>'.Auth::user()->DecryptNameEn.' '.__('activity_history.see_report').'.'.'</p>'.
+                    '<p>'.__('activity_history.exam_reference_is').$ExamData->reference_no.' '.__('activity_history.on').__('activity_history.date_and_time').date('Y-m-d h:i:s a', time()) .'</p>'
+                );
             }
         }
         $studentsRanks = [];
@@ -1259,6 +1265,8 @@ class ClassTestReportController extends Controller
         if(isset($ExamData->id) && !empty($ExamData->id)){
             $menuItem = $this->GetPageName($ExamData->id);
         }
+        // echo "<pre>";print_r($ExamData->reference_no);die;
+        
         return view('backend/reports/class_test_result_correct_incorrect',compact('examType','peerGroupData','getClasses','SchoolList','GradeList','ExamList',
         'ResultList','QuestionSkills','ExamData','studentsRanks','grade_id','class_type_id','group_id','GradeClassListData','QuestionAnswerData',
         'PeerGroupList','schoolList','isRemainderEnable','menuItem'));

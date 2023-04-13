@@ -324,6 +324,19 @@ $(function (){
         var language = "English-en";
         var SelectedAlpChatGroup = $(this).attr('data-AlpChatGroupId');
         var ALP_CHAT_USER_ID = "{{Auth::user()->alp_chat_user_id}}";
+        
+         // Activity
+         $.ajax({
+            url: BASE_URL + "/ajax_user_activity_log",
+            type: "GET",
+            data: {
+                Activity: 'chat',
+            },
+            success: function (response) {
+                var data = JSON.parse(JSON.stringify(response)); 
+            },
+        });
+
         if(ALP_CHAT_USER_ID==""){
             //If current user is not exist in firebase then we will create new user into firebase
             $.ajax({

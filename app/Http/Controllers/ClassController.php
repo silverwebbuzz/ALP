@@ -138,6 +138,11 @@ class ClassController extends Controller
                             // Clone and mapping data
                             //$this->StrandUnitObjectivesMappingClone($Grades->{cn::GRADES_ID_COL},$Subjects->{cn::SUBJECTS_ID_COL});
                             //Log::info('Job Success - Redirect success page');
+                            $this->UserActivityLog(
+                                Auth::user()->id,
+                                '<p>'.Auth::user()->DecryptNameEn.' '.__('activity_history.created_class').'.'.'</p>'.
+                                '<p>'.__('activity_history.on').__('activity_history.date_and_time').date('Y-m-d h:i:s a', time()) .'</p>'
+                            );
                             return redirect('class')->with('success_msg', __('languages.class_added_successfully'));
                         }else{
                             return back()->with('error_msg', __('languages.problem_was_occur_please_try_again'));
@@ -169,6 +174,11 @@ class ClassController extends Controller
                             // Clone and mapping data
                             //$this->StrandUnitObjectivesMappingClone($Grades->{cn::GRADES_ID_COL},$Subjects->{cn::SUBJECTS_ID_COL});
                             Log::info('Job Success - Redirect success page');
+                            $this->UserActivityLog(
+                                Auth::user()->id,
+                                '<p>'.Auth::user()->DecryptNameEn.' '.__('activity_history.created_class').'.'.'</p>'.
+                                '<p>'.__('activity_history.on').__('activity_history.date_and_time').date('Y-m-d h:i:s a', time()) .'</p>'
+                            );
                             return redirect('class')->with('success_msg', __('languages.class_added_successfully'));                        
                         }else{
                             return back()->with('error_msg', __('languages.problem_was_occur_please_try_again'));
@@ -236,6 +246,11 @@ class ClassController extends Controller
                                 // Clone and mapping data
                                 //$this->StrandUnitObjectivesMappingClone($Grades->{cn::GRADES_ID_COL},$Subjects->{cn::SUBJECTS_ID_COL});
                                 Log::info('Job Success - Redirect success page');
+                                $this->UserActivityLog(
+                                    Auth::user()->id,
+                                    '<p>'.Auth::user()->DecryptNameEn.' '.__('activity_history.created_class').'.'.'</p>'.
+                                    '<p>'.__('activity_history.on').__('activity_history.date_and_time').date('Y-m-d h:i:s a', time()) .'</p>'
+                                );
                                 return redirect('class')->with('success_msg', __('languages.class_added_successfully'));
                             }else{
                                 return back()->with('error_msg', __('languages.problem_was_occur_please_try_again'));
@@ -270,6 +285,11 @@ class ClassController extends Controller
                                 // Clone and mapping data
                                 //$this->StrandUnitObjectivesMappingClone($Grades->{cn::GRADES_ID_COL},$Subjects->{cn::SUBJECTS_ID_COL});
                                 Log::info('Job Success - Redirect success page');
+                                $this->UserActivityLog(
+                                    Auth::user()->id,
+                                    '<p>'.Auth::user()->DecryptNameEn.' '.__('activity_history.created_class').'.'.'</p>'.
+                                    '<p>'.__('activity_history.on').__('activity_history.date_and_time').date('Y-m-d h:i:s a', time()) .'</p>'
+                                );
                                 return redirect('class')->with('success_msg', __('languages.class_added_successfully'));
                             }else{
                                 return back()->with('error_msg', __('languages.problem_was_occur_please_try_again'));
@@ -361,6 +381,11 @@ class ClassController extends Controller
                 ])->delete();
             }
             if(!empty($getClassData)){
+                $this->UserActivityLog(
+                    Auth::user()->id,
+                    '<p>'.Auth::user()->DecryptNameEn.' '.__('activity_history.updated_class').'.'.'</p>'.
+                    '<p>'.__('activity_history.on').__('activity_history.date_and_time').date('Y-m-d h:i:s a', time()) .'</p>'
+                );
                 return redirect('class')->with('success_msg', __('languages.class_updated_successfully'));
             }else{
                 return back()->with('error_msg', __('languages.problem_was_occur_please_try_again'));
@@ -380,6 +405,11 @@ class ClassController extends Controller
             }
             $GradeMapping = GradeSchoolMappings::find($id);
             if($GradeMapping->delete()){
+                $this->UserActivityLog(
+                    Auth::user()->id,
+                    '<p>'.Auth::user()->DecryptNameEn.' '.__('activity_history.deleted_class').'.'.'</p>'.
+                    '<p>'.__('activity_history.on').__('activity_history.date_and_time').date('Y-m-d h:i:s a', time()) .'</p>'
+                );
                 return $this->sendResponse([], __('languages.class_deleted_successfully'));
             }else{
                 return $this->sendError(__('languages.problem_was_occur_please_try_again'), 422);

@@ -1662,21 +1662,6 @@ OnChangeEvent = {
                         fd.append("mode", $("#mode").val());
                         fd.append("user_file", files[0]);
                         fd.append("curriculum_year_id", $("#curriculum").val());
-                        // $.ajax({
-                        //     url:
-                        //         BASE_URL +
-                        //         "/school/class/ImportStudentsDataCheck",
-                        //     type: "POST",
-                        //     data: fd,
-                        //     contentType: false,
-                        //     processData: false,
-                        //     success: function (response) {
-                        //         $("#importStudentModal .data_tbl").html(
-                        //             response.data.data
-                        //         );
-                        //         $("#importStudentModal").modal("show");
-                        //     },
-                        // });
                         $("#cover-spin").show();
                         $.ajax({
                             url: BASE_URL + "/school/class/DuplicateCsvRecords",
@@ -1689,8 +1674,7 @@ OnChangeEvent = {
                                 if (!response.data.data) {
                                     $("#cover-spin").show();
                                     $.ajax({
-                                        url:
-                                            BASE_URL + "/school/class/ImportStudentsDataCheck",
+                                        url:BASE_URL + "/school/class/ImportStudentsDataCheck",
                                         type: "POST",
                                         data: fd,
                                         contentType: false,
@@ -1701,7 +1685,6 @@ OnChangeEvent = {
                                                 $("#importStudentModal .data_tbl").html(response.data.data);
                                                 $("#importStudentModal").modal("show");
                                             }else{
-                                                //toastr.success(STUDENT_IMPORT_CSV_FILE_MESSAGE);
                                                 $(".MessageDisplay").html(STUDENT_IMPORT_CSV_FILE_MESSAGE);
                                                 $(".MessageDisplay").show();
                                             }
@@ -5608,9 +5591,9 @@ Validation = {
                 school_name: {
                     required: true,
                 },
-                school_code: {
-                    required: true,
-                },
+                // school_code: {
+                //     required: true,
+                // },
                 school_name_en: {
                     required: true,
                 },
@@ -5639,9 +5622,9 @@ Validation = {
                 school_name: {
                     required: VALIDATIONS.PLEASE_ENTER_SCHOOL_NAME,
                 },
-                school_code: {
-                    required: VALIDATIONS.PLEASE_ENTER_SCHOOL_CODE,
-                },
+                // school_code: {
+                //     required: VALIDATIONS.PLEASE_ENTER_SCHOOL_CODE,
+                // },
                 school_name_en: {
                     required: VALIDATIONS.PLEASE_ENTER_ENGLISH_SCHOOL_NAME,
                 },
