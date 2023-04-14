@@ -104,13 +104,13 @@ class MyTeachingController extends Controller
 
         if($this->isPrincipalLogin() || $this->isCoOrdinatorLogin() || $this->isPanelHeadLogin() ){
             $gradesList =   GradeSchoolMappings::where([
-                                cn::GRADES_MAPPING_SCHOOL_ID_COL => Auth::user()->school_id,
-                                cn::GRADES_MAPPING_CURRICULUM_YEAR_ID_COL => $this->GetCurriculumYear()
+                                cn::GRADES_MAPPING_SCHOOL_ID_COL            => Auth::user()->{cn::USERS_SCHOOL_ID_COL},
+                                cn::GRADES_MAPPING_CURRICULUM_YEAR_ID_COL   => $this->GetCurriculumYear()
                             ])
                             ->with('grades')
                             ->get();
             $TeacherAssignedClass = GradeClassMapping::where([
-                                cn::GRADE_CLASS_MAPPING_SCHOOL_ID_COL             => Auth::user()->school_id,
+                                cn::GRADE_CLASS_MAPPING_SCHOOL_ID_COL             => Auth::user()->{cn::USERS_SCHOOL_ID_COL},
                                 cn::GRADE_CLASS_MAPPING_CURRICULUM_YEAR_ID_COL    => $this->GetCurriculumYear()
                             ])
                             ->get()
@@ -242,13 +242,13 @@ class MyTeachingController extends Controller
 
         if($this->isPrincipalLogin() || $this->isCoOrdinatorLogin() || $this->isPanelHeadLogin() ){
             $gradesList =   GradeSchoolMappings::where([
-                                cn::GRADES_MAPPING_SCHOOL_ID_COL => Auth::user()->school_id,
+                                cn::GRADES_MAPPING_SCHOOL_ID_COL => Auth::user()->{cn::USERS_SCHOOL_ID_COL},
                                 cn::GRADES_MAPPING_CURRICULUM_YEAR_ID_COL => $this->GetCurriculumYear()
                             ])
                             ->with('grades')
                             ->get();
             $TeacherAssignedClass = GradeClassMapping::where([
-                                cn::GRADE_CLASS_MAPPING_SCHOOL_ID_COL             => Auth::user()->school_id,
+                                cn::GRADE_CLASS_MAPPING_SCHOOL_ID_COL             => Auth::user()->{cn::USERS_SCHOOL_ID_COL},
                                 cn::GRADE_CLASS_MAPPING_CURRICULUM_YEAR_ID_COL    => $this->GetCurriculumYear()
                             ])
                             ->get()
@@ -369,13 +369,13 @@ class MyTeachingController extends Controller
 
         if($this->isPrincipalLogin() || $this->isCoOrdinatorLogin() || $this->isPanelHeadLogin() ){
             $gradesList =   GradeSchoolMappings::where([
-                                cn::GRADES_MAPPING_SCHOOL_ID_COL => Auth::user()->school_id,
+                                cn::GRADES_MAPPING_SCHOOL_ID_COL => Auth::user()->{cn::USERS_SCHOOL_ID_COL},
                                 cn::GRADES_MAPPING_CURRICULUM_YEAR_ID_COL => $this->GetCurriculumYear()
                             ])
                             ->with('grades')
                             ->get();
             $TeacherAssignedClass = GradeClassMapping::where([
-                                cn::GRADE_CLASS_MAPPING_SCHOOL_ID_COL             => Auth::user()->school_id,
+                                cn::GRADE_CLASS_MAPPING_SCHOOL_ID_COL             => Auth::user()->{cn::USERS_SCHOOL_ID_COL},
                                 cn::GRADE_CLASS_MAPPING_CURRICULUM_YEAR_ID_COL    => $this->GetCurriculumYear()
                             ])
                             ->get()
@@ -489,13 +489,13 @@ class MyTeachingController extends Controller
 
         if($this->isPrincipalLogin() || $this->isCoOrdinatorLogin() || $this->isPanelHeadLogin() ){
             $gradesList =   GradeSchoolMappings::where([
-                                cn::GRADES_MAPPING_SCHOOL_ID_COL => Auth::user()->school_id,
+                                cn::GRADES_MAPPING_SCHOOL_ID_COL => Auth::user()->{cn::USERS_SCHOOL_ID_COL},
                                 cn::GRADES_MAPPING_CURRICULUM_YEAR_ID_COL => $this->GetCurriculumYear()
                             ])
                             ->with('grades')
                             ->get();
             $TeacherAssignedClass = GradeClassMapping::where([
-                                cn::GRADE_CLASS_MAPPING_SCHOOL_ID_COL             => Auth::user()->school_id,
+                                cn::GRADE_CLASS_MAPPING_SCHOOL_ID_COL             => Auth::user()->{cn::USERS_SCHOOL_ID_COL},
                                 cn::GRADE_CLASS_MAPPING_CURRICULUM_YEAR_ID_COL    => $this->GetCurriculumYear()
                             ])
                             ->get()

@@ -30,7 +30,7 @@ class LeaderBoardController extends Controller
     /* Leaderboard on load credit point data display   */
     public function getLeaderBoardDetail(){
         $studentList = collect();
-        switch(Auth::user()->role_id){
+        switch(Auth::user()->{cn::USERS_ROLE_ID_COL}){
             case 2 :
                 $GetAssignedGradeClassIds = [];
                 $TeacherGradeClass = $this->TeacherGradesClassService->getTeacherAssignedGradesClass(Auth::user()->{cn::USERS_SCHOOL_ID_COL}, Auth::user()->{cn::USERS_ID_COL});
@@ -38,9 +38,9 @@ class LeaderBoardController extends Controller
                     $studentList = UserCreditPoints::with('user')->whereHas('user',function($query) use($TeacherGradeClass){
                                     return $query->where([
                                                         cn::USERS_ROLE_ID_COL   => cn::STUDENT_ROLE_ID,
-                                                        cn::USERS_SCHOOL_ID_COL => Auth::user()->school_id,
+                                                        cn::USERS_SCHOOL_ID_COL => Auth::user()->{cn::USERS_SCHOOL_ID_COL},
                                                     ])
-                                                    ->whereIn(cn::USERS_ID_COL,$this->curriculum_year_mapping_student_ids($TeacherGradeClass['grades'],$TeacherGradeClass['class'],Auth::user()->school_id));
+                                                    ->whereIn(cn::USERS_ID_COL,$this->curriculum_year_mapping_student_ids($TeacherGradeClass['grades'],$TeacherGradeClass['class'],Auth::user()->{cn::USERS_SCHOOL_ID_COL}));
                                 }) 
                                 ->orderBy(cn::USER_NO_OF_CREDIT_POINTS_COL,'desc')
                                 ->get();
@@ -67,7 +67,7 @@ class LeaderBoardController extends Controller
                 $studentList =UserCreditPoints::with('user')->whereHas('user',function($query){
                                                             return $query->where([
                                                                                     cn::USERS_ROLE_ID_COL   => cn::STUDENT_ROLE_ID,
-                                                                                    cn::USERS_SCHOOL_ID_COL => Auth::user()->school_id,
+                                                                                    cn::USERS_SCHOOL_ID_COL => Auth::user()->{cn::USERS_SCHOOL_ID_COL},
                                                                                 ]);
                                                         }) 
                                                         ->orderBy(cn::USER_NO_OF_CREDIT_POINTS_COL,'desc')
@@ -84,7 +84,7 @@ class LeaderBoardController extends Controller
         $html = '';
         switch($request->LeaderBoardType){
             case 'credit_point':
-                switch(Auth::user()->role_id){
+                switch(Auth::user()->{cn::USERS_ROLE_ID_COL}){
                     case cn::TEACHER_ROLE_ID :
                         $GetAssignedGradeClassIds = [];
                         $TeacherGradeClass = $this->TeacherGradesClassService->getTeacherAssignedGradesClass(Auth::user()->{cn::USERS_SCHOOL_ID_COL}, Auth::user()->{cn::USERS_ID_COL});
@@ -98,9 +98,9 @@ class LeaderBoardController extends Controller
                                             //                     ->whereIn(cn::USERS_CLASS_ID_COL,$TeacherGradeClass['class']);
                                             return $query->where([
                                                         cn::USERS_ROLE_ID_COL   => cn::STUDENT_ROLE_ID,
-                                                        cn::USERS_SCHOOL_ID_COL => Auth::user()->school_id,
+                                                        cn::USERS_SCHOOL_ID_COL => Auth::user()->{cn::USERS_SCHOOL_ID_COL},
                                                     ])
-                                                    ->whereIn(cn::USERS_ID_COL,$this->curriculum_year_mapping_student_ids($TeacherGradeClass['grades'],$TeacherGradeClass['class'],Auth::user()->school_id));
+                                                    ->whereIn(cn::USERS_ID_COL,$this->curriculum_year_mapping_student_ids($TeacherGradeClass['grades'],$TeacherGradeClass['class'],Auth::user()->{cn::USERS_SCHOOL_ID_COL}));
                                         }) 
                                         ->orderBy(cn::USER_NO_OF_CREDIT_POINTS_COL,'desc')
                                         ->get();
@@ -142,7 +142,7 @@ class LeaderBoardController extends Controller
                 }
                 break;
             case 'overall_ability':
-                switch(Auth::user()->role_id){
+                switch(Auth::user()->{cn::USERS_ROLE_ID_COL}){
                     case cn::TEACHER_ROLE_ID :
                         $GetAssignedGradeClassIds = [];
                         $TeacherGradeClass = $this->TeacherGradesClassService->getTeacherAssignedGradesClass(Auth::user()->{cn::USERS_SCHOOL_ID_COL}, Auth::user()->{cn::USERS_ID_COL});

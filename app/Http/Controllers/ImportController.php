@@ -143,7 +143,7 @@ class ImportController extends Controller
 
                                     // Check class is already available in this school
                                     $ClassData = GradeClassMapping::where([
-                                                    cn::GRADE_CLASS_MAPPING_SCHOOL_ID_COL => Auth::user()->school_id,
+                                                    cn::GRADE_CLASS_MAPPING_SCHOOL_ID_COL => Auth::user()->{cn::USERS_SCHOOL_ID_COL},
                                                     cn::GRADE_CLASS_MAPPING_GRADE_ID_COL => $gradeId,
                                                     cn::GRADES_MAPPING_CURRICULUM_YEAR_ID_COL => $request->curriculum_year_id,
                                                     cn::GRADE_CLASS_MAPPING_NAME_COL => strtoupper($importData[6])

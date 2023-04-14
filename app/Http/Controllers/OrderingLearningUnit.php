@@ -29,13 +29,13 @@ class OrderingLearningUnit extends Controller{
         if(isset($request->finalOrdering) && !empty($request->finalOrdering)){
             $orderingFinalArray = explode(',',$request->finalOrdering);
         }        
-        $schoolId = Auth::user()->school_id;
-        if(LearningUnitOrdering::where('school_id',Auth::user()->school_id)->exists()){
+        $schoolId = Auth::user()->{cn::USERS_SCHOOL_ID_COL};
+        if(LearningUnitOrdering::where('school_id',Auth::user()->{cn::USERS_SCHOOL_ID_COL})->exists()){
             if(isset($request->finalOrdering) && !empty($request->finalOrdering)){
                 $orderingUnitData = LearningsUnits::where('strand_id',$request->strand)->first()->toArray();
                 $position = (int)$orderingUnitData['code'];
                 foreach($orderingFinalArray as $orderKey => $LearningUnitId){
-                    LearningUnitOrdering::where('school_id',Auth::user()->school_id)
+                    LearningUnitOrdering::where('school_id',Auth::user()->{cn::USERS_SCHOOL_ID_COL})
                                         ->where('strand_id',$request->strand)
                                         ->where('learning_unit_id',$LearningUnitId)
                                         ->update([
@@ -65,7 +65,7 @@ class OrderingLearningUnit extends Controller{
                 $orderingUnitData = LearningsUnits::where('strand_id',$request->strand)->first()->toArray();
                 $position = (int)$orderingUnitData['code'];
                 foreach($orderingFinalArray as $orderKey => $LearningUnitId){
-                    LearningUnitOrdering::where('school_id',Auth::user()->school_id)
+                    LearningUnitOrdering::where('school_id',Auth::user()->{cn::USERS_SCHOOL_ID_COL})
                                         ->where('strand_id',$request->strand)
                                         ->where('learning_unit_id',$LearningUnitId)
                                         ->update([

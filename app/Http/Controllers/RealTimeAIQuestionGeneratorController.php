@@ -400,7 +400,7 @@ class RealTimeAIQuestionGeneratorController extends Controller
         ];
         $exams = Exam::create($examData);
         $this->UserActivityLog(
-            Auth::user()->id,
+            Auth::user()->{cn::USERS_ID_COL},
             '<p>'.Auth::user()->DecryptNameEn.' '.__('activity_history.new_test_created').'.'.
             '<p>'.__('activity_history.test_type').$this->ActivityTestType($exams).'</p>'.
             '<p>'.__('activity_history.title_is').$exams->title.'</p>'.
@@ -467,7 +467,7 @@ class RealTimeAIQuestionGeneratorController extends Controller
             ];
             $save = AttemptExams::create($PostData);
             $this->UserActivityLog(
-                Auth::user()->id,
+                Auth::user()->{cn::USERS_ID_COL},
                 '<p>'.Auth::user()->DecryptNameEn.' '.__('activity_history.exam_attempted').'.'.
                 '<p>'.__('activity_history.title_is').$exams->title.'.'.'</p>'.
                 '<p>'.__('activity_history.test_type').$this->ActivityTestType($exams).'</p>'.
@@ -890,7 +890,7 @@ class RealTimeAIQuestionGeneratorController extends Controller
             cn::EXAM_TABLE_STATUS_COLS                      => 'publish'
         ];
         $this->UserActivityLog(
-            Auth::user()->id,
+            Auth::user()->{cn::USERS_ID_COL},
             '<p>'.Auth::user()->DecryptNameEn.' '.__('activity_history.new_test_created').'.'.
             '<p>'.__('activity_history.test_type').$this->ActivityTestType($exams).'</p>'.
             '<p>'.__('activity_history.title_is').$exams->title.'</p>'.
@@ -954,7 +954,7 @@ class RealTimeAIQuestionGeneratorController extends Controller
             ];
             $save = AttemptExams::create($PostData);
             $this->UserActivityLog(
-                Auth::user()->id,
+                Auth::user()->{cn::USERS_ID_COL},
                 '<p>'.Auth::user()->DecryptNameEn.' '.__('activity_history.exam_attempted').'.'.
                 '<p>'.__('activity_history.test_type').$this->ActivityTestType($exams).'</p>'.
                 '<p>'.__('activity_history.title_is').$exams->title.'.'.'</p>'.
@@ -975,7 +975,7 @@ class RealTimeAIQuestionGeneratorController extends Controller
                 $this->CronJobController->UpdateMyTeachingTable(Auth::user()->{cn::USERS_SCHOOL_ID_COL}, $exams->id);
 
                 /** Update Student Credit Points via cron job */
-                $this->CronJobController->UpdateStudentCreditPoints($exams->id, Auth::user()->id);
+                $this->CronJobController->UpdateStudentCreditPoints($exams->id, Auth::user()->{cn::USERS_ID_COL});
                 
                 /** End Update overall ability for the student **/
                 $this->StoreAuditLogFunction('','Exams','','','Attempt Exam',cn::EXAM_TABLE_NAME,'');

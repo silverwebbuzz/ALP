@@ -452,7 +452,7 @@ class ExportController extends Controller
      */
     public function exportStudents(Request $request){
         $userList = User::with('schools')
-                    ->where(cn::USERS_SCHOOL_ID_COL,Auth::user()->school_id)
+                    ->where(cn::USERS_SCHOOL_ID_COL,Auth::user()->{cn::USERS_SCHOOL_ID_COL})
                     ->where(cn::USERS_ROLE_ID_COL,cn::STUDENT_ROLE_ID)
                     ->where(cn::USERS_STATUS_COL,'active')->get();
         $csvExporter = new \Laracsv\Export();

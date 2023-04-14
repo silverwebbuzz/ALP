@@ -198,7 +198,7 @@ class ClassTestReportController extends Controller
                                                 cn::EXAM_SCHOOL_GRADE_CLASS_MAPPING_CURRICULUM_YEAR_ID_COL  => $this->GetCurriculumYear(),
                                                 cn::EXAM_SCHOOL_GRADE_CLASS_MAPPING_EXAM_ID_COL             => $examId,
                                                 cn::EXAM_SCHOOL_GRADE_CLASS_MAPPING_STATUS_COL              => 'publish',
-                                                cn::EXAM_SCHOOL_GRADE_CLASS_MAPPING_SCHOOL_ID_COL           => Auth::user()->school_id
+                                                cn::EXAM_SCHOOL_GRADE_CLASS_MAPPING_SCHOOL_ID_COL           => Auth::user()->{cn::USERS_SCHOOL_ID_COL}
                                             ])
                                             ->pluck(cn::EXAM_SCHOOL_GRADE_CLASS_MAPPING_GRADE_ID_COL);
                     if(!empty($AvailableGradesIds)){
@@ -209,7 +209,7 @@ class ClassTestReportController extends Controller
                                                 cn::EXAM_SCHOOL_GRADE_CLASS_MAPPING_CURRICULUM_YEAR_ID_COL  => $this->GetCurriculumYear(),
                                                 cn::EXAM_SCHOOL_GRADE_CLASS_MAPPING_EXAM_ID_COL             => $examId,
                                                 cn::EXAM_SCHOOL_GRADE_CLASS_MAPPING_STATUS_COL              => 'publish',
-                                                cn::EXAM_SCHOOL_GRADE_CLASS_MAPPING_SCHOOL_ID_COL           => Auth::user()->school_id
+                                                cn::EXAM_SCHOOL_GRADE_CLASS_MAPPING_SCHOOL_ID_COL           => Auth::user()->{cn::USERS_SCHOOL_ID_COL}
                                             ])
                                             ->pluck(cn::EXAM_SCHOOL_GRADE_CLASS_MAPPING_CLASS_ID_COL);
                     if(!empty($AvailableClassIds)){
@@ -217,7 +217,7 @@ class ClassTestReportController extends Controller
                                     ->whereIn(cn::GRADE_CLASS_MAPPING_ID_COL,$AvailableClassIds)
                                     ->where([
                                         cn::GRADE_CLASS_MAPPING_CURRICULUM_YEAR_ID_COL => $this->GetCurriculumYear(),
-                                        cn::EXAM_SCHOOL_GRADE_CLASS_MAPPING_SCHOOL_ID_COL => Auth::user()->school_id,
+                                        cn::EXAM_SCHOOL_GRADE_CLASS_MAPPING_SCHOOL_ID_COL => Auth::user()->{cn::USERS_SCHOOL_ID_COL},
                                         cn::GRADE_CLASS_MAPPING_STATUS_COL => 'active'
                                     ])
                                     ->get()->toArray();                                        
@@ -1078,7 +1078,7 @@ class ClassTestReportController extends Controller
                                     if($this->isAdmin()){
                                         $StudentDetail = User::where([cn::USERS_ID_COL => $studentId,cn::USERS_SCHOOL_ID_COL => $request->exam_school_id])->first();
                                     }else{
-                                        $StudentDetail = User::where([cn::USERS_ID_COL => $studentId,cn::USERS_SCHOOL_ID_COL => Auth::user()->school_id])->first();
+                                        $StudentDetail = User::where([cn::USERS_ID_COL => $studentId,cn::USERS_SCHOOL_ID_COL => Auth::user()->{cn::USERS_SCHOOL_ID_COL}])->first();
                                     }
                                     if(isset($StudentDetail) && !empty($StudentDetail)){
                                         $ResultList[$studentKey]['exam_id']                         = $ExamData->id;
@@ -1178,7 +1178,7 @@ class ClassTestReportController extends Controller
                 }
                 /*User Activity*/
                 $this->UserActivityLog(
-                    Auth::user()->id,
+                    Auth::user()->{cn::USERS_ID_COL},
                     '<p>'.Auth::user()->DecryptNameEn.' '.__('activity_history.see_report').'.'.'</p>'.
                     '<p>'.__('activity_history.exam_reference_is').$ExamData->reference_no.' '.__('activity_history.on').__('activity_history.date_and_time').date('Y-m-d h:i:s a', time()) .'</p>'
                 );

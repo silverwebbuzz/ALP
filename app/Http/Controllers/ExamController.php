@@ -105,13 +105,13 @@ class ExamController extends Controller
                     // Delete Exam school grade class mapping
                     ExamGradeClassMappingModel::where([
                         cn::EXAM_SCHOOL_GRADE_CLASS_MAPPING_EXAM_ID_COL => $id,
-                        cn::EXAM_SCHOOL_GRADE_CLASS_MAPPING_SCHOOL_ID_COL => Auth::user()->school_id
+                        cn::EXAM_SCHOOL_GRADE_CLASS_MAPPING_SCHOOL_ID_COL => Auth::user()->{cn::USERS_SCHOOL_ID_COL}
                     ])->delete();
 
                     // Delete Exam school mapping
                     ExamSchoolMapping::where([
                         cn::EXAM_SCHOOL_MAPPING_EXAM_ID_COL => $id,
-                        cn::EXAM_SCHOOL_MAPPING_SCHOOL_ID_COL => Auth::user()->school_id
+                        cn::EXAM_SCHOOL_MAPPING_SCHOOL_ID_COL => Auth::user()->{cn::USERS_SCHOOL_ID_COL}
                     ])->delete();
                     
                     if($exam->created_by_user != 'super_admin'){
@@ -123,7 +123,7 @@ class ExamController extends Controller
                         }
                     }else{
                         $ExistingSchoolIds = explode(',',$exam->school_id);
-                        $RemoveSchoolIds = array(Auth::user()->school_id);
+                        $RemoveSchoolIds = array(Auth::user()->{cn::USERS_SCHOOL_ID_COL});
                         $RemainingSchoolIds = implode(',',array_diff($ExistingSchoolIds, $RemoveSchoolIds));
                         $update = Exam::find($id)->Update(['school_id' => $RemainingSchoolIds]);
                         if($update){
@@ -136,20 +136,20 @@ class ExamController extends Controller
                     // First we need to remove exam grade class mapping table records
                     ExamGradeClassMappingModel::where([
                         cn::EXAM_SCHOOL_GRADE_CLASS_MAPPING_EXAM_ID_COL => $id,
-                        cn::EXAM_SCHOOL_GRADE_CLASS_MAPPING_SCHOOL_ID_COL => Auth::user()->school_id
+                        cn::EXAM_SCHOOL_GRADE_CLASS_MAPPING_SCHOOL_ID_COL => Auth::user()->{cn::USERS_SCHOOL_ID_COL}
                     ])->delete();
                     
                     // Delete Exam school mapping
                     ExamSchoolMapping::where([
                         cn::EXAM_SCHOOL_MAPPING_EXAM_ID_COL => $id,
-                        cn::EXAM_SCHOOL_MAPPING_SCHOOL_ID_COL => Auth::user()->school_id
+                        cn::EXAM_SCHOOL_MAPPING_SCHOOL_ID_COL => Auth::user()->{cn::USERS_SCHOOL_ID_COL}
                     ])->delete();
 
                     // Get the parent exam id
                     $ParentExamId = $exam->parent_exam_id;
                     $ParentExamData = Exam::find($ParentExamId);
                     $ExistingSchoolIds = explode(',',$ParentExamData->school_id);
-                    $RemoveSchoolIds = array(Auth::user()->school_id);
+                    $RemoveSchoolIds = array(Auth::user()->{cn::USERS_SCHOOL_ID_COL});
                     $RemainingSchoolIds = implode(',',array_diff($ExistingSchoolIds, $RemoveSchoolIds));
                     // Update Parent exam records
                     $update = Exam::find($ParentExamId)->Update(['school_id' => $RemainingSchoolIds]);
@@ -437,8 +437,16 @@ class ExamController extends Controller
                         ->limit(1)
                         ->get();
 
-            if(StudentAnswerHistory::where(['exam_id'=>$examId ,'student_id' => Auth::user()->id,'question_id' =>$Questions[0]->id])->exists()){
-                $selectedOldAnswer = StudentAnswerHistory::where(['exam_id'=> $examId,'student_id' => Auth::user()->id,'question_id' => $Questions[0]->id])->first();
+            if(StudentAnswerHistory::where([
+                'exam_id' => $examId,
+                'student_id' => Auth::user()->{cn::USERS_ID_COL},
+                'question_id' => $Questions[0]->id]
+            )->exists()){
+                $selectedOldAnswer = StudentAnswerHistory::where([
+                                        'exam_id' => $examId,
+                                        'student_id' => Auth::user()->{cn::USERS_ID_COL},
+                                        'question_id' => $Questions[0]->id
+                                    ])->first();
                 (int)$selectedOldAnswer = $selectedOldAnswer->selected_answer;
             }
             
@@ -548,8 +556,8 @@ class ExamController extends Controller
                 $NextQuestionKey = array_search($request->currentid, $question_ids);
                 if(isset($question_ids[$NextQuestionKey+1])){
                     $Questions = Question::with('answers')->where(cn::QUESTION_TABLE_ID_COL,$question_ids[$NextQuestionKey+1])->limit(1)->get();
-                    if(StudentAnswerHistory::where(['exam_id'=>$examId ,'student_id' => Auth::user()->id,'question_id' =>$question_ids[$NextQuestionKey+1]])->exists()){
-                        $selectedOldAnswer = StudentAnswerHistory::select('selected_answer')->where(['exam_id'=> $examId,'student_id' => Auth::user()->id,'question_id' => $question_ids[$NextQuestionKey+1]])->first();
+                    if(StudentAnswerHistory::where(['exam_id'=>$examId ,'student_id' => Auth::user()->{cn::USERS_ID_COL},'question_id' =>$question_ids[$NextQuestionKey+1]])->exists()){
+                        $selectedOldAnswer = StudentAnswerHistory::select('selected_answer')->where(['exam_id'=> $examId,'student_id' => Auth::user()->{cn::USERS_ID_COL},'question_id' => $question_ids[$NextQuestionKey+1]])->first();
                         (int)$selectedOldAnswer = $selectedOldAnswer->selected_answer;
                     }
                 }
@@ -557,8 +565,8 @@ class ExamController extends Controller
                 $NextQuestionKey=array_search($request->currentid, $question_ids);
                 if(isset($question_ids[$NextQuestionKey-1])){
                     $Questions = Question::with('answers')->where(cn::QUESTION_TABLE_ID_COL,$question_ids[$NextQuestionKey-1])->limit(1)->get();
-                    if(StudentAnswerHistory::where(['exam_id'=>$examId ,'student_id' => Auth::user()->id,'question_id' =>$question_ids[$NextQuestionKey-1]])->exists()){
-                        $selectedOldAnswer = StudentAnswerHistory::where(['exam_id'=> $examId,'student_id' => Auth::user()->id,'question_id' => $question_ids[$NextQuestionKey-1]])->first();
+                    if(StudentAnswerHistory::where(['exam_id'=>$examId ,'student_id' => Auth::user()->{cn::USERS_ID_COL},'question_id' =>$question_ids[$NextQuestionKey-1]])->exists()){
+                        $selectedOldAnswer = StudentAnswerHistory::where(['exam_id'=> $examId,'student_id' => Auth::user()->{cn::USERS_ID_COL},'question_id' => $question_ids[$NextQuestionKey-1]])->first();
                         (int)$selectedOldAnswer = $selectedOldAnswer->selected_answer;
                     }
                 }
@@ -566,8 +574,8 @@ class ExamController extends Controller
             
             if(isset($request->examactionset) && $request->examactionset=='current'){
                 $Questions = Question::with('answers')->where(cn::QUESTION_TABLE_ID_COL, $request->currentid)->orderByRaw('FIELD(id,'.$questionIdsList.')')->limit(1)->get();
-                if(StudentAnswerHistory::where(['exam_id'=>$examId ,'student_id' => Auth::user()->id,'question_id' =>$question_ids[$NextQuestionKey]])->exists()){
-                    $selectedOldAnswer = StudentAnswerHistory::where(['exam_id'=> $examId,'student_id' => Auth::user()->id,'question_id' => $question_ids[$NextQuestionKey]])->first();
+                if(StudentAnswerHistory::where(['exam_id'=>$examId ,'student_id' => Auth::user()->{cn::USERS_ID_COL},'question_id' =>$question_ids[$NextQuestionKey]])->exists()){
+                    $selectedOldAnswer = StudentAnswerHistory::where(['exam_id'=> $examId,'student_id' => Auth::user()->{cn::USERS_ID_COL},'question_id' => $question_ids[$NextQuestionKey]])->first();
                     (int)$selectedOldAnswer = $selectedOldAnswer->selected_answer;
                 }
             }
@@ -615,25 +623,25 @@ class ExamController extends Controller
     public function StoreStudentExamHistory(Request $request){
         if(StudentAnswerHistory::where([
             cn::STUDENT_ATTEMPT_EXAM_HISTORY_EXAM_ID_COL        => $request->examid,
-            cn::STUDENT_ATTEMPT_EXAM_HISTORY_STUDENT_ID_COL     => Auth::user()->id,
+            cn::STUDENT_ATTEMPT_EXAM_HISTORY_STUDENT_ID_COL     => Auth::user()->{cn::USERS_ID_COL},
             cn::STUDENT_ATTEMPT_EXAM_HISTORY_QUESTION_ID_COL    => $request->questionid])
         ->doesntExist()){
             StudentAnswerHistory::create([
                 cn::STUDENT_ATTEMPT_EXAM_HISTORY_EXAM_ID_COL        => $request->examid,
                 cn::STUDENT_ATTEMPT_EXAM_HISTORY_QUESTION_ID_COL    => $request->questionid,
-                cn::STUDENT_ATTEMPT_EXAM_HISTORY_STUDENT_ID_COL     => Auth::user()->id,
+                cn::STUDENT_ATTEMPT_EXAM_HISTORY_STUDENT_ID_COL     => Auth::user()->{cn::USERS_ID_COL},
                 cn::STUDENT_ATTEMPT_EXAM_HISTORY_SELECTED_ANSWER_COL => $request->answer,
                 cn::STUDENT_ATTEMPT_EXAM_HISTORY_LANGUAGE_COL       => $request->language,
             ]);
         }else{
             StudentAnswerHistory::where([
                 cn::STUDENT_ATTEMPT_EXAM_HISTORY_EXAM_ID_COL        => $request->examid,
-                cn::STUDENT_ATTEMPT_EXAM_HISTORY_STUDENT_ID_COL     => Auth::user()->id,
+                cn::STUDENT_ATTEMPT_EXAM_HISTORY_STUDENT_ID_COL     => Auth::user()->{cn::USERS_ID_COL},
                 cn::STUDENT_ATTEMPT_EXAM_HISTORY_QUESTION_ID_COL    => $request->questionid
             ])->update([
                 cn::STUDENT_ATTEMPT_EXAM_HISTORY_EXAM_ID_COL            => $request->examid,
                 cn::STUDENT_ATTEMPT_EXAM_HISTORY_QUESTION_ID_COL        => $request->questionid,
-                cn::STUDENT_ATTEMPT_EXAM_HISTORY_STUDENT_ID_COL         => Auth::user()->id,
+                cn::STUDENT_ATTEMPT_EXAM_HISTORY_STUDENT_ID_COL         => Auth::user()->{cn::USERS_ID_COL},
                 cn::STUDENT_ATTEMPT_EXAM_HISTORY_SELECTED_ANSWER_COL    => $request->answer,
                 cn::STUDENT_ATTEMPT_EXAM_HISTORY_LANGUAGE_COL           => $request->language,
             ]);
@@ -826,7 +834,7 @@ class ExamController extends Controller
            
             if($save){
                 $this->UserActivityLog(
-                    Auth::user()->id,
+                    Auth::user()->{cn::USERS_ID_COL},
                     '<p>'.Auth::user()->DecryptNameEn.' '.__('activity_history.exam_attempted').'. </p>'.
                     '<p>'.__('activity_history.test_type').$this->ActivityTestType($examDetail).'</p>'.
                     '<p>'.__('activity_history.title_is').$examDetail->title.'. </p>'.
@@ -1517,7 +1525,7 @@ class ExamController extends Controller
                 // Get Percentage of difficulty level
                 $questionDifficultyGraph = $this->GetPercentageQuestionDifficultyLevel($totalQuestionDifficulty);
                 $this->UserActivityLog(
-                    Auth::user()->id,
+                    Auth::user()->{cn::USERS_ID_COL},
                     '<p>'.Auth::user()->DecryptNameEn.' '.__('activity_history.has_view_report').'.'.'</p>'.
                     '<p>'.__('activity_history.test_type').$this->ActivityTestType($ExamData).'</p>'.
                     '<p>'.__('activity_history.report_type').__('activity_history.progress_report').'</p>'.
@@ -1880,7 +1888,7 @@ class ExamController extends Controller
         if((isset($request->exam_school_id) && !empty($request->exam_school_id)) || (isset($request->SchoolId) && !empty($request->SchoolId))){
             $schoolId = $request->SchoolId;
         }else{
-            $schoolId = Auth::user()->school_id;
+            $schoolId = Auth::user()->{cn::USERS_SCHOOL_ID_COL};
         }
         if(isset($ExamDetails)){
             if($ExamDetails->{cn::EXAM_TYPE_COLS}==1){

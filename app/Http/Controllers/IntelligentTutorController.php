@@ -84,7 +84,7 @@ class IntelligentTutorController extends Controller
             $orderingLearningsUnitsIdsArray = '';
            
             $languages = Languages::all();
-            $Grades = Grades::whereIn('id',$this->GetRoleBasedGrades(Auth::user()->role_id))->get();//Grades::all();
+            $Grades = Grades::whereIn('id',$this->GetRoleBasedGrades(Auth::user()->{cn::USERS_ROLE_ID_COL}))->get();//Grades::all();
             $StrandList = Strands::all();
             $LearningUnit = collect($this->GetLearningUnits($StrandList[0]->{cn::STRANDS_ID_COL}));
 
@@ -98,7 +98,7 @@ class IntelligentTutorController extends Controller
             $StrandID = (!empty($request->learning_tutor_strand_id)) ? $request->learning_tutor_strand_id : $StrandIdsArray;
             // $LearningUnitID = (!empty($request->learning_tutor_learning_unit)) ? $request->learning_tutor_learning_unit : $LearningsUnitsIdsArray;
             if(!empty($request->learning_tutor_learning_unit)){
-                if(LearningUnitOrdering::where('school_id',Auth::user()->school_id)->exists()){
+                if(LearningUnitOrdering::where('school_id',Auth::user()->{cn::USERS_SCHOOL_ID_COL})->exists()){
                     $LearningUnitID = $LearningUnit->pluck('id')->toArray();
                 }
                 $LearningUnitID = $request->learning_tutor_learning_unit;

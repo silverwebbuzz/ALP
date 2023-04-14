@@ -32,7 +32,7 @@ class StudentDashboardController extends Controller
         try{
             $AttemptedExamsIds = collect();
             $ExamList = collect();
-            // $AttemptedExamsIds = AttemptExams::where(cn::ATTEMPT_EXAMS_STUDENT_STUDENT_ID,Auth::user()->id)->pluck(cn::ATTEMPT_EXAMS_EXAM_ID);
+            // $AttemptedExamsIds = AttemptExams::where(cn::ATTEMPT_EXAMS_STUDENT_STUDENT_ID,Auth::user()->{cn::USERS_ID_COL})->pluck(cn::ATTEMPT_EXAMS_EXAM_ID);
             // if(isset($AttemptedExamsIds) && !empty($AttemptedExamsIds)){
             //     $ExamList = Exam::with('attempt_exams')->whereIn('id',$AttemptedExamsIds)->get();
             // }

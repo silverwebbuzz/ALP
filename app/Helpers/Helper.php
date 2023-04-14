@@ -43,8 +43,8 @@ class Helper{
         if(isset($FieldName) && !empty($FieldName)){
             $CurriculumYearData = CurriculumYearStudentMappings::select($FieldName)
                                     ->where([
-                                        cn::CURRICULUM_YEAR_STUDENT_MAPPING_CURRICULUM_YEAR_ID_COL => $Id,
-                                        cn::CURRICULUM_YEAR_STUDENT_MAPPING_USER_ID_COL => $UserId
+                                        cn::CURRICULUM_YEAR_STUDENT_MAPPING_CURRICULUM_YEAR_ID_COL  => $Id,
+                                        cn::CURRICULUM_YEAR_STUDENT_MAPPING_USER_ID_COL             => $UserId
                                     ])
                                     ->first();
             if(isset($CurriculumYearData) && !empty($CurriculumYearData)){                
@@ -87,7 +87,7 @@ class Helper{
     }
 
     public static function getRoleBasedMenuActiveColor(){
-        switch (Auth::user()->{cn::USERS_ROLE_ID_COL}) {
+        switch(Auth::user()->{cn::USERS_ROLE_ID_COL}){
             case cn::SUPERADMIN_ROLE_ID :
                 $menuActiveColor = '#8687fd;';
                 break;
@@ -464,7 +464,7 @@ class Helper{
      */
     public static function getRoleBasedColor(){
         $color = ['background_color' => "#000",'active_color' => '#000'];
-        switch(Auth::user()->role_id){
+        switch(Auth::user()->{cn::USERS_ROLE_ID_COL}){
             case 1:
                 $bgcolor = self::getGlobalConfiguration('super_admin_panel_color');
                 $activeColor = self::getGlobalConfiguration('super_admin_panel_active_color');
@@ -1019,15 +1019,15 @@ class Helper{
      */
     public static function SetCurriculumYear($CurriculumYearId=''){
         if(isset($CurriculumYearId) && !empty($CurriculumYearId)){
-           User::find(Auth::user()->id)->Update([
+           User::find(Auth::user()->{cn::USERS_ID_COL})->Update([
                 cn::USERS_CURRICULUM_YEAR_ID_COL => $CurriculumYearId
             ]);
         }else{
             if(User::where([
-                cn::USERS_ID_COL => Auth::user()->id,
+                cn::USERS_ID_COL => Auth::user()->{cn::USERS_ID_COL},
                 cn::USERS_CURRICULUM_YEAR_ID_COL => null
             ])->exists()){
-                User::find(Auth::user()->id)->Update([
+                User::find(Auth::user()->{cn::USERS_ID_COL})->Update([
                     cn::USERS_CURRICULUM_YEAR_ID_COL => cn::DEFAULT_CURRICULUM_YEAR_ID
                 ]);
             }
@@ -1055,7 +1055,7 @@ class Helper{
         ])->first();
         if(RemainderUpdateSchoolYearData::where([
             cn::REMAINDER_UPDATE_SCHOOL_YEAR_DATA_CURRICULUM_YEAR_ID_COL => $CurriculumYear->{cn::CURRICULUM_YEAR_ID_COL},
-            cn::REMAINDER_UPDATE_SCHOOL_YEAR_DATA_SCHOOL_ID_COL => Auth::user()->school_id,
+            cn::REMAINDER_UPDATE_SCHOOL_YEAR_DATA_SCHOOL_ID_COL => Auth::user()->{cn::USERS_SCHOOL_ID_COL},
             cn::REMAINDER_UPDATE_SCHOOL_YEAR_DATA_STATUS_COL => 'pending'
         ])->exists()){
             return true;

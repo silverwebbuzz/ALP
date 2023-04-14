@@ -79,11 +79,11 @@ class School extends Model
 
     public function getSchoolProfileImageAttribute(){
         $profile_image = asset('uploads/settings/image_not_found.gif');
-        if(auth::user()->school_id){
+        if(Auth::user()->{cn::USERS_SCHOOL_ID_COL}){
             $ProfileData =  User::select('profile_photo')
                             ->where([
                                 'role_id' => 5,
-                                'school_id' => auth::user()->school_id
+                                'school_id' => Auth::user()->{cn::USERS_SCHOOL_ID_COL}
                             ])
                             ->first();
             if(isset($ProfileData) && !empty($ProfileData->profile_photo)){

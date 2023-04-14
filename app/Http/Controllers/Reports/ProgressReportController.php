@@ -206,7 +206,7 @@ class ProgressReportController extends Controller
             }
              // User Activity  Log
              $this->UserActivityLog(
-                Auth::user()->id,
+                Auth::user()->{cn::USERS_ID_COL},
                 '<p>'.Auth::user()->DecryptNameEn.' '.__('activity_history.see_learning_unit_progress_detail').' '.__('activity_history.on').__('activity_history.date_and_time').date('Y-m-d h:i:s a', time()) .'</p>'
             );
             return view('backend.reports.learning_progress.learning_unit_report',compact('StrandList','LearningUnitsList','StrandsLearningUnitsList','GradesList',
@@ -402,7 +402,7 @@ class ProgressReportController extends Controller
         }
         // User Activity  Log
         $this->UserActivityLog(
-            Auth::user()->id,
+            Auth::user()->{cn::USERS_ID_COL},
             '<p>'.Auth::user()->DecryptNameEn.' '.__('activity_history.see_learning_objective_progress_detail').' '.__('activity_history.on').__('activity_history.date_and_time').date('Y-m-d h:i:s a', time()) .'</p>'
         );
         return view('backend.reports.learning_progress.learning_objective_report',compact('strandData','GradesList','grade_id','teachersClassList','reportLearningType','progressReportArray','strandDataLbl','LearningsUnitsLbl','learningObjectivesList','LearningUnits','gradeid','classid','schoolId','roleId','ColorCodes'));
@@ -414,7 +414,7 @@ class ProgressReportController extends Controller
     public function StudentProgressReportLearningObjective(Request $request, $studentId=0){
         try{
             if($studentId==0){
-                $studentData = User::find(Auth::user()->id);
+                $studentData = User::find(Auth::user()->{cn::USERS_ID_COL});
             }else{
                 $studentData = User::find($studentId);
             }
@@ -506,7 +506,7 @@ class ProgressReportController extends Controller
             }
             // User Activity  Log
             $this->UserActivityLog(
-                Auth::user()->id,
+                Auth::user()->{cn::USERS_ID_COL},
                 '<p>'.Auth::user()->DecryptNameEn.' '.__('activity_history.see_learning_objective_progress_detail').' '.__('activity_history.on').__('activity_history.date_and_time').date('Y-m-d h:i:s a', time()) .'</p>'
             );
             return view('backend.reports.learning_progress.student.learning_objective_report',compact('studentData','strandData','strandDataLbl',
@@ -523,7 +523,7 @@ class ProgressReportController extends Controller
     public function StudentProgressReportLearningUnits(Request $request,$studentId=0){
         try{
             if($studentId==0){
-                $studentData = User::find(Auth::user()->id);
+                $studentData = User::find(Auth::user()->{cn::USERS_ID_COL});
             }else{
                 $studentData = User::find($studentId);
             }
@@ -605,7 +605,7 @@ class ProgressReportController extends Controller
             }
             // User Activity  Log
             $this->UserActivityLog(
-                Auth::user()->id,
+                Auth::user()->{cn::USERS_ID_COL},
                 '<p>'.Auth::user()->DecryptNameEn.' '.__('activity_history.see_learning_unit_progress_detail').' '.__('activity_history.on').__('activity_history.date_and_time').date('Y-m-d h:i:s a', time()) .'</p>'
             );
             return view('backend.reports.learning_progress.student.learning_unit_progress',compact('StrandList','LearningUnitsList','GradesList','grade_id','reportLearningType','progressReportArray','ColorCodes','studentId'));

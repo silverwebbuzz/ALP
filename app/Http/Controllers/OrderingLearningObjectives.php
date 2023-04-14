@@ -33,13 +33,13 @@ class OrderingLearningObjectives extends Controller
         if(isset($request->finalOrdering) && !empty($request->finalOrdering)){
             $orderingFinalArray = explode(',',$request->finalOrdering);
         }
-        $schoolId = Auth::user()->school_id;
-        if(LearningObjectiveOrdering::where('school_id',Auth::user()->school_id)->exists()){
+        $schoolId = Auth::user()->{cn::USERS_SCHOOL_ID_COL};
+        if(LearningObjectiveOrdering::where('school_id',Auth::user()->{cn::USERS_SCHOOL_ID_COL})->exists()){
             if(isset($request->finalOrdering) && !empty($request->finalOrdering)){
                 $orderingUnitData = LearningsObjectives::where('learning_unit_id',$request->learningUnit)->first()->toArray();
                 $position = (int)$orderingUnitData['code'];
                 foreach($orderingFinalArray as $orderKey => $LearningObjectiveId){
-                    LearningObjectiveOrdering::where('school_id',Auth::user()->school_id)
+                    LearningObjectiveOrdering::where('school_id',Auth::user()->{cn::USERS_SCHOOL_ID_COL})
                                             ->where('learning_unit_id',$request->learningUnit)
                                             ->where('learning_objective_id',$LearningObjectiveId)
                                             ->update([
@@ -69,7 +69,7 @@ class OrderingLearningObjectives extends Controller
                 $orderingUnitData = LearningsObjectives::where('learning_unit_id',$request->learningUnit)->first()->toArray();
                 $position = (int)$orderingUnitData['code'];
                 foreach($orderingFinalArray as $orderKey => $LearningObjectiveId){
-                    LearningObjectiveOrdering::where('school_id',Auth::user()->school_id)
+                    LearningObjectiveOrdering::where('school_id',Auth::user()->{cn::USERS_SCHOOL_ID_COL})
                                             ->where('learning_unit_id',$request->learningUnit)
                                             ->where('learning_objective_id',$LearningObjectiveId)
                                             ->update([

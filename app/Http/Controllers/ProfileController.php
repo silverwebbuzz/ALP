@@ -29,7 +29,7 @@ class ProfileController extends Controller
                 $otherRole = OtherRoles::select(DB::raw('group_concat('.cn::OTHER_ROLE_NAME_COL.') as roles'))->whereIn(cn::OTHER_ROLE_ID_COL,explode(',',$user->other_roles_id))->first();
             }
             $this->UserActivityLog(
-                Auth::user()->id,
+                Auth::user()->{cn::USERS_ID_COL},
                 '<p>'.Auth::user()->DecryptNameEn.' '.__('activity_history.see_own_profile').'. </p>'.
                 '<p>'.__('activity_history.on').__('activity_history.date_and_time').date('Y-m-d h:i:s a', time()).'</p>'
             );
@@ -81,7 +81,7 @@ class ProfileController extends Controller
                 $update = User::where(cn::USERS_ID_COL,$id)->update($PostData);
                 if(!empty($update)){
                     $this->UserActivityLog(
-                        Auth::user()->id,
+                        Auth::user()->{cn::USERS_ID_COL},
                         '<p>'.Auth::user()->DecryptNameEn.' '.__('activity_history.profile_updated').'</p>'
                     );
                     return redirect('profile')->with('success_msg', __('languages.profile_updated_successfully'));
@@ -118,7 +118,7 @@ class ProfileController extends Controller
                                         ->paginate($items);
             /*User Activity*/
             $this->UserActivityLog(
-                Auth::user()->id,
+                Auth::user()->{cn::USERS_ID_COL},
                 '<p>'.Auth::user()->DecryptNameEn.' '.__('activity_history.see_credit_point_history_detail').' '.__('activity_history.on').__('activity_history.date_and_time').date('Y-m-d h:i:s a', time()) .'</p>'
             );
             return view('backend.profile.credit_point_history',compact('CreditPointHistoryList','items','TotalFilterData','UserData','studentId'));

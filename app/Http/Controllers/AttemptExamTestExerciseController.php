@@ -79,7 +79,7 @@ class AttemptExamTestExerciseController extends Controller
                 // Check before attempted questions
                 
                 $HistoryStudentExamsData =  HistoryStudentExams::where([
-                                                cn::HISTORY_STUDENT_EXAMS_STUDENT_ID_COL => Auth::user()->id,
+                                                cn::HISTORY_STUDENT_EXAMS_STUDENT_ID_COL => Auth::user()->{cn::USERS_ID_COL},
                                                 cn::HISTORY_STUDENT_EXAMS_EXAM_ID_COL    => $exam_id
                                             ])->first();                                           
                                             // Get the total allowed time in this exams                
@@ -122,13 +122,13 @@ class AttemptExamTestExerciseController extends Controller
                 if(isset($QuestionId) && !empty($QuestionId)){
                     $HistoryStudentQuestionAnswer = array();
                     if(HistoryStudentQuestionAnswer::where([
-                        cn::HISTORY_STUDENT_QUESTION_ANSWER_STUDENT_ID_COL  => Auth::user()->id,
+                        cn::HISTORY_STUDENT_QUESTION_ANSWER_STUDENT_ID_COL  => Auth::user()->{cn::USERS_ID_COL},
                         cn::HISTORY_STUDENT_QUESTION_ANSWER_EXAM_ID_COL     => $exam_id,
                         cn::HISTORY_STUDENT_QUESTION_ANSWER_QUESTION_ID_COL => $QuestionId,
                         cn::HISTORY_STUDENT_QUESTION_ANSWER_IS_TRIAL_NO_COL => 2
                     ])->exists()){
                         if(HistoryStudentQuestionAnswer::where([
-                            cn::HISTORY_STUDENT_QUESTION_ANSWER_STUDENT_ID_COL  => Auth::user()->id,
+                            cn::HISTORY_STUDENT_QUESTION_ANSWER_STUDENT_ID_COL  => Auth::user()->{cn::USERS_ID_COL},
                             cn::HISTORY_STUDENT_QUESTION_ANSWER_EXAM_ID_COL     => $exam_id,
                             cn::HISTORY_STUDENT_QUESTION_ANSWER_QUESTION_ID_COL => $QuestionId,
                             cn::HISTORY_STUDENT_QUESTION_ANSWER_IS_TRIAL_NO_COL => 2
@@ -136,7 +136,7 @@ class AttemptExamTestExerciseController extends Controller
                         ->doesntExist()){
                             $RandomAnswerOrdering = $this->GetRandomAnswerOrdering();
                             HistoryStudentQuestionAnswer::updateOrCreate([
-                                cn::HISTORY_STUDENT_QUESTION_ANSWER_STUDENT_ID_COL  => Auth::user()->id,
+                                cn::HISTORY_STUDENT_QUESTION_ANSWER_STUDENT_ID_COL  => Auth::user()->{cn::USERS_ID_COL},
                                 cn::HISTORY_STUDENT_QUESTION_ANSWER_EXAM_ID_COL     => $exam_id,
                                 cn::HISTORY_STUDENT_QUESTION_ANSWER_QUESTION_ID_COL => $QuestionId,
                                 cn::HISTORY_STUDENT_QUESTION_ANSWER_IS_TRIAL_NO_COL => 2,
@@ -146,7 +146,7 @@ class AttemptExamTestExerciseController extends Controller
                         }
                         
                         $HistoryStudentQuestionAnswer = HistoryStudentQuestionAnswer::where([
-                            cn::HISTORY_STUDENT_QUESTION_ANSWER_STUDENT_ID_COL  => Auth::user()->id,
+                            cn::HISTORY_STUDENT_QUESTION_ANSWER_STUDENT_ID_COL  => Auth::user()->{cn::USERS_ID_COL},
                             cn::HISTORY_STUDENT_QUESTION_ANSWER_EXAM_ID_COL     => $exam_id,
                             cn::HISTORY_STUDENT_QUESTION_ANSWER_QUESTION_ID_COL => $QuestionId,
                             cn::HISTORY_STUDENT_QUESTION_ANSWER_IS_TRIAL_NO_COL => 2
@@ -155,7 +155,7 @@ class AttemptExamTestExerciseController extends Controller
                         $random_number_array = explode(',',$HistoryStudentQuestionAnswer->answer_ordering);
                     }else{
                         if(HistoryStudentQuestionAnswer::where([
-                            cn::HISTORY_STUDENT_QUESTION_ANSWER_STUDENT_ID_COL  => Auth::user()->id,
+                            cn::HISTORY_STUDENT_QUESTION_ANSWER_STUDENT_ID_COL  => Auth::user()->{cn::USERS_ID_COL},
                             cn::HISTORY_STUDENT_QUESTION_ANSWER_EXAM_ID_COL     => $exam_id,
                             cn::HISTORY_STUDENT_QUESTION_ANSWER_QUESTION_ID_COL => $QuestionId,
                             cn::HISTORY_STUDENT_QUESTION_ANSWER_IS_TRIAL_NO_COL => 1
@@ -163,7 +163,7 @@ class AttemptExamTestExerciseController extends Controller
                         ->doesntExist()){
                             $RandomAnswerOrdering = $this->GetRandomAnswerOrdering();
                             HistoryStudentQuestionAnswer::updateOrCreate([
-                                cn::HISTORY_STUDENT_QUESTION_ANSWER_STUDENT_ID_COL  => Auth::user()->id,
+                                cn::HISTORY_STUDENT_QUESTION_ANSWER_STUDENT_ID_COL  => Auth::user()->{cn::USERS_ID_COL},
                                 cn::HISTORY_STUDENT_QUESTION_ANSWER_EXAM_ID_COL     => $exam_id,
                                 cn::HISTORY_STUDENT_QUESTION_ANSWER_QUESTION_ID_COL => $QuestionId,
                                 cn::HISTORY_STUDENT_QUESTION_ANSWER_IS_TRIAL_NO_COL => 1,
@@ -172,7 +172,7 @@ class AttemptExamTestExerciseController extends Controller
                             ]);
                         }
                         $HistoryStudentQuestionAnswer = HistoryStudentQuestionAnswer::where([
-                            cn::HISTORY_STUDENT_QUESTION_ANSWER_STUDENT_ID_COL  => Auth::user()->id,
+                            cn::HISTORY_STUDENT_QUESTION_ANSWER_STUDENT_ID_COL  => Auth::user()->{cn::USERS_ID_COL},
                             cn::HISTORY_STUDENT_QUESTION_ANSWER_EXAM_ID_COL     => $exam_id,
                             cn::HISTORY_STUDENT_QUESTION_ANSWER_QUESTION_ID_COL => $QuestionId,
                             cn::HISTORY_STUDENT_QUESTION_ANSWER_IS_TRIAL_NO_COL => 1
@@ -199,7 +199,7 @@ class AttemptExamTestExerciseController extends Controller
     public function UpdateTimeSeconds($examId,$second){
         if(isset($second) && !empty($second)){
             HistoryStudentExams::where([
-                cn::HISTORY_STUDENT_EXAMS_STUDENT_ID_COL => Auth::user()->id,
+                cn::HISTORY_STUDENT_EXAMS_STUDENT_ID_COL => Auth::user()->{cn::USERS_ID_COL},
                 cn::HISTORY_STUDENT_EXAMS_EXAM_ID_COL => $examId
             ])->Update([
                 cn::HISTORY_STUDENT_EXAMS_TOTAL_SECONDS_COL => $second
@@ -219,19 +219,19 @@ class AttemptExamTestExerciseController extends Controller
             $examId = $request->examid;
             $examDetail = Exam::where(cn::EXAM_TABLE_ID_COLS,$examId)->first();
             if(HistoryStudentExams::where([
-                cn::HISTORY_STUDENT_EXAMS_STUDENT_ID_COL => Auth::user()->id,
+                cn::HISTORY_STUDENT_EXAMS_STUDENT_ID_COL => Auth::user()->{cn::USERS_ID_COL},
                 cn::HISTORY_STUDENT_EXAMS_EXAM_ID_COL => $examId
             ])
             ->where(cn::HISTORY_STUDENT_EXAMS_NO_OF_TRIAL_EXAM_COL,null)->exists()){
                 HistoryStudentExams::where([
-                    cn::HISTORY_STUDENT_EXAMS_STUDENT_ID_COL => Auth::user()->id,
+                    cn::HISTORY_STUDENT_EXAMS_STUDENT_ID_COL => Auth::user()->{cn::USERS_ID_COL},
                     cn::HISTORY_STUDENT_EXAMS_EXAM_ID_COL => $examId
                 ])->Update([
                     cn::HISTORY_STUDENT_EXAMS_NO_OF_TRIAL_EXAM_COL => $request->no_of_trial_exam
                 ]);
             }
             $HistoryStudentExamsData =  HistoryStudentExams::where([
-                                            cn::HISTORY_STUDENT_EXAMS_STUDENT_ID_COL    => Auth::user()->id,
+                                            cn::HISTORY_STUDENT_EXAMS_STUDENT_ID_COL    => Auth::user()->{cn::USERS_ID_COL},
                                             cn::HISTORY_STUDENT_EXAMS_EXAM_ID_COL       => $examId
                                         ])->first();
             if(isset($HistoryStudentExamsData) && !empty($HistoryStudentExamsData) && !empty($HistoryStudentExamsData->{cn::HISTORY_STUDENT_EXAMS_NO_OF_TRIAL_EXAM_COL})){
@@ -287,20 +287,20 @@ class AttemptExamTestExerciseController extends Controller
             if(isset($NewQuestionId) && !empty($NewQuestionId)){
                 $HistoryStudentQuestionAnswer = array();
                 if(HistoryStudentQuestionAnswer::where([
-                    cn::HISTORY_STUDENT_QUESTION_ANSWER_STUDENT_ID_COL => Auth::user()->id,
+                    cn::HISTORY_STUDENT_QUESTION_ANSWER_STUDENT_ID_COL => Auth::user()->{cn::USERS_ID_COL},
                     cn::HISTORY_STUDENT_QUESTION_ANSWER_EXAM_ID_COL => $examId,
                     cn::HISTORY_STUDENT_QUESTION_ANSWER_QUESTION_ID_COL => $NewQuestionId,
                     cn::HISTORY_STUDENT_QUESTION_ANSWER_IS_TRIAL_NO_COL => 2
                 ])->exists()){
                     $FirstTrailHistoryStudentQuestionAnswer = HistoryStudentQuestionAnswer::where([
-                        cn::HISTORY_STUDENT_QUESTION_ANSWER_STUDENT_ID_COL => Auth::user()->id,
+                        cn::HISTORY_STUDENT_QUESTION_ANSWER_STUDENT_ID_COL => Auth::user()->{cn::USERS_ID_COL},
                         cn::HISTORY_STUDENT_QUESTION_ANSWER_EXAM_ID_COL => $examId,
                         cn::HISTORY_STUDENT_QUESTION_ANSWER_QUESTION_ID_COL => $NewQuestionId,
                         cn::HISTORY_STUDENT_QUESTION_ANSWER_IS_TRIAL_NO_COL => 1
                     ])->first();
 
                     HistoryStudentQuestionAnswer::where([
-                        cn::HISTORY_STUDENT_QUESTION_ANSWER_STUDENT_ID_COL  => Auth::user()->id,
+                        cn::HISTORY_STUDENT_QUESTION_ANSWER_STUDENT_ID_COL  => Auth::user()->{cn::USERS_ID_COL},
                         cn::HISTORY_STUDENT_QUESTION_ANSWER_EXAM_ID_COL     => $examId,
                         cn::HISTORY_STUDENT_QUESTION_ANSWER_QUESTION_ID_COL => $NewQuestionId,
                         cn::HISTORY_STUDENT_QUESTION_ANSWER_IS_TRIAL_NO_COL => 2
@@ -310,7 +310,7 @@ class AttemptExamTestExerciseController extends Controller
                     ]);
 
                     $HistoryStudentQuestionAnswer = HistoryStudentQuestionAnswer::where([
-                        cn::HISTORY_STUDENT_QUESTION_ANSWER_STUDENT_ID_COL => Auth::user()->id,
+                        cn::HISTORY_STUDENT_QUESTION_ANSWER_STUDENT_ID_COL => Auth::user()->{cn::USERS_ID_COL},
                         cn::HISTORY_STUDENT_QUESTION_ANSWER_EXAM_ID_COL => $examId,
                         cn::HISTORY_STUDENT_QUESTION_ANSWER_QUESTION_ID_COL => $NewQuestionId,
                         cn::HISTORY_STUDENT_QUESTION_ANSWER_IS_TRIAL_NO_COL => 2
@@ -318,7 +318,7 @@ class AttemptExamTestExerciseController extends Controller
                     $random_number_array = explode(',',$HistoryStudentQuestionAnswer->answer_ordering);
                 }else{
                     if(HistoryStudentQuestionAnswer::where([
-                        cn::HISTORY_STUDENT_QUESTION_ANSWER_STUDENT_ID_COL  => Auth::user()->id,
+                        cn::HISTORY_STUDENT_QUESTION_ANSWER_STUDENT_ID_COL  => Auth::user()->{cn::USERS_ID_COL},
                         cn::HISTORY_STUDENT_QUESTION_ANSWER_EXAM_ID_COL     => $examId,
                         cn::HISTORY_STUDENT_QUESTION_ANSWER_QUESTION_ID_COL => $NewQuestionId,
                         cn::HISTORY_STUDENT_QUESTION_ANSWER_IS_TRIAL_NO_COL => 1
@@ -326,7 +326,7 @@ class AttemptExamTestExerciseController extends Controller
                     ->doesntExist()){
                         $RandomAnswerOrdering = $this->GetRandomAnswerOrdering();
                         HistoryStudentQuestionAnswer::updateOrCreate([
-                            cn::HISTORY_STUDENT_QUESTION_ANSWER_STUDENT_ID_COL  => Auth::user()->id,
+                            cn::HISTORY_STUDENT_QUESTION_ANSWER_STUDENT_ID_COL  => Auth::user()->{cn::USERS_ID_COL},
                             cn::HISTORY_STUDENT_QUESTION_ANSWER_EXAM_ID_COL     => $examId,
                             cn::HISTORY_STUDENT_QUESTION_ANSWER_QUESTION_ID_COL => $NewQuestionId,
                             cn::HISTORY_STUDENT_QUESTION_ANSWER_IS_TRIAL_NO_COL => 1,
@@ -334,7 +334,7 @@ class AttemptExamTestExerciseController extends Controller
                         ]);
                     }
                     $HistoryStudentQuestionAnswer = HistoryStudentQuestionAnswer::where([
-                        cn::HISTORY_STUDENT_QUESTION_ANSWER_STUDENT_ID_COL => Auth::user()->id,
+                        cn::HISTORY_STUDENT_QUESTION_ANSWER_STUDENT_ID_COL => Auth::user()->{cn::USERS_ID_COL},
                         cn::HISTORY_STUDENT_QUESTION_ANSWER_EXAM_ID_COL => $examId,
                         cn::HISTORY_STUDENT_QUESTION_ANSWER_QUESTION_ID_COL => $NewQuestionId,
                         cn::HISTORY_STUDENT_QUESTION_ANSWER_IS_TRIAL_NO_COL => 1
@@ -380,7 +380,7 @@ class AttemptExamTestExerciseController extends Controller
             }
 
             $AttemptedQuestionIds =     HistoryStudentQuestionAnswer::where([
-                                            cn::HISTORY_STUDENT_QUESTION_ANSWER_STUDENT_ID_COL => Auth::user()->id,
+                                            cn::HISTORY_STUDENT_QUESTION_ANSWER_STUDENT_ID_COL => Auth::user()->{cn::USERS_ID_COL},
                                             cn::HISTORY_STUDENT_QUESTION_ANSWER_EXAM_ID_COL => $examId,
                                             cn::HISTORY_STUDENT_QUESTION_ANSWER_IS_TRIAL_NO_COL => $request->no_of_trial_exam
                                         ])->pluck(cn::HISTORY_STUDENT_QUESTION_ANSWER_QUESTION_ID_COL)->toArray();
@@ -409,13 +409,13 @@ class AttemptExamTestExerciseController extends Controller
             $this->UpdateTimeSeconds($request->exam_id,$request->second);
         }
         $HistoryStudentExamsData =  HistoryStudentExams::where([
-                                        cn::HISTORY_STUDENT_EXAMS_STUDENT_ID_COL    => Auth::user()->id,
+                                        cn::HISTORY_STUDENT_EXAMS_STUDENT_ID_COL    => Auth::user()->{cn::USERS_ID_COL},
                                         cn::HISTORY_STUDENT_EXAMS_EXAM_ID_COL       => $request->exam_id
                                     ])->first();
         if(isset($HistoryStudentExamsData) && !empty($HistoryStudentExamsData)){
             if($request->no_of_trial_exam == 1){ // The first trial
                 HistoryStudentExams::where([
-                    cn::HISTORY_STUDENT_EXAMS_STUDENT_ID_COL    => Auth::user()->id,
+                    cn::HISTORY_STUDENT_EXAMS_STUDENT_ID_COL    => Auth::user()->{cn::USERS_ID_COL},
                     cn::HISTORY_STUDENT_EXAMS_EXAM_ID_COL       => $request->exam_id
                 ])->Update([
                     cn::HISTORY_STUDENT_EXAMS_EXAM_CURRENT_QUESTION_ID_COL => $request->current_question_id,
@@ -423,7 +423,7 @@ class AttemptExamTestExerciseController extends Controller
             }
             if($request->no_of_trial_exam == 2){ // The second trial
                 $Update =   HistoryStudentExams::where([
-                                cn::HISTORY_STUDENT_EXAMS_STUDENT_ID_COL    => Auth::user()->id,
+                                cn::HISTORY_STUDENT_EXAMS_STUDENT_ID_COL    => Auth::user()->{cn::USERS_ID_COL},
                                 cn::HISTORY_STUDENT_EXAMS_EXAM_ID_COL       => $request->exam_id
                             ])->Update([
                                 cn::HISTORY_STUDENT_EXAMS_NO_OF_TRIAL_EXAM_COL          => $request->no_of_trial_exam,
@@ -433,19 +433,19 @@ class AttemptExamTestExerciseController extends Controller
 
             // Update HistoryStudentQuestionAnswer table data
             if(HistoryStudentQuestionAnswer::where([
-                cn::HISTORY_STUDENT_QUESTION_ANSWER_STUDENT_ID_COL => Auth::user()->id,
+                cn::HISTORY_STUDENT_QUESTION_ANSWER_STUDENT_ID_COL => Auth::user()->{cn::USERS_ID_COL},
                 cn::HISTORY_STUDENT_QUESTION_ANSWER_EXAM_ID_COL => $request->exam_id,
                 cn::HISTORY_STUDENT_QUESTION_ANSWER_QUESTION_ID_COL => $request->current_question_id,
                 cn::HISTORY_STUDENT_QUESTION_ANSWER_IS_TRIAL_NO_COL => $request->no_of_trial_exam
             ])->exists()){
                 HistoryStudentQuestionAnswer::where([
-                    cn::HISTORY_STUDENT_QUESTION_ANSWER_STUDENT_ID_COL => Auth::user()->id,
+                    cn::HISTORY_STUDENT_QUESTION_ANSWER_STUDENT_ID_COL => Auth::user()->{cn::USERS_ID_COL},
                     cn::HISTORY_STUDENT_QUESTION_ANSWER_EXAM_ID_COL => $request->exam_id,
                     cn::HISTORY_STUDENT_QUESTION_ANSWER_QUESTION_ID_COL => $request->current_question_id,
                     cn::HISTORY_STUDENT_QUESTION_ANSWER_IS_TRIAL_NO_COL => $request->no_of_trial_exam
                 ])
                 ->Update([
-                    cn::HISTORY_STUDENT_QUESTION_ANSWER_STUDENT_ID_COL => Auth::user()->id,
+                    cn::HISTORY_STUDENT_QUESTION_ANSWER_STUDENT_ID_COL => Auth::user()->{cn::USERS_ID_COL},
                     cn::HISTORY_STUDENT_QUESTION_ANSWER_EXAM_ID_COL => $request->exam_id,
                     cn::HISTORY_STUDENT_QUESTION_ANSWER_QUESTION_ID_COL => $request->current_question_id,
                     cn::HISTORY_STUDENT_QUESTION_ANSWER_SELECTED_ANSWER_ID_COL => $request->selected_answer_id,
@@ -456,7 +456,7 @@ class AttemptExamTestExerciseController extends Controller
                 ]);
             }else{
                 HistoryStudentQuestionAnswer::Create([
-                    cn::HISTORY_STUDENT_QUESTION_ANSWER_STUDENT_ID_COL => Auth::user()->id,
+                    cn::HISTORY_STUDENT_QUESTION_ANSWER_STUDENT_ID_COL => Auth::user()->{cn::USERS_ID_COL},
                     cn::HISTORY_STUDENT_QUESTION_ANSWER_EXAM_ID_COL => $request->exam_id,
                     cn::HISTORY_STUDENT_QUESTION_ANSWER_QUESTION_ID_COL => $request->current_question_id,
                     cn::HISTORY_STUDENT_QUESTION_ANSWER_SELECTED_ANSWER_ID_COL => $request->selected_answer_id,
@@ -470,14 +470,14 @@ class AttemptExamTestExerciseController extends Controller
         }else{
             // Create new history
             $InsertHistoryStudentExams = HistoryStudentExams::Create([
-                                            cn::HISTORY_STUDENT_EXAMS_STUDENT_ID_COL => Auth::user()->id,
+                                            cn::HISTORY_STUDENT_EXAMS_STUDENT_ID_COL => Auth::user()->{cn::USERS_ID_COL},
                                             cn::HISTORY_STUDENT_EXAMS_EXAM_ID_COL => $request->exam_id,
                                             cn::HISTORY_STUDENT_EXAMS_NO_OF_TRIAL_EXAM_COL => $request->no_of_trial_exam,
                                             cn::HISTORY_STUDENT_EXAMS_EXAM_CURRENT_QUESTION_ID_COL => $request->current_question_id,
                                         ]);
             if($InsertHistoryStudentExams){
                 HistoryStudentQuestionAnswer::Create([
-                    cn::HISTORY_STUDENT_QUESTION_ANSWER_STUDENT_ID_COL => Auth::user()->id,
+                    cn::HISTORY_STUDENT_QUESTION_ANSWER_STUDENT_ID_COL => Auth::user()->{cn::USERS_ID_COL},
                     cn::HISTORY_STUDENT_QUESTION_ANSWER_EXAM_ID_COL => $request->exam_id,
                     cn::HISTORY_STUDENT_QUESTION_ANSWER_QUESTION_ID_COL => $request->current_question_id,
                     cn::HISTORY_STUDENT_QUESTION_ANSWER_SELECTED_ANSWER_ID_COL => $request->selected_answer_id,
@@ -493,14 +493,14 @@ class AttemptExamTestExerciseController extends Controller
         }
 
         $SelectedAnsweredFlagQuestionId = HistoryStudentQuestionAnswer::where([
-            cn::HISTORY_STUDENT_QUESTION_ANSWER_STUDENT_ID_COL => Auth::user()->id,
+            cn::HISTORY_STUDENT_QUESTION_ANSWER_STUDENT_ID_COL => Auth::user()->{cn::USERS_ID_COL},
             cn::HISTORY_STUDENT_QUESTION_ANSWER_EXAM_ID_COL => $request->exam_id,
             cn::HISTORY_STUDENT_QUESTION_ANSWER_IS_TRIAL_NO_COL => $request->no_of_trial_exam,
             cn::HISTORY_STUDENT_QUESTION_ANSWER_IS_ANSWERED_FLAG_COL => 'true'
         ])->pluck(cn::HISTORY_STUDENT_QUESTION_ANSWER_QUESTION_ID_COL);
 
         $SelectedNotAttemptedFlagQuestionId = HistoryStudentQuestionAnswer::where([
-            cn::HISTORY_STUDENT_QUESTION_ANSWER_STUDENT_ID_COL => Auth::user()->id,
+            cn::HISTORY_STUDENT_QUESTION_ANSWER_STUDENT_ID_COL => Auth::user()->{cn::USERS_ID_COL},
             cn::HISTORY_STUDENT_QUESTION_ANSWER_EXAM_ID_COL => $request->exam_id,
             cn::HISTORY_STUDENT_QUESTION_ANSWER_IS_TRIAL_NO_COL => $request->no_of_trial_exam,
             cn::HISTORY_STUDENT_QUESTION_ANSWER_IS_ANSWERED_FLAG_COL => 'false'
@@ -509,7 +509,7 @@ class AttemptExamTestExerciseController extends Controller
         if($request->no_of_trial_exam == 1){
             if(isset($SelectedAnsweredFlagQuestionId) && !empty($SelectedAnsweredFlagQuestionId)){
                 HistoryStudentExams::where([
-                    cn::HISTORY_STUDENT_EXAMS_STUDENT_ID_COL => Auth::user()->id,
+                    cn::HISTORY_STUDENT_EXAMS_STUDENT_ID_COL => Auth::user()->{cn::USERS_ID_COL},
                     cn::HISTORY_STUDENT_EXAMS_EXAM_ID_COL => $request->exam_id
                 ])->Update([
                     cn::HISTORY_STUDENT_EXAMS_FIRST_TRIAL_ANSWERED_FLAG_QUESTION_IDS_COL => ($SelectedAnsweredFlagQuestionId) ? implode(',',$SelectedAnsweredFlagQuestionId->toArray()) : null
@@ -517,7 +517,7 @@ class AttemptExamTestExerciseController extends Controller
             }
             if(isset($SelectedNotAttemptedFlagQuestionId) && !empty($SelectedNotAttemptedFlagQuestionId)){
                 HistoryStudentExams::where([
-                    cn::HISTORY_STUDENT_EXAMS_STUDENT_ID_COL => Auth::user()->id,
+                    cn::HISTORY_STUDENT_EXAMS_STUDENT_ID_COL => Auth::user()->{cn::USERS_ID_COL},
                     cn::HISTORY_STUDENT_EXAMS_EXAM_ID_COL => $request->exam_id
                 ])->Update([
                     cn::HISTORY_STUDENT_EXAMS_FIRST_TRIAL_NOT_ATTEMPTED_FLAG_QUESTION_IDS_COL => ($SelectedNotAttemptedFlagQuestionId) ? implode(',',$SelectedNotAttemptedFlagQuestionId->toArray()) : null
@@ -528,7 +528,7 @@ class AttemptExamTestExerciseController extends Controller
         if($request->no_of_trial_exam == 2){
             if(isset($SelectedAnsweredFlagQuestionId) && !empty($SelectedAnsweredFlagQuestionId)){
                 HistoryStudentExams::where([
-                    cn::HISTORY_STUDENT_EXAMS_STUDENT_ID_COL => Auth::user()->id,
+                    cn::HISTORY_STUDENT_EXAMS_STUDENT_ID_COL => Auth::user()->{cn::USERS_ID_COL},
                     cn::HISTORY_STUDENT_EXAMS_EXAM_ID_COL => $request->exam_id
                 ])->Update([
                     cn::HISTORY_STUDENT_EXAMS_SECOND_TRIAL_ANSWERED_FLAG_QUESTION_IDS_COL => ($SelectedAnsweredFlagQuestionId) ? implode(',',$SelectedAnsweredFlagQuestionId->toArray()) : null
@@ -536,7 +536,7 @@ class AttemptExamTestExerciseController extends Controller
             }
             if(isset($SelectedNotAttemptedFlagQuestionId) && !empty($SelectedNotAttemptedFlagQuestionId)){
                 HistoryStudentExams::where([
-                    cn::HISTORY_STUDENT_EXAMS_STUDENT_ID_COL => Auth::user()->id,
+                    cn::HISTORY_STUDENT_EXAMS_STUDENT_ID_COL => Auth::user()->{cn::USERS_ID_COL},
                     cn::HISTORY_STUDENT_EXAMS_EXAM_ID_COL => $request->exam_id
                 ])->Update([
                     cn::HISTORY_STUDENT_EXAMS_SECOND_TRIAL_NOT_ATTEMPTED_FLAG_QUESTION_IDS_COL => ($SelectedNotAttemptedFlagQuestionId) ? implode(',',$SelectedNotAttemptedFlagQuestionId->toArray()) : null
@@ -544,7 +544,7 @@ class AttemptExamTestExerciseController extends Controller
             }
         }
         $AttemptedQuestionIds =     HistoryStudentQuestionAnswer::where([
-                                        cn::HISTORY_STUDENT_QUESTION_ANSWER_STUDENT_ID_COL => Auth::user()->id,
+                                        cn::HISTORY_STUDENT_QUESTION_ANSWER_STUDENT_ID_COL => Auth::user()->{cn::USERS_ID_COL},
                                         cn::HISTORY_STUDENT_QUESTION_ANSWER_EXAM_ID_COL => $request->exam_id,
                                         cn::HISTORY_STUDENT_QUESTION_ANSWER_IS_TRIAL_NO_COL => $request->no_of_trial_exam
                                     ])->pluck(cn::HISTORY_STUDENT_QUESTION_ANSWER_QUESTION_ID_COL)->toArray();
@@ -564,12 +564,12 @@ class AttemptExamTestExerciseController extends Controller
 
     public function UpdateQuestionPosition($ExamId,$QuestionId){
         $HistoryStudentExamsData =  HistoryStudentExams::where([
-            cn::HISTORY_STUDENT_EXAMS_STUDENT_ID_COL => Auth::user()->id,
+            cn::HISTORY_STUDENT_EXAMS_STUDENT_ID_COL => Auth::user()->{cn::USERS_ID_COL},
             cn::HISTORY_STUDENT_EXAMS_EXAM_ID_COL => $ExamId
         ])->first();
         if(isset($HistoryStudentExamsData) && !empty($HistoryStudentExamsData)){
             HistoryStudentExams::where([
-                cn::HISTORY_STUDENT_EXAMS_STUDENT_ID_COL => Auth::user()->id,
+                cn::HISTORY_STUDENT_EXAMS_STUDENT_ID_COL => Auth::user()->{cn::USERS_ID_COL},
                 cn::HISTORY_STUDENT_EXAMS_EXAM_ID_COL => $ExamId
             ])->Update([
                 cn::HISTORY_STUDENT_EXAMS_EXAM_CURRENT_QUESTION_ID_COL => $QuestionId,
@@ -577,7 +577,7 @@ class AttemptExamTestExerciseController extends Controller
         }else{
             // Create new history
             $InsertHistoryStudentExams = HistoryStudentExams::Create([
-                cn::HISTORY_STUDENT_EXAMS_STUDENT_ID_COL => Auth::user()->id,
+                cn::HISTORY_STUDENT_EXAMS_STUDENT_ID_COL => Auth::user()->{cn::USERS_ID_COL},
                 cn::HISTORY_STUDENT_EXAMS_EXAM_ID_COL => $ExamId,
                 cn::HISTORY_STUDENT_EXAMS_EXAM_CURRENT_QUESTION_ID_COL => $QuestionId,
             ]);
@@ -601,7 +601,7 @@ class AttemptExamTestExerciseController extends Controller
                     if(isset($AssignedQuestionIds) && !empty($AssignedQuestionIds)){
                         foreach($AssignedQuestionIds as $quePosition => $AssignedQuestionId){
                             $HistoryStudentQuestionAnswer = HistoryStudentQuestionAnswer::where([
-                                                                cn::HISTORY_STUDENT_QUESTION_ANSWER_STUDENT_ID_COL => Auth::user()->id,
+                                                                cn::HISTORY_STUDENT_QUESTION_ANSWER_STUDENT_ID_COL => Auth::user()->{cn::USERS_ID_COL},
                                                                 cn::HISTORY_STUDENT_QUESTION_ANSWER_EXAM_ID_COL => $request->exam_id,
                                                                 cn::HISTORY_STUDENT_QUESTION_ANSWER_IS_TRIAL_NO_COL => $request->no_of_trial_exam,
                                                                 cn::HISTORY_STUDENT_QUESTION_ANSWER_QUESTION_ID_COL => $AssignedQuestionId
@@ -645,7 +645,7 @@ class AttemptExamTestExerciseController extends Controller
             if(isset($request->WrongQuestionIds) && !empty($request->WrongQuestionIds)){
                 // Update the "HistoryStudentExams" table
                 HistoryStudentExams::where([
-                    cn::HISTORY_STUDENT_EXAMS_STUDENT_ID_COL => Auth::user()->id,
+                    cn::HISTORY_STUDENT_EXAMS_STUDENT_ID_COL => Auth::user()->{cn::USERS_ID_COL},
                     cn::HISTORY_STUDENT_EXAMS_EXAM_ID_COL => $examId
                 ])->Update([
                     cn::HISTORY_STUDENT_EXAMS_NO_OF_TRIAL_EXAM_COL => $request->no_of_trial_exam,
@@ -654,7 +654,7 @@ class AttemptExamTestExerciseController extends Controller
                 ]);
 
                 $HistoryStudentExamsData =  HistoryStudentExams::where([
-                                                cn::HISTORY_STUDENT_EXAMS_STUDENT_ID_COL => Auth::user()->id,
+                                                cn::HISTORY_STUDENT_EXAMS_STUDENT_ID_COL => Auth::user()->{cn::USERS_ID_COL},
                                                 cn::HISTORY_STUDENT_EXAMS_EXAM_ID_COL => $request->exam_id
                                             ])->first();
                 if(isset($HistoryStudentExamsData) && !empty($HistoryStudentExamsData)){
@@ -680,7 +680,7 @@ class AttemptExamTestExerciseController extends Controller
                     $HistoryStudentQuestionAnswer = array();
                     // Update previous selected flag
                     HistoryStudentQuestionAnswer::where([
-                        cn::HISTORY_STUDENT_QUESTION_ANSWER_STUDENT_ID_COL => Auth::user()->id,
+                        cn::HISTORY_STUDENT_QUESTION_ANSWER_STUDENT_ID_COL => Auth::user()->{cn::USERS_ID_COL},
                         cn::HISTORY_STUDENT_QUESTION_ANSWER_EXAM_ID_COL => $examId,
                         cn::HISTORY_STUDENT_QUESTION_ANSWER_IS_TRIAL_NO_COL => 1,
                         cn::HISTORY_STUDENT_QUESTION_ANSWER_IS_ANSWERED_FLAG_COL => 'false'
@@ -688,7 +688,7 @@ class AttemptExamTestExerciseController extends Controller
                         cn::HISTORY_STUDENT_QUESTION_ANSWER_IS_ANSWERED_FLAG_COL => 'true'
                     ]);
                     $HistoryStudentQuestionAnswer = HistoryStudentQuestionAnswer::where([
-                                                        cn::HISTORY_STUDENT_QUESTION_ANSWER_STUDENT_ID_COL => Auth::user()->id,
+                                                        cn::HISTORY_STUDENT_QUESTION_ANSWER_STUDENT_ID_COL => Auth::user()->{cn::USERS_ID_COL},
                                                         cn::HISTORY_STUDENT_QUESTION_ANSWER_EXAM_ID_COL => $examId,
                                                         cn::HISTORY_STUDENT_QUESTION_ANSWER_QUESTION_ID_COL => $NewQuestionId,
                                                         cn::HISTORY_STUDENT_QUESTION_ANSWER_IS_TRIAL_NO_COL => 1
@@ -731,7 +731,7 @@ class AttemptExamTestExerciseController extends Controller
             }
 
             $AttemptedQuestionIds =     HistoryStudentQuestionAnswer::where([
-                                            cn::HISTORY_STUDENT_QUESTION_ANSWER_STUDENT_ID_COL => Auth::user()->id,
+                                            cn::HISTORY_STUDENT_QUESTION_ANSWER_STUDENT_ID_COL => Auth::user()->{cn::USERS_ID_COL},
                                             cn::HISTORY_STUDENT_QUESTION_ANSWER_EXAM_ID_COL => $examId,
                                             cn::HISTORY_STUDENT_QUESTION_ANSWER_IS_TRIAL_NO_COL => $request->no_of_trial_exam
                                         ])->pluck(cn::HISTORY_STUDENT_QUESTION_ANSWER_QUESTION_ID_COL)->toArray();
@@ -788,7 +788,7 @@ class AttemptExamTestExerciseController extends Controller
 
         // Get the selected student answers
         $HistoryStudentExams = HistoryStudentExams::where([
-            cn::HISTORY_STUDENT_EXAMS_STUDENT_ID_COL => Auth::user()->id,
+            cn::HISTORY_STUDENT_EXAMS_STUDENT_ID_COL => Auth::user()->{cn::USERS_ID_COL},
             cn::HISTORY_STUDENT_EXAMS_EXAM_ID_COL => $examId
         ])->first();
 
@@ -819,20 +819,20 @@ class AttemptExamTestExerciseController extends Controller
 
                 if(isset($HistoryStudentExams) && !empty($HistoryStudentExams)){
                     if(HistoryStudentQuestionAnswer::where([
-                        cn::HISTORY_STUDENT_QUESTION_ANSWER_STUDENT_ID_COL => Auth::user()->id,
+                        cn::HISTORY_STUDENT_QUESTION_ANSWER_STUDENT_ID_COL => Auth::user()->{cn::USERS_ID_COL},
                         cn::HISTORY_STUDENT_QUESTION_ANSWER_EXAM_ID_COL => $examId,
                         cn::HISTORY_STUDENT_QUESTION_ANSWER_QUESTION_ID_COL => $QuestionId,
                         cn::HISTORY_STUDENT_QUESTION_ANSWER_IS_TRIAL_NO_COL => $HistoryStudentExams->{cn::HISTORY_STUDENT_EXAMS_NO_OF_TRIAL_EXAM_COL}
                     ])->exists()){
                         $HistoryStudentQuestionAnswer = HistoryStudentQuestionAnswer::where([
-                            cn::HISTORY_STUDENT_QUESTION_ANSWER_STUDENT_ID_COL => Auth::user()->id,
+                            cn::HISTORY_STUDENT_QUESTION_ANSWER_STUDENT_ID_COL => Auth::user()->{cn::USERS_ID_COL},
                             cn::HISTORY_STUDENT_QUESTION_ANSWER_EXAM_ID_COL => $examId,
                             cn::HISTORY_STUDENT_QUESTION_ANSWER_QUESTION_ID_COL => $QuestionId,
                             cn::HISTORY_STUDENT_QUESTION_ANSWER_IS_TRIAL_NO_COL => $HistoryStudentExams->{cn::HISTORY_STUDENT_EXAMS_NO_OF_TRIAL_EXAM_COL}
                         ])->first();
                     }else{
                         $HistoryStudentQuestionAnswer = HistoryStudentQuestionAnswer::where([
-                            cn::HISTORY_STUDENT_QUESTION_ANSWER_STUDENT_ID_COL => Auth::user()->id,
+                            cn::HISTORY_STUDENT_QUESTION_ANSWER_STUDENT_ID_COL => Auth::user()->{cn::USERS_ID_COL},
                             cn::HISTORY_STUDENT_QUESTION_ANSWER_EXAM_ID_COL => $examId,
                             cn::HISTORY_STUDENT_QUESTION_ANSWER_QUESTION_ID_COL => $QuestionId,
                             cn::HISTORY_STUDENT_QUESTION_ANSWER_IS_TRIAL_NO_COL => 1
@@ -931,7 +931,7 @@ class AttemptExamTestExerciseController extends Controller
             $save = AttemptExams::create($PostData);
             if($save){
                 $this->UserActivityLog(
-                    Auth::user()->id,
+                    Auth::user()->{cn::USERS_ID_COL},
                     '<p>'.Auth::user()->DecryptNameEn.' '.__('activity_history.exam_attempted').'.'.'</p>'.
                     '<p>'.__('activity_history.test_type').$this->ActivityTestType($examDetail).'</p>'.
                     '<p>'.__('activity_history.title_is').$examDetail->{cn::EXAM_TABLE_TITLE_COLS}.'.'.'</p>'.
@@ -964,11 +964,11 @@ class AttemptExamTestExerciseController extends Controller
 
                 // Delete history table data
                 // HistoryStudentExams::where([
-                //     cn::HISTORY_STUDENT_EXAMS_STUDENT_ID_COL => Auth::user()->id,
+                //     cn::HISTORY_STUDENT_EXAMS_STUDENT_ID_COL => Auth::user()->{cn::USERS_ID_COL},
                 //     cn::HISTORY_STUDENT_EXAMS_EXAM_ID_COL => $examId
                 // ])->delete();
                 // HistoryStudentQuestionAnswer::where([
-                //     cn::HISTORY_STUDENT_QUESTION_ANSWER_STUDENT_ID_COL => Auth::user()->id,
+                //     cn::HISTORY_STUDENT_QUESTION_ANSWER_STUDENT_ID_COL => Auth::user()->{cn::USERS_ID_COL},
                 //     cn::HISTORY_STUDENT_QUESTION_ANSWER_EXAM_ID_COL => $examId
                 // ])->delete();
                 $this->StoreAuditLogFunction('','Exams','','','Attempt Exam',cn::EXAM_TABLE_NAME,'');
@@ -985,7 +985,7 @@ class AttemptExamTestExerciseController extends Controller
         $NoOfWrongAnswers = 0;
         $QuestionAnswerArray = [];
         $HistoryStudentExams =  HistoryStudentExams::where([
-                                    cn::HISTORY_STUDENT_EXAMS_STUDENT_ID_COL => Auth::user()->id,
+                                    cn::HISTORY_STUDENT_EXAMS_STUDENT_ID_COL => Auth::user()->{cn::USERS_ID_COL},
                                     cn::HISTORY_STUDENT_EXAMS_EXAM_ID_COL => $examId
                                 ])->first();
         if($Trial == 1){
@@ -1006,7 +1006,7 @@ class AttemptExamTestExerciseController extends Controller
                 $ArrayData['question_id'] = $QuestionId;
                 if(isset($HistoryStudentExams) && !empty($HistoryStudentExams)){
                     $HistoryStudentQuestionAnswer = HistoryStudentQuestionAnswer::where([
-                        cn::HISTORY_STUDENT_QUESTION_ANSWER_STUDENT_ID_COL => Auth::user()->id,
+                        cn::HISTORY_STUDENT_QUESTION_ANSWER_STUDENT_ID_COL => Auth::user()->{cn::USERS_ID_COL},
                         cn::HISTORY_STUDENT_QUESTION_ANSWER_EXAM_ID_COL => $examId,
                         cn::HISTORY_STUDENT_QUESTION_ANSWER_QUESTION_ID_COL => $QuestionId,
                         cn::HISTORY_STUDENT_QUESTION_ANSWER_IS_TRIAL_NO_COL => $Trial
@@ -1056,25 +1056,25 @@ class AttemptExamTestExerciseController extends Controller
         );
         if(isset($request->exam_id) && !empty($request->exam_id)){
             if(HistoryStudentExams::where([
-                cn::HISTORY_STUDENT_EXAMS_STUDENT_ID_COL => Auth::user()->id,
+                cn::HISTORY_STUDENT_EXAMS_STUDENT_ID_COL => Auth::user()->{cn::USERS_ID_COL},
                 cn::HISTORY_STUDENT_EXAMS_EXAM_ID_COL    => $request->exam_id
             ])->exists()){
                 HistoryStudentExams::where([
-                    cn::HISTORY_STUDENT_EXAMS_STUDENT_ID_COL => Auth::user()->id,
+                    cn::HISTORY_STUDENT_EXAMS_STUDENT_ID_COL => Auth::user()->{cn::USERS_ID_COL},
                     cn::HISTORY_STUDENT_EXAMS_EXAM_ID_COL    => $request->exam_id
                 ])->Update([
                     cn::HISTORY_STUDENT_EXAMS_AFTER_EMOJI_ID_COL => $request->FeedbackEmojiId
                 ]);
             }else{
                 HistoryStudentExams::Create([
-                                            cn::HISTORY_STUDENT_EXAMS_STUDENT_ID_COL        => Auth::user()->id,
+                                            cn::HISTORY_STUDENT_EXAMS_STUDENT_ID_COL        => Auth::user()->{cn::USERS_ID_COL},
                                             cn::HISTORY_STUDENT_EXAMS_EXAM_ID_COL           => $request->exam_id,
                                             cn::HISTORY_STUDENT_EXAMS_NO_OF_TRIAL_EXAM_COL  => 1,
                                             cn::HISTORY_STUDENT_EXAMS_BEFORE_EMOJI_ID_COL   => $request->FeedbackEmojiId
                                         ]);
                 $examDetail = Exam::find($request->exam_id);
                 $this->UserActivityLog(
-                    Auth::user()->id,
+                    Auth::user()->{cn::USERS_ID_COL},
                     '<p>'.Auth::user()->DecryptNameEn.' '.__('activity_history.exam_attempted').'.'.'</p>'.
                     '<p>'.__('activity_history.test_type').$this->ActivityTestType($examDetail).'</p>'.
                     '<p>'.__('activity_history.title_is').$examDetail->{cn::EXAM_TABLE_TITLE_COLS}.'.'.'</p>'.

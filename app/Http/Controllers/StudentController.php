@@ -66,7 +66,7 @@ class StudentController extends Controller
             $items = $request->items ?? 10;
             $TotalFilterData = '';
             $gradeList = GradeSchoolMappings::with('grades')->where([
-                            cn::GRADES_MAPPING_SCHOOL_ID_COL => Auth::user()->school_id,
+                            cn::GRADES_MAPPING_SCHOOL_ID_COL => Auth::user()->{cn::USERS_SCHOOL_ID_COL},
                             cn::GRADES_MAPPING_CURRICULUM_YEAR_ID_COL => $this->GetCurriculumYear()
                         ])
                         ->get();
@@ -219,7 +219,7 @@ class StudentController extends Controller
             if($Users){
                  /*User Activity*/
                 $this->UserActivityLog(
-                    Auth::user()->id,
+                    Auth::user()->{cn::USERS_ID_COL},
                     '<p>'.Auth::user()->DecryptNameEn.' '.__('activity_history.created_user_name').$request->name_en.'.'.'</p>'.
                     '<p>'.__('activity_history.on').__('activity_history.date_and_time').date('Y-m-d h:i:s a', time()) .'</p>'
                 );
@@ -230,7 +230,7 @@ class StudentController extends Controller
                     $curriculumStudentMapping = CurriculumYearStudentMappings::create([
                         cn::CURRICULUM_YEAR_STUDENT_MAPPING_CURRICULUM_YEAR_ID_COL => $this->GetCurriculumYear(),
                         cn::CURRICULUM_YEAR_STUDENT_MAPPING_USER_ID_COL => $Users->id,
-                        cn::CURRICULUM_YEAR_STUDENT_MAPPING_SCHOOL_ID_COL => Auth::user()->school_id,
+                        cn::CURRICULUM_YEAR_STUDENT_MAPPING_SCHOOL_ID_COL => Auth::user()->{cn::USERS_SCHOOL_ID_COL},
                         cn::CURRICULUM_YEAR_STUDENT_MAPPING_GRADE_ID_COL => $Grades->id ?? null,
                         cn::CURRICULUM_YEAR_STUDENT_MAPPING_CLASS_ID_COL => $classData->id ?? null,
                         cn::CURRICULUM_YEAR_STUDENT_NUMBER_WITHIN_CLASS_COL => $Users->student_number_within_class ?? null,
@@ -241,7 +241,7 @@ class StudentController extends Controller
                 }
                 ClassPromotionHistory::create([
                     cn::CLASS_PROMOTION_HISTORY_CURRICULUM_YEAR_ID_COL =>   $this->GetCurriculumYear(),
-                    cn::CLASS_PROMOTION_HISTORY_SCHOOL_ID_COL          =>   Auth::user()->school_id,
+                    cn::CLASS_PROMOTION_HISTORY_SCHOOL_ID_COL          =>   Auth::user()->{cn::USERS_SCHOOL_ID_COL},
                     cn::CLASS_PROMOTION_HISTORY_STUDENT_ID_COL         =>   $Users->id,
                     cn::CLASS_PROMOTION_HISTORY_CURRENT_GRADE_ID_COL   =>   $Grades->id,
                     cn::CLASS_PROMOTION_HISTORY_CURRENT_CLASS_ID_COL   =>   $classData->id,
@@ -365,7 +365,7 @@ class StudentController extends Controller
             if($Update){
                  /*User Activity*/
                  $this->UserActivityLog(
-                    Auth::user()->id,
+                    Auth::user()->{cn::USERS_ID_COL},
                     '<p>'.Auth::user()->DecryptNameEn.' '.__('activity_history.updated_user_name').$request->name_en.'.'.'</p>'.
                     '<p>'.__('activity_history.on').__('activity_history.date_and_time').date('Y-m-d h:i:s a', time()) .'</p>'
                 );
@@ -402,7 +402,7 @@ class StudentController extends Controller
             $this->StoreAuditLogFunction('','User','','','Delete Student ID '.$id,cn::USERS_TABLE_NAME,'');
             /*User Activity*/
             $this->UserActivityLog(
-                Auth::user()->id,
+                Auth::user()->{cn::USERS_ID_COL},
                 '<p>'.Auth::user()->DecryptNameEn.' '.__('activity_history.deleted_students').'.'.'</p>'.
                 '<p>'.__('activity_history.on').__('activity_history.date_and_time').date('Y-m-d h:i:s a', time()) .'</p>'
             );
@@ -555,7 +555,7 @@ class StudentController extends Controller
         $this->StoreAuditLogFunction($examData,'Exam',cn::EXAM_TABLE_ID_COLS,'','Create Exam',cn::EXAM_TABLE_NAME,'');
         $exams = Exam::create($examData);
         $this->UserActivityLog(
-            Auth::user()->id,
+            Auth::user()->{cn::USERS_ID_COL},
             '<p>'.Auth::user()->DecryptNameEn.' '.__('activity_history.new_test_created').'.'.
             '<p>'.__('activity_history.test_type').$this->ActivityTestType($exams).'</p>'.
             '<p>'.__('activity_history.title_is').$exams->title.'</p>'.

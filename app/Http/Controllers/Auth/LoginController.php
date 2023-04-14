@@ -21,26 +21,10 @@ use App\Events\UserActivityLog;
 
 class LoginController extends Controller
 {
-    /*
-    |--------------------------------------------------------------------------
-    | Login Controller
-    |--------------------------------------------------------------------------
-    |
-    | This controller handles authenticating users for the application and
-    | redirecting them to your home screen. The controller uses a trait
-    | to conveniently provide its functionality to your applications.
-    |
-    */
-
     use AuthenticatesUsers;
     use Common;
     use ResponseFormat;
 
-    /**
-     * Where to redirect users after login.
-     *
-     * @var string
-     */
     //protected $redirectTo = RouteServiceProvider::HOME;
     protected $redirectTo;
 
@@ -70,7 +54,7 @@ class LoginController extends Controller
      * 
      */
     public function logincheck(Request $request){
-        try {
+        try{
             $credential = $request->only(cn::USERS_EMAIL_COL,cn::USERS_PASSWORD_COL);
             if(isset($request->login_type) && $request->login_type == 'superadmin'){ // This is only login as "super admin"
                 $User = User::with('roles')->where([cn::USERS_EMAIL_COL => $credential['email']])->whereIn(cn::USERS_ROLE_ID_COL,[cn::SUPERADMIN_ROLE_ID])->first();
@@ -81,20 +65,25 @@ class LoginController extends Controller
                 return response()->json(array('status' => 0,'message'=>'Please enter registered email'));
             }
             // If user is found the check credentials
-            if(Hash::check($request->password, $User->password)) {
+            if(Hash::check($request->password, $User->{cn::USERS_PASSWORD_COL})) {
                 Auth::login($User);
                 // Set User Log Activities
                 //$this->UserActivitiesLogs('login');
                 $redirectUrl = $this->GetRedirectURL();
                 $this->UserActivityLog(
-                    Auth::user()->id,
+                    Auth::user()->{cn::USERS_ID_COL},
                     '<p>'.Auth::user()->DecryptNameEn.' '.__('activity_history.login_history_text').'</p>'
                 );
-                return $this->sendResponse(['redirectUrl' => $redirectUrl,'user_role' => Auth::user()->role_id], 'Login Successfully');
+                return $this->sendResponse([
+                        'redirectUrl' => $redirectUrl,
+                        'user_role' => Auth::user()->{cn::USERS_ROLE_ID_COL}
+                    ],
+                    'Login Successfully'
+                );
             }else{
                 return $this->sendError('Invalid Login Credentials', 422);
             }
-        } catch (\Exception $ex) {
+        }catch(\Exception $ex){
             Log::info('Login Failed :'.json_encode($ex));
             return $this->sendError($ex->getMessage(), 404);
         }
@@ -104,13 +93,13 @@ class LoginController extends Controller
         try {
             $redirectUrl = config()->get('app.url').'login';
             $this->UserActivityLog(
-                Auth::user()->id, 
+                Auth::user()->{cn::USERS_ID_COL}, 
                 '<p>'.Auth::user()->DecryptNameEn.' '.__('activity_history.logout_history_text').'</p>'
             );
             // Set User Log Activities
             if(Auth::user()){
                 //$this->UserActivitiesLogs('logout');
-                if(Auth::user()->role_id == 1){
+                if(Auth::user()->{cn::USERS_ROLE_ID_COL} == 1){
                     $redirectUrl = config()->get('app.url').'super-admin/login';
                 }else{
                     $redirectUrl = config()->get('app.url').'login';

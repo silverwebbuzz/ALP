@@ -249,7 +249,7 @@ class QuestionGeneratorController extends Controller {
             $exams = Exam::create($examData);
             if($exams){
                 $this->UserActivityLog(
-                    Auth::user()->id,
+                    Auth::user()->{cn::USERS_ID_COL},
                     '<p>'.Auth::user()->DecryptNameEn.' '.__('activity_history.new_test_created').'.'.
                     '<p>'.__('activity_history.test_type').$this->ActivityTestType($exams).'</p>'.
                     '<p>'.__('activity_history.title_is').$exams->title.'</p>'.
@@ -421,7 +421,7 @@ class QuestionGeneratorController extends Controller {
                 $exams = Exam::find($id)->update($examData);
                 if($exams){
                     $this->UserActivityLog(
-                        Auth::user()->id,
+                        Auth::user()->{cn::USERS_ID_COL},
                         '<p>'.Auth::user()->DecryptNameEn.' '.__('activity_history.update_test').'</p>'
                     );
                     if($exam->{cn::EXAM_TABLE_USE_OF_MODE_COLS} == 1){
@@ -773,7 +773,7 @@ class QuestionGeneratorController extends Controller {
             $exams = Exam::create($examData);
             if($exams){
                 $this->UserActivityLog(
-                    Auth::user()->id,
+                    Auth::user()->{cn::USERS_ID_COL},
                     '<p>'.Auth::user()->DecryptNameEn.' '.__('activity_history.new_test_created').'.'.
                     '<p>'.__('activity_history.test_type').$this->ActivityTestType($exams).'</p>'.
                     '<p>'.__('activity_history.title_is').$exams->title.'</p>'.
@@ -1460,7 +1460,7 @@ class QuestionGeneratorController extends Controller {
                     }
 
                     $this->UserActivityLog(
-                        Auth::user()->id,
+                        Auth::user()->{cn::USERS_ID_COL},
                         '<p>'.Auth::user()->DecryptNameEn.' '.__('activity_history.update_test').'</p>'
                     );
 
@@ -2633,7 +2633,7 @@ class QuestionGeneratorController extends Controller {
                 }
                 // User Activity  Log
                 $this->UserActivityLog(
-                    Auth::user()->id,
+                    Auth::user()->{cn::USERS_ID_COL},
                     '<p>'.Auth::user()->DecryptNameEn.' '.__('activity_history.see_exercise_and_test_wizard').' '.__('activity_history.on').__('activity_history.date_and_time').date('Y-m-d h:i:s a', time()) .'</p>'
                 );
                 return view('backend/question_generator/school/question_wizard_list',compact('CurriculumYears','examList','items','examTypes','statusLists','difficultyLevels'));
@@ -2760,7 +2760,7 @@ class QuestionGeneratorController extends Controller {
                                 
                             }
                             $this->UserActivityLog(
-                                Auth::user()->id,
+                                Auth::user()->{cn::USERS_ID_COL},
                                 '<p>'.Auth::user()->DecryptNameEn.' '.__('activity_history.update_status').'</p>'
                             );
                             return $this->sendResponse($result, __('languages.status_updated_successfully'));
@@ -2795,7 +2795,7 @@ class QuestionGeneratorController extends Controller {
                         }
                     if($Update){
                         $this->UserActivityLog(
-                            Auth::user()->id,
+                            Auth::user()->{cn::USERS_ID_COL},
                             '<p>'.Auth::user()->DecryptNameEn.' '.__('activity_history.update_status').'</p>'
                         );
                         return $this->sendResponse($result, __('languages.status_updated_successfully'));
@@ -3665,12 +3665,10 @@ class QuestionGeneratorController extends Controller {
      * USE : User can change exam end date after publish exam
      */
     public function ChangeExamEndDate(Request $request){
-        echo "Mueksh";die;
-        echo "<pre>";print_r($request->all());die;
         $UpdateExamEndDate = '';
         $ExamData = Exam::find($request->ExamId);        
         if(!empty($ExamData)){
-            switch(Auth::user()->role_id){
+            switch(Auth::user()->{cn::USERS_ROLE_ID_COL}){
                 case 1:
                     // if($request->ExamType=="EndDate"){
                     if($request->dateType=="EndDate"){
@@ -3713,20 +3711,20 @@ class QuestionGeneratorController extends Controller {
                     // if($request->ExamType == "EndDate"){
                     if($request->dateType == "EndDate"){
                         ExamGradeClassMappingModel::where(cn::EXAM_SCHOOL_GRADE_CLASS_MAPPING_EXAM_ID_COL,$request->ExamId)
-                        ->where(cn::EXAM_SCHOOL_GRADE_CLASS_MAPPING_SCHOOL_ID_COL,Auth::user()->school_id)
+                        ->where(cn::EXAM_SCHOOL_GRADE_CLASS_MAPPING_SCHOOL_ID_COL,Auth::user()->{cn::USERS_SCHOOL_ID_COL})
                         ->update([
                             cn::EXAM_SCHOOL_GRADE_CLASS_MAPPING_END_DATE_COL => $this->DateConvertToYMD($request->to_date)
                         ]);
                         $UpdateExamEndDate = Exam::where(cn::EXAM_TABLE_ID_COLS,$request->ExamId)
-                                            ->where(cn::EXAM_TABLE_CREATED_BY_COL,Auth::user()->id)
-                                            ->where(cn::EXAM_TABLE_SCHOOL_COLS,Auth::user()->school_id)
+                                            ->where(cn::EXAM_TABLE_CREATED_BY_COL,Auth::user()->{cn::USERS_ID_COL})
+                                            ->where(cn::EXAM_TABLE_SCHOOL_COLS,Auth::user()->{cn::USERS_SCHOOL_ID_COL})
                                             ->update([
                                                 cn::EXAM_TABLE_TO_DATE_COLS => $this->DateConvertToYMD($request->to_date)
                                             ]);
                     }else{
                         $UpdateExamEndDate = Exam::where(cn::EXAM_TABLE_ID_COLS,$request->ExamId)
-                                            ->where(cn::EXAM_TABLE_CREATED_BY_COL,Auth::user()->id)
-                                            ->where(cn::EXAM_TABLE_SCHOOL_COLS,Auth::user()->school_id)
+                                            ->where(cn::EXAM_TABLE_CREATED_BY_COL,Auth::user()->{cn::USERS_ID_COL})
+                                            ->where(cn::EXAM_TABLE_SCHOOL_COLS,Auth::user()->{cn::USERS_SCHOOL_ID_COL})
                                             ->update([
                                                 cn::EXAM_TABLE_RESULT_DATE_COLS => $this->DateConvertToYMD($request->to_date)
                                             ]);
@@ -3738,18 +3736,18 @@ class QuestionGeneratorController extends Controller {
                     // if($request->ExamType == "EndDate"){
                     if($request->dateType == "EndDate"){
                         ExamGradeClassMappingModel::where(cn::EXAM_SCHOOL_GRADE_CLASS_MAPPING_EXAM_ID_COL,$request->ExamId)
-                        ->where(cn::EXAM_SCHOOL_GRADE_CLASS_MAPPING_SCHOOL_ID_COL,Auth::user()->school_id)
+                        ->where(cn::EXAM_SCHOOL_GRADE_CLASS_MAPPING_SCHOOL_ID_COL,Auth::user()->{cn::USERS_SCHOOL_ID_COL})
                         ->update([
                             cn::EXAM_SCHOOL_GRADE_CLASS_MAPPING_END_DATE_COL => $this->DateConvertToYMD($request->to_date)
                         ]);
                         $UpdateExamEndDate = Exam::where(cn::EXAM_TABLE_ID_COLS,$request->ExamId)
-                                            ->where(cn::EXAM_TABLE_SCHOOL_COLS,Auth::user()->school_id)
+                                            ->where(cn::EXAM_TABLE_SCHOOL_COLS,Auth::user()->{cn::USERS_SCHOOL_ID_COL})
                                             ->update([
                                                 cn::EXAM_TABLE_TO_DATE_COLS => $this->DateConvertToYMD($request->to_date)
                                             ]);
                     }else{
                         $UpdateExamEndDate = Exam::where(cn::EXAM_TABLE_ID_COLS,$request->ExamId)
-                                            ->where(cn::EXAM_TABLE_SCHOOL_COLS,Auth::user()->school_id)
+                                            ->where(cn::EXAM_TABLE_SCHOOL_COLS,Auth::user()->{cn::USERS_SCHOOL_ID_COL})
                                             ->update([
                                                 cn::EXAM_TABLE_RESULT_DATE_COLS => $this->DateConvertToYMD($request->to_date)
                                             ]);

@@ -73,18 +73,18 @@ class TeacherDashboardController extends Controller
             }
 
             if($this->isPrincipalLogin() || $this->isCoOrdinatorLogin() || $this->isPanelHeadLogin() ){
-                $GroupData =    PeerGroup::where(['school_id' => Auth::user()->school_id,
+                $GroupData =    PeerGroup::where(['school_id' => Auth::user()->{cn::USERS_SCHOOL_ID_COL},
                                     cn::PEER_GROUP_CURRICULUM_YEAR_ID_COL => $this->GetCurriculumYear()
                                 ])->get();
                 
                 $gradesList =   GradeSchoolMappings::where([
-                                    'school_id' => Auth::user()->school_id,
+                                    'school_id' => Auth::user()->{cn::USERS_SCHOOL_ID_COL},
                                     'curriculum_year_id' => $this->GetCurriculumYear()
                                 ])
                                 ->with('grades')
                                 ->get();
                 $gradeClassIds = GradeClassMapping::where([
-                                    'school_id'             => Auth::user()->school_id,
+                                    'school_id'             => Auth::user()->{cn::USERS_SCHOOL_ID_COL},
                                     'curriculum_year_id'    => $this->GetCurriculumYear()
                                 ])
                                 ->get()
@@ -109,7 +109,7 @@ class TeacherDashboardController extends Controller
             $grade_id = empty($request->grade) ? 0 : $request->grade;
             ($items == 0) ? $items = 10 : $request->items;//for maintain all filtration when count data value is 0
             $gradeData = Grades::whereIn(cn::GRADES_ID_COL,$gradeid)->get();
-            $studentList =  User::whereIn(cn::USERS_ID_COL,$this->curriculum_year_mapping_student_ids($gradeid,$gradeClassId,Auth::user()->school_id))
+            $studentList =  User::whereIn(cn::USERS_ID_COL,$this->curriculum_year_mapping_student_ids($gradeid,$gradeClassId,Auth::user()->{cn::USERS_SCHOOL_ID_COL}))
                             ->where([
                                 cn::USERS_SCHOOL_ID_COL=>Auth::user()->{cn::USERS_SCHOOL_ID_COL},
                                 cn::USERS_ROLE_ID_COL=>cn::STUDENT_ROLE_ID
@@ -120,7 +120,7 @@ class TeacherDashboardController extends Controller
             $GradeClassData =   GradeClassMapping::whereIn(cn::GRADE_CLASS_MAPPING_GRADE_ID_COL,$gradeid)
                                 ->whereIn(cn::GRADE_CLASS_MAPPING_ID_COL,$gradeClassId)
                                 ->where([
-                                        cn::GRADE_CLASS_MAPPING_SCHOOL_ID_COL          => Auth::user()->school_id,
+                                        cn::GRADE_CLASS_MAPPING_SCHOOL_ID_COL          => Auth::user()->{cn::USERS_SCHOOL_ID_COL},
                                         cn::GRADE_CLASS_MAPPING_CURRICULUM_YEAR_ID_COL => $this->GetCurriculumYear()
                                     ])
                                 ->get();
@@ -154,10 +154,10 @@ class TeacherDashboardController extends Controller
                     });
                 }
                 if(isset($request->student_grade_id) && !empty($request->student_grade_id) && $request->student_grade_id!='all'){
-                    $Query->whereIn(cn::USERS_ID_COL,$this->curriculum_year_mapping_student_ids($request->student_grade_id,$gradeClassId,Auth::user()->school_id));
+                    $Query->whereIn(cn::USERS_ID_COL,$this->curriculum_year_mapping_student_ids($request->student_grade_id,$gradeClassId,Auth::user()->{cn::USERS_SCHOOL_ID_COL}));
                 }
                 if(isset($request->student_grade_id) && !empty($request->student_grade_id) && $request->student_grade_id=='all'){
-                    $Query->whereIn(cn::USERS_ID_COL,$this->curriculum_year_mapping_student_ids($gradeid,$gradeClassId,Auth::user()->school_id));
+                    $Query->whereIn(cn::USERS_ID_COL,$this->curriculum_year_mapping_student_ids($gradeid,$gradeClassId,Auth::user()->{cn::USERS_SCHOOL_ID_COL}));
                 }
                 if(isset($request->class_type_id) && !empty($request->class_type_id)){
                     $Query->whereIn(cn::USERS_CLASS_ID_COL,$request->class_type_id);
@@ -165,7 +165,7 @@ class TeacherDashboardController extends Controller
                 $studentList = $Query->orderBy(cn::USERS_ID_COL,'DESC')->sortable()->paginate($items);
             }
             $this->UserActivityLog(
-                Auth::user()->id,
+                Auth::user()->{cn::USERS_ID_COL},
                 '<p>'.Auth::user()->DecryptNameEn.' '.__('activity_history.see_class_detail').' '.__('activity_history.on').__('activity_history.date_and_time').date('Y-m-d h:i:s a', time()) .'</p>'
             );
             return view('backend.teacher.class_student_list',compact('gradesList','studentList','items','classTypeOptions','GroupData'));
@@ -184,15 +184,15 @@ class TeacherDashboardController extends Controller
             }
             $profile = User::find($id);
              /*Log Detail */
-             if(Auth::user()->role_id == 3){
+             if(Auth::user()->{cn::USERS_ROLE_ID_COL} == 3){
                 $this->UserActivityLog(
-                    Auth::user()->id,
+                    Auth::user()->{cn::USERS_ID_COL},
                     '<p>'.Auth::user()->DecryptNameEn.' '.__('activity_history.see_own_profile').'. </p>'.
                     '<p>'.__('activity_history.on').__('activity_history.date_and_time').date('Y-m-d h:i:s a', time()).'</p>'
                 );
              }else{
                 $this->UserActivityLog(
-                    Auth::user()->id,
+                    Auth::user()->{cn::USERS_ID_COL},
                     '<p>'.Auth::user()->DecryptNameEn.' '.__('activity_history.see_profile_of').$profile->DecryptNameEn.' '.__('activity_history.on').__('activity_history.date_and_time').date('Y-m-d h:i:s a', time()) .'</p>'
                 );
              }

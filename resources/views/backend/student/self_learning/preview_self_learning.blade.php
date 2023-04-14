@@ -31,19 +31,6 @@
                 </div>
                 @endif
                @php
-                    // if(Auth::user()->role_id == 1){
-                    //     $color = '#A5A6F6';
-                    // }else if(Auth::user()->role_id==2){
-                    //     $color = '#f7bfbf';
-                    // }else if(Auth::user()->role_id==3){
-                    //     $color = '#d8dc41';
-                    // }else if(Auth::user()->role_id == 7){
-                    //     $color = '#BDE5E1';
-                    // }else if(Auth::user()->role_id == 8){
-                    //     $color = '#fed08d';
-                    // }else{
-                    //     $color = '#a8e4b0';
-                    // }
                     $RoleBasedColor = \App\Helpers\Helper::getRoleBasedColor();
                 @endphp
                 <style type="text/css">

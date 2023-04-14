@@ -144,7 +144,7 @@ class TeachersClassSubjectController extends Controller
 
             if(!empty($TeachersClassSubjectAssign)){
                 $this->UserActivityLog(
-                    Auth::user()->id,
+                    Auth::user()->{cn::USERS_ID_COL},
                     '<p>'.Auth::user()->DecryptNameEn.' '.__('activity_history.assign_teacher').'.'.'</p>'.
                     '<p>'.__('activity_history.on').__('activity_history.date_and_time').date('Y-m-d h:i:s a', time()) .'</p>'
                 );
@@ -254,7 +254,7 @@ class TeachersClassSubjectController extends Controller
             $TeachersClassSubjectAssign = TeachersClassSubjectAssign::find($id);
             if($TeachersClassSubjectAssign->delete()){
                 $this->UserActivityLog(
-                    Auth::user()->id,
+                    Auth::user()->{cn::USERS_ID_COL},
                     '<p>'.Auth::user()->DecryptNameEn.' '.__('activity_history.deleted_assign_teacher').'.'.'</p>'.
                     '<p>'.__('activity_history.on').__('activity_history.date_and_time').date('Y-m-d h:i:s a', time()) .'</p>'
                 );
@@ -284,7 +284,7 @@ class TeachersClassSubjectController extends Controller
                     $SchoolAssignGrades = $request->grade_id;
                     $SchoolAssignGrades =   GradeSchoolMappings::where([
                                                 cn::GRADES_MAPPING_CURRICULUM_YEAR_ID_COL => $this->GetCurriculumYear(),
-                                                cn::GRADES_MAPPING_SCHOOL_ID_COL          => Auth::user()->school_id,                                                                        
+                                                cn::GRADES_MAPPING_SCHOOL_ID_COL          => Auth::user()->{cn::USERS_SCHOOL_ID_COL},                                                                        
                                             ])
                                             ->whereIn(cn::GRADES_MAPPING_GRADE_ID_COL,$SchoolAssignGrades)
                                             ->pluck(cn::GRADES_MAPPING_GRADE_ID_COL)
@@ -381,7 +381,7 @@ class TeachersClassSubjectController extends Controller
      */
     public function getPerformanceReportClassType(Request $request){
         $html ='';
-        $schoolId = !empty($request->schoolId) ? $request->schoolId : Auth::user()->school_id;
+        $schoolId = !empty($request->schoolId) ? $request->schoolId : Auth::user()->{cn::USERS_SCHOOL_ID_COL};
         
         if(!empty($request->grade_id)){
             if($this->isSchoolLogin() || $this->isPrincipalLogin() || $this->isPanelHeadLogin() || $this->isCoOrdinatorLogin()){

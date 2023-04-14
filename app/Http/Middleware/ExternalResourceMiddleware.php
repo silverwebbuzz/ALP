@@ -4,6 +4,7 @@ namespace App\Http\Middleware;
 
 use Closure;
 use Illuminate\Http\Request;
+use App\Constants\DbConstant as cn;
 use Auth;
 
 class ExternalResourceMiddleware
@@ -17,7 +18,7 @@ class ExternalResourceMiddleware
      */
     public function handle(Request $request, Closure $next)
     {
-        if(auth::check() && Auth::user()->role_id == 6){
+        if(auth::check() && Auth::user()->{cn::USERS_ROLE_ID_COL} == 6){
             return $next($request);
         }else {
             return redirect()->route('login');

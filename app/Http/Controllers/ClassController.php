@@ -139,7 +139,7 @@ class ClassController extends Controller
                             //$this->StrandUnitObjectivesMappingClone($Grades->{cn::GRADES_ID_COL},$Subjects->{cn::SUBJECTS_ID_COL});
                             //Log::info('Job Success - Redirect success page');
                             $this->UserActivityLog(
-                                Auth::user()->id,
+                                Auth::user()->{cn::USERS_ID_COL},
                                 '<p>'.Auth::user()->DecryptNameEn.' '.__('activity_history.created_class').'.'.'</p>'.
                                 '<p>'.__('activity_history.on').__('activity_history.date_and_time').date('Y-m-d h:i:s a', time()) .'</p>'
                             );
@@ -175,7 +175,7 @@ class ClassController extends Controller
                             //$this->StrandUnitObjectivesMappingClone($Grades->{cn::GRADES_ID_COL},$Subjects->{cn::SUBJECTS_ID_COL});
                             Log::info('Job Success - Redirect success page');
                             $this->UserActivityLog(
-                                Auth::user()->id,
+                                Auth::user()->{cn::USERS_ID_COL},
                                 '<p>'.Auth::user()->DecryptNameEn.' '.__('activity_history.created_class').'.'.'</p>'.
                                 '<p>'.__('activity_history.on').__('activity_history.date_and_time').date('Y-m-d h:i:s a', time()) .'</p>'
                             );
@@ -247,7 +247,7 @@ class ClassController extends Controller
                                 //$this->StrandUnitObjectivesMappingClone($Grades->{cn::GRADES_ID_COL},$Subjects->{cn::SUBJECTS_ID_COL});
                                 Log::info('Job Success - Redirect success page');
                                 $this->UserActivityLog(
-                                    Auth::user()->id,
+                                    Auth::user()->{cn::USERS_ID_COL},
                                     '<p>'.Auth::user()->DecryptNameEn.' '.__('activity_history.created_class').'.'.'</p>'.
                                     '<p>'.__('activity_history.on').__('activity_history.date_and_time').date('Y-m-d h:i:s a', time()) .'</p>'
                                 );
@@ -286,7 +286,7 @@ class ClassController extends Controller
                                 //$this->StrandUnitObjectivesMappingClone($Grades->{cn::GRADES_ID_COL},$Subjects->{cn::SUBJECTS_ID_COL});
                                 Log::info('Job Success - Redirect success page');
                                 $this->UserActivityLog(
-                                    Auth::user()->id,
+                                    Auth::user()->{cn::USERS_ID_COL},
                                     '<p>'.Auth::user()->DecryptNameEn.' '.__('activity_history.created_class').'.'.'</p>'.
                                     '<p>'.__('activity_history.on').__('activity_history.date_and_time').date('Y-m-d h:i:s a', time()) .'</p>'
                                 );
@@ -382,7 +382,7 @@ class ClassController extends Controller
             }
             if(!empty($getClassData)){
                 $this->UserActivityLog(
-                    Auth::user()->id,
+                    Auth::user()->{cn::USERS_ID_COL},
                     '<p>'.Auth::user()->DecryptNameEn.' '.__('activity_history.updated_class').'.'.'</p>'.
                     '<p>'.__('activity_history.on').__('activity_history.date_and_time').date('Y-m-d h:i:s a', time()) .'</p>'
                 );
@@ -406,7 +406,7 @@ class ClassController extends Controller
             $GradeMapping = GradeSchoolMappings::find($id);
             if($GradeMapping->delete()){
                 $this->UserActivityLog(
-                    Auth::user()->id,
+                    Auth::user()->{cn::USERS_ID_COL},
                     '<p>'.Auth::user()->DecryptNameEn.' '.__('activity_history.deleted_class').'.'.'</p>'.
                     '<p>'.__('activity_history.on').__('activity_history.date_and_time').date('Y-m-d h:i:s a', time()) .'</p>'
                 );

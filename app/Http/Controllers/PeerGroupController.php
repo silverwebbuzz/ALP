@@ -72,11 +72,11 @@ class PeerGroupController extends Controller
             }
         }
         if($this->isTeacherLogin()){
-            $TeacherGradeClass = $this->TeacherGradesClassService->getTeacherAssignedGradesClass(Auth::user()->school_id,Auth::user()->id);
+            $TeacherGradeClass = $this->TeacherGradesClassService->getTeacherAssignedGradesClass(Auth::user()->{cn::USERS_SCHOOL_ID_COL},Auth::user()->{cn::USERS_ID_COL});
             $StudentIds = [];
             $StudentIds =   User::where([
                                 cn::USERS_ROLE_ID_COL => cn::STUDENT_ROLE_ID,
-                                cn::USERS_SCHOOL_ID_COL => Auth::user()->school_id
+                                cn::USERS_SCHOOL_ID_COL => Auth::user()->{cn::USERS_SCHOOL_ID_COL}
                             ])
                             ->get()
                             ->whereIn('CurriculumYearGradeId',$TeacherGradeClass['grades'])
@@ -289,7 +289,7 @@ class PeerGroupController extends Controller
                     }
                 }
                 $this->UserActivityLog(
-                    Auth::user()->id,
+                    Auth::user()->{cn::USERS_ID_COL},
                     '<p>'.Auth::user()->DecryptNameEn.' '.__('activity_history.created_group_name').$request->group_name.' '.__('activity_history.on').__('activity_history.date_and_time').date('Y-m-d h:i:s a', time()).'</p>'
                 );
                 return redirect('peer-group')->with('success_msg', __('languages.peer_group_created_successfully'));
@@ -376,11 +376,11 @@ class PeerGroupController extends Controller
                 }
                 $gradesList = $gradeList;
 
-                $TeacherGradeClass = $this->TeacherGradesClassService->getTeacherAssignedGradesClass(Auth::user()->school_id,Auth::user()->id);
+                $TeacherGradeClass = $this->TeacherGradesClassService->getTeacherAssignedGradesClass(Auth::user()->{cn::USERS_SCHOOL_ID_COL},Auth::user()->{cn::USERS_ID_COL});
                 $StudentIds = [];
                 $StudentIds =   User::where([
                                     cn::USERS_ROLE_ID_COL => cn::STUDENT_ROLE_ID,
-                                    cn::USERS_SCHOOL_ID_COL => Auth::user()->school_id
+                                    cn::USERS_SCHOOL_ID_COL => Auth::user()->{cn::USERS_SCHOOL_ID_COL}
                                 ])
                                 ->get()
                                 ->whereIn('CurriculumYearGradeId',$TeacherGradeClass['grades'])
@@ -477,7 +477,7 @@ class PeerGroupController extends Controller
                 PeerGroupMember::where([cn::PEER_GROUP_MEMBERS_PEER_GROUP_ID_COL => $id,cn::PEER_GROUP_MEMBERS_DELETED_AT_COL => Null])->delete();
            }
             $this->UserActivityLog(
-                Auth::user()->id,
+                Auth::user()->{cn::USERS_ID_COL},
                 '<p>'.Auth::user()->DecryptNameEn.' '.__('activity_history.updated_group_name').$request->group_name.' '.__('activity_history.on').__('activity_history.date_and_time').date('Y-m-d h:i:s a', time()).'</p>'
             );
             return redirect('peer-group')->with('success_msg', __('languages.peer_group_updated_successfully'));
@@ -495,7 +495,7 @@ class PeerGroupController extends Controller
             $ChatGroupId = $PeerGroup->dreamschat_group_id;
             if($PeerGroup->delete()){
                 $this->UserActivityLog(
-                    Auth::user()->id,
+                    Auth::user()->{cn::USERS_ID_COL},
                     '<p>'.Auth::user()->DecryptNameEn.' '.__('activity_history.deleted_group_name').$PeerGroup->group_name.' '.__('activity_history.on').__('activity_history.date_and_time').date('Y-m-d h:i:s a', time()).'</p>'
                 );
                 // Remove peer group members after deleting groups
@@ -922,7 +922,7 @@ class PeerGroupController extends Controller
 
         // Activity Log 
         $this->UserActivityLog(
-            Auth::user()->id,
+            Auth::user()->{cn::USERS_ID_COL},
             '<p>'.Auth::user()->DecryptNameEn.' '.__('activity_history.see_peer_group_detail').' '.__('activity_history.on').__('activity_history.date_and_time').date('Y-m-d h:i:s a', time()) .'</p>'
         );
         return view("backend.peer_group.student_peer_group_list",compact('PeerGroupList'));    
@@ -999,7 +999,7 @@ class PeerGroupController extends Controller
             $schoolId = Auth::user()->{cn::USERS_SCHOOL_ID_COL};
         }
         $requestPayloadUser = new Request();
-        $requestPayloadUser['uid'] = Auth::user()->id;
+        $requestPayloadUser['uid'] = Auth::user()->{cn::USERS_ID_COL};
         $AdminUserId = array();
         $AdminUserData = $this->CommonController->GetUserInfo($requestPayloadUser);
         if(isset($AdminUserData) && !empty($AdminUserData)){
@@ -1037,15 +1037,15 @@ class PeerGroupController extends Controller
                 $GroupStudentIds = array_column($Group,0);
                 $group_name = $formData['prefix_group_name'].'-0'.$i;
                 $peerGroupInsert = PeerGroup::create([
-                    cn::PEER_GROUP_CURRICULUM_YEAR_ID_COL => $this->GetCurriculumYear(),
-                    cn::PEER_GROUP_SCHOOL_ID_COL     =>  Auth::user()->school_id,
-                    cn::PEER_GROUP_GROUP_NAME_COL    => $group_name,
-                    cn::PEER_GROUP_GROUP_PREFIX_COL  => $formData['prefix_group_name'],
-                    cn::PEER_GROUP_SUBJECT_ID_COL    => 1,
-                    cn::PEER_GROUP_CREATED_TYPE_COL  => 'auto',
-                    cn::PEER_GROUP_AUTO_GROUP_BY_COL => $formData['peer_group_type'],
-                    cn::PEER_GROUP_CREATED_BY_USER_ID_COL    => Auth::user()->id, 
-                    cn::PEER_GROUP_STATUS_COL                => 1
+                    cn::PEER_GROUP_CURRICULUM_YEAR_ID_COL   => $this->GetCurriculumYear(),
+                    cn::PEER_GROUP_SCHOOL_ID_COL            => Auth::user()->{cn::USERS_SCHOOL_ID_COL},
+                    cn::PEER_GROUP_GROUP_NAME_COL           => $group_name,
+                    cn::PEER_GROUP_GROUP_PREFIX_COL         => $formData['prefix_group_name'],
+                    cn::PEER_GROUP_SUBJECT_ID_COL           => 1,
+                    cn::PEER_GROUP_CREATED_TYPE_COL         => 'auto',
+                    cn::PEER_GROUP_AUTO_GROUP_BY_COL        => $formData['peer_group_type'],
+                    cn::PEER_GROUP_CREATED_BY_USER_ID_COL   => Auth::user()->{cn::USERS_ID_COL}, 
+                    cn::PEER_GROUP_STATUS_COL               => 1
                 ]);
                 
                 foreach($GroupStudentIds as $memberId){
@@ -1064,8 +1064,8 @@ class PeerGroupController extends Controller
                                             ]);
                 }
 
-                $SchoolUserIds = User::where('school_id',Auth::user()->school_id)
-                                ->whereNotIn('id',[Auth::user()->id])
+                $SchoolUserIds = User::where('school_id',Auth::user()->{cn::USERS_SCHOOL_ID_COL})
+                                ->whereNotIn('id',[Auth::user()->{cn::USERS_ID_COL}])
                                 ->whereIn('role_id',[
                                     cn::SCHOOL_ROLE_ID,
                                     cn::PRINCIPAL_ROLE_ID,
@@ -1111,10 +1111,10 @@ class PeerGroupController extends Controller
         $MembersList = array();
         $GroupData = PeerGroup::with(['CreatedGroupUser'])->find($GroupId);
         if($this->isTeacherLogin()){
-            $TeacherGradeClass = $this->TeacherGradesClassService->getTeacherAssignedGradesClass(Auth::user()->school_id,Auth::user()->id);
+            $TeacherGradeClass = $this->TeacherGradesClassService->getTeacherAssignedGradesClass(Auth::user()->{cn::USERS_SCHOOL_ID_COL},Auth::user()->{cn::USERS_ID_COL});
             $StudentIds = User::where([
                                 cn::USERS_ROLE_ID_COL => cn::STUDENT_ROLE_ID,
-                                cn::USERS_SCHOOL_ID_COL => Auth::user()->school_id
+                                cn::USERS_SCHOOL_ID_COL => Auth::user()->{cn::USERS_SCHOOL_ID_COL}
                             ])
                             ->get()
                             ->whereIn('CurriculumYearGradeId',$TeacherGradeClass['grades'])

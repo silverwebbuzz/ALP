@@ -13,6 +13,7 @@ use DB;
 use Carbon\Carbon; 
 use App\Models\User;
 use App\Events\UserActivityLog;
+use App\Constants\DbConstant as cn;
 
 class ForgotPasswordController extends Controller
 {
@@ -24,17 +25,17 @@ class ForgotPasswordController extends Controller
 
     public function submitForgetPasswordForm(Request $request){
         if($request->email){
-            if(User::where('email',$request->email)->doesntExist()){
+            if(User::where(cn::USERS_EMAIL_COL,$request->email)->doesntExist()){
                 return $this->sendError('Please enter registered email', 422);
             }
             $token = Str::random(64);
-            DB::table('password_resets')->insert([
-                'email' => $request->email, 
-                'token' => $token, 
-                'created_at' => Carbon::now()
+            DB::table(cn::PASSWORD_RESETS_TABLE_NAME)->insert([
+                cn::PASSWORD_RESETS_EMAIL_COL => $request->email, 
+                cn::PASSWORD_RESETS_TOKEN_COL => $token, 
+                cn::PASSWORD_RESETS_CREATED_AT_COL => Carbon::now()
             ]);
             $dataSet = [
-                'token' => $token
+                cn::PASSWORD_RESETS_TOKEN_COL => $token
             ];
             $sendEmail = $this->sendMails('email.forgetPassword', $dataSet, $request->email, $subject='Reset Password', [], []);
             return $this->sendResponse([], 'We have sent e-mailed your password reset link');
@@ -43,21 +44,21 @@ class ForgotPasswordController extends Controller
 
     public function showResetPasswordForm($token) {
         if(isset($token) && !empty($token)){
-            if(DB::table('password_resets')->where('token',$token)->doesntExist()){
+            if(DB::table(cn::PASSWORD_RESETS_TABLE_NAME)->where(cn::PASSWORD_RESETS_TOKEN_COL,$token)->doesntExist()){
                 return redirect('forget-password')->withInput()->with('error_msg', 'Invalid token!');
             }else{
-                return view('auth.forgetPasswordLink', ['token' => $token]);
+                return view('auth.forgetPasswordLink', [cn::PASSWORD_RESETS_TOKEN_COL => $token]);
             }
         }
     }
 
     public function submitResetPasswordForm(Request $request){
-        if(DB::table('password_resets')->where('token',$request->token)->doesntExist()){
+        if(DB::table(cn::PASSWORD_RESETS_TABLE_NAME)->where(cn::PASSWORD_RESETS_TOKEN_COL,$request->token)->doesntExist()){
             return $this->sendError('Invalid Token', 422);
         }else{
-            $updatePassword = DB::table('password_resets')->where('token',$request->token)->first();
-            $user = User::where('email', $updatePassword->email)->update(['password' => Hash::make($request->password)]);
-            DB::table('password_resets')->where(['email'=> $updatePassword->email])->delete();
+            $updatePassword = DB::table(cn::PASSWORD_RESETS_TABLE_NAME)->where(cn::PASSWORD_RESETS_TOKEN_COL,$request->token)->first();
+            $user = User::where(cn::USERS_EMAIL_COL, $updatePassword->{cn::PASSWORD_RESETS_EMAIL_COL})->update(['password' => Hash::make($request->password)]);
+            DB::table(cn::PASSWORD_RESETS_TABLE_NAME)->where([cn::USERS_EMAIL_COL => $updatePassword->{cn::PASSWORD_RESETS_EMAIL_COL}])->delete();
             $redirectUrl = config()->get('app.url').'login';
             return $this->sendResponse(['redirectUrl' => $redirectUrl], 'Your password has been changed successfully.');
         }

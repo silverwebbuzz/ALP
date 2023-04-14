@@ -89,8 +89,8 @@ trait Common {
     public function GetLearningUnits($strandId){
         $finalArray = [];
         $strandId = is_array($strandId) ? $strandId : [$strandId];
-        if(LearningUnitOrdering::where('school_id',Auth::user()->school_id)->exists()){
-            $LearningUnitOrdering =  LearningUnitOrdering::where('school_id',Auth::user()->school_id)
+        if(LearningUnitOrdering::where('school_id',Auth::user()->{cn::USERS_SCHOOL_ID_COL})->exists()){
+            $LearningUnitOrdering =  LearningUnitOrdering::where('school_id',Auth::user()->{cn::USERS_SCHOOL_ID_COL})
                                     ->whereIn('strand_id',$strandId)
                                     ->orderBy('position','ASC')
                                     ->get();
@@ -129,7 +129,7 @@ trait Common {
     public function GetLearningObjectives($learningUnitId){
         $learningUnitIds = is_array($learningUnitId) ? $learningUnitId : [$learningUnitId];
         $learningObjectiveData = '';
-        if(LearningUnitOrdering::where('school_id',Auth::user()->school_id)->exists()){
+        if(LearningUnitOrdering::where('school_id',Auth::user()->{cn::USERS_SCHOOL_ID_COL})->exists()){
             $learningObjectiveData = $this->OrderingObjectiveData($learningUnitIds,true);
         }else{
             $learningObjectiveData = $this->OrderingObjectiveData($learningUnitIds,false);
@@ -142,9 +142,9 @@ trait Common {
         $finalArray = [];
         $learningObjectiveData = [];
         $learningUnitId = (is_array($learningUnitId)) ? $learningUnitId : [$learningUnitId];
-        if(LearningObjectiveOrdering::where('school_id',Auth::user()->school_id)->exists() && ($learningUnitExists==false || $learningUnitExists == 0)){
+        if(LearningObjectiveOrdering::where('school_id',Auth::user()->{cn::USERS_SCHOOL_ID_COL})->exists() && ($learningUnitExists==false || $learningUnitExists == 0)){
 
-            $learningObjectiveOrdering = LearningObjectiveOrdering::where('school_id',Auth::user()->school_id)
+            $learningObjectiveOrdering = LearningObjectiveOrdering::where('school_id',Auth::user()->{cn::USERS_SCHOOL_ID_COL})
                                 ->whereIn('learning_unit_id',$learningUnitId)
                                 ->get();
             $positionArray = $learningObjectiveOrdering->pluck('position')->toArray();
@@ -165,9 +165,9 @@ trait Common {
                 }
             }
             return $finalArray;
-        }elseif(LearningObjectiveOrdering::where('school_id',Auth::user()->school_id)->exists() && ($learningUnitExists == true || $learningUnitExists == 1)){
+        }elseif(LearningObjectiveOrdering::where('school_id',Auth::user()->{cn::USERS_SCHOOL_ID_COL})->exists() && ($learningUnitExists == true || $learningUnitExists == 1)){
             foreach($learningUnitId as $unitKey => $unitId){
-                $learningObjectiveOrdering = LearningObjectiveOrdering::where('school_id',Auth::user()->school_id)
+                $learningObjectiveOrdering = LearningObjectiveOrdering::where('school_id',Auth::user()->{cn::USERS_SCHOOL_ID_COL})
                                             ->where('learning_unit_id',$unitId)
                                             ->orderBy('position','ASC') // Manoj Added
                                             ->get();
@@ -178,15 +178,15 @@ trait Common {
                         $FindLearningObjectiveIndex = $learningObjectiveOrdering->where('learning_objective_id',$LearningsObjectives['id'])->first();
                         $finalArray[$unitKey][$positionKey] = $LearningsObjectives->toArray();
                         $finalArray[$unitKey][$positionKey]['position'] = $position;
-                        $orderingLearningUnit = LearningUnitOrdering::where('school_id',Auth::user()->school_id)->where('learning_unit_id',$LearningsObjectives['learning_unit_id'])->first()->toArray();
+                        $orderingLearningUnit = LearningUnitOrdering::where('school_id',Auth::user()->{cn::USERS_SCHOOL_ID_COL})->where('learning_unit_id',$LearningsObjectives['learning_unit_id'])->first()->toArray();
                         $finalArray[$unitKey][$positionKey]['index'] = ($orderingLearningUnit['position']).'.'.($positionKey + 1);
                     }
                 }
             }
             $learningObjectiveData = array_merge(...$finalArray);
             return $learningObjectiveData;
-        }elseif(LearningObjectiveOrdering::where('school_id',Auth::user()->school_id)->doesntExist() && ($learningUnitExists == true || $learningUnitExists == 1)){
-            $orderingLearningUnit = LearningUnitOrdering::where('school_id',Auth::user()->school_id)->whereIn('learning_unit_id',$learningUnitId)->orderBy('position','ASC')->get();
+        }elseif(LearningObjectiveOrdering::where('school_id',Auth::user()->{cn::USERS_SCHOOL_ID_COL})->doesntExist() && ($learningUnitExists == true || $learningUnitExists == 1)){
+            $orderingLearningUnit = LearningUnitOrdering::where('school_id',Auth::user()->{cn::USERS_SCHOOL_ID_COL})->whereIn('learning_unit_id',$learningUnitId)->orderBy('position','ASC')->get();
             foreach($learningUnitId as $unitKey => $unitId){
                 $learningObjectiveOrdering = LearningsObjectives::where('learning_unit_id',$unitId)->get()->toArray();
                 foreach($learningObjectiveOrdering as $learningObjectiveOrderingKey => $learningObjective){
@@ -313,7 +313,7 @@ trait Common {
             $query->where(cn::CURRICULUM_YEAR_STUDENT_MAPPING_SCHOOL_ID_COL,$schoolId);
         }else{
             if(!Self::isAdmin()){
-                $query->where(cn::CURRICULUM_YEAR_STUDENT_MAPPING_SCHOOL_ID_COL,Auth::user()->school_id);
+                $query->where(cn::CURRICULUM_YEAR_STUDENT_MAPPING_SCHOOL_ID_COL,Auth::user()->{cn::USERS_SCHOOL_ID_COL});
             }
         }
 
@@ -363,7 +363,7 @@ trait Common {
     }
 
     function findCreatedByUserType(){
-        switch(Auth::user()->role_id){
+        switch(Auth::user()->{cn::USERS_ROLE_ID_COL}){
             case cn::SUPERADMIN_ROLE_ID: 
                 $UserType = 'super_admin';
                 break;
@@ -394,7 +394,7 @@ trait Common {
 
     function GetExamStatus($request, $ExamId){
         if(!empty($ExamId)){
-            switch(Auth::user()->role_id){
+            switch(Auth::user()->{cn::USERS_ROLE_ID_COL}){
                 case cn::SUPERADMIN_ROLE_ID:  // Case 1 is Super Admin
                     $status = 'draft';
                     break;
@@ -507,15 +507,15 @@ trait Common {
      */
     public static function SetCurriculumYear($CurriculumYearId=''){
         if(isset($CurriculumYearId) && !empty($CurriculumYearId)){
-           User::find(Auth::user()->id)->Update([
+           User::find(Auth::user()->{cn::USERS_ID_COL})->Update([
                 cn::USERS_CURRICULUM_YEAR_ID_COL => $CurriculumYearId
             ]);
         }else{
             if(User::where([
-                cn::USERS_ID_COL => Auth::user()->id,
+                cn::USERS_ID_COL => Auth::user()->{cn::USERS_ID_COL},
                 cn::USERS_CURRICULUM_YEAR_ID_COL => null
             ])->exists()){
-                User::find(Auth::user()->id)->Update([
+                User::find(Auth::user()->{cn::USERS_ID_COL})->Update([
                     cn::USERS_CURRICULUM_YEAR_ID_COL => cn::DEFAULT_CURRICULUM_YEAR_ID
                 ]);
             }
@@ -707,7 +707,7 @@ trait Common {
         $response = [];
         
         //Super Admin School Wise All Classes Get
-        if(Auth::user()->role_id == cn::SUPERADMIN_ROLE_ID){
+        if(Auth::user()->{cn::USERS_ROLE_ID_COL} == cn::SUPERADMIN_ROLE_ID){
             if($examId){
                 $schoolId = [];
                 $SchoolGroups;
@@ -785,7 +785,7 @@ trait Common {
             }
             return $SchoolGradeClassArray;
         }
-        if(Auth::user()->role_id == cn::TEACHER_ROLE_ID){
+        if(Auth::user()->{cn::USERS_ROLE_ID_COL} == cn::TEACHER_ROLE_ID){
             $teacherAssignClasses = TeachersClassSubjectAssign::where([
                                         cn::TEACHER_CLASS_SUBJECT_CURRICULUM_YEAR_ID_COL => Self::GetCurriculumYear(),
                                         cn::TEACHER_CLASS_SUBJECT_TEACHER_ID_COL => Auth::user()->{cn::USERS_ID_COL},
@@ -819,7 +819,7 @@ trait Common {
             }
             return $response;
         }
-        if(Auth::user()->role_id == cn::SCHOOL_ROLE_ID || Auth::user()->role_id == cn::PRINCIPAL_ROLE_ID || Auth::user()->role_id == cn::PANEL_HEAD_ROLE_ID || Auth::user()->role_id == cn::CO_ORDINATOR_ROLE_ID){
+        if(Auth::user()->{cn::USERS_ROLE_ID_COL} == cn::SCHOOL_ROLE_ID || Auth::user()->{cn::USERS_ROLE_ID_COL} == cn::PRINCIPAL_ROLE_ID || Auth::user()->{cn::USERS_ROLE_ID_COL} == cn::PANEL_HEAD_ROLE_ID || Auth::user()->{cn::USERS_ROLE_ID_COL} == cn::CO_ORDINATOR_ROLE_ID){
             $classMappingData = GradeClassMapping::where([
                                     cn::GRADE_CLASS_MAPPING_CURRICULUM_YEAR_ID_COL => Self::GetCurriculumYear(),
                                     cn::EXAM_SCHOOL_GRADE_CLASS_MAPPING_SCHOOL_ID_COL => Auth::user()->{cn::USERS_SCHOOL_ID_COL}
@@ -2194,7 +2194,7 @@ trait Common {
                             ->toArray();
                 break;
             case 'GradeClassMapping':
-                return GradeClassMapping::where(cn::EXAM_SCHOOL_GRADE_CLASS_MAPPING_SCHOOL_ID_COL,Auth::user()->school_id)
+                return GradeClassMapping::where(cn::EXAM_SCHOOL_GRADE_CLASS_MAPPING_SCHOOL_ID_COL,Auth::user()->{cn::USERS_SCHOOL_ID_COL})
                         ->where(cn::GRADE_CLASS_MAPPING_CURRICULUM_YEAR_ID_COL,Self::GetCurriculumYear())
                         ->get()
                         ->pluck(cn::EXAM_SCHOOL_GRADE_CLASS_MAPPING_GRADE_ID_COL)
@@ -2207,7 +2207,7 @@ trait Common {
     
     // Laravel LearningTutor Cookie set in Cookie
     function LearningTutorCookie($cookieName,$request){
-        $currentGrade = (request()->get('learning_tutor_grade_id')) ? request()->get('learning_tutor_grade_id') : $this->GetRoleBasedGrades(Auth::user()->role_id);//$this->GetPluckIds('Grades');
+        $currentGrade = (request()->get('learning_tutor_grade_id')) ? request()->get('learning_tutor_grade_id') : $this->GetRoleBasedGrades(Auth::user()->{cn::USERS_ROLE_ID_COL});//$this->GetPluckIds('Grades');
         $currentStrand = (request()->get('learning_tutor_strand_id')) ? request()->get('learning_tutor_strand_id') : $this->GetPluckIds('Strands');
         $currentLearningUnit = (request()->get('learning_tutor_learning_unit')) ? request()->get('learning_tutor_learning_unit') : $this->GetPluckIds('LearningsUnits');
         $currentLearningObjective = (request()->get('learning_tutor_learning_objectives')) ? request()->get('learning_tutor_learning_objectives') : $this->GetPluckIds('LearningsObjectives');
@@ -2540,7 +2540,7 @@ trait Common {
         return PeerGroupMember::where([
                 cn::PEER_GROUP_MEMBERS_CURRICULUM_YEAR_ID_COL => Self::GetCurriculumYear(),
                 cn::PEER_GROUP_MEMBERS_STATUS_COL => 1,
-                cn::PEER_GROUP_MEMBERS_MEMBER_ID_COL => Auth::user()->id
+                cn::PEER_GROUP_MEMBERS_MEMBER_ID_COL => Auth::user()->{cn::USERS_ID_COL}
             ])
             ->pluck(cn::PEER_GROUP_MEMBERS_PEER_GROUP_ID_COL)
             ->toArray();
@@ -3187,7 +3187,7 @@ trait Common {
                 cn::CLASS_PROMOTION_HISTORY_CURRENT_CLASS_ID_COL    =>  $userData->class_id,
                 cn::CLASS_PROMOTION_HISTORY_PROMOTED_GRADE_ID_COL   =>  $gradeId,
                 cn::CLASS_PROMOTION_HISTORY_PROMOTED_CLASS_ID_COL   =>  $classId,
-                cn::CLASS_PROMOTION_HISTORY_PROMOTED_BY_USER_ID_COL =>  Auth::user()->id,
+                cn::CLASS_PROMOTION_HISTORY_PROMOTED_BY_USER_ID_COL =>  Auth::user()->{cn::USERS_ID_COL},
             ]);
         }else{
             ClassPromotionHistory::create([
@@ -3198,7 +3198,7 @@ trait Common {
                 cn::CLASS_PROMOTION_HISTORY_CURRENT_CLASS_ID_COL    =>  NULL,
                 cn::CLASS_PROMOTION_HISTORY_PROMOTED_GRADE_ID_COL   =>  $gradeId,
                 cn::CLASS_PROMOTION_HISTORY_PROMOTED_CLASS_ID_COL   =>  $classId,
-                cn::CLASS_PROMOTION_HISTORY_PROMOTED_BY_USER_ID_COL =>  Auth::user()->id,
+                cn::CLASS_PROMOTION_HISTORY_PROMOTED_BY_USER_ID_COL =>  Auth::user()->{cn::USERS_ID_COL},
             ]);   
         }
     }
@@ -3221,7 +3221,7 @@ trait Common {
         $response = array();
         $Query = CurriculumYearStudentMappings::where([
                                                         cn::CURRICULUM_YEAR_STUDENT_MAPPING_CURRICULUM_YEAR_ID_COL => $curriculum_id,
-                                                        cn::CURRICULUM_YEAR_STUDENT_MAPPING_SCHOOL_ID_COL => Auth::user()->school_id,
+                                                        cn::CURRICULUM_YEAR_STUDENT_MAPPING_SCHOOL_ID_COL => Auth::user()->{cn::USERS_SCHOOL_ID_COL},
                                                         cn::CURRICULUM_YEAR_STUDENT_NUMBER_WITHIN_CLASS_COL => $usersClassStudentNumber
                                                     ])
                                                     ->where( cn::CURRICULUM_YEAR_STUDENT_MAPPING_USER_ID_COL,'<>',$ignoreUserData->id);

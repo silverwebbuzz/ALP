@@ -985,11 +985,11 @@ class UsersController extends Controller
                                             $isDuplicateCount++;
                                             $duplicateEmailError = 'style="background-color: yellow;"';
                                         }
-                                        if($this->CheckUserInDataExists('permanent_reference_number',$importData[4],Auth::user()->school_id)){
+                                        if($this->CheckUserInDataExists('permanent_reference_number',$importData[4],Auth::user()->{cn::USERS_SCHOOL_ID_COL})){
                                             $isDuplicateCount++;
                                             $duplicatePermanentReferenceNumberError = 'style="background-color: yellow;"';
                                         }
-                                        if($this->CheckUserInDataExists('class_student_number',$usersClassStudentNumber,Auth::user()->school_id)){
+                                        if($this->CheckUserInDataExists('class_student_number',$usersClassStudentNumber,Auth::user()->{cn::USERS_SCHOOL_ID_COL})){
                                             $isDuplicateCount++;
                                             $duplicateClassStudentNumberError = 'style="background-color: yellow;"';
                                         }
@@ -1167,7 +1167,7 @@ class UsersController extends Controller
                                 }
 
                                 // Check class is already available in this school
-                                $ClassData = GradeClassMapping::where(cn::GRADE_CLASS_MAPPING_SCHOOL_ID_COL,Auth::user()->school_id)
+                                $ClassData = GradeClassMapping::where(cn::GRADE_CLASS_MAPPING_SCHOOL_ID_COL,Auth::user()->{cn::USERS_SCHOOL_ID_COL})
                                             ->where(cn::GRADE_CLASS_MAPPING_GRADE_ID_COL,$gradeId)
                                             ->where(cn::GRADE_CLASS_MAPPING_NAME_COL,strtoupper($importData[6]))
                                             ->where(cn::GRADE_CLASS_MAPPING_CURRICULUM_YEAR_ID_COL,$request->curriculum_year_id)
@@ -1179,7 +1179,7 @@ class UsersController extends Controller
                                     // If the class is not available into this school then create new class
                                     $ClassData = GradeClassMapping::create([
                                         cn::GRADE_CLASS_MAPPING_CURRICULUM_YEAR_ID_COL  => $request->curriculum_year_id,                                        
-                                        cn::GRADE_CLASS_MAPPING_SCHOOL_ID_COL           => Auth::user()->school_id,
+                                        cn::GRADE_CLASS_MAPPING_SCHOOL_ID_COL           => Auth::user()->{cn::USERS_SCHOOL_ID_COL},
                                         cn::GRADE_CLASS_MAPPING_GRADE_ID_COL            => $gradeId,
                                         cn::GRADE_CLASS_MAPPING_NAME_COL                => $importData[6],
                                         cn::GRADE_CLASS_MAPPING_STATUS_COL              => 'active'
@@ -1440,7 +1440,7 @@ class UsersController extends Controller
             $updatePassword = User::find(auth()->user()->id)->update(['password'=> Hash::make($request->new_password)]);
             if($updatePassword){
                 $this->UserActivityLog(
-                    Auth::user()->id,
+                    Auth::user()->{cn::USERS_ID_COL},
                     '<p>'.Auth::user()->DecryptNameEn.' '.__('activity_history.password_change').'</p>'
                 );
                 return redirect('change-password')->with('success_msg', __('languages.password_changed_successfully'));

@@ -114,7 +114,7 @@ class NodesManagementController extends Controller
             }
             if(!empty($Nodes)){
                 $this->UserActivityLog(
-                    Auth::user()->id,
+                    Auth::user()->{cn::USERS_ID_COL},
                     '<p>'.Auth::user()->DecryptNameEn.' '.__('activity_history.add_node').'</p>'
                 );
                 $this->StoreAuditLogFunction($postData,'Nodes','','','Create Node',cn::NODES_TABLE_NAME,'');
@@ -187,7 +187,7 @@ class NodesManagementController extends Controller
             }
             if(!empty($update)){
                 $this->UserActivityLog(
-                    Auth::user()->id,
+                    Auth::user()->{cn::USERS_ID_COL},
                     '<p>'.Auth::user()->DecryptNameEn.' '.__('activity_history.update_node').'</p>'
                 );
                 return redirect('nodes')->with('success_msg', __('languages.node_updated_successfully'));
@@ -213,7 +213,7 @@ class NodesManagementController extends Controller
                 // If no any assign sub nodes
                 if($Nodes->delete()){
                     $this->UserActivityLog(
-                        Auth::user()->id,
+                        Auth::user()->{cn::USERS_ID_COL},
                         '<p>'.Auth::user()->DecryptNameEn.' '.__('activity_history.delete_node').'</p>'
                     );
                     if(isset($NodeRelationIds) && !empty($NodeRelationIds)){

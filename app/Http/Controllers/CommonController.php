@@ -840,7 +840,7 @@ class CommonController extends Controller
      */
     public function AjaxSetCurriculumYear(Request $request){
         $this->SetCurriculumYear($request->CurriculumYearId);
-        return $this->sendResponse(["role_id"=>Auth::user()->role_id]);
+        return $this->sendResponse(["role_id" => Auth::user()->{cn::USERS_ROLE_ID_COL}]);
     }
 
     /**
@@ -911,8 +911,8 @@ class CommonController extends Controller
      * USE : Get school Users ids
      */
     public function GetSchoolUserIds(){
-        $SchoolUserIds = User::where('school_id',Auth::user()->school_id)
-                        ->whereNotIn('id',[Auth::user()->id])
+        $SchoolUserIds = User::where('school_id',Auth::user()->{cn::USERS_SCHOOL_ID_COL})
+                        ->whereNotIn('id',[Auth::user()->{cn::USERS_ID_COL}])
                         ->whereIn('role_id',[
                             cn::SCHOOL_ROLE_ID,
                             cn::PRINCIPAL_ROLE_ID,
@@ -929,14 +929,14 @@ class CommonController extends Controller
         switch($request->Activity){
             case 'paly_video' :
                 $this->UserActivityLog(
-                    Auth::user()->id,
+                    Auth::user()->{cn::USERS_ID_COL},
                     '<p>'.Auth::user()->DecryptNameEn.' '.__('activity_history.play_video').'. </p>'.
                     '<p>'.__('activity_history.title_is').$request->title.' '.__('activity_history.on').__('activity_history.date_and_time').date('Y-m-d h:i:s a', time()).'</p>'
                 );
                 break;
             case 'chat' :
                 $this->UserActivityLog(
-                    Auth::user()->id,
+                    Auth::user()->{cn::USERS_ID_COL},
                     '<p>'.Auth::user()->DecryptNameEn.' '.__('activity_history.open_chat').' '.__('activity_history.on').__('activity_history.date_and_time').date('Y-m-d h:i:s a', time()).'</p>'
                 );
             

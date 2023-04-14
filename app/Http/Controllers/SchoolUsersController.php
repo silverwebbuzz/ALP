@@ -159,7 +159,7 @@ class SchoolUsersController extends Controller
                 $this->StoreAuditLogFunction($request->all(),'User',cn::USERS_ID_COL,'','Create User',cn::USERS_TABLE_NAME,'');
                 /*User Activity*/
                 $this->UserActivityLog(
-                    Auth::user()->id,
+                    Auth::user()->{cn::USERS_ID_COL},
                     '<p>'.Auth::user()->DecryptNameEn.' '.__('activity_history.created_user_name').$request->name_en.'.'.'</p>'.
                     '<p>'.__('activity_history.on').__('activity_history.date_and_time').date('Y-m-d h:i:s a', time()) .'</p>'
                 );
@@ -227,7 +227,7 @@ class SchoolUsersController extends Controller
             if($User){
                  /*User Activity*/
                  $this->UserActivityLog(
-                    Auth::user()->id,
+                    Auth::user()->{cn::USERS_ID_COL},
                     '<p>'.Auth::user()->DecryptNameEn.' '.__('activity_history.updated_user_name').$request->name_en.'.'.'</p>'.
                     '<p>'.__('activity_history.on').__('activity_history.date_and_time').date('Y-m-d h:i:s a', time()) .'</p>'
                 );
@@ -254,7 +254,7 @@ class SchoolUsersController extends Controller
             if($User->delete()){
                 /*User Activity*/
                 $this->UserActivityLog(
-                    Auth::user()->id,
+                    Auth::user()->{cn::USERS_ID_COL},
                     '<p>'.Auth::user()->DecryptNameEn.' '.__('activity_history.deleted_user_name').$User->DecryptNameEn.'.'.'</p>'.
                     '<p>'.__('activity_history.on').__('activity_history.date_and_time').date('Y-m-d h:i:s a', time()) .'</p>'
                 );

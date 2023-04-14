@@ -97,7 +97,7 @@ class SchoolDashboardController extends Controller
                 $update = User::where(cn::USERS_ROLE_ID_COL,cn::SCHOOL_ROLE_ID)->where(cn::USERS_SCHOOL_ID_COL,$SchoolId)->update($SchoolData);
                 /*User Activity*/
                 $this->UserActivityLog(
-                    Auth::user()->id,
+                    Auth::user()->{cn::USERS_ID_COL},
                     '<p>'.Auth::user()->DecryptNameEn.' '.__('activity_history.school_profile_updated').'.'.'</p>'.
                     '<p>'.__('activity_history.on').__('activity_history.date_and_time').date('Y-m-d h:i:s a', time()) .'</p>'
                 );

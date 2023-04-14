@@ -5,6 +5,7 @@ namespace App\Http\Middleware;
 use Closure;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use App\Constants\DbConstant as cn;
 
 class SchoolMiddleware
 {
@@ -17,7 +18,7 @@ class SchoolMiddleware
      */
     public function handle(Request $request, Closure $next)
     {
-        if(auth::check() && Auth::user()->role_id == 5){
+        if(auth::check() && Auth::user()->{cn::USERS_ROLE_ID_COL} == 5){
             return $next($request);
         }else {
             return redirect()->route('login');
