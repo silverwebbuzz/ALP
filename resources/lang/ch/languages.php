@@ -1723,4 +1723,5 @@ return [
     'result_not_declared_message'               => '您還看不到結果，因為結果尚未公佈',
     'update_student_name'                       => '更新學生姓名',
     'student_name_updated_successfully'         => '學生姓名更新成功',
+    'select_creator_user'                       => '選擇創建者用戶'
 ];

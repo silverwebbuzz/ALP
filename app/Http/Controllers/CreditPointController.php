@@ -42,7 +42,7 @@ class CreditPointController extends Controller
                                     ->get();
 
             // Get Peer Group List
-            $PeerGroupList = PeerGroup::where([cn::PEER_GROUP_CREATED_BY_USER_ID_COL => Auth()->user()->{cn::USERS_ID_COL}, cn::PEER_GROUP_STATUS_COL => '1'])->get();
+            $PeerGroupList = PeerGroup::where([cn::PEER_GROUP_CREATED_BY_USER_ID_COL => Auth::user()->{cn::USERS_ID_COL}, cn::PEER_GROUP_STATUS_COL => '1'])->get();
 
             // get student list
             $StudentList =  User::whereIn(cn::USERS_ID_COL,$this->curriculum_year_mapping_student_ids($TeacherGradeClass['grades'],$TeacherGradeClass['class'],$schoolId))

@@ -310,7 +310,7 @@ class TeachersClassSubjectController extends Controller
                 if(is_array($request->grade_id)){
                     $gradeClass = TeachersClassSubjectAssign::where([
                                     cn::TEACHER_CLASS_SUBJECT_CURRICULUM_YEAR_ID_COL => $this->GetCurriculumYear(),
-                                    cn::TEACHER_CLASS_SUBJECT_TEACHER_ID_COL => Auth()->user()->{cn::USERS_ID_COL}
+                                    cn::TEACHER_CLASS_SUBJECT_TEACHER_ID_COL => Auth::user()->{cn::USERS_ID_COL}
                                 ])
                                 ->pluck(cn::TEACHER_CLASS_SUBJECT_CLASS_NAME_ID_COL)
                                 ->toArray();
@@ -330,7 +330,7 @@ class TeachersClassSubjectController extends Controller
                     if($request->grade_id == 'all'){
                         $gradeid = TeachersClassSubjectAssign::where([
                                     cn::TEACHER_CLASS_SUBJECT_CURRICULUM_YEAR_ID_COL => $this->GetCurriculumYear(),
-                                    cn::TEACHER_CLASS_SUBJECT_TEACHER_ID_COL => Auth()->user()->{cn::USERS_ID_COL}
+                                    cn::TEACHER_CLASS_SUBJECT_TEACHER_ID_COL => Auth::user()->{cn::USERS_ID_COL}
                                 ])
                                 ->pluck(cn::TEACHER_CLASS_SUBJECT_CLASS_ID_COL)
                                 ->toArray();
@@ -338,7 +338,7 @@ class TeachersClassSubjectController extends Controller
                     }
                     $gradeClass = TeachersClassSubjectAssign::where([
                                     cn::TEACHER_CLASS_SUBJECT_CURRICULUM_YEAR_ID_COL => $this->GetCurriculumYear(),
-                                    cn::TEACHER_CLASS_SUBJECT_TEACHER_ID_COL => Auth()->user()->{cn::USERS_ID_COL}
+                                    cn::TEACHER_CLASS_SUBJECT_TEACHER_ID_COL => Auth::user()->{cn::USERS_ID_COL}
                                 ])
                                 ->pluck(cn::TEACHER_CLASS_SUBJECT_CLASS_NAME_ID_COL)
                                 ->toArray();

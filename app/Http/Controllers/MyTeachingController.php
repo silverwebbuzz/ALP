@@ -61,25 +61,25 @@ class MyTeachingController extends Controller
 
         if($this->isTeacherLogin()){
             $gradesList =   TeachersClassSubjectAssign::where([
-                                cn::TEACHER_CLASS_SUBJECT_TEACHER_ID_COL => Auth()->user()->{cn::USERS_ID_COL},
+                                cn::TEACHER_CLASS_SUBJECT_TEACHER_ID_COL => Auth::user()->{cn::USERS_ID_COL},
                                 cn::TEACHER_CLASS_SUBJECT_CURRICULUM_YEAR_ID_COL =>$this->GetCurriculumYear()
                             ])
                             ->with('getClass')
                             ->get()
                             ->unique(cn::TEACHER_CLASS_SUBJECT_CLASS_ID_COL);
             $gradesListId = TeachersClassSubjectAssign::where([
-                                cn::TEACHER_CLASS_SUBJECT_TEACHER_ID_COL => Auth()->user()->{cn::USERS_ID_COL},
+                                cn::TEACHER_CLASS_SUBJECT_TEACHER_ID_COL => Auth::user()->{cn::USERS_ID_COL},
                                 cn::TEACHER_CLASS_SUBJECT_CURRICULUM_YEAR_ID_COL =>$this->GetCurriculumYear()
                             ])
                             ->pluck(cn::TEACHER_CLASS_SUBJECT_CLASS_NAME_ID_COL,cn::TEACHER_CLASS_SUBJECT_CLASS_ID_COL)
                             ->toArray();
             $gradesListIdArr =  TeachersClassSubjectAssign::where([
-                                    cn::TEACHER_CLASS_SUBJECT_TEACHER_ID_COL => Auth()->user()->{cn::USERS_ID_COL},
+                                    cn::TEACHER_CLASS_SUBJECT_TEACHER_ID_COL => Auth::user()->{cn::USERS_ID_COL},
                                     cn::TEACHER_CLASS_SUBJECT_CURRICULUM_YEAR_ID_COL =>$this->GetCurriculumYear()
                                 ])
                                 ->pluck(cn::TEACHER_CLASS_SUBJECT_CLASS_ID_COL)->toArray();
             $TeacherClass = TeachersClassSubjectAssign::where([
-                                cn::TEACHER_CLASS_SUBJECT_TEACHER_ID_COL => Auth()->user()->{cn::USERS_ID_COL},
+                                cn::TEACHER_CLASS_SUBJECT_TEACHER_ID_COL => Auth::user()->{cn::USERS_ID_COL},
                                 cn::TEACHER_CLASS_SUBJECT_CURRICULUM_YEAR_ID_COL =>$this->GetCurriculumYear()
                             ])
                             ->pluck(cn::TEACHER_CLASS_SUBJECT_CLASS_NAME_ID_COL)->toArray();
@@ -202,26 +202,26 @@ class MyTeachingController extends Controller
 
         if($this->isTeacherLogin()){
             $gradesList =   TeachersClassSubjectAssign::where([
-                                cn::TEACHER_CLASS_SUBJECT_TEACHER_ID_COL => Auth()->user()->{cn::USERS_ID_COL},
+                                cn::TEACHER_CLASS_SUBJECT_TEACHER_ID_COL => Auth::user()->{cn::USERS_ID_COL},
                                 cn::TEACHER_CLASS_SUBJECT_CURRICULUM_YEAR_ID_COL => $this->GetCurriculumYear()
                             ])
                             ->with('getClass')
                             ->get()
                             ->unique(cn::TEACHER_CLASS_SUBJECT_CLASS_ID_COL);
             $gradesListId = TeachersClassSubjectAssign::where([
-                                cn::TEACHER_CLASS_SUBJECT_TEACHER_ID_COL => Auth()->user()->{cn::USERS_ID_COL},
+                                cn::TEACHER_CLASS_SUBJECT_TEACHER_ID_COL => Auth::user()->{cn::USERS_ID_COL},
                                 cn::TEACHER_CLASS_SUBJECT_CURRICULUM_YEAR_ID_COL => $this->GetCurriculumYear()
                             ])
                             ->pluck(cn::TEACHER_CLASS_SUBJECT_CLASS_NAME_ID_COL,cn::TEACHER_CLASS_SUBJECT_CLASS_ID_COL)
                             ->toArray();
             $gradesListIdArr =  TeachersClassSubjectAssign::where([
-                                    cn::TEACHER_CLASS_SUBJECT_TEACHER_ID_COL => Auth()->user()->{cn::USERS_ID_COL},
+                                    cn::TEACHER_CLASS_SUBJECT_TEACHER_ID_COL => Auth::user()->{cn::USERS_ID_COL},
                                     cn::TEACHER_CLASS_SUBJECT_CURRICULUM_YEAR_ID_COL => $this->GetCurriculumYear()
                                 ])
                                 ->pluck(cn::TEACHER_CLASS_SUBJECT_CLASS_ID_COL)
                                 ->toArray();
             $TeacherClass = TeachersClassSubjectAssign::where([
-                                cn::TEACHER_CLASS_SUBJECT_TEACHER_ID_COL => Auth()->user()->{cn::USERS_ID_COL},
+                                cn::TEACHER_CLASS_SUBJECT_TEACHER_ID_COL => Auth::user()->{cn::USERS_ID_COL},
                                 cn::TEACHER_CLASS_SUBJECT_CURRICULUM_YEAR_ID_COL => $this->GetCurriculumYear()
                             ])
                             ->pluck(cn::TEACHER_CLASS_SUBJECT_CLASS_NAME_ID_COL)
@@ -333,26 +333,26 @@ class MyTeachingController extends Controller
         $difficultyLevels = PreConfigurationDiffiltyLevel::get();
         if($this->isTeacherLogin()){
             $gradesList =   TeachersClassSubjectAssign::where([
-                                cn::TEACHER_CLASS_SUBJECT_TEACHER_ID_COL => Auth()->user()->{cn::USERS_ID_COL},
+                                cn::TEACHER_CLASS_SUBJECT_TEACHER_ID_COL => Auth::user()->{cn::USERS_ID_COL},
                                 cn::TEACHER_CLASS_SUBJECT_CURRICULUM_YEAR_ID_COL => $this->GetCurriculumYear()
                             ])
                             ->with('getClass')
                             ->get()
                             ->unique(cn::TEACHER_CLASS_SUBJECT_CLASS_ID_COL);
             $gradesListId = TeachersClassSubjectAssign::where([
-                                cn::TEACHER_CLASS_SUBJECT_TEACHER_ID_COL => Auth()->user()->{cn::USERS_ID_COL},
+                                cn::TEACHER_CLASS_SUBJECT_TEACHER_ID_COL => Auth::user()->{cn::USERS_ID_COL},
                                 cn::TEACHER_CLASS_SUBJECT_CURRICULUM_YEAR_ID_COL => $this->GetCurriculumYear()
                             ])
                             ->pluck(cn::TEACHER_CLASS_SUBJECT_CLASS_NAME_ID_COL,cn::TEACHER_CLASS_SUBJECT_CLASS_ID_COL)
                             ->toArray();
             $gradesListIdArr =  TeachersClassSubjectAssign::where([
-                                    cn::TEACHER_CLASS_SUBJECT_TEACHER_ID_COL => Auth()->user()->{cn::USERS_ID_COL},
+                                    cn::TEACHER_CLASS_SUBJECT_TEACHER_ID_COL => Auth::user()->{cn::USERS_ID_COL},
                                     cn::TEACHER_CLASS_SUBJECT_CURRICULUM_YEAR_ID_COL => $this->GetCurriculumYear()
                                 ])
                                 ->pluck(cn::TEACHER_CLASS_SUBJECT_CLASS_ID_COL)
                                 ->toArray();
             $TeacherClass = TeachersClassSubjectAssign::where([
-                                cn::TEACHER_CLASS_SUBJECT_TEACHER_ID_COL => Auth()->user()->{cn::USERS_ID_COL},
+                                cn::TEACHER_CLASS_SUBJECT_TEACHER_ID_COL => Auth::user()->{cn::USERS_ID_COL},
                                 cn::TEACHER_CLASS_SUBJECT_CURRICULUM_YEAR_ID_COL => $this->GetCurriculumYear()
                             ])
                             ->pluck(cn::TEACHER_CLASS_SUBJECT_CLASS_NAME_ID_COL)
@@ -454,26 +454,26 @@ class MyTeachingController extends Controller
 
         if($this->isTeacherLogin()){
             $gradesList =   TeachersClassSubjectAssign::where([
-                                cn::TEACHER_CLASS_SUBJECT_TEACHER_ID_COL => Auth()->user()->{cn::USERS_ID_COL},
+                                cn::TEACHER_CLASS_SUBJECT_TEACHER_ID_COL => Auth::user()->{cn::USERS_ID_COL},
                                 cn::TEACHER_CLASS_SUBJECT_CURRICULUM_YEAR_ID_COL => $this->GetCurriculumYear()
                             ])
                             ->with('getClass')
                             ->get()
                             ->unique(cn::TEACHER_CLASS_SUBJECT_CLASS_ID_COL);
             $gradesListId = TeachersClassSubjectAssign::where([
-                                cn::TEACHER_CLASS_SUBJECT_TEACHER_ID_COL => Auth()->user()->{cn::USERS_ID_COL},
+                                cn::TEACHER_CLASS_SUBJECT_TEACHER_ID_COL => Auth::user()->{cn::USERS_ID_COL},
                                 cn::TEACHER_CLASS_SUBJECT_CURRICULUM_YEAR_ID_COL => $this->GetCurriculumYear()
                             ])
                             ->pluck(cn::TEACHER_CLASS_SUBJECT_CLASS_NAME_ID_COL,cn::TEACHER_CLASS_SUBJECT_CLASS_ID_COL)
                             ->toArray();
             $gradesListIdArr =  TeachersClassSubjectAssign::where([
-                                    cn::TEACHER_CLASS_SUBJECT_TEACHER_ID_COL => Auth()->user()->{cn::USERS_ID_COL},
+                                    cn::TEACHER_CLASS_SUBJECT_TEACHER_ID_COL => Auth::user()->{cn::USERS_ID_COL},
                                     cn::TEACHER_CLASS_SUBJECT_CURRICULUM_YEAR_ID_COL => $this->GetCurriculumYear()
                                 ])
                                 ->pluck(cn::TEACHER_CLASS_SUBJECT_CLASS_ID_COL)
                                 ->toArray();
             $TeacherClass = TeachersClassSubjectAssign::where([
-                                cn::TEACHER_CLASS_SUBJECT_TEACHER_ID_COL => Auth()->user()->{cn::USERS_ID_COL},
+                                cn::TEACHER_CLASS_SUBJECT_TEACHER_ID_COL => Auth::user()->{cn::USERS_ID_COL},
                                 cn::TEACHER_CLASS_SUBJECT_CURRICULUM_YEAR_ID_COL => $this->GetCurriculumYear()
                             ])->pluck(cn::TEACHER_CLASS_SUBJECT_CLASS_NAME_ID_COL)
                             ->toArray();

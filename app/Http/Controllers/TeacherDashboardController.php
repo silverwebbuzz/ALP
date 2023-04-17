@@ -56,18 +56,18 @@ class TeacherDashboardController extends Controller
                                     cn::PEER_GROUP_CURRICULUM_YEAR_ID_COL => $this->GetCurriculumYear()
                                 ])->get();
                 $gradesList =   TeachersClassSubjectAssign::where([
-                                    cn::TEACHER_CLASS_SUBJECT_TEACHER_ID_COL => Auth()->user()->{cn::USERS_ID_COL},
+                                    cn::TEACHER_CLASS_SUBJECT_TEACHER_ID_COL => Auth::user()->{cn::USERS_ID_COL},
                                     cn::TEACHER_CLASS_SUBJECT_CURRICULUM_YEAR_ID_COL => $this->GetCurriculumYear()
                                 ])
                                 ->with('getClass')
                                 ->get()
                                 ->unique(cn::TEACHER_CLASS_SUBJECT_CLASS_ID_COL);
                 $gradeid =  TeachersClassSubjectAssign::where([
-                                cn::TEACHER_CLASS_SUBJECT_TEACHER_ID_COL => Auth()->user()->{cn::USERS_ID_COL},
+                                cn::TEACHER_CLASS_SUBJECT_TEACHER_ID_COL => Auth::user()->{cn::USERS_ID_COL},
                                 cn::TEACHER_CLASS_SUBJECT_CURRICULUM_YEAR_ID_COL => $this->GetCurriculumYear()
                             ])->pluck(cn::TEACHER_CLASS_SUBJECT_CLASS_ID_COL)->toArray();
                 $gradeClass =   TeachersClassSubjectAssign::where([
-                                    cn::TEACHER_CLASS_SUBJECT_TEACHER_ID_COL => Auth()->user()->{cn::USERS_ID_COL},
+                                    cn::TEACHER_CLASS_SUBJECT_TEACHER_ID_COL => Auth::user()->{cn::USERS_ID_COL},
                                     cn::TEACHER_CLASS_SUBJECT_CURRICULUM_YEAR_ID_COL => $this->GetCurriculumYear()
                                 ])->pluck(cn::TEACHER_CLASS_SUBJECT_CLASS_NAME_ID_COL)->toArray();
             }
@@ -211,7 +211,7 @@ class TeacherDashboardController extends Controller
             //  Laravel Pagination set in Cookie
             //$this->paginationCookie('TeacherMySubjectList',$request);
 
-            $id = auth()->user()->{cn::USERS_ID_COL};
+            $id = Auth::user()->{cn::USERS_ID_COL};
             $TotalFilterData ='';
             $items = $request->items ?? 10;
             $List = TeachersClassSubjectAssign::where([

@@ -41,7 +41,28 @@
                                         <label class="text-bold-600">{{ __('languages.peer_group.group_name') }}</label>
                                         <input type="text" class="form-control" name="group_name" id="group_name" placeholder="{{__('languages.peer_group.group_name')}}" value="{{old('group_name')}}">
                                         @if($errors->has('group_name'))<span class="validation_error">{{ $errors->first('group_name') }}</span>@endif
-                                    </div>                                    
+                                    </div>
+                                    @if(Auth::user()->role_id != 2)
+                                    <div class="form-group col-md-6">
+                                        <label>{{ __('languages.select_creator_user') }}</label>
+                                        <fieldset class="form-group">
+                                            <select class="selectpicker form-control" data-show-subtext="true" data-live-search="true" name="group_creator_user" id="group_creator_user">
+                                                <option value="">{{ __('languages.select_creator_user') }}</option>
+                                                @if(isset($CreatorUserList) && !empty($CreatorUserList))
+                                                @foreach($CreatorUserList as $CreatorUser)
+                                                <option value="{{$CreatorUser->id}}">
+                                                    @if(app()->getLocale() == 'en')
+                                                    {{$CreatorUser->DecryptNameEn}}
+                                                    @else
+                                                    {{$CreatorUser->DecryptNameCh}}
+                                                    @endif
+                                                </option>
+                                                @endforeach
+                                                @endif
+                                            </select>
+                                        </fieldset>
+                                    </div>
+                                    @endif
                                     <div class="form-group col-md-6">
                                         <label>{{ __('languages.peer_group.status') }}</label>
                                         <fieldset class="form-group">
@@ -58,7 +79,6 @@
                                     <button type="button" class="blue-btn btn btn-sm btn-primary" id="add_group_member">{{__('languages.peer_group.add_member')}}</button>
                                 </div>
                                 <hr class="blue-line">
-
                                 <div class="form-row" id="group-member-list">
                                     <div class="form-row">
                                         <div class="col-lg-12 col-md-12 col-sm-12">
@@ -69,7 +89,6 @@
                                         <h5 align="center">{{__('languages.peer_group.no_any_peer_members')}}</h5>
                                     </div>
                                 </div>
-                                
                                 <hr class="blue-line">
                                 <div class="form-row select-data">
                                     <div class="sm-btn-sec form-row">
@@ -110,9 +129,9 @@
 
         @include('backend.layouts.footer')
         <script>
-            var GroupAdminId='{{ Auth::user()->id }}';
-            var GroupMemberList=[];
-            $(function () {
+            var GroupAdminId = '{{Auth::user()->id}}';
+            var GroupMemberList = [];
+            $(function(){
                 /**
                  * USE : On Change Event after selecting 
                  */

@@ -122,6 +122,29 @@
                                                 </select>
                                             </div>
                                         </div>
+                                        @if(Auth::user()->role_id != 2)
+                                        <div class="form-group student_peer_group_section mt-3 row">
+                                            <div class="student_peer_group_heading col-lg-3">
+                                                <label>{{ __('languages.select_creator_user') }}</label>
+                                            </div>
+                                            <div class="col-lg-3">
+                                                <select class="selectpicker form-control" data-show-subtext="true" data-live-search="true" name="group_creator_user" id="group_creator_user">
+                                                    <option value="">{{ __('languages.select_creator_user') }}</option>
+                                                    @if(isset($CreatorUserList) && !empty($CreatorUserList))
+                                                    @foreach($CreatorUserList as $CreatorUser)
+                                                    <option value="{{$CreatorUser->id}}">
+                                                        @if(app()->getLocale() == 'en')
+                                                        {{$CreatorUser->DecryptNameEn}}
+                                                        @else
+                                                        {{$CreatorUser->DecryptNameCh}}
+                                                        @endif
+                                                    </option>
+                                                    @endforeach
+                                                    @endif
+                                                </select>
+                                            </div>
+                                        </div>
+                                        @endif
                                         <div class="form-group mt-3 row">
                                             <div class="col-lg-3">
                                                 <button type="button" name="submit" value="submit" class="btn-search btn-create-auto-peergroup">{{ __('languages.submit') }}</button>
@@ -151,6 +174,7 @@
                 if(!$(this).is(":checked")) {
                     $(this).closest('.form-grade-select').find('.auto-peer-group-class-chkbox').prop('checked',false);
                 }
+
                 GradeIds = [];
                 $('.auto-peer-group-grade-chkbox').each(function(){
                     if($(this).is(":checked")) {
@@ -158,6 +182,7 @@
                         GradeIds.push($(this).val());
                     }
                 });
+
                 ClassIds = [];
                 $('.auto-peer-group-class-chkbox').each(function(){
                     if($(this).is(":checked")) {
@@ -167,56 +192,58 @@
                 // Function call to get student list
                 getStudents(GradeIds,ClassIds);
             });
-            function getStudents(gradeIds, classIds){
-		    $("#cover-spin").show();
-		    $('#auto-peer-group-student-id').html('');
-		    if(gradeIds.length == 0 && classIds.length == 0){
-		        $('#auto-peer-group-student-id').html('');
-		        $("#auto-peer-group-student-id").multiselect("rebuild");
-		        $("#cover-spin").hide();
-		        return null;
-		    }
-		    $.ajax({
-		        url: BASE_URL + '/question-generator/get-students-list',
-		        type: 'GET',
-		        data: {
-		            'gradeIds': gradeIds,
-		            'classIds': classIds
-		        },
-		        success: function(response) {
-		            $("#cover-spin").hide();
-		            if(response.data){
-		                $('#auto-peer-group-student-id').html(response.data);
-		                $("#auto-peer-group-student-id").find('option').attr('selected','selected');
-		                $("#auto-peer-group-student-id").multiselect("rebuild");
-		            }
-		        },
-		        error: function(response) {
-		            ErrorHandlingMessage(response);
-		        }
-		    });
-		    $("#cover-spin").hide();
-		}
 
-        /**
-        * USE : On click event click on the class checkbox
-        */
-        $(document).on('click', '.auto-peer-group-class-chkbox', function(){
-            var ClassIds = [];
-            $('.auto-peer-group-class-chkbox').each(function(){
-                if($(this).is(":checked")) {
-                    ClassIds.push($(this).val());
+            function getStudents(gradeIds, classIds){
+		        $("#cover-spin").show();
+		        $('#auto-peer-group-student-id').html('');
+                if(gradeIds.length == 0 && classIds.length == 0){
+                    $('#auto-peer-group-student-id').html('');
+                    $("#auto-peer-group-student-id").multiselect("rebuild");
+                    $("#cover-spin").hide();
+                    return null;
                 }
+
+                $.ajax({
+                    url: BASE_URL + '/question-generator/get-students-list',
+                    type: 'GET',
+                    data: {
+                        'gradeIds': gradeIds,
+                        'classIds': classIds
+                    },
+                    success: function(response) {
+                        $("#cover-spin").hide();
+                        if(response.data){
+                            $('#auto-peer-group-student-id').html(response.data);
+                            $("#auto-peer-group-student-id").find('option').attr('selected','selected');
+                            $("#auto-peer-group-student-id").multiselect("rebuild");
+                        }
+                    },
+                    error: function(response) {
+                        ErrorHandlingMessage(response);
+                    }
+                });
+		        $("#cover-spin").hide();
+		    }
+
+            /**
+            * USE : On click event click on the class checkbox
+            */
+            $(document).on('click', '.auto-peer-group-class-chkbox', function(){
+                var ClassIds = [];
+                $('.auto-peer-group-class-chkbox').each(function(){
+                    if($(this).is(":checked")) {
+                        ClassIds.push($(this).val());
+                    }
+                });
+                var GradeIds = [];
+                $('.question-generator-grade-chkbox').each(function(){
+                    if($(this).is(":checked")) {
+                        GradeIds.push($(this).val());
+                    }
+                });
+                // Function call to get student list
+                getStudents(GradeIds,ClassIds);
             });
-            var GradeIds = [];
-            $('.question-generator-grade-chkbox').each(function(){
-                if($(this).is(":checked")) {
-                    GradeIds.push($(this).val());
-                }
-            });
-            // Function call to get student list
-            getStudents(GradeIds,ClassIds);
-        });
 
         /**
         *   USE : Create Auto Peer Group using Ajax 

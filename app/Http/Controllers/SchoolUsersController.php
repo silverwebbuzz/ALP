@@ -150,7 +150,7 @@ class SchoolUsersController extends Controller
             $UserModel->{cn::USERS_MOBILENO_COL}                            = ($request->mobile_no) ? $this->encrypt($request->mobile_no) : null;
             $UserModel->{cn::USERS_PASSWORD_COL}                            = Hash::make($request->password);
             $UserModel->{cn::USERS_STATUS_COL}                              = $request->status ?? 'active';
-            $UserModel->{cn::USERS_CREATED_BY_COL}                          = auth()->user()->{cn::USERS_ID_COL};
+            $UserModel->{cn::USERS_CREATED_BY_COL}                          = Auth::user()->{cn::USERS_ID_COL};
             $UserModel->{cn::USERS_IS_SCHOOL_ADMIN_PRIVILEGE_ACCESS_COL}    = $request->is_school_admin_privilege_access;
             $UserModel->{cn::USERS_REGION_ID_COL}                           = ($request->region_id) ? $request->region_id : null;
             $Users = $UserModel->save();

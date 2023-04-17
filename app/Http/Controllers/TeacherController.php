@@ -215,11 +215,11 @@ class TeacherController extends Controller
             $GradeClassListData = array();
             $stdata = array();
             $student_id = '';
-            $gradesList = TeachersClassSubjectAssign::where([cn::TEACHER_CLASS_SUBJECT_TEACHER_ID_COL => Auth()->user()->{cn::USERS_ID_COL}])->with('getClass')->get()->unique(cn::TEACHER_CLASS_SUBJECT_CLASS_ID_COL);
-            $gradesListId = TeachersClassSubjectAssign::where([cn::TEACHER_CLASS_SUBJECT_TEACHER_ID_COL => Auth()->user()->{cn::USERS_ID_COL}])
+            $gradesList = TeachersClassSubjectAssign::where([cn::TEACHER_CLASS_SUBJECT_TEACHER_ID_COL => Auth::user()->{cn::USERS_ID_COL}])->with('getClass')->get()->unique(cn::TEACHER_CLASS_SUBJECT_CLASS_ID_COL);
+            $gradesListId = TeachersClassSubjectAssign::where([cn::TEACHER_CLASS_SUBJECT_TEACHER_ID_COL => Auth::user()->{cn::USERS_ID_COL}])
                             ->pluck(cn::TEACHER_CLASS_SUBJECT_CLASS_NAME_ID_COL,cn::TEACHER_CLASS_SUBJECT_CLASS_ID_COL)
                             ->toArray();
-            $gradesListIdArr = TeachersClassSubjectAssign::where([cn::TEACHER_CLASS_SUBJECT_TEACHER_ID_COL => Auth()->user()->{cn::USERS_ID_COL}])->pluck(cn::TEACHER_CLASS_SUBJECT_CLASS_ID_COL)->toArray();
+            $gradesListIdArr = TeachersClassSubjectAssign::where([cn::TEACHER_CLASS_SUBJECT_TEACHER_ID_COL => Auth::user()->{cn::USERS_ID_COL}])->pluck(cn::TEACHER_CLASS_SUBJECT_CLASS_ID_COL)->toArray();
             $difficultyLevels = PreConfigurationDiffiltyLevel::all();
 
             // $studentidlist = User::whereIn(cn::USERS_GRADE_ID_COL,$gradesListIdArr)->where(cn::USERS_SCHOOL_ID_COL,$schoolId)->where(cn::USERS_ROLE_ID_COL,cn::STUDENT_ROLE_ID)->pluck(cn::USERS_ID_COL)->toArray();
@@ -263,7 +263,7 @@ class TeacherController extends Controller
                 $ExamStrandList = array();
                 foreach ($grade_id as $grades_key => $grades_value) {
                     $classListId = TeachersClassSubjectAssign::where([
-                                cn::TEACHER_CLASS_SUBJECT_TEACHER_ID_COL => Auth()->user()->{cn::USERS_ID_COL}
+                                cn::TEACHER_CLASS_SUBJECT_TEACHER_ID_COL => Auth::user()->{cn::USERS_ID_COL}
                             ])
                             ->where(cn::TEACHER_CLASS_SUBJECT_CLASS_ID_COL,$grades_value)
                             ->pluck(cn::TEACHER_CLASS_SUBJECT_CLASS_NAME_ID_COL)
@@ -312,7 +312,7 @@ class TeacherController extends Controller
                 }
 
                 $classListId = TeachersClassSubjectAssign::where([
-                                cn::TEACHER_CLASS_SUBJECT_TEACHER_ID_COL => Auth()->user()->{cn::USERS_ID_COL}
+                                cn::TEACHER_CLASS_SUBJECT_TEACHER_ID_COL => Auth::user()->{cn::USERS_ID_COL}
                             ])
                             ->where(cn::TEACHER_CLASS_SUBJECT_CLASS_ID_COL,$grades_value)
                             ->pluck(cn::TEACHER_CLASS_SUBJECT_CLASS_NAME_ID_COL)
@@ -377,9 +377,9 @@ class TeacherController extends Controller
             $strandsList = array();
             $LearningUnits = array();
             $LearningObjectives = array();
-            $gradesList = TeachersClassSubjectAssign::with('getTeacher')->with('getClass')->where([cn::TEACHER_CLASS_SUBJECT_TEACHER_ID_COL => Auth()->user()->{cn::USERS_ID_COL}])->get()->unique(cn::TEACHER_CLASS_SUBJECT_CLASS_ID_COL);
-            $gradesListId = TeachersClassSubjectAssign::where([cn::TEACHER_CLASS_SUBJECT_TEACHER_ID_COL => Auth()->user()->{cn::USERS_ID_COL}])->pluck(cn::TEACHER_CLASS_SUBJECT_CLASS_NAME_ID_COL,cn::TEACHER_CLASS_SUBJECT_CLASS_ID_COL)->toArray();
-            $gradesListIdArr = TeachersClassSubjectAssign::where([cn::TEACHER_CLASS_SUBJECT_TEACHER_ID_COL => Auth()->user()->{cn::USERS_ID_COL}])->pluck(cn::TEACHER_CLASS_SUBJECT_CLASS_ID_COL)->toArray();
+            $gradesList = TeachersClassSubjectAssign::with('getTeacher')->with('getClass')->where([cn::TEACHER_CLASS_SUBJECT_TEACHER_ID_COL => Auth::user()->{cn::USERS_ID_COL}])->get()->unique(cn::TEACHER_CLASS_SUBJECT_CLASS_ID_COL);
+            $gradesListId = TeachersClassSubjectAssign::where([cn::TEACHER_CLASS_SUBJECT_TEACHER_ID_COL => Auth::user()->{cn::USERS_ID_COL}])->pluck(cn::TEACHER_CLASS_SUBJECT_CLASS_NAME_ID_COL,cn::TEACHER_CLASS_SUBJECT_CLASS_ID_COL)->toArray();
+            $gradesListIdArr = TeachersClassSubjectAssign::where([cn::TEACHER_CLASS_SUBJECT_TEACHER_ID_COL => Auth::user()->{cn::USERS_ID_COL}])->pluck(cn::TEACHER_CLASS_SUBJECT_CLASS_ID_COL)->toArray();
             $difficultyLevels = PreConfigurationDiffiltyLevel::all();
 
             // $studentidlist = User::whereIn(cn::USERS_GRADE_ID_COL,$gradesListIdArr)->where(cn::USERS_SCHOOL_ID_COL,$schoolId)->where(cn::USERS_ROLE_ID_COL,cn::STUDENT_ROLE_ID)->pluck(cn::USERS_ID_COL)->toArray();
@@ -414,7 +414,7 @@ class TeacherController extends Controller
                 $ExamStrandList = array();
                 foreach ($grade_id as $grades_key => $grades_value) {
                     $classListId = TeachersClassSubjectAssign::where([
-                                cn::TEACHER_CLASS_SUBJECT_TEACHER_ID_COL => Auth()->user()->{cn::USERS_ID_COL}
+                                cn::TEACHER_CLASS_SUBJECT_TEACHER_ID_COL => Auth::user()->{cn::USERS_ID_COL}
                             ])
                             ->where(cn::TEACHER_CLASS_SUBJECT_CLASS_ID_COL,$grades_value)
                             ->pluck(cn::TEACHER_CLASS_SUBJECT_CLASS_NAME_ID_COL)
@@ -460,7 +460,7 @@ class TeacherController extends Controller
                     }
                 }
                 $classListId = TeachersClassSubjectAssign::where([
-                            cn::TEACHER_CLASS_SUBJECT_TEACHER_ID_COL => Auth()->user()->{cn::USERS_ID_COL}
+                            cn::TEACHER_CLASS_SUBJECT_TEACHER_ID_COL => Auth::user()->{cn::USERS_ID_COL}
                         ])
                         ->where(cn::TEACHER_CLASS_SUBJECT_CLASS_ID_COL,$grades_value)
                         ->pluck(cn::TEACHER_CLASS_SUBJECT_CLASS_NAME_ID_COL)

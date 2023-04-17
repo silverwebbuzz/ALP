@@ -63,9 +63,9 @@ class AlpAiGraphController extends Controller
                             foreach($QuestionList as $QuestionKey => $question){
                                 $countQuestions = count($QuestionList);
                                 $AnswerDetail = $question->answers;
-                                if(isset($AttemptExamData['question_answers'])){
-                                    $filterAttemptQuestionAnswer = array_filter(json_decode($AttemptExamData['question_answers']), function ($var) use($question){
-                                        if($var->question_id == $question['id']){
+                                if(isset($AttemptExamData[cn::ATTEMPT_EXAMS_QUESTION_ANSWER_COL])){
+                                    $filterAttemptQuestionAnswer = array_filter(json_decode($AttemptExamData[cn::ATTEMPT_EXAMS_QUESTION_ANSWER_COL]), function ($var) use($question){
+                                        if($var->question_id == $question[cn::QUESTION_TABLE_ID_COL]){
                                             return $var ?? [];
                                         }
                                     });
@@ -81,7 +81,7 @@ class AlpAiGraphController extends Controller
 
                                         // Get Questions difficulty Level value
                                         if(isset($PreConfigurationDifficultyLevel) && !empty($PreConfigurationDifficultyLevel) && isset($PreConfigurationDifficultyLevel[$question->{cn::QUESTION_DIFFICULTY_LEVEL_COL}])){
-                                            $performanceResult['questions_difficulties_list'][] = number_format($this->GetDifficultiesValueByCalibrationId($ExamData->{cn::EXAM_CALIBRATION_ID_COL},$question->id), 4, '.', '');
+                                            $performanceResult['questions_difficulties_list'][] = number_format($this->GetDifficultiesValueByCalibrationId($ExamData->{cn::EXAM_CALIBRATION_ID_COL},$question->{cn::QUESTION_TABLE_ID_COL}), 4, '.', '');
                                         }else{
                                             $performanceResult['questions_difficulties_list'][] = 0;
                                         }
@@ -138,13 +138,13 @@ class AlpAiGraphController extends Controller
                 if($this->isTeacherLogin()){
                     $gradesListId = TeachersClassSubjectAssign::where([
                                         cn::TEACHER_CLASS_SUBJECT_CURRICULUM_YEAR_ID_COL    => $this->GetCurriculumYear(),
-                                        cn::TEACHER_CLASS_SUBJECT_TEACHER_ID_COL            => Auth()->user()->{cn::USERS_ID_COL}
+                                        cn::TEACHER_CLASS_SUBJECT_TEACHER_ID_COL            => Auth::user()->{cn::USERS_ID_COL}
                                     ])
                                     ->pluck(cn::TEACHER_CLASS_SUBJECT_CLASS_ID_COL)
                                     ->toArray();
                     $gradeClass = TeachersClassSubjectAssign::where([
                                     cn::TEACHER_CLASS_SUBJECT_CURRICULUM_YEAR_ID_COL    => $this->GetCurriculumYear(),
-                                    cn::TEACHER_CLASS_SUBJECT_TEACHER_ID_COL            => Auth()->user()->{cn::USERS_ID_COL}
+                                    cn::TEACHER_CLASS_SUBJECT_TEACHER_ID_COL            => Auth::user()->{cn::USERS_ID_COL}
                                 ])
                                 ->pluck(cn::TEACHER_CLASS_SUBJECT_CLASS_NAME_ID_COL)->toArray();
                     if(isset($gradeClass) && !empty($gradeClass)){
@@ -477,8 +477,6 @@ class AlpAiGraphController extends Controller
                 foreach ($question_ids as $question_id) {
                     $QuestionList = Question::with('answers')->where(cn::QUESTION_TABLE_ID_COL,$question_id)->get()->toArray();
                     if(isset($PreConfigurationDifficultyLevel) && !empty($PreConfigurationDifficultyLevel) && isset($PreConfigurationDifficultyLevel[$QuestionList[0][cn::QUESTION_DIFFICULTY_LEVEL_COL]])){
-                        //$ExamData['difficulty_list'][] = number_format($PreConfigurationDifficultyLevel[$QuestionList[0][cn::QUESTION_DIFFICULTY_LEVEL_COL]], 4, '.', '');
-                        //$ExamData['difficulty_list'][] = number_format($QuestionList[0]->PreConfigurationDifficultyLevel->title, 4, '.', '');
                         $ExamData['difficulty_list'][] = number_format($this->GetDifficultiesValueByCalibrationId($AttemptExamData[cn::EXAM_CALIBRATION_ID_COL],$QuestionList[0]['id']), 4, '.', '');
                     }else{
                         $ExamData['difficulty_list'][] = 0;
@@ -519,9 +517,9 @@ class AlpAiGraphController extends Controller
      * USE : Get Progress Detail in Teacher Panel
      */
     public function getProgressDetailList($examId,$studentIds){
-        $SelectedGlobalConfigDifficultyType  = $this->getGlobalConfiguration('difficulty_selection_type');
-        $PreConfigurationDifficultyLevel = array();
-        $PreConfigurationDifficultyLevelData = PreConfigurationDiffiltyLevel::get()->toArray();
+        $SelectedGlobalConfigDifficultyType     = $this->getGlobalConfiguration('difficulty_selection_type');
+        $PreConfigurationDifficultyLevel        = array();
+        $PreConfigurationDifficultyLevelData    = PreConfigurationDiffiltyLevel::get()->toArray();
         if(isset($PreConfigurationDifficultyLevelData)){
             $PreConfigurationDifficultyLevel = array_column($PreConfigurationDifficultyLevelData,cn::PRE_CONFIGURE_DIFFICULTY_TITLE_COL,cn::PRE_CONFIGURE_DIFFICULTY_DIFFICULTY_LEVEL_COL);
         }
@@ -535,8 +533,8 @@ class AlpAiGraphController extends Controller
             $CalibrationId = $examData->{cn::EXAM_CALIBRATION_ID_COL};
             foreach($students as $key => $student){
                 $attemptedStudentExams = AttemptExams::where([
-                                            cn::ATTEMPT_EXAMS_EXAM_ID => $examId,
-                                            cn::ATTEMPT_EXAMS_STUDENT_STUDENT_ID => $student
+                                            cn::ATTEMPT_EXAMS_EXAM_ID               => $examId,
+                                            cn::ATTEMPT_EXAMS_STUDENT_STUDENT_ID    => $student
                                         ])->first();
                 if(isset($attemptedStudentExams) && !empty($attemptedStudentExams)){
                     $max_student_num++;
@@ -550,16 +548,7 @@ class AlpAiGraphController extends Controller
                     foreach ($question_ids as $question_id) {
                         $QuestionList = Question::with('answers')->where(cn::QUESTION_TABLE_ID_COL,$question_id)->get()->toArray();
                         if($QuestionList){
-                            // if(isset($PreConfigurationDifficultyLevel) && !empty($PreConfigurationDifficultyLevel) && isset($PreConfigurationDifficultyLevel[$QuestionList[0][cn::QUESTION_DIFFICULTY_LEVEL_COL]]) && !empty($PreConfigurationDifficultyLevel[$QuestionList[0][cn::QUESTION_DIFFICULTY_LEVEL_COL]])){
-                            //     //$exmdata['difficulty_list'][] = number_format($PreConfigurationDifficultyLevel[$QuestionList[0][cn::QUESTION_DIFFICULTY_LEVEL_COL]], 4, '.', '');
-                            //     $exmdata['difficulty_list'][] = number_format($QuestionList[0]->PreConfigurationDifficultyLevel->title, 4, '.', '');
-                                
-                            // }else{
-                            //     $exmdata['difficulty_list'][] = 0;
-                            // }
-
                             if(isset($PreConfigurationDifficultyLevel) && !empty($PreConfigurationDifficultyLevel) && isset($PreConfigurationDifficultyLevel[$QuestionList[0][cn::QUESTION_DIFFICULTY_LEVEL_COL]])){
-                                //$exmdata['difficulty_list'][] = number_format($PreConfigurationDifficultyLevel[$QuestionList[0][cn::QUESTION_DIFFICULTY_LEVEL_COL]], 4, '.', '');
                                 $exmdata['difficulty_list'][] = number_format($this->GetDifficultiesValueByCalibrationId($examData->{cn::EXAM_CALIBRATION_ID_COL},$QuestionList[0]['id']), 4, '.', '');
                             }else{
                                 $exmdata['difficulty_list'][] = 0;
@@ -580,18 +569,18 @@ class AlpAiGraphController extends Controller
                         }
                     }
                     $exmDataList['questions_results'][] = $exmdata['questions_results'] ?? [];
-                    $exmDataList['num_of_ans_list'] = $exmdata['num_of_ans_list'] ?? [];
-                    $exmDataList['difficulty_list'] = $exmdata['difficulty_list'] ?? [];
-                    $exmDataList['max_student_num'] = $max_student_num;
+                    $exmDataList['num_of_ans_list']     = $exmdata['num_of_ans_list'] ?? [];
+                    $exmDataList['difficulty_list']     = $exmdata['difficulty_list'] ?? [];
+                    $exmDataList['max_student_num']     = $max_student_num;
                 }
             }
             if(isset($exmDataList) && !empty($exmDataList) && isset($exmDataList['questions_results']) && isset($exmDataList['num_of_ans_list']) && isset($exmDataList['difficulty_list']) && isset($exmDataList['max_student_num'])){
                 $requestPayload = new Request();
                 $requestPayload = $requestPayload->replace([
-                    'questions_results'=> $exmDataList['questions_results'],
-                    'num_of_ans_list' => $exmDataList['num_of_ans_list'],
-                    'difficulty_list' => array_map('floatval', $exmDataList['difficulty_list']),
-                    'max_student_num' => $exmDataList['max_student_num']
+                    'questions_results' => $exmDataList['questions_results'],
+                    'num_of_ans_list'   => $exmDataList['num_of_ans_list'],
+                    'difficulty_list'   => array_map('floatval', $exmDataList['difficulty_list']),
+                    'max_student_num'   => $exmDataList['max_student_num']
                 ]);
                 $data = $this->AIApiService->getStudentProgressReport($requestPayload);
                 if(isset($data) && !empty($data)){

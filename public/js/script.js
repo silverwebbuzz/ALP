@@ -12,15 +12,7 @@ $(function () {
     OnChangeEvent.init();
     OnPageLoadEvent.init();
 });
-// var questionNo = 1;
-// var attempt_ans = 0;
-// var question_old_data_new = new Array();
-// var question_position = new Array();
-// var wrong_question_old_data_new = new Array();
-// var attempt_first_trial_data_new = new Array();
-// var wrong_old_data_new = 0;
-// var questiontype = 0;
-// var isReAttempt = true;
+
 if (typeof file_type == "undefined") {
     var file_type = "";
 }
@@ -68,7 +60,7 @@ OnPageLoadEvent = {
             knowledgeNode($("#naming_structure_code").val());
         }
 
-        $(".select-search,#nodeModal #main_node_id,#addNodesForm #sub_node_id,#updateNodesForm #sub_node_id,#nodeModal #parent-node-id,#question_filter_grade,#question_filter_difficulty,#question_filter_question_type,#question_filter_status,#user_filter_school,#user_filter_role,#user_filter_grade,#role,#school_id,#grade_id,#status,#add_student_group_grade,#add_student_group_status,#School,#filter_test_template_difficult_lvl,#filter_test_template_template_type,#template_type,#difficulty_level,#learningReportStrand,#reportLearningType,#pass_only_and_or,#curriculum,#test_type,#select-report-date,#select-no-of-per-trials-question,#difficulty_mode,#select-display-hints,#select-display-full-solutions,#select-display-pr-answer-hints,#select-randomize-answers,#select-randomize-order,#test_start_time,#test_end_time,#use_of_modes,#assignStudentIntoGroup,#leaderboard_type,#learning_tutor_language_id,#is_approved_question,.performance_exam_id,#current_curriculum_year,#curriculum_year,#reference_adjusted_calibration,#school_users_school_id,#region_id").select2({
+        $(".select-search,#nodeModal #main_node_id,#addNodesForm #sub_node_id,#updateNodesForm #sub_node_id,#nodeModal #parent-node-id,#question_filter_grade,#question_filter_difficulty,#question_filter_question_type,#question_filter_status,#user_filter_school,#user_filter_role,#user_filter_grade,#role,#school_id,#grade_id,#status,#add_student_group_grade,#add_student_group_status,#School,#filter_test_template_difficult_lvl,#filter_test_template_template_type,#template_type,#difficulty_level,#learningReportStrand,#reportLearningType,#pass_only_and_or,#curriculum,#test_type,#select-report-date,#select-no-of-per-trials-question,#difficulty_mode,#select-display-hints,#select-display-full-solutions,#select-display-pr-answer-hints,#select-randomize-answers,#select-randomize-order,#test_start_time,#test_end_time,#use_of_modes,#assignStudentIntoGroup,#leaderboard_type,#learning_tutor_language_id,#is_approved_question,.performance_exam_id,#current_curriculum_year,#curriculum_year,#reference_adjusted_calibration,#school_users_school_id,#region_id,#group_creator_user").select2({
             width: "100%",
         });
 
@@ -743,10 +735,8 @@ OnChangeEvent = {
                         success: function (response) {
                             var Response = JSON.parse(JSON.stringify(response));
                             if(Response.data){
-                                //$('#ai-calibration-start-date').val(moment(Response.data.start_date).format('DD/MM/YYYY'));
                                 var CalibrationStartDate = new Date(Response.data.end_date);
                                 $('#ai-calibration-start-date').val(moment(CalibrationStartDate.setDate(CalibrationStartDate.getDate() + 1)).format('DD/MM/YYYY'));
-                                ///$('#ai-calibration-end-date').val(moment(Response.data.end_date).format('DD/MM/YYYY'));
                             }else{
                                 toastr.error(VALIDATIONS.CALIBRATION_DATA_NOT_FOUND);
                             }
@@ -778,8 +768,7 @@ OnChangeEvent = {
                         CurriculumYearId: this.value,
                     },
                     success: function (response) {
-                        var data = JSON.parse(JSON.stringify(response)); 
-                        // location.reload();
+                        var data = JSON.parse(JSON.stringify(response));
                         $("#cover-spin").hide();
                         window.location.href = getAuthBasedDashboard(data.data.role_id);
                         
@@ -789,7 +778,6 @@ OnChangeEvent = {
         });
 
         /******Learning Tutor  *******/
-
         // Get Learning Units based on Strand
         $(document).on("change", "#learning_tutor_strand_id", function () {
             $.ajax({
@@ -807,10 +795,8 @@ OnChangeEvent = {
                     if (data.data) {
                         $("#learning_tutor_learning_unit").prop("disabled",false);
                         if (data.data) {
-                            // $(data.data).each(function () {
                             $.each(data.data.learningUnit, function (index, value) {
                                 var option = $("<option />");
-                                // option.attr("value", this.id).text(this["name_" + APP_LANGUAGE]);
                                 option.attr('value', this.id).text(this['index'] +'.'+' '+this["name_"+APP_LANGUAGE]+' '+'('+this['id']+')');
                                 $("#learning_tutor_learning_unit").append(option);
                             });
@@ -818,11 +804,6 @@ OnChangeEvent = {
                             $("#learning_tutor_learning_unit").html('<option value="">' +LEARNING_UNITS_NOT_AVAILABLE +"</option>");
                         }
                     } else {
-                        // $("#learning_tutor_learning_unit").html(
-                        //     '<option value="">' +
-                        //         LEARNING_UNITS_NOT_AVAILABLE +
-                        //         "</option>"
-                        // );
                         $("#learning_tutor_learning_unit").prop("disabled",true);
                         $("#learning_tutor_learning_unit").multiselect("rebuild");
                     }
@@ -851,15 +832,11 @@ OnChangeEvent = {
                         $("#cover-spin").hide();
                         $("#learning_tutor_learning_objectives").html("");
                         var data = JSON.parse(JSON.stringify(response));
-
                         if (data) {
                             $("#learning_tutor_learning_objectives").prop("disabled",false);
-                            
                             if (data.data) {
-                                // $(data.data).each(function () {
                                 $.each(data.data, function (index, value) {
                                     var option = $("<option />");
-                                    // option.attr("value", this.id).text(this.foci_number +" " +this["title_" + APP_LANGUAGE]);
                                     option.attr("value", this.id).text(this.index +" " +this["title_" + APP_LANGUAGE] +" ("+this.foci_number+")");
                                     $("#learning_tutor_learning_objectives").append(option);
                                 });
@@ -1266,7 +1243,6 @@ OnChangeEvent = {
                     data: {
                         _token: $('meta[name="csrf-token"]').attr("content"),
                         grade_id: $("#grade-id").val(),
-                        //subject_id: $("#subject-id").val(),
                         strand_id: this.value,
                     },
                     success: function (response) {
@@ -1305,7 +1281,6 @@ OnChangeEvent = {
                     data: {
                         _token: $('meta[name="csrf-token"]').attr("content"),
                         grade_id: $("#grade-id").val(),
-                        //subject_id: $("#subject-id").val(),
                         strand_id: $("#strand-id").val(),
                         learning_unit_id: this.value,
                     },
@@ -1328,7 +1303,6 @@ OnChangeEvent = {
                         } else {
                             $("#learning-objectives").html('<option value="">' +LEARNING_OBJECTIVES_NOT_AVAILABLE +"</option>");
                         }
-                        //$('#learning-objectives').multiselect("reload");
                     },
                     error: function (response) {
                         ErrorHandlingMessage(response);
@@ -1529,97 +1503,6 @@ OnChangeEvent = {
             });
         });
 
-        // /**
-        //  * USE : Student can select exam language based on changes list of question answer language
-        //  * **/
-        // $(document).on("change","#student-select-attempt-exam-language",function () {
-        //     if (this.value == "") {
-        //         toastr.error(PLEASE_SELECT_LANGUAGE);
-        //         return false;
-        //     }
-        //     var AnswerNameList = [];
-        //     $("input:radio").each(function () {
-        //         var rname = $(this).attr("name");
-        //         if ($.inArray(rname, AnswerNameList) === -1)
-        //             AnswerNameList.push(rname);
-        //     });
-        //     $("#attempt-exams input[name=language]").val($(this).val());
-        //     var question_id = $("#nextquestionarea .checkanswer").attr("question-id");
-        //     var SelectedAnswersArray = {};
-        //     $.each(AnswerNameList, function (key, questionKey) {
-        //         SelectedAnswersArray[questionKey] = $("input[type='radio'][name='" +questionKey +"']:checked").val();
-        //     });
-        //     $("#SelectedAnswersArray").val(JSON.stringify(SelectedAnswersArray));
-        //     if ($("#nextquestionarea .checkanswer:checked").length != 0) {
-        //         var answer = $("#nextquestionarea .checkanswer").val();
-        //         var questionid = $("#nextquestionarea .checkanswer").attr("question-id");
-        //         var submitid = $("#submitquestion").attr("submit-id");
-        //         questiontype = $("#nextquestionarea .checkanswer").attr("question-type");
-        //         var language = $("#attempt-exams input[name=language]").val();
-        //         var checkarns = 0;
-        //         question_arr = {
-        //             question_id: questionid,
-        //             answer: answer,
-        //             language: language,
-        //         };
-        //         if (question_old_data_new.length != 0) {
-        //             for (var ic = 0;ic < question_old_data_new.length;ic++) {
-        //                 if (question_old_data_new[ic]["question_id"] ==questionid) {
-        //                     checkarns++;
-        //                     question_old_data_new[ic] = question_arr;
-        //                 }
-        //             }
-        //             if (checkarns == 0) {
-        //                 question_old_data_new.push(question_arr);
-        //             }
-        //         } else {
-        //             question_old_data_new.push(question_arr);
-        //         }
-        //     }
-        //     $examId = $(this).attr("data-examid");
-        //     if ($examId) {
-        //         $("#cover-spin").show();
-        //         $.ajax({
-        //             url:
-        //                 BASE_URL + "/student/exam/change-language/" + $examId,
-        //             type: "GET",
-        //             data: {
-        //                 language: this.value,
-        //                 question_id: question_id,
-        //                 SelectedAnswersArray: SelectedAnswersArray,
-        //                 questionNo: questionNo,
-        //                 question_position: question_position,
-        //             },
-        //             success: function (response) {
-        //                 var data = JSON.parse(JSON.stringify(response));
-        //                 if (data.status === "success") {
-        //                     $("#nextquestionarea").html(data.data.html);
-        //                     //updateMathHtml();
-        //                     //updateMathHtmlById("nextquestionarea");
-        //                     MathJax.Hub.Queue(["Typeset", MathJax.Hub]);
-        //                     if (
-        //                         $("#nextquestionarea .checkanswer:checked")
-        //                             .length != 0
-        //                     ) {
-        //                         $("#nextquestion").prop("disabled", false);
-        //                         if ($("#nextquestion").length == 0) {
-        //                             $("#submitquestion").prop("disabled",false);
-        //                             $("#submitquestion").show();
-        //                         }
-        //                     }
-        //                 } else {
-        //                     toastr.error(data.message);
-        //                 }
-        //                 $("#cover-spin").hide();
-        //             },
-        //             error: function (response) {
-        //                 ErrorHandlingMessage(response);
-        //             },
-        //         });
-        //     }
-        //     return false;
-        // });
-
         //StudentManagement Add Edit page Grade on class Change
         // Student Class promotion on change grade id in school panel
         $(document).on("change", "#School-studentgrade-id", function () {
@@ -1803,33 +1686,6 @@ OnChangeEvent = {
                 },
             });
         });
-
-        //For check all check box of student in school panel inside student management
-        // $(document).on(
-        //     "change",
-        //     "#student-class-promotion-check-all",
-        //     function () {
-        //         if (this.checked) {
-        //             var studentIds = [];
-        //             $(".student-Ids").prop("checked", true);
-        //             $(
-        //                 "input:checkbox[name=student-class-promotion]:checked"
-        //             ).each(function () {
-        //                 studentIds.push($(this).val());
-        //             });
-        //         } else {
-        //             // Clear all checkbox multiple student in school panel inside student management
-        //             var studentIds = [];
-        //             $(".student-Ids").prop("checked", false);
-        //             $(
-        //                 "input:checkbox[name=student-class-promotion]:checked"
-        //             ).each(function () {
-        //                 studentIds.remove($(this).val());
-        //             });
-        //             return false;
-        //         }
-        //     }
-        // );
 
         $(document).on("change", "#checkbox-all-question", function () {
             if (this.checked) {
@@ -3880,38 +3736,6 @@ OnClickEvent = {
             });
         });
 
-        // // Check all attempt students exams validation
-        // $(document).on("click", "#submit-exams", function (event) {
-        //     //Make groups
-        //     var names = [];
-        //     $("input:radio").each(function () {
-        //         var rname = $(this).attr("name");
-        //         if ($.inArray(rname, names) === -1) names.push(rname);
-        //     });
-
-        //     //do validation for each group
-        //     $status = true;
-        //     $.each(names, function (i, name) {
-        //         $("#" + name).text("").removeClass("error-option");
-        //         if ($('input[name="' + name + '"]:checked').length === 0) {
-        //             $status = false;
-        //             $("#" + name).text("Please select answer").addClass("error-option");
-        //         } else {
-        //             if ($status) {
-        //                 $status = true;
-        //             }
-        //         }
-        //     });
-        //     if (!$status) {
-        //         $([document.documentElement, document.body]).animate({
-        //             scrollTop: $(".error-option").offset().top,
-        //         },1000);
-        //         return false;
-        //     }
-        //     $("#attempt-exams").submit();
-        //     $("#submit-exams").prop("disabled", true);
-        // });
-
         //view result student open on popup
         $(document).on("click", ".view-result-btn", function () {
             $("#cover-spin").show();
@@ -3993,8 +3817,6 @@ OnClickEvent = {
                     if (isAdmin == 1) {
                         // Set Peer Group Dropdown
                         if (data.data.school_List !== undefined && data.data.school_List.length != 0) {
-                            /*$(".class-performance-grade-section,.class-performance-class-section").hide();
-                            $(".class-performance-grade-section select,.class-performance-class-section select").prop('disabled',true);*/
                             $.each( data.data.school_List, function (index, value) {
                                 $("#exam_school_id").append("<option value=" + value.id + ">" + value.name + "</option>");
                             });
@@ -4005,8 +3827,6 @@ OnClickEvent = {
                             // Set Peer Group Dropdown
                             if (data.data.peer_group_list !== undefined) {
                                 $(".class-performance-group-section").show();
-                                /*$(".class-performance-grade-section,.class-performance-class-section").hide();
-                                $(".class-performance-grade-section select,.class-performance-class-section select").prop('disabled',true);*/
                                 $(".class-performance-group-section").show();
                                 $.each(data.data.peer_group_list,function (index, value) {
                                         $(".performance_group_id").append( "<option value=" + data.data.peer_group_list[index].id +">" + data.data.peer_group_list[index].group_name + "</option>");
@@ -4018,7 +3838,6 @@ OnClickEvent = {
                             // Set Grade Dropdown in Class performance report
                             if ( data.data.grades_list !== undefined && data.data.grades_list.length != 0) {
                                 $(".class-performance-grade-section,.class-performance-class-section").show();
-                                /*$(".class-performance-group-section").hide();*/
                                 $(".class-performance-grade-section select,.class-performance-class-section select").prop("disabled", false);
                                 $(".class-performance-grade-section").show();
                                 var GradeList = "";
@@ -4147,9 +3966,6 @@ OnClickEvent = {
                         // Set Peer Group Dropdown
                         if (data.data.peer_group_list !== undefined && data.data.peer_group_list.length != 0) {
                             $(".class-performance-group-section").show();
-                            /*$(".class-performance-grade-section,.class-performance-class-section").hide();
-                            $(".class-performance-grade-section select,.class-performance-class-section select").prop('disabled',true);*/
-                            //$(".class-performance-group-section").show();
                             $.each(
                                 data.data.peer_group_list,
                                 function (index, value) {
@@ -4164,7 +3980,6 @@ OnClickEvent = {
                         // Set Grade Dropdown in Class performance report
                         if (data.data.grades_list !== undefined && data.data.grades_list.length != 0) {
                             $(".class-performance-grade-section,.class-performance-class-section").show();
-                            /*$(".class-performance-group-section").hide();*/
                             $(".class-performance-grade-section select,.class-performance-class-section select").prop("disabled", false);
                             $(".class-performance-grade-section").show();
                             var GradeList = "";
@@ -4214,7 +4029,6 @@ OnClickEvent = {
          * USE : GET THE GRADE DATA TO CLASS IN PERFORMANCE REPORT
          */
         $(document).on("change", "#student_performance_grade_id", function () {
-            //$("#classType-select-option option").prop("disabled", false);
             $.ajax({
                 url: BASE_URL + "/get-performance-report-class-type",
                 type: "GET",
@@ -4240,10 +4054,6 @@ OnClickEvent = {
                     $("#classType-select-option").val(classIds);
                 }
             }
-            // $("#classType-select-option option:not(:checked)").prop(
-            //     "disabled",
-            //     true
-            // );
             $("#classType-select-option").multiselect("rebuild");
         });
 
@@ -4264,411 +4074,6 @@ OnClickEvent = {
                 return false;
             }
         });
-
-        /**
-         * USE : Delete multiple exams
-         */
-        // $(document).on("click", "#delete-multiple-exams-btn", function () {
-        //     $("#cover-spin").show();
-        //     var examIds = [];
-        //     $("input:checkbox[name=examids]:checked").each(function () {
-        //         examIds.push($(this).val());
-        //     });
-        //     // Check examid array is empty or not
-        //     if (examIds.length === 0) {
-        //         $("#cover-spin").hide();
-        //         toastr.error(
-        //             PLEASE_SELECT_AT_LEAST_ONE_CHECKBOX_FOR_DELETE_TEST
-        //         );
-        //         return false;
-        //     }
-        //     // If array is not empty then delete multiple exams
-        //     $.confirm({
-        //         title: DELETE_TEST + "?",
-        //         content: CONFIRMATION,
-        //         autoClose: "Cancellation|8000",
-        //         buttons: {
-        //             deleteUser: {
-        //                 text: DELETE_TEST,
-        //                 action: function () {
-        //                     $.ajax({
-        //                         url: BASE_URL + "/exams/delete/multiple",
-        //                         type: "POST",
-        //                         data: {
-        //                             _token: $('meta[name="csrf-token"]').attr(
-        //                                 "content"
-        //                             ),
-        //                             examIds: examIds,
-        //                         },
-        //                         success: function (response) {
-        //                             $("#cover-spin").hide();
-        //                             var data = JSON.parse(
-        //                                 JSON.stringify(response)
-        //                             );
-        //                             if (data.status === "success") {
-        //                                 toastr.success(data.message);
-        //                                 location.reload();
-        //                             } else {
-        //                                 toastr.error(data.message);
-        //                                 return false;
-        //                             }
-        //                         },
-        //                         error: function (response) {
-        //                             ErrorHandlingMessage(response);
-        //                         },
-        //                     });
-        //                 },
-        //             },
-        //             Cancellation: function () {
-        //                 $("#cover-spin").hide();
-        //             },
-        //         },
-        //     });
-        // });
-
-        // /**
-        //  * USE : Use To Check Answer Is Right Or Not
-        //  */
-        // var wrong = 0;
-        // var questionIdArr = [];
-        // $(document).on("change", ".test-all .checkanswer", function () {
-        //     $(".questionhint").hide();
-        //     $("#nextquestion").prop("disabled", false);
-        //     $("#submitquestion").hide();
-        //     if($("#nextquestion").length == 0) {
-        //         $("#submitquestion").prop("disabled", false);
-        //         $("#submitquestion").show();
-        //     }
-        //     var examid = $("input[name=exam_id]").val();            
-        //     var answer = $(this).val();
-        //     var questionid = $(this).attr("question-id");
-        //     var language = $("#attempt-exams input[name=language]").val();
-        //      // Store Student Exam History Detail
-        //     StoreStudentExamDetail(examid,questionid,answer,language);
-        //     var submitid = $("#submitquestion").attr("submit-id");
-        //     questiontype = $(this).attr("question-type");
-            
-        //     var checkarns = 0;
-        //     question_arr = {
-        //         question_id: questionid,
-        //         answer: answer,
-        //         language: language,
-        //         duration_second: 0,
-        //     };
-
-        //     // Set Question Position Start
-        //     var question_position_number = [];
-        //     $(this).closest(".attmp-main-answer").find(".checkanswer").each(function () {
-        //         question_position_number.push($(this).val());
-        //     });
-        //     var questionPositionNumberJson = JSON.stringify(question_position_number);
-        //     if (question_position.length != 0) {
-        //         checkarnsPo = 0;
-        //         for (var ip = 0; ip < question_position.length; ip++) {
-        //             if (question_position[ip]["question_id"] == questionid) {
-        //                 checkarnsPo++;
-        //                 question_position_arr = {
-        //                     question_id: questionid,
-        //                     position: questionPositionNumberJson,
-        //                 };
-        //                 question_position[ip] = question_position_arr;
-        //             }
-        //         }
-        //         if (checkarns == 0) {
-        //             var question_position_arr = {
-        //                 question_id: questionid,
-        //                 position: questionPositionNumberJson,
-        //             };
-        //             question_position.push(question_position_arr);
-        //         }
-        //     } else {
-        //         var question_position_arr = {
-        //             question_id: questionid,
-        //             position: questionPositionNumberJson,
-        //         };
-        //         question_position.push(question_position_arr);
-        //     }
-        //     // Set Question Position End
-
-        //     if (question_old_data_new.length != 0) {
-        //         for (var ic = 0; ic < question_old_data_new.length; ic++) {
-        //             if ( question_old_data_new[ic]["question_id"] == questionid) {
-        //                 checkarns++;
-        //                 question_arr = {
-        //                     question_id: questionid,
-        //                     answer: answer,
-        //                     language: language,
-        //                     duration_second:
-        //                         question_old_data_new[ic]["duration_second"],
-        //                 };
-        //                 question_old_data_new[ic] = question_arr;
-        //             }
-        //         }
-        //         if (checkarns == 0) {
-        //             question_old_data_new.push(question_arr);
-        //         }
-        //     } else {
-        //         question_old_data_new.push(question_arr);
-        //     }
-        // });
-
-        // /**
-        //  * USE : Use Next or Previous Question
-        //  */
-        // $(document).on("click",".test-all #nextquestion,.test-all #prevquestion",function (e) {
-        //     // If user click on the next button then system will trigger on click selected radio button
-        //     $(".test-all .checkanswer:checked").trigger('change');
-        //     $("#cover-spin").show();
-        //     var is_err = 0;
-        //     var examaction = $(this).attr("data-text");
-        //     if(examaction == "Next"){
-        //         questiontype = $(".checkanswer:checked").attr("question-type");
-        //         if (questiontype == 2 || questiontype == 1) {
-        //             var is_err = $(this).attr("iserr");
-        //         }
-        //         var currentid = $(this).attr("question-id-next");
-        //         questionNo = questionNo + 1;
-        //     }else{
-        //         var currentid = $(this).attr("question-id-prev");
-        //         questionNo = questionNo - 1;
-        //     }
-        //     var wrong_old_data_new = $("#wrong_ans_id").val();
-        //     var examid = $("input[name=exam_id]").val();
-        //     var language = $("input[name=language]").val();
-
-        //     // set question duration in second start
-        //     if (examaction == "Next") {
-        //         var answer = $(".checkanswer:checked").val();
-        //         var questionid = $(".checkanswer:checked").attr("question-id");
-        //         var submitid = $("#submitquestion").attr("submit-id");
-        //         var language = $("#attempt-exams input[name=language]").val();
-        //         if(question_old_data_new.length != 0){
-        //             for ( var ics = 0; ics < question_old_data_new.length; ics++) {
-        //                 if ( question_old_data_new[ics]["question_id"] == questionid && question_old_data_new[ics]["duration_second"] == 0) {
-        //                     question_arr = {
-        //                         question_id: questionid,
-        //                         answer: answer,
-        //                         language: language,
-        //                         duration_second: $QuestionTimer,
-        //                     };
-        //                     question_old_data_new[ics] = question_arr;
-        //                 }
-        //             }
-        //         }
-        //         QuestionSecond = 0;
-        //     }
-        //     if(examaction == "Previous"){
-        //         var answer = $(".checkanswer:checked").val();
-        //     }
-        //     // send ajax to get data
-        //     $.ajax({
-        //         url: BASE_URL + "/next-question",
-        //         type: "POST",
-        //         data: {
-        //             _token: $('meta[name="csrf-token"]').attr("content"),
-        //             currentid: currentid,
-        //             examid: examid,
-        //             examaction: examaction,
-        //             questionNo: questionNo,
-        //             language: language,
-        //             wrong_ans: wrong_question_old_data_new,
-        //             attempt_ans: attempt_ans,
-        //             // Get Question Position
-        //             question_position: question_position,
-        //         },
-        //         success: function (response) {
-        //             //$("#cover-spin").hide();
-        //             $("#nextquestionarea").html(response);
-        //             if (question_old_data_new.length != 0) {
-        //                 for (var icn = 0; icn < question_old_data_new.length;icn++) {
-        //                     var question_id_check = $("#nextquestionarea .checkanswer").attr("question-id");
-        //                     if (question_old_data_new[icn]["question_id"] == question_id_check) {
-        //                         var answer_ren = question_old_data_new[icn]["answer"];
-        //                         $("#nextquestionarea .checkanswer[value=" + answer_ren + "]" ).prop("checked", true);
-        //                         $("#nextquestion").prop("disabled", false);
-        //                         if ($("#nextquestion").length == 0) {
-        //                             $("#submitquestion").prop( "disabled", false);
-        //                             $("#submitquestion").show();
-        //                         }
-        //                     }
-        //                 }
-        //             }
-        //             //updateMathHtml();
-        //             //updateMathHtmlById("nextquestionarea");
-
-        //             MathJax.Hub.Queue(["Typeset", MathJax.Hub]);
-        //             $("#cover-spin").hide();
-        //         },
-        //     });
-        // });
-
-        // /**
-        //  * USE : Use Check Answer Question in Personal Exam
-        //  */
-        // $(document).on("change", ".test-personal .checkanswer", function () {
-        //     $(".questionhint").hide();
-        //     $("#nextquestion").prop("disabled", false);
-        //     $("#submitquestion").hide();
-        //     // $('#submitquestion').prop('disabled', true);
-        //     if ($("#nextquestion").length == 0) {
-        //         $("#submitquestion").prop("disabled", false);
-        //         $("#submitquestion").show();
-        //     }
-        //     var examid = $("input[name=exam_id]").val();
-        //     var answer = $(this).val();
-        //     var questionid = $(this).attr("question-id");
-        //     var submitid = $("#submitquestion").attr("submit-id");
-        //     questiontype = $(this).attr("question-type");
-        //     var language = $("#attempt-exams input[name=language]").val();
-        //     // Store Student Exam History Detail
-        //     StoreStudentExamDetail(examid,questionid,answer,language);
-        //     var checkarns = 0;
-        //     question_arr = {
-        //         question_id: questionid,
-        //         answer: answer,
-        //         language: language,
-        //         duration_second: 0,
-        //     };
-
-        //     // Set Question Position Start
-        //     var question_position_number = [];
-        //     $(this).closest(".attmp-main-answer").find(".checkanswer").each(function () {
-        //         question_position_number.push($(this).val());
-        //     });
-        //     var questionPositionNumberJson = JSON.stringify(question_position_number);
-        //     if(question_position.length != 0){
-        //         checkarnsPo = 0;
-        //         for(var ip = 0; ip < question_position.length; ip++){
-        //             if(question_position[ip]["question_id"] == questionid){
-        //                 checkarnsPo++;
-        //                 question_position_arr = {
-        //                     question_id: questionid,
-        //                     position: questionPositionNumberJson,
-        //                 };
-        //                 question_position[ip] = question_position_arr;
-        //             }
-        //         }
-        //         if(checkarns == 0){
-        //             var question_position_arr = {
-        //                 question_id: questionid,
-        //                 position: questionPositionNumberJson,
-        //             };
-        //             question_position.push(question_position_arr);
-        //         }
-        //     }else{
-        //         var question_position_arr = {
-        //             question_id: questionid,
-        //             position: questionPositionNumberJson,
-        //         };
-        //         question_position.push(question_position_arr);
-        //     }
-        //     // Set Question Position End
-
-        //     if(question_old_data_new.length != 0){
-        //         for(var ic = 0; ic < question_old_data_new.length; ic++){
-        //             if(question_old_data_new[ic]["question_id"] == questionid){
-        //                 checkarns++;
-        //                 question_arr = {
-        //                     question_id: questionid,
-        //                     answer: answer,
-        //                     language: language,
-        //                     duration_second:
-        //                         question_old_data_new[ic]["duration_second"],
-        //                 };
-        //                 question_old_data_new[ic] = question_arr;
-        //             }
-        //         }
-        //         if(checkarns == 0){
-        //             question_old_data_new.push(question_arr);
-        //         }
-        //     }else{
-        //         question_old_data_new.push(question_arr);
-        //     }
-        // });
-
-        // /**
-        //  * USE : Use Next or Previous Question in Personal Exam
-        //  */
-        // $(document).on("click",".test-personal #nextquestion,.test-personal #prevquestion",function (e) {
-        //         $("#cover-spin").show();
-        //         var is_err = 0;
-        //         var examaction = $(this).attr("data-text");
-        //         if(examaction == "Next"){
-        //             questiontype = $(".checkanswer:checked").attr("question-type");
-        //             if(questiontype == 2 || questiontype == 1){
-        //                 var is_err = $(this).attr("iserr");
-        //             }
-        //             var currentid = $(this).attr("question-id-next");
-        //             questionNo = questionNo + 1;
-        //         }else{
-        //             var currentid = $(this).attr("question-id-prev");
-        //             questionNo = questionNo - 1;
-        //         }
-        //         var wrong_old_data_new = $("#wrong_ans_id").val();
-        //         var examid = $("input[name=exam_id]").val();
-        //         var language = $("input[name=language]").val();
-        //         // set question duration in second start
-        //         if(examaction == "Next"){
-        //             var answer = $(".checkanswer:checked").val();
-        //             var questionid = $(".checkanswer:checked").attr("question-id");
-        //             var submitid = $("#submitquestion").attr("submit-id");
-        //             var language = $("#attempt-exams input[name=language]").val();
-        //             if(question_old_data_new.length != 0){
-        //                 for(var ics = 0;ics < question_old_data_new.length;ics++){
-        //                     if(question_old_data_new[ics]["question_id"] == questionid && question_old_data_new[ics]["duration_second"] == 0){
-        //                         question_arr = {
-        //                             question_id: questionid,
-        //                             answer: answer,
-        //                             language: language,
-        //                             duration_second: $QuestionTimer,
-        //                         };
-        //                         question_old_data_new[ics] = question_arr;
-        //                     }
-        //                 }
-        //             }
-        //             QuestionSecond = 0;
-        //         }
-        //         // set question duration in second end
-        //         // send ajax to get data
-        //         $.ajax({
-        //             url: BASE_URL + "/next-question",
-        //             type: "POST",
-        //             data: {
-        //                 _token: $('meta[name="csrf-token"]').attr("content"),
-        //                 currentid: currentid,
-        //                 examid: examid,
-        //                 examaction: examaction,
-        //                 questionNo: questionNo,
-        //                 language: language,
-        //                 wrong_ans: wrong_question_old_data_new,
-        //                 attempt_ans: attempt_ans,
-        //                 // Get Question Position
-        //                 question_position: question_position,
-        //             },
-        //             success: function (response) {
-        //                 $("#nextquestionarea").html(response);
-        //                 if(question_old_data_new.length != 0){
-        //                     for(var icn = 0; icn < question_old_data_new.length; icn++){
-        //                         var question_id_check = $("#nextquestionarea .checkanswer").attr("question-id");
-        //                         if(question_old_data_new[icn]["question_id"] == question_id_check){
-        //                             var answer_ren = question_old_data_new[icn]["answer"];
-        //                             $("#nextquestionarea .checkanswer[value=" + answer_ren + "]").prop("checked", true);
-        //                             $("#nextquestion").prop("disabled", false);
-        //                             if($("#nextquestion").length == 0){
-        //                                 $("#submitquestion").prop("disabled",false);
-        //                                 $("#submitquestion").show();
-        //                             }
-        //                         }
-        //                     }
-        //                 }
-        //                 //updateMathHtml();
-        //                 //updateMathHtmlById("nextquestionarea");
-        //                 MathJax.Hub.Queue(["Typeset", MathJax.Hub]);
-        //                 $("#cover-spin").hide();
-        //             },
-        //         });
-        //     }
-        // );
 
         //USE : userlist in click on unlock button then open Pop up
         $(document).on("click", ".changeUserPassword", function () {
@@ -4805,6 +4210,10 @@ Validation = {
             },
             submitHandler: function (form){
                 $("#cover-spin").show();
+                // If selected any creator user then we will change group admin creator.
+                if($('#group_creator_user').val() != "" &&  $('#group_creator_user').val() !== undefined){
+                    GroupAdminId = $('#group_creator_user').val();
+                }
                 if($("#dreamschat_group_id").length != 0 && $("#dreamschat_group_id").val() != ""){
                     var groupId = $("#dreamschat_group_id").val();
                     // Check Group Exists or not
@@ -5556,34 +4965,6 @@ Validation = {
                 }
             },
         });
-
-        // //Edit Teacher Subject Assign
-        // $("#editAssignForm").validate({
-        //     ignore: [],
-        //     rules: {
-        //         teacher_id: {
-        //             required: true,
-        //         },
-        //         class_id: {
-        //             required: true,
-        //         },
-        //     },
-        //     messages: {
-        //         teacher_id: {
-        //             required: VALIDATIONS.PLEASE_SELECT_TEACHER,
-        //         },
-        //         class_id: {
-        //             required: VALIDATIONS.PLEASE_SELECT_GRADE,
-        //         },
-        //     },
-        //     errorPlacement: function (error, element) {
-        //         if (element.attr("name") == "status") {
-        //             error.appendTo("#error-status");
-        //         } else {
-        //             error.insertAfter(element);
-        //         }
-        //     },
-        // });
 
         //Add School Form Validation
         $("#addSchoolsForm").validate({
@@ -6724,21 +6105,6 @@ Validation = {
             ignore: [],
             debug: false,
             rules: {
-                // grade_id: {
-                //     required: true,
-                // },
-                // subject_id: {
-                //     required: true,
-                // },
-                // strand_id:{
-                //     required: true,
-                // },
-                // learning_unit_id:{
-                //     required: true,
-                // },
-                // learning_objective_id:{
-                //     required:true,
-                // },
                 question_en: {
                     required: function () {
                         CKEDITOR.instances.question_en.updateElement();
@@ -6769,18 +6135,6 @@ Validation = {
                         CKEDITOR.instances.answer2_en.updateElement();
                     },
                 },
-                // answer3_en: {
-                //     required: function()
-                //     {
-                //      CKEDITOR.instances.answer3_en.updateElement();
-                //     }
-                // },
-                // answer4_en: {
-                //     required: function()
-                //     {
-                //      CKEDITOR.instances.answer4_en.updateElement();
-                //     }
-                // },
                 answer1_ch: {
                     required: function () {
                         CKEDITOR.instances.answer1_ch.updateElement();
@@ -6791,44 +6145,11 @@ Validation = {
                         CKEDITOR.instances.answer2_ch.updateElement();
                     },
                 },
-                // answer3_ch: {
-                //     required: function()
-                //     {
-                //      CKEDITOR.instances.answer3_ch.updateElement();
-                //     }
-                // },
-                // answer4_ch: {
-                //     required: function()
-                //     {
-                //      CKEDITOR.instances.answer4_ch.updateElement();
-                //     }
-                // },
-                // question_type: {
-                //     required: true,
-                // },
-                // dificulaty_level: {
-                //     required: true,
-                // },
                 naming_structure_code: {
                     required: true,
                 },
             },
             messages: {
-                // grade_id: {
-                //     required: "Please select Grade.",
-                // },
-                // subject_id: {
-                //     required: "Please select Subject.",
-                // },
-                // strand_id:{
-                //     required: "Please select Strand.",
-                // },
-                // learning_unit_id:{
-                //     required: "Please select Learning Unit.",
-                // },
-                // learning_objective_id:{
-                //     required:"Please select Learning Objective.",
-                // },
                 question_en: {
                     required: VALIDATIONS.PLEASE_ENTER_QUESTION_OF_ENGLISH,
                 },
@@ -6847,30 +6168,12 @@ Validation = {
                 answer2_en: {
                     required: VALIDATIONS.PLEASE_ENTER_SECOND_ANSWER_OF_ENGLISH,
                 },
-                // answer3_en: {
-                //     required:  "Please Enter Third Answer of English.",
-                // },
-                // answer4_en: {
-                //     required:  "Please Enter Fourth Answer of English.",
-                // },
                 answer1_ch: {
                     required: VALIDATIONS.PLEASE_ENTER_FIRST_ANSWER_OF_CHINESE,
                 },
                 answer2_ch: {
                     required: VALIDATIONS.PLEASE_ENTER_SECOND_ANSWER_OF_CHINESE,
                 },
-                // answer3_ch: {
-                //     required: "Please Enter Third Answer of Chinese.",
-                // },
-                // answer4_ch: {
-                //     required: "Please Enter Fourth Answer of Chinese.",
-                // },
-                // question_type: {
-                //     required: "Please Select Question Type.",
-                // },
-                // dificulaty_level: {
-                //     required: "Please Enter Difficulty Level.",
-                // },
                 naming_structure_code: {
                     required: VALIDATIONS.PLEASE_ENTER_NAMING_STRUCTURE_CODE,
                 },
@@ -6889,21 +6192,6 @@ Validation = {
             ignore: [],
             debug: false,
             rules: {
-                // grade_id: {
-                //     required: true,
-                // },
-                // subject_id: {
-                //     required: true,
-                // },
-                // strand_id:{
-                //     required: true,
-                // },
-                // learning_unit_id:{
-                //     required: true,
-                // },
-                // learning_objective_id:{
-                //     required:true,
-                // },
                 question_en: {
                     required: function () {
                         CKEDITOR.instances.question_en.updateElement();
@@ -6934,17 +6222,6 @@ Validation = {
                         CKEDITOR.instances.answer2_en.updateElement();
                     },
                 },
-                // answer3_en: {
-                //     required: function(){
-                //      CKEDITOR.instances.answer3_en.updateElement();
-                //     }
-                // },
-                // answer4_en: {
-                //     required: function()
-                //     {
-                //      CKEDITOR.instances.answer4_en.updateElement();
-                //     }
-                // },
                 answer1_ch: {
                     required: function () {
                         CKEDITOR.instances.answer1_ch.updateElement();
@@ -6955,44 +6232,11 @@ Validation = {
                         CKEDITOR.instances.answer2_ch.updateElement();
                     },
                 },
-                // answer3_ch: {
-                //     required: function()
-                //     {
-                //      CKEDITOR.instances.answer3_ch.updateElement();
-                //     }
-                // },
-                // answer4_ch: {
-                //     required: function()
-                //     {
-                //      CKEDITOR.instances.answer4_ch.updateElement();
-                //     }
-                // },
-                // question_type: {
-                //     required: true,
-                // },
-                // dificulaty_level: {
-                //     required: true,
-                // },
                 naming_structure_code: {
                     required: true,
                 },
             },
             messages: {
-                // grade_id: {
-                //     required: "Please select Grade.",
-                // },
-                // subject_id: {
-                //     required: "Please select Subject.",
-                // },
-                // strand_id:{
-                //     required: "Please select Strand.",
-                // },
-                // learning_unit_id:{
-                //     required: "Please select Learning Unit.",
-                // },
-                // learning_objective_id:{
-                //     required:"Please select Learning Objective.",
-                // },
                 question_en: {
                     required: VALIDATIONS.PLEASE_ENTER_QUESTION_OF_ENGLISH,
                 },
@@ -7011,30 +6255,12 @@ Validation = {
                 answer2_en: {
                     required: VALIDATIONS.PLEASE_ENTER_SECOND_ANSWER_OF_ENGLISH,
                 },
-                // answer3_en: {
-                //     required:  "Please Enter Third Answer of English.",
-                // },
-                // answer4_en: {
-                //     required:  "Please Enter Fourth Answer of English.",
-                // },
                 answer1_ch: {
                     required: VALIDATIONS.PLEASE_ENTER_FIRST_ANSWER_OF_CHINESE,
                 },
                 answer2_ch: {
                     required: VALIDATIONS.PLEASE_ENTER_SECOND_ANSWER_OF_CHINESE,
                 },
-                // answer3_ch: {
-                //     required: "Please Enter Third Answer of Chinese.",
-                // },
-                // answer4_ch: {
-                //     required: "Please Enter Fourth Answer of Chinese.",
-                // },
-                // question_type: {
-                //     required: "Please Select Question Type.",
-                // },
-                // dificulaty_level: {
-                //     required: "Please Enter Difficulty Level.",
-                // },
                 naming_structure_code: {
                     required: VALIDATIONS.PLEASE_ENTER_NAMING_STRUCTURE_CODE,
                 },
@@ -7307,48 +6533,6 @@ Validation = {
                 }
             },
         });
-
-        //update teacher profile validation
-        // $("#updateTeacherProfileForm").validate({
-        //     rules: {
-        //         name_en: {
-        //             required: true,
-        //         },
-        //         name_ch: {
-        //             required: true,
-        //         },
-        //         mobile_no: {
-        //             number: true,
-        //             minlength: 8,
-        //         },
-        //         profile_photo: {
-        //             extension: "png|jpe?g|gif",
-        //         },
-        //     },
-        //     messages: {
-        //         name_en: {
-        //             required: VALIDATIONS.PLEASE_ENTER_ENGLISH_NAME,
-        //         },
-        //         name_ch: {
-        //             required: VALIDATIONS.PLEASE_ENTER_CHINESE_NAME,
-        //         },
-        //         mobile_no: {
-        //             number: VALIDATIONS.PLEASE_ENTER_ONLY_NUMERIC_VALUE,
-        //             minlength: VALIDATIONS.PLEASE_ENTER_MINIMUM_EIGHT_DIGIT,
-        //         },
-        //         profile_photo: {
-        //             extension:
-        //                 VALIDATIONS.PLEASE_UPLOAD_ONLY_JPEG_JPG_OR_PNG_FILES,
-        //         },
-        //     },
-        //     errorPlacement: function (error, element) {
-        //         if (element.attr("name") == "status") {
-        //             error.appendTo("#error-status");
-        //         } else {
-        //             error.insertAfter(element);
-        //         }
-        //     },
-        // });
 
         //Add Filteration on grade from teacher panel->myclass  Form Validation
         $("#displayStudentProfileFilterForm").validate({

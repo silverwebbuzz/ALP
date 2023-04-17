@@ -36,9 +36,9 @@ class PeerGroupController extends Controller
     public function __construct(){
         $this->middleware('auth');
         $this->middleware('preventBackHistory');
-        $this->TeacherGradesClassService = new TeacherGradesClassService;
-        $this->AIApiService = new AIApiService();
-        $this->CommonController = new CommonController();
+        $this->TeacherGradesClassService    = new TeacherGradesClassService;
+        $this->AIApiService                 = new AIApiService();
+        $this->CommonController             = new CommonController();
     }
 
     /**
@@ -61,8 +61,8 @@ class PeerGroupController extends Controller
                             ->orderBy(cn::PEER_GROUP_ID_COL,'DESC')
                             ->paginate($items);
             $subjectsIds =  SubjectSchoolMappings::where([
-                                cn::SUBJECT_MAPPING_CURRICULUM_YEAR_ID_COL => $this->GetCurriculumYear(),
-                                cn::CLASS_SUBJECT_MAPPING_SCHOOL_ID_COL => Auth::user()->{cn::USERS_SCHOOL_ID_COL}
+                                cn::SUBJECT_MAPPING_CURRICULUM_YEAR_ID_COL  => $this->GetCurriculumYear(),
+                                cn::CLASS_SUBJECT_MAPPING_SCHOOL_ID_COL     => Auth::user()->{cn::USERS_SCHOOL_ID_COL}
                             ])
                             ->pluck(cn::CLASS_SUBJECT_MAPPING_SUBJECT_ID_COL)
                             ->unique()
@@ -91,25 +91,23 @@ class PeerGroupController extends Controller
             // Find the subjects assigned to this teacher
             $SubjectList = [];
             $TeachersClassSubjectAssign = TeachersClassSubjectAssign::where([
-                                            cn::TEACHER_CLASS_SUBJECT_CURRICULUM_YEAR_ID_COL => $this->GetCurriculumYear(),
-                                            cn::TEACHER_CLASS_SUBJECT_TEACHER_ID_COL => Auth()->user()->{cn::USERS_ID_COL}
+                                            cn::TEACHER_CLASS_SUBJECT_CURRICULUM_YEAR_ID_COL    => $this->GetCurriculumYear(),
+                                            cn::TEACHER_CLASS_SUBJECT_TEACHER_ID_COL            => Auth::user()->{cn::USERS_ID_COL}
                                         ])
                                         ->pluck(cn::TEACHER_CLASS_SUBJECT_SUBJECT_ID_COL)
                                         ->toArray();
             if(isset($TeachersClassSubjectAssign) && !empty($TeachersClassSubjectAssign)){
-                $mergeSubjects =  implode(',',$TeachersClassSubjectAssign);
-                $subjects = explode(',',$mergeSubjects);
+                $mergeSubjects  = implode(',',$TeachersClassSubjectAssign);
+                $subjects       = explode(',',$mergeSubjects);
                 $teacherSubject = array_unique($subjects);
                 if(!empty($teacherSubject)){
                     $SubjectList = Subjects::whereIn(cn::SUBJECTS_ID_COL,$teacherSubject)->get();
                 }
             }
-            
         }
         
         if(isset($request->filter)){
-            $Query = PeerGroup::with(['subject','Members'])
-                        ->where(cn::PEER_GROUP_CURRICULUM_YEAR_ID_COL,$this->GetCurriculumYear());
+            $Query = PeerGroup::with(['subject','Members'])->where(cn::PEER_GROUP_CURRICULUM_YEAR_ID_COL,$this->GetCurriculumYear());
             if($request->searchName){
                 $Query->where(cn::PEER_GROUP_GROUP_NAME_COL,'like','%'.$request->searchName.'%');
             }
@@ -145,14 +143,19 @@ class PeerGroupController extends Controller
             return  redirect(Helper::redirectRoleBasedDashboard(Auth::user()->{cn::USERS_ID_COL}));
         }
         $schoolId = Auth::user()->{cn::USERS_SCHOOL_ID_COL};
-        $teacherId = $schoolId = Auth::user()->{cn::USERS_ID_COL};
+        $teacherId = Auth::user()->{cn::USERS_ID_COL};
         $gradeList = '';
         $SubjectList = '';
         $classTypeOptions = '';
+        $CreatorUserList = array();
+        $CreatorUserList =  User::whereIn(cn::USERS_ROLE_ID_COL,[cn::PRINCIPAL_ROLE_ID,cn::PANEL_HEAD_ROLE_ID,cn::CO_ORDINATOR_ROLE_ID,cn::TEACHER_ROLE_ID])
+                            ->whereNotIn(cn::USERS_ID_COL,[Auth::user()->{cn::USERS_ID_COL}])
+                            ->where(cn::USERS_SCHOOL_ID_COL,$schoolId)
+                            ->get();
         if($this->isTeacherLogin()){
             $gradeid =  TeachersClassSubjectAssign::where([
                             cn::TEACHER_CLASS_SUBJECT_CURRICULUM_YEAR_ID_COL => $this->GetCurriculumYear(),
-                            cn::TEACHER_CLASS_SUBJECT_TEACHER_ID_COL => Auth()->user()->{cn::USERS_ID_COL}
+                            cn::TEACHER_CLASS_SUBJECT_TEACHER_ID_COL => Auth::user()->{cn::USERS_ID_COL}
                         ])
                         ->pluck(cn::TEACHER_CLASS_SUBJECT_CLASS_ID_COL)
                         ->toArray();
@@ -162,7 +165,7 @@ class PeerGroupController extends Controller
             // Get all assigned class
             $gradeClass = TeachersClassSubjectAssign::where([
                             cn::TEACHER_CLASS_SUBJECT_CURRICULUM_YEAR_ID_COL => $this->GetCurriculumYear(),
-                            cn::TEACHER_CLASS_SUBJECT_TEACHER_ID_COL => Auth()->user()->{cn::USERS_ID_COL}
+                            cn::TEACHER_CLASS_SUBJECT_TEACHER_ID_COL => Auth::user()->{cn::USERS_ID_COL}
                         ])
                         ->pluck(cn::TEACHER_CLASS_SUBJECT_CLASS_NAME_ID_COL)
                         ->toArray();
@@ -191,7 +194,7 @@ class PeerGroupController extends Controller
             $SubjectList = [];
             $TeachersClassSubjectAssign = TeachersClassSubjectAssign::where([
                                             cn::TEACHER_CLASS_SUBJECT_CURRICULUM_YEAR_ID_COL => $this->GetCurriculumYear(),
-                                            cn::TEACHER_CLASS_SUBJECT_TEACHER_ID_COL => Auth()->user()->{cn::USERS_ID_COL}
+                                            cn::TEACHER_CLASS_SUBJECT_TEACHER_ID_COL => Auth::user()->{cn::USERS_ID_COL}
                                         ])
                                         ->pluck('subject_id')
                                         ->toArray();
@@ -204,6 +207,7 @@ class PeerGroupController extends Controller
                 }
             }
         }
+
         if($this->isSchoolLogin() || $this->isPrincipalLogin() || $this->isPanelHeadLogin() || $this->isCoOrdinatorLogin()){
             $userData = User::with('classes')
                         ->where([cn::USERS_ROLE_ID_COL => cn::STUDENT_ROLE_ID,cn::USERS_SCHOOL_ID_COL => Auth::user()->{cn::USERS_SCHOOL_ID_COL}]);
@@ -240,11 +244,11 @@ class PeerGroupController extends Controller
                 $SubjectList = Subjects::whereIn(cn::SUBJECTS_ID_COL,$subjectIds)->get();
             }
         }
-        return view('backend.peer_group.peer_group_add',compact('gradeList','classTypeOptions','SubjectList'));
+        return view('backend.peer_group.peer_group_add',compact('gradeList','classTypeOptions','SubjectList','CreatorUserList'));
     }
 
     /**
-     * USE : Store peer group informations
+     * USE : Store peer group information
      */
     public function store(Request $request){
         try{
@@ -261,27 +265,24 @@ class PeerGroupController extends Controller
 
             // if the validation is true then store process is start
             $PeerGroup = PeerGroup::Create([
-                            cn::PEER_GROUP_CURRICULUM_YEAR_ID_COL => $this->GetCurriculumYear(),
-                            cn::PEER_GROUP_DREAMSCHAT_GROUP_ID => $request->dreamschat_group_id,
-                            cn::PEER_GROUP_SCHOOL_ID_COL => $schoolId,
-                            cn::PEER_GROUP_GROUP_NAME_COL => $request->group_name,
-                            cn::PEER_GROUP_CREATED_BY_USER_ID_COL => Auth::user()->{cn::USERS_ID_COL},
-                            // 'subject_id' => $request->peer_group_subject_id,
-                            cn::PEER_GROUP_SUBJECT_ID_COL => 1,
-                            cn::PEER_GROUP_STATUS_COL => ($request->status == 'active') ? 1 : 0
+                            cn::PEER_GROUP_CURRICULUM_YEAR_ID_COL   => $this->GetCurriculumYear(),
+                            cn::PEER_GROUP_DREAMSCHAT_GROUP_ID      => $request->dreamschat_group_id,
+                            cn::PEER_GROUP_SCHOOL_ID_COL            => $schoolId,
+                            cn::PEER_GROUP_GROUP_NAME_COL           => $request->group_name,
+                            cn::PEER_GROUP_CREATED_BY_USER_ID_COL   => (isset($request->group_creator_user) && !empty($request->group_creator_user)) ? $request->group_creator_user : Auth::user()->{cn::USERS_ID_COL},
+                            cn::PEER_GROUP_SUBJECT_ID_COL           => 1,
+                            cn::PEER_GROUP_STATUS_COL               => ($request->status == 'active') ? 1 : 0
                         ]);
             if($PeerGroup){
-                // Assign default school user in peer group
-                
                 // Store data into peer group member mapping to selected members
                 if(isset($request->memberIdsList) && !empty($request->memberIdsList)){
                     $peerGroupMember = [];
-                    $memberIds = array_unique(explode(',',$request->memberIdsList));
+                    $memberIds       = array_unique(explode(',',$request->memberIdsList));
                     foreach($memberIds as $memberid){
                         $peerGroupMember[] = [
-                            cn::PEER_GROUP_MEMBERS_CURRICULUM_YEAR_ID_COL => $this->GetCurriculumYear(),
-                            cn::PEER_GROUP_MEMBERS_PEER_GROUP_ID_COL => $PeerGroup->{cn::PEER_GROUP_ID_COL},
-                            cn::PEER_GROUP_MEMBERS_MEMBER_ID_COL => $memberid
+                            cn::PEER_GROUP_MEMBERS_CURRICULUM_YEAR_ID_COL   => $this->GetCurriculumYear(),
+                            cn::PEER_GROUP_MEMBERS_PEER_GROUP_ID_COL        => $PeerGroup->{cn::PEER_GROUP_ID_COL},
+                            cn::PEER_GROUP_MEMBERS_MEMBER_ID_COL            => $memberid
                         ];
                     }
                     if(!empty($peerGroupMember)){
@@ -321,7 +322,7 @@ class PeerGroupController extends Controller
             if($this->isTeacherLogin()){
                 $gradesList = TeachersClassSubjectAssign::where([
                                     cn::TEACHER_CLASS_SUBJECT_CURRICULUM_YEAR_ID_COL => $this->GetCurriculumYear(),
-                                    cn::TEACHER_CLASS_SUBJECT_TEACHER_ID_COL => Auth()->user()->{cn::USERS_ID_COL}
+                                    cn::TEACHER_CLASS_SUBJECT_TEACHER_ID_COL => Auth::user()->{cn::USERS_ID_COL}
                                 ])
                                 ->with('getClass')
                                 ->get()
@@ -329,7 +330,7 @@ class PeerGroupController extends Controller
                 
                 $gradeid = TeachersClassSubjectAssign::where([
                             cn::TEACHER_CLASS_SUBJECT_CURRICULUM_YEAR_ID_COL => $this->GetCurriculumYear(),
-                            cn::TEACHER_CLASS_SUBJECT_TEACHER_ID_COL => Auth()->user()->{cn::USERS_ID_COL}
+                            cn::TEACHER_CLASS_SUBJECT_TEACHER_ID_COL => Auth::user()->{cn::USERS_ID_COL}
                         ])
                         ->pluck(cn::TEACHER_CLASS_SUBJECT_CLASS_ID_COL)
                         ->toArray();
@@ -338,7 +339,7 @@ class PeerGroupController extends Controller
                 // Get all assigned class
                 $gradeClass = TeachersClassSubjectAssign::where([
                                 cn::TEACHER_CLASS_SUBJECT_CURRICULUM_YEAR_ID_COL => $this->GetCurriculumYear(),
-                                cn::TEACHER_CLASS_SUBJECT_TEACHER_ID_COL => Auth()->user()->{cn::USERS_ID_COL}
+                                cn::TEACHER_CLASS_SUBJECT_TEACHER_ID_COL => Auth::user()->{cn::USERS_ID_COL}
                             ])
                             ->pluck(cn::TEACHER_CLASS_SUBJECT_CLASS_NAME_ID_COL)
                             ->toArray();
@@ -364,7 +365,7 @@ class PeerGroupController extends Controller
                 $SubjectList = [];
                 $TeachersClassSubjectAssign = TeachersClassSubjectAssign::where([
                                                 cn::TEACHER_CLASS_SUBJECT_CURRICULUM_YEAR_ID_COL => $this->GetCurriculumYear(),
-                                                cn::TEACHER_CLASS_SUBJECT_TEACHER_ID_COL => Auth()->user()->{cn::USERS_ID_COL}
+                                                cn::TEACHER_CLASS_SUBJECT_TEACHER_ID_COL => Auth::user()->{cn::USERS_ID_COL}
                                             ])->pluck('subject_id')->toArray();
                 if(isset($TeachersClassSubjectAssign) && !empty($TeachersClassSubjectAssign)){
                     $mergeSubjects =  implode(',',$TeachersClassSubjectAssign);
@@ -516,13 +517,6 @@ class PeerGroupController extends Controller
         $studentListHtml = "";
         if(isset($request->gradeId) && isset($request->classIds)){
             // Find the student list
-            // $studentList = User::where(cn::USERS_GRADE_ID_COL,$request->gradeId)
-            //                 ->whereIn(cn::USERS_CLASS_ID_COL,$request->classIds)
-            //                 ->where([
-            //                     cn::USERS_ROLE_ID_COL=>cn::STUDENT_ROLE_ID
-            //                 ])
-            //                 ->where(cn::USERS_GRADE_ID_COL,'<>','')
-            //                 ->get();
             $studentList = User::where([
                                 cn::USERS_ROLE_ID_COL=>cn::STUDENT_ROLE_ID
                             ])
@@ -574,20 +568,20 @@ class PeerGroupController extends Controller
         if($this->isTeacherLogin()){
             $gradesList = TeachersClassSubjectAssign::where([
                             cn::TEACHER_CLASS_SUBJECT_CURRICULUM_YEAR_ID_COL => $this->GetCurriculumYear(),
-                            cn::TEACHER_CLASS_SUBJECT_TEACHER_ID_COL => Auth()->user()->{cn::USERS_ID_COL}
+                            cn::TEACHER_CLASS_SUBJECT_TEACHER_ID_COL => Auth::user()->{cn::USERS_ID_COL}
                         ])
                         ->with('getClass')
                         ->get()
                         ->unique(cn::TEACHER_CLASS_SUBJECT_CLASS_ID_COL);
             $gradeid =  TeachersClassSubjectAssign::where([
                             cn::TEACHER_CLASS_SUBJECT_CURRICULUM_YEAR_ID_COL => $this->GetCurriculumYear(),
-                            cn::TEACHER_CLASS_SUBJECT_TEACHER_ID_COL => Auth()->user()->{cn::USERS_ID_COL}
+                            cn::TEACHER_CLASS_SUBJECT_TEACHER_ID_COL => Auth::user()->{cn::USERS_ID_COL}
                         ])
                         ->pluck(cn::TEACHER_CLASS_SUBJECT_CLASS_ID_COL)
                         ->toArray();
             $gradeClass = TeachersClassSubjectAssign::where([
                             cn::TEACHER_CLASS_SUBJECT_CURRICULUM_YEAR_ID_COL => $this->GetCurriculumYear(),
-                            cn::TEACHER_CLASS_SUBJECT_TEACHER_ID_COL => Auth()->user()->{cn::USERS_ID_COL}
+                            cn::TEACHER_CLASS_SUBJECT_TEACHER_ID_COL => Auth::user()->{cn::USERS_ID_COL}
                         ])
                         ->pluck(cn::TEACHER_CLASS_SUBJECT_CLASS_NAME_ID_COL)
                         ->toArray();
@@ -684,19 +678,10 @@ class PeerGroupController extends Controller
             }
             
             if(isset($request->student_grade_id) && !empty($request->student_grade_id) && $request->student_grade_id=='all'){
-                // $studentIdsArray = CurriculumYearStudentMappings::where([
-                //                         cn::CURRICULUM_YEAR_STUDENT_MAPPING_CURRICULUM_YEAR_ID_COL => $this->GetCurriculumYear(),
-                //                         cn::CURRICULUM_YEAR_STUDENT_MAPPING_SCHOOL_ID_COL => Auth::user()->{cn::USERS_SCHOOL_ID_COL}
-                //                     ])
-                //                     //->where(cn::CURRICULUM_YEAR_STUDENT_MAPPING_GRADE_ID_COL,$request->student_grade_id)
-                //                     ->whereIn(cn::CURRICULUM_YEAR_STUDENT_MAPPING_CLASS_ID_COL,$gradeClassId)
-                //                     ->pluck(cn::CURRICULUM_YEAR_STUDENT_MAPPING_USER_ID_COL)
-                //                     ->toArray();
                 $studentIdsArray = $this->curriculum_year_mapping_student_ids('','',Auth::user()->{cn::USERS_SCHOOL_ID_COL});
                 if(!empty($studentIdsArray)){
                     $Query->whereIn('id',$studentIdsArray);
                 }
-                // //$Query->whereIn(cn::USERS_CLASS_ID_COL,$gradeClassId);
             }
 
             if(isset($request->student_grade_id) && !empty($request->student_grade_id) && $request->student_grade_id!='all'){
@@ -705,27 +690,19 @@ class PeerGroupController extends Controller
             }
 
             if(isset($request->class_type_id) && !empty($request->class_type_id)){
-                // $studentIdsArray = CurriculumYearStudentMappings::where([
-                //                     cn::CURRICULUM_YEAR_STUDENT_MAPPING_CURRICULUM_YEAR_ID_COL => $this->GetCurriculumYear(),
-                //                     cn::CURRICULUM_YEAR_STUDENT_MAPPING_SCHOOL_ID_COL => Auth::user()->{cn::USERS_SCHOOL_ID_COL}
-                //                 ])
-                //                 ->whereIn(cn::CURRICULUM_YEAR_STUDENT_MAPPING_CLASS_ID_COL,$request->class_type_id)
-                //                 ->pluck(cn::CURRICULUM_YEAR_STUDENT_MAPPING_USER_ID_COL)
-                //                 ->toArray();
                 $studentIdsArray = $this->curriculum_year_mapping_student_ids('',$request->class_type_id,Auth::user()->{cn::USERS_SCHOOL_ID_COL});
                 if(!empty($studentIdsArray)){
                     $Query->whereIn('id',$studentIdsArray);
                 }
-                //$Query->whereIn(cn::USERS_CLASS_ID_COL,$request->class_type_id);
             }
             $studentList = $Query->orderBy(cn::USERS_ID_COL,'DESC')->get();
-           
-            $studentIdsArray = [];            
+
+            $studentIdsArray = [];
             $studentIdsArray = $this->curriculum_year_mapping_student_ids($gradeid,'',Auth::user()->{cn::USERS_SCHOOL_ID_COL});
             $countStudentData = User::whereIn('id',$studentIdsArray)
                                 ->where([
                                     cn::USERS_SCHOOL_ID_COL => Auth::user()->{cn::USERS_SCHOOL_ID_COL},
-                                    cn::USERS_ROLE_ID_COL => cn::STUDENT_ROLE_ID
+                                    cn::USERS_ROLE_ID_COL   => cn::STUDENT_ROLE_ID
                                 ])
                                 ->where(cn::USERS_GRADE_ID_COL,'<>','')
                                 ->count();
@@ -745,20 +722,20 @@ class PeerGroupController extends Controller
         if($this->isTeacherLogin()){
             $gradesList = TeachersClassSubjectAssign::where([
                             cn::TEACHER_CLASS_SUBJECT_CURRICULUM_YEAR_ID_COL => $this->GetCurriculumYear(),
-                            cn::TEACHER_CLASS_SUBJECT_TEACHER_ID_COL => Auth()->user()->{cn::USERS_ID_COL}
+                            cn::TEACHER_CLASS_SUBJECT_TEACHER_ID_COL => Auth::user()->{cn::USERS_ID_COL}
                         ])
                         ->with('getClass')
                         ->get()
                         ->unique(cn::TEACHER_CLASS_SUBJECT_CLASS_ID_COL);
             $gradeid =  TeachersClassSubjectAssign::where([
                             cn::TEACHER_CLASS_SUBJECT_CURRICULUM_YEAR_ID_COL => $this->GetCurriculumYear(),
-                            cn::TEACHER_CLASS_SUBJECT_TEACHER_ID_COL => Auth()->user()->{cn::USERS_ID_COL}
+                            cn::TEACHER_CLASS_SUBJECT_TEACHER_ID_COL => Auth::user()->{cn::USERS_ID_COL}
                         ])
                         ->pluck(cn::TEACHER_CLASS_SUBJECT_CLASS_ID_COL)
                         ->toArray();
             $gradeClass = TeachersClassSubjectAssign::where([
                             cn::TEACHER_CLASS_SUBJECT_CURRICULUM_YEAR_ID_COL => $this->GetCurriculumYear(),
-                            cn::TEACHER_CLASS_SUBJECT_TEACHER_ID_COL => Auth()->user()->{cn::USERS_ID_COL}
+                            cn::TEACHER_CLASS_SUBJECT_TEACHER_ID_COL => Auth::user()->{cn::USERS_ID_COL}
                         ])
                         ->pluck(cn::TEACHER_CLASS_SUBJECT_CLASS_NAME_ID_COL)
                         ->toArray();
@@ -934,6 +911,7 @@ class PeerGroupController extends Controller
     public function createViewAutoPeerGroup(){
         $GradeClassData = collect();
         $groupType = $this->getPeerGroupType();
+        $CreatorUserList = array();
         if($this->isTeacherLogin()){
             $schoolId = $this->isTeacherLogin();
             // Get Teachers Grades
@@ -947,7 +925,7 @@ class PeerGroupController extends Controller
             // Get Peer Group List
             $PeerGroupList = PeerGroup::where([
                                 cn::PEER_GROUP_CURRICULUM_YEAR_ID_COL => $this->GetCurriculumYear(),
-                                cn::PEER_GROUP_CREATED_BY_USER_ID_COL => Auth()->user()->{cn::USERS_ID_COL},
+                                cn::PEER_GROUP_CREATED_BY_USER_ID_COL => Auth::user()->{cn::USERS_ID_COL},
                                 cn::PEER_GROUP_STATUS_COL => '1'
                             ])->get();
 
@@ -958,6 +936,11 @@ class PeerGroupController extends Controller
         }
 
         if($this->isSchoolLogin() || $this->isPrincipalLogin() || $this->isPanelHeadLogin() || $this->isCoOrdinatorLogin()){
+            $CreatorUserList =  User::whereIn(cn::USERS_ROLE_ID_COL,[cn::PRINCIPAL_ROLE_ID,cn::PANEL_HEAD_ROLE_ID,cn::CO_ORDINATOR_ROLE_ID,cn::TEACHER_ROLE_ID])
+                            ->whereNotIn(cn::USERS_ID_COL,[Auth::user()->{cn::USERS_ID_COL}])
+                            ->where(cn::USERS_SCHOOL_ID_COL,Auth::user()->{cn::USERS_SCHOOL_ID_COL})
+                            ->get();
+            
             $schoolId = Auth::user()->{cn::USERS_SCHOOL_ID_COL};
             $GradeMapping = GradeSchoolMappings::with('grades')
                             ->where(cn::GRADES_MAPPING_CURRICULUM_YEAR_ID_COL,$this->GetCurriculumYear())
@@ -985,7 +968,7 @@ class PeerGroupController extends Controller
             $PeerGroupList = PeerGroup::where([cn::PEER_GROUP_SCHOOL_ID_COL => $schoolId, cn::PEER_GROUP_STATUS_COL => '1'])->get();
         }
 
-        return view("backend.peer_group.auto_peer_group",compact('GradeClassData','StudentList','groupType'));
+        return view("backend.peer_group.auto_peer_group",compact('GradeClassData','StudentList','groupType','CreatorUserList'));
     }
 
     /**
@@ -995,19 +978,22 @@ class PeerGroupController extends Controller
         $coded_students_list = [];
         $getFormData  = $request->all();
         $formData = [];
+        parse_str($getFormData['formData'], $formData);
+
         if($this->isTeacherLogin() || $this->isSchoolLogin() || $this->isPrincipalLogin() || $this->isPanelHeadLogin() || $this->isCoOrdinatorLogin()){
             $schoolId = Auth::user()->{cn::USERS_SCHOOL_ID_COL};
         }
-        $requestPayloadUser = new Request();
-        $requestPayloadUser['uid'] = Auth::user()->{cn::USERS_ID_COL};
-        $AdminUserId = array();
-        $AdminUserData = $this->CommonController->GetUserInfo($requestPayloadUser);
+        $requestPayloadUser         = new Request();
+        $GroupCreatorUserId         = (isset($formData['group_creator_user']) && !empty($formData['group_creator_user'])) ? $formData['group_creator_user'] : Auth::user()->{cn::USERS_ID_COL};
+        $requestPayloadUser['uid']  = $GroupCreatorUserId;
+        $AdminUserId    = array();
+        $AdminUserData  = $this->CommonController->GetUserInfo($requestPayloadUser);
         if(isset($AdminUserData) && !empty($AdminUserData)){
             $AdminUserId = $AdminUserData->getData()->data;
         }
-        parse_str($getFormData['formData'], $formData);
+        //parse_str($getFormData['formData'], $formData);
         $oldPrefixGroupName =   PeerGroup::where([
-                                    cn::PEER_GROUP_SCHOOL_ID_COL => $schoolId,
+                                    cn::PEER_GROUP_SCHOOL_ID_COL    => $schoolId,
                                     cn::PEER_GROUP_GROUP_PREFIX_COL => trim($formData['prefix_group_name'])
                                 ])
                                 ->get()
@@ -1016,16 +1002,16 @@ class PeerGroupController extends Controller
             return $this->sendError('languages.group_prefix_already_exits', 422);
             exit;
         }
-        $userData = User::whereIn('id',$formData['studentIds'])->get();
+        $userData = User::whereIn(cn::USERS_ID_COL,$formData['studentIds'])->get();
         foreach($userData as $user){
             $coded_students_list[] = [$user->id, (float)$user->overall_ability];
         }
         $requestPayload = new Request();
-        $requestPayload = $requestPayload->replace([
-            'coded_students_list' => $coded_students_list,
-            'groups' => (int)$formData['no_of_group'],
-            'method' => $formData['peer_group_type']
-        ]);
+        $requestPayload =   $requestPayload->replace([
+                                'coded_students_list'   => $coded_students_list,
+                                'groups'                => (int)$formData['no_of_group'],
+                                'method'                => $formData['peer_group_type']
+                            ]);
 
         // Call to AI API from AI Server
         $GroupList = $this->AIApiService->Create_Auto_Peer_Groups($requestPayload);
@@ -1044,7 +1030,7 @@ class PeerGroupController extends Controller
                     cn::PEER_GROUP_SUBJECT_ID_COL           => 1,
                     cn::PEER_GROUP_CREATED_TYPE_COL         => 'auto',
                     cn::PEER_GROUP_AUTO_GROUP_BY_COL        => $formData['peer_group_type'],
-                    cn::PEER_GROUP_CREATED_BY_USER_ID_COL   => Auth::user()->{cn::USERS_ID_COL}, 
+                    cn::PEER_GROUP_CREATED_BY_USER_ID_COL   => $GroupCreatorUserId, 
                     cn::PEER_GROUP_STATUS_COL               => 1
                 ]);
                 
@@ -1064,14 +1050,16 @@ class PeerGroupController extends Controller
                                             ]);
                 }
 
-                $SchoolUserIds = User::where('school_id',Auth::user()->{cn::USERS_SCHOOL_ID_COL})
-                                ->whereNotIn('id',[Auth::user()->{cn::USERS_ID_COL}])
-                                ->whereIn('role_id',[
+                $SchoolUserIds = User::where(cn::USERS_SCHOOL_ID_COL,Auth::user()->{cn::USERS_SCHOOL_ID_COL})
+                                ->whereNotIn(cn::USERS_ID_COL,[$GroupCreatorUserId])
+                                ->whereIn(cn::USERS_ROLE_ID_COL,[
                                     cn::SCHOOL_ROLE_ID,
                                     cn::PRINCIPAL_ROLE_ID,
                                     cn::PANEL_HEAD_ROLE_ID,
                                     cn::CO_ORDINATOR_ROLE_ID
-                                ])->pluck('id')->toArray();
+                                ])
+                                ->pluck(cn::USERS_ID_COL)
+                                ->toArray();
                 if(isset($SchoolUserIds) && !empty($SchoolUserIds)){
                     foreach($SchoolUserIds as $SchoolUserId){
                         $requestPayloadUser = new Request();

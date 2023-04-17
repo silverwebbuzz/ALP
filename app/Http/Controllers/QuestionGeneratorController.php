@@ -597,19 +597,19 @@ class QuestionGeneratorController extends Controller {
             // Get Teachers Grades
             $gradesList = TeachersClassSubjectAssign::with('getClass')
                             ->where(cn::TEACHER_CLASS_SUBJECT_CURRICULUM_YEAR_ID_COL,$this->GetCurriculumYear())
-                            ->where([cn::TEACHER_CLASS_SUBJECT_TEACHER_ID_COL => Auth()->user()->{cn::USERS_ID_COL}])
+                            ->where([cn::TEACHER_CLASS_SUBJECT_TEACHER_ID_COL => Auth::user()->{cn::USERS_ID_COL}])
                             ->get()
                             ->unique(cn::TEACHER_CLASS_SUBJECT_CLASS_ID_COL);
             $gradeid =  TeachersClassSubjectAssign::where([
                             cn::TEACHER_CLASS_SUBJECT_CURRICULUM_YEAR_ID_COL => $this->GetCurriculumYear(),
-                            cn::TEACHER_CLASS_SUBJECT_TEACHER_ID_COL => Auth()->user()->{cn::USERS_ID_COL}
+                            cn::TEACHER_CLASS_SUBJECT_TEACHER_ID_COL => Auth::user()->{cn::USERS_ID_COL}
                         ])
                         ->pluck(cn::TEACHER_CLASS_SUBJECT_CLASS_ID_COL)
                         ->toArray();
                         
             $gradeClass = TeachersClassSubjectAssign::where([
                             cn::TEACHER_CLASS_SUBJECT_CURRICULUM_YEAR_ID_COL => $this->GetCurriculumYear(),
-                            cn::TEACHER_CLASS_SUBJECT_TEACHER_ID_COL => Auth()->user()->{cn::USERS_ID_COL}
+                            cn::TEACHER_CLASS_SUBJECT_TEACHER_ID_COL => Auth::user()->{cn::USERS_ID_COL}
                         ])
                         ->pluck(cn::TEACHER_CLASS_SUBJECT_CLASS_NAME_ID_COL)
                         ->toArray();
@@ -632,7 +632,7 @@ class QuestionGeneratorController extends Controller {
             // Get Peer Group List
             $PeerGroupList = PeerGroup::where([
                                 cn::PEER_GROUP_CURRICULUM_YEAR_ID_COL => $this->GetCurriculumYear(),
-                                cn::PEER_GROUP_CREATED_BY_USER_ID_COL => Auth()->user()->{cn::USERS_ID_COL},
+                                cn::PEER_GROUP_CREATED_BY_USER_ID_COL => Auth::user()->{cn::USERS_ID_COL},
                                 cn::PEER_GROUP_STATUS_COL => '1'
                             ])->get();
 
@@ -1810,13 +1810,13 @@ class QuestionGeneratorController extends Controller {
         if($this->isTeacherLogin()){
             $gradesListId = TeachersClassSubjectAssign::where([
                                 cn::TEACHER_CLASS_SUBJECT_CURRICULUM_YEAR_ID_COL => $this->GetCurriculumYear(),
-                                cn::TEACHER_CLASS_SUBJECT_TEACHER_ID_COL => Auth()->user()->{cn::USERS_ID_COL}
+                                cn::TEACHER_CLASS_SUBJECT_TEACHER_ID_COL => Auth::user()->{cn::USERS_ID_COL}
                             ])
                             ->pluck(cn::TEACHER_CLASS_SUBJECT_CLASS_ID_COL)
                             ->toArray();
             $GradeClassId = TeachersClassSubjectAssign::where([
                                 cn::TEACHER_CLASS_SUBJECT_CURRICULUM_YEAR_ID_COL => $this->GetCurriculumYear(),
-                                cn::TEACHER_CLASS_SUBJECT_TEACHER_ID_COL => Auth()->user()->{cn::USERS_ID_COL}
+                                cn::TEACHER_CLASS_SUBJECT_TEACHER_ID_COL => Auth::user()->{cn::USERS_ID_COL}
                             ])
                             ->pluck(cn::TEACHER_CLASS_SUBJECT_CLASS_NAME_ID_COL)
                             ->toArray();

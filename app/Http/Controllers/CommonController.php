@@ -589,15 +589,15 @@ class CommonController extends Controller
         if(isset($request->uid) && $request->uid!=''){
             $userDatalist = User::where(cn::USERS_ID_COL,$request->uid)->get()->toArray();
             if(!empty($userDatalist)){
-                $alpChatUserId = $userDatalist[0]['alp_chat_user_id'];
+                $alpChatUserId = $userDatalist[0][cn::USERS_ALP_CHAT_USER_ID_COL];
                 if($alpChatUserId == ""){
                     $alpChatUserId = $this->generateAlpChatUserId($request->uid);
                 }
                 $UserData = array(
-                                'email' => $userDatalist[0]['email'],
-                                'name_en' => \App\Helpers\Helper::decrypt($userDatalist[0]['name_en']),
-                                'mobile_no' => \App\Helpers\Helper::decrypt($userDatalist[0]['mobile_no']),
-                                'alp_chat_user_id' => $alpChatUserId
+                                cn::USERS_EMAIL_COL             => $userDatalist[0][cn::USERS_EMAIL_COL],
+                                cn::USERS_NAME_EN_COL           => \App\Helpers\Helper::decrypt($userDatalist[0][cn::USERS_NAME_EN_COL]),
+                                cn::USERS_MOBILENO_COL          => \App\Helpers\Helper::decrypt($userDatalist[0][cn::USERS_MOBILENO_COL]),
+                                cn::USERS_ALP_CHAT_USER_ID_COL  => $alpChatUserId
                             );
                 return $this->sendResponse($UserData);
             }else{
@@ -608,7 +608,6 @@ class CommonController extends Controller
         }
     }
 
-    
     /**
      * USE :  Cron Job For a Question math formula load 
      */
@@ -758,12 +757,12 @@ class CommonController extends Controller
             $studentListType="GradeClass_".$request->classIds[0];
             if($this->isTeacherLogin()){
                 $gradesListId = TeachersClassSubjectAssign::where([
-                                    cn::TEACHER_CLASS_SUBJECT_TEACHER_ID_COL => Auth()->user()->{cn::USERS_ID_COL}
+                                    cn::TEACHER_CLASS_SUBJECT_TEACHER_ID_COL => Auth::user()->{cn::USERS_ID_COL}
                                 ])
                                 ->pluck(cn::TEACHER_CLASS_SUBJECT_CLASS_ID_COL)
                                 ->toArray();
                 $GradeClassId = TeachersClassSubjectAssign::where([
-                                    cn::TEACHER_CLASS_SUBJECT_TEACHER_ID_COL => Auth()->user()->{cn::USERS_ID_COL}
+                                    cn::TEACHER_CLASS_SUBJECT_TEACHER_ID_COL => Auth::user()->{cn::USERS_ID_COL}
                                 ])
                                 ->pluck(cn::TEACHER_CLASS_SUBJECT_CLASS_NAME_ID_COL)
                                 ->toArray();
