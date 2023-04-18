@@ -302,11 +302,6 @@ class AI_CalibrationController extends Controller
                                         }else{
                                             $this->QuestionCountsArray[$getSeedQuestionId] = 1;
                                         }
-                                        // if(array_key_exists($question->id,$this->QuestionCountsArray)){
-                                        //     $this->QuestionCountsArray[$question->id] = ($this->QuestionCountsArray[$question->id] + 1);
-                                        // }else{
-                                        //     $this->QuestionCountsArray[$question->id] = 1;
-                                        // }
                                     }
                                 }
                             }
@@ -320,7 +315,7 @@ class AI_CalibrationController extends Controller
         if(isset($this->QuestionCountsArray) && !empty($this->QuestionCountsArray)){
             $this->IncludedCalibratedQuestions = array_filter($this->QuestionCountsArray, function($value){
                                                     return ($value > $this->ExcludeQuestionLimit);
-                                                });                                                
+                                                });
             $this->ExcludeCalibratedQuestions = array_filter($this->QuestionCountsArray, function($value){
                                                     return ($value < $this->ExcludeQuestionLimit);
                                                 });
@@ -447,12 +442,6 @@ class AI_CalibrationController extends Controller
             if(!empty($this->SelectedAdjustedCalibrationId)){
                 $DifficultyValue = $this->GetDifficultiesValueByCalibrationId($this->SelectedAdjustedCalibrationId, $Question->{cn::QUESTION_TABLE_ID_COL});
             }
-
-            // if($this->SelectedGlobalConfigDifficultyType == 2){
-            //     $DifficultyValue = $Question->{cn::QUESTION_AI_DIFFICULTY_VALUE};
-            // }else{
-            //     $DifficultyValue = $Question->{cn::QUESTION_PRE_CONFIGURE_DIFFICULTY_VALUE};
-            // }
         }else{
             if($this->isInitialCondition){
                 $DifficultyValue = $QuestionData->{cn::QUESTION_PRE_CONFIGURE_DIFFICULTY_VALUE};
@@ -461,12 +450,6 @@ class AI_CalibrationController extends Controller
             if(!empty($this->SelectedAdjustedCalibrationId)){
                 $DifficultyValue = $this->GetDifficultiesValueByCalibrationId($this->SelectedAdjustedCalibrationId, $QuestionData->{cn::QUESTION_TABLE_ID_COL});
             }
-
-            // if($this->SelectedGlobalConfigDifficultyType == 2){
-            //     $DifficultyValue = $QuestionData->{cn::QUESTION_AI_DIFFICULTY_VALUE};
-            // }else{
-            //     $DifficultyValue = $QuestionData->{cn::QUESTION_PRE_CONFIGURE_DIFFICULTY_VALUE};
-            // }
         }
         return $DifficultyValue;
     }

@@ -36,8 +36,7 @@
                                     @csrf()
                                     @method('patch')
                                     <input type="hidden" name="memberIdsList" value="" id="peer-group-member-id" readonly>
-
-                                <input type="hidden" name="dreamschat_group_id" id="dreamschat_group_id"  value="{{$peerGroupData->dreamschat_group_id}}" >
+                                    <input type="hidden" name="dreamschat_group_id" id="dreamschat_group_id"  value="{{$peerGroupData->dreamschat_group_id}}" >
                                     <input type="hidden" name="groupIds" value="{{$peerGroupData->id}}" id="peer-group-id" readonly>
                                     <input type="hidden" name="GroupMemberDataList" id="GroupMemberData">
                                     <div class="form-row select-data">
@@ -46,6 +45,30 @@
                                             <input type="text" class="form-control" name="group_name" id="group_name" placeholder="{{__('languages.peer_group.group_name')}}" value="{{$peerGroupData->group_name}}">
                                             @if($errors->has('group_name'))<span class="validation_error">{{ $errors->first('group_name') }}</span>@endif
                                         </div>
+
+                                        <div class="form-group col-md-6 mb-50">
+                                            <label class="text-bold-600">{{ __('languages.group_type') }}</label>
+                                            <ul class="list-unstyled mb-0">
+                                                <li class="d-inline-block mt-1 mr-1 mb-1">
+                                                    <fieldset>
+                                                        <div class="custom-control custom-radio">
+                                                            <input type="radio" class="custom-control-input" name="group_type" id="peer_group" value="peer_group" @if($peerGroupData->group_type == 'peer_group') checked @endif>
+                                                            <label class="custom-control-label" for="peer_group">{{ __('languages.peer_group.peer_group') }}</label>
+                                                        </div>
+                                                    </fieldset>
+                                                </li>
+                                                <li class="d-inline-block my-1 mr-1 mb-1">
+                                                    <fieldset>
+                                                        <div class="custom-control custom-radio">
+                                                            <input type="radio" class="custom-control-input" name="group_type" id="group" value="group" @if($peerGroupData->group_type == 'group') checked @endif>
+                                                            <label class="custom-control-label" for="group">{{ __('languages.group') }}</label>
+                                                        </div>
+                                                    </fieldset>
+                                                </li>
+                                            </ul>
+                                            <span class="gender-select-err"></span>
+                                        </div>
+
                                         {{-- <div class="form-group col-md-6">
                                             <label class="text-bold-600">{{ __('languages.peer_group.group_name_ch') }}</label>
                                             <input type="text" class="form-control" name="group_name_ch" id="group_name_ch" placeholder="{{__('languages.peer_group.group_name_ch')}}" value="{{$peerGroupData->group_name_en}}">

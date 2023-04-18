@@ -29,6 +29,16 @@
 							<hr class="blue-line">
 							<div class="row peer-group-detail-sec">
 								<div class="col-md-3">
+									<span><b>{{__('languages.group_type')}} </b>: </span>
+									<span>
+									@if($GroupData->group_type == 'peer_group')
+										{{__('languages.peer_group.peer_group')}}
+									@else
+										{{__('languages.group')}}
+									@endif
+									</span>
+								</div>
+								<div class="col-md-3">
 									<span><b>{{__('languages.group_management.group_name')}} </b>: </span>
 									<span>{{$GroupData->group_name ?? 'N/A'}}</span>
 								</div>

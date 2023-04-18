@@ -1723,5 +1723,8 @@ return [
     'result_not_declared_message'               => 'You can not see your result yet because result not declared yet',
     'update_student_name'                       => 'Update Student Name',
     'student_name_updated_successfully'         => 'Student Name Updated Successfully',
-    'select_creator_user'                       => 'Select Creator User'
+    'select_creator_user'                       => 'Select Creator User',
+    'group_type'                                => 'Group Type',
+    'group'                                     => 'Group',
+    'grouping_type'                             => 'Grouping Type',
 ];

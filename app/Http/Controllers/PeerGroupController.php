@@ -116,6 +116,9 @@ class PeerGroupController extends Controller
                     $q->where(cn::SUBJECTS_ID_COL,$request->subject);
                 });
             }
+            if($request->group_type){
+                $Query->where(cn::PEER_GROUP_GROUP_TYPE_COL,$request->group_type);
+            }
             if(isset($request->status)){
                 $Query->where(cn::PEER_GROUP_STATUS_COL,$request->status);
             }
@@ -271,6 +274,7 @@ class PeerGroupController extends Controller
                             cn::PEER_GROUP_GROUP_NAME_COL           => $request->group_name,
                             cn::PEER_GROUP_CREATED_BY_USER_ID_COL   => (isset($request->group_creator_user) && !empty($request->group_creator_user)) ? $request->group_creator_user : Auth::user()->{cn::USERS_ID_COL},
                             cn::PEER_GROUP_SUBJECT_ID_COL           => 1,
+                            cn::PEER_GROUP_GROUP_TYPE_COL           => $request->group_type,
                             cn::PEER_GROUP_STATUS_COL               => ($request->status == 'active') ? 1 : 0
                         ]);
             if($PeerGroup){
@@ -454,6 +458,7 @@ class PeerGroupController extends Controller
                 cn::PEER_GROUP_GROUP_NAME_COL       => $request->group_name,
                 cn::PEER_GROUP_DREAMSCHAT_GROUP_ID  => $request->dreamschat_group_id,
                 cn::PEER_GROUP_SUBJECT_ID_COL       => 1,
+                cn::PEER_GROUP_GROUP_TYPE_COL       => $request->group_type,
                 cn::PEER_GROUP_STATUS_COL           => ($request->status == "active") ? 1 : 0
            ];
            PeerGroup::find($id)->update($postData);
@@ -943,8 +948,10 @@ class PeerGroupController extends Controller
             
             $schoolId = Auth::user()->{cn::USERS_SCHOOL_ID_COL};
             $GradeMapping = GradeSchoolMappings::with('grades')
-                            ->where(cn::GRADES_MAPPING_CURRICULUM_YEAR_ID_COL,$this->GetCurriculumYear())
-                            ->where(cn::GRADES_MAPPING_SCHOOL_ID_COL,$schoolId)
+                            ->where([
+                                cn::GRADES_MAPPING_CURRICULUM_YEAR_ID_COL => $this->GetCurriculumYear(),
+                                cn::GRADES_MAPPING_SCHOOL_ID_COL => $schoolId
+                            ])
                             ->get()
                             ->pluck(cn::GRADES_MAPPING_GRADE_ID_COL);
             $gradeClass = GradeClassMapping::where(cn::GRADE_CLASS_MAPPING_CURRICULUM_YEAR_ID_COL,$this->GetCurriculumYear())
@@ -1022,17 +1029,18 @@ class PeerGroupController extends Controller
                 $GroupMemberData = array();
                 $GroupStudentIds = array_column($Group,0);
                 $group_name = $formData['prefix_group_name'].'-0'.$i;
-                $peerGroupInsert = PeerGroup::create([
-                    cn::PEER_GROUP_CURRICULUM_YEAR_ID_COL   => $this->GetCurriculumYear(),
-                    cn::PEER_GROUP_SCHOOL_ID_COL            => Auth::user()->{cn::USERS_SCHOOL_ID_COL},
-                    cn::PEER_GROUP_GROUP_NAME_COL           => $group_name,
-                    cn::PEER_GROUP_GROUP_PREFIX_COL         => $formData['prefix_group_name'],
-                    cn::PEER_GROUP_SUBJECT_ID_COL           => 1,
-                    cn::PEER_GROUP_CREATED_TYPE_COL         => 'auto',
-                    cn::PEER_GROUP_AUTO_GROUP_BY_COL        => $formData['peer_group_type'],
-                    cn::PEER_GROUP_CREATED_BY_USER_ID_COL   => $GroupCreatorUserId, 
-                    cn::PEER_GROUP_STATUS_COL               => 1
-                ]);
+                $peerGroupInsert =  PeerGroup::create([
+                                        cn::PEER_GROUP_CURRICULUM_YEAR_ID_COL   => $this->GetCurriculumYear(),
+                                        cn::PEER_GROUP_SCHOOL_ID_COL            => Auth::user()->{cn::USERS_SCHOOL_ID_COL},
+                                        cn::PEER_GROUP_GROUP_NAME_COL           => $group_name,
+                                        cn::PEER_GROUP_GROUP_PREFIX_COL         => $formData['prefix_group_name'],
+                                        cn::PEER_GROUP_SUBJECT_ID_COL           => 1,
+                                        cn::PEER_GROUP_CREATED_TYPE_COL         => 'auto',
+                                        cn::PEER_GROUP_AUTO_GROUP_BY_COL        => $formData['peer_group_type'],
+                                        cn::PEER_GROUP_CREATED_BY_USER_ID_COL   => $GroupCreatorUserId,
+                                        cn::PEER_GROUP_GROUP_TYPE_COL           => $formData['group_type'],
+                                        cn::PEER_GROUP_STATUS_COL               => 1
+                                    ]);
                 
                 foreach($GroupStudentIds as $memberId){
                     $requestPayloadUser = new Request();

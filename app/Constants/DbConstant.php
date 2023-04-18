@@ -688,6 +688,7 @@ class DbConstant {
     const PEER_GROUP_CREATED_BY_TEACHER_ID_COL = 'created_by_teacher_id';
     const PEER_GROUP_CREATED_BY_USER_ID_COL = 'created_by_user_id';
     const PEER_GROUP_SUBJECT_ID_COL = "subject_id";
+    const PEER_GROUP_GROUP_TYPE_COL = "group_type";
     const PEER_GROUP_CREATED_TYPE_COL = "created_type";
     const PEER_GROUP_AUTO_GROUP_BY_COL = "auto_group_by";
     const PEER_GROUP_STATUS_COL = 'status';

@@ -79,6 +79,15 @@
 									</select>
 								</div>
 							</div>
+							<div class="col-lg-3 col-md-3">
+								<div class="select-lng pt-2 pb-2">
+									<select name="group_type" class="form-control" id="group_type">
+										<option value="">{{__('languages.select')}}</option>
+										<option value="peer_group" {{("peer_group" == request()->get('group_type')) ? 'selected' : ''}}>{{__('Peer Group')}}</option>
+										<option value="group" {{("group" == request()->get('group_type')) ? 'selected' : ''}}>{{__('Group')}}</option>
+									</select>
+								</div>
+							</div>
 							<div class="col-lg-2 col-md-3">
 								<div class="select-lng pt-2 pb-2">
 									<button type="submit" name="filter" value="filter" class="btn-search">{{ __('languages.search') }}</button>
@@ -95,10 +104,10 @@
 							          		<th>
 										  		<input type="checkbox" name="" class="checkbox" id="selectAllPeerGroup">
 											</th>
-											<th class="first-head"><span>{{__('languages.id')}}</span></th>
-											<th class="first-head"><span>@sortablelink('group_name',__('languages.peer_group.group_name'))</span></th>
-                                            {{-- <th class="selec-opt"><span>{{__('languages.peer_group.subject')}}</span></th> --}}
-											<th class="selec-opt"><span>{{__('languages.peer_group.no_of_members')}}</span></th>
+											<th>{{__('languages.id')}}</th>
+											<th>{{__('languages.group_type')}}</th>
+											<th>@sortablelink('group_name',__('languages.peer_group.group_name'))</th>
+											<th>{{__('languages.peer_group.no_of_members')}}</th>
 											<th>{{__('languages.creator')}}</th>
 											<th>{{__('languages.creator')}} {{__('languages.role')}}</th>
                                             <th>@sortablelink('status',__('languages.peer_group.status'))</th>
@@ -111,8 +120,14 @@
 							        	<tr>
 											<td><input type="checkbox" name="" class="checkbox selectSinglePeerGroup" data-id="{{$peerGroup->id}}"></td>
 											<td>{{$loop->iteration}}</td>
+											<td>
+												@if($peerGroup->group_type == 'peer_group')
+													{{__('languages.peer_group.peer_group')}}
+												@else
+													{{__('languages.group')}}
+												@endif
+											</td>
 											<td>{{$peerGroup->group_name}}</td>
-											{{-- <td>{{$peerGroup->subject->name}}</td> --}}
 											<td>{{($peerGroup->members) ? count($peerGroup->Members) : 'N/A'}}</td>
 											<td>{{App\Helpers\Helper::getUserName($peerGroup->created_by_user_id) ?? ''}}</td>
 											<td>{{App\Helpers\Helper::FindRoleByUserId($peerGroup->created_by_user_id) ?? ''}}</td>

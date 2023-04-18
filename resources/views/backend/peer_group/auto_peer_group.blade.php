@@ -88,7 +88,23 @@
                                         </div>
                                         <div class="form-group student_peer_group_section mt-3 row">
                                             <div class="student_peer_group_heading col-lg-3">
-                                                <label>{{__('languages.peer_group.peer_group_type')}}</label>
+                                                <label>{{__('languages.group_type')}}</label>
+                                            </div>
+                                            <div class="student_peer_group_option col-lg-3">
+                                                <div class="form-check form-check-inline">
+                                                    <input class="form-check-input" type="radio" name="group_type" id="peer_group" checked value="peer_group">
+                                                    <label class="form-check-label" for="peer_group">{{__('languages.peer_group.peer_group')}}</label>
+                                                </div>
+                                                <div class="form-check form-check-inline">
+                                                    <input class="form-check-input" type="radio" name="group_type" id="group" value="group">
+                                                    <label class="form-check-label" for="group">{{__('languages.group')}}</label>
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        <div class="form-group student_peer_group_section mt-3 row">
+                                            <div class="student_peer_group_heading col-lg-3">
+                                                <label>{{__('languages.grouping_type')}}</label>
                                             </div>
                                             <div class="student_peer_group_option col-lg-3">
                                                 @if($groupType)

@@ -26,6 +26,7 @@ class PeerGroup extends Model
         cn::PEER_GROUP_GROUP_PREFIX_COL,
         cn::PEER_GROUP_CREATED_BY_USER_ID_COL,
         cn::PEER_GROUP_SUBJECT_ID_COL,
+        cn::PEER_GROUP_GROUP_TYPE_COL,
         cn::PEER_GROUP_STATUS_COL,
         cn::PEER_GROUP_CREATED_TYPE_COL,
         cn::PEER_GROUP_AUTO_GROUP_BY_COL,
